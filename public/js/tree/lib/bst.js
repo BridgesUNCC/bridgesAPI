@@ -113,7 +113,6 @@ d3.bst = function (d3, canvasID, w, h) {
     return bst;
 
     function toggle (d) {
-
         if (d.children) {
             d._children = d.children;
             d.children = null;
@@ -136,8 +135,6 @@ d3.bst = function (d3, canvasID, w, h) {
         // Update the nodes…
         var node = svgGroup.selectAll("g.node")
             .data(nodes, function(d) { return d.id || (d.id = ++i); });
-            // .on("mouseover", mouseover)
-            // .on("mouseout", mouseout);
 
         // Enter any new nodes at the parent's previous position.
         var nodeEnter = node.enter().append("svg:g")
@@ -172,6 +169,36 @@ d3.bst = function (d3, canvasID, w, h) {
             .attr("text-anchor", "start")
             .text(function(d) { return d.key || ""; } );
        }
+
+       // apply dash array if node has collapsed non-null children
+       node.selectAll("path")
+         .style("stroke", "#000")
+         .style("stroke-width", function(d) {
+           if(d._children) {
+             var nullChild = 0;
+             for (var c = 0; c < d._children.length; c++) {
+               if(d._children[c].name == 'NULL') nullChild++;
+             }
+             if(nullChild == d._children.length) {
+               return 0;
+             }
+             return 3;
+            }
+            return 0;
+         })
+         .style("stroke-dasharray", function(d) {
+             if(d._children) {
+               var nullChild = 0;
+               for (var c = 0; c < d._children.length; c++) {
+                 if(d._children[c].name == 'NULL') nullChild++;
+               }
+               if(nullChild == d._children.length) {
+                 return "0,0";
+               }
+               return BridgesVisualizer.treeDashArray;
+              }
+              return "0,0";
+         });
 
         // Transition nodes to their new position.
         var nodeUpdate = node.transition()

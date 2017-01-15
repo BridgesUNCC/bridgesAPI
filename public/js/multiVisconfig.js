@@ -10,6 +10,8 @@ BridgesVisualizer.textOffsets = {
   "default": { "x": 0, "y": 0}
 };
 
+BridgesVisualizer.treeDashArray = "3px, 3px";
+
 // Default scale and transform values for each data structure
 BridgesVisualizer.defaultTransforms = {
   "array": { "scale": 0.4, "translate": [20, 100]},
@@ -122,7 +124,19 @@ BridgesVisualizer.textMouseout = function(d) {
                 .attr('d', function (d) {
                     return d3.svg.symbol().type(d.shape||"circle")
                             .size(BridgesVisualizer.scaleSize(d.size||1))();
-                }).style("stroke", "").style("stroke-width", 0);
+                })
+                // maintain tree dashArray where necessary
+                .style("stroke", function(d) {
+                  if(d3.select(this).style("stroke-dasharray") == BridgesVisualizer.treeDashArray)
+                      return "#000";
+                  return "";
+                })
+                // maintain tree dashArray where necessary
+                .style("stroke-width", function(d) {
+                  if(d3.select(this).style("stroke-dasharray") == BridgesVisualizer.treeDashArray)
+                      return 3;
+                  return 0;
+                });
     }
 
     div.transition()
