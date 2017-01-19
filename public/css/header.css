@@ -1,9 +1,17 @@
+html {
+  height: 100%;
+}
 body{
     background-color:white;
+    height: 100%;
 }
 .centerForm {
-    padding-top: 13px;
+    padding-top: 10px;
 }
 .padRight {
     padding-right: 10px;
+}
+
+div.navbar.navbar-default {
+  margin: 0px;
 }

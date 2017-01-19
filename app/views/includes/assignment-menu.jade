@@ -1,0 +1,35 @@
+#assignment-menu
+  if (assignmentTitle.length > 0)
+    div#assignmentTitle #{assignmentTitle}
+  else
+    div#assignmentTitle Assignment #{assignmentNumber}
+
+
+  if (owner)
+        div(style='margin:10px 10px 10px 10px;')
+            div.switch-toggle.well
+                input#public(type='radio', name='view',
+                    onclick='toggleShare(true)')
+                label(for='public') Public
+                input#private(type='radio', name='view',
+                    onclick='toggleShare(false)')
+                label(for='private') Private
+                a.btn.btn-primary
+
+  button(class='optionButton', id='reset')
+          label Reset view
+  if (owner)
+      if (vistypeObject.vistype == "nodelink")
+        button(class='optionButton', id='save')
+          label Save Positions
+
+      //button#saveTransform.optionButton(
+      //        onclick='saveTransform()')
+      //        label Save Zoom and Translation
+
+      button(class='optionButton btn-danger pad', id='delete')
+              label Delete Assignment
+
+  if (assignmentDescription.length > 0)
+    #optionContainer.optionContainer
+        div#assignmentDescription #{assignmentDescription}

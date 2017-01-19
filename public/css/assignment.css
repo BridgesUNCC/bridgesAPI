@@ -1,7 +1,8 @@
 .assignmentContainer{
-    border-color:steelblue;
-    border-style:solid;
-    border-radius:25px;
+    /*border-color:steelblue;*/
+    /*border-style:solid;*/
+    /*border-radius:2px;*/
+    box-shadow: 0px 3px 5px 5px #888888;
     padding:6px;
     margin-left:10px;
     margin-right:30%;
@@ -16,26 +17,11 @@
     height: 10%;
 }
 
-.optionContainer{
-    border-color:steelblue;
-    border-style:solid;
-    border-radius:25px;
-    padding:6px;
-    margin-left:10px;
-    margin-right:30%;
-    width:75%;
-    float: left;
-    margin-bottom: 5px;
-    padding-bottom: 5px;
-    margin-top: 5px;
-    min-height: 250px;
-    overflow: auto;/*hide the scrollbar if not needed, chrome and ie tested*/
-}
 
 .assignmentContainerMinimized {
     border-color:steelblue;
     border-style:solid;
-    border-radius:25px;
+    /*border-radius:25px;*/
     padding:6px;
     margin-left:10px;
     margin-right:30%;
@@ -44,11 +30,10 @@
     margin-bottom: 10px;
     min-height: 25px;
     height: 35px;
-    background-color: lightsteelblue;
+    /*background-color: lightsteelblue;*/
 }
 
-
-#vis{
+/*#vis{
     width:70%;
     height:90%;
     position:absolute;
@@ -60,18 +45,10 @@
     width:70%;
     overflow: auto;/*hide the scrollbar if not needed, chrome and ie tested*/
     float:left;
-}
+}*/
 
 .svg {
     height: inherit;
-}
-
-#optionContainer{
-    max-width:28%;
-    left: 70%;
-    min-height:240px;
-    max-height:80%;
-    position:fixed;
 }
 
 #mapContainer{
@@ -99,16 +76,9 @@
 
 #assignmentCanvas{
     min-width:801px;
-    border-radius:25px;
 }
 
-.optionButton {
-    margin-left: 25%;
-    width:50%;
-    padding: 2px;
-    border-radius: 5px;
-    margin-bottom: 5px;
-}
+
 
 
 .minimize {
@@ -124,80 +94,7 @@
     font-weight: bolder;
 }
 
-.gallery_assignment_container {
-  float:left;
-  width:160px;
-  height:240px;
-  margin-left:20px;
-  margin-bottom:10px;
-  overflow: hidden;
-}
 
-.gallery_assignment_div_private{
-    height:120px;
-    width:120px;
-    margin-left: 20px;
-    border-style: solid;
-    border-width:4px;
-    border-style: outset;
-    border-color:red;
-    border-radius:10px;
-    background: -webkit-linear-gradient(white, #FFFAFA);
-    background: -o-linear-gradient(white, #FFFAFA);
-    background: -moz-linear-gradient(white, #FFFAFA);
-    background: linear-gradient(white, #FFFAFA);
-    box-shadow: 2px 2px 8px #888888;
-}
-
-.gallery_assignment_div_public{
-     margin-left: 20px;
-    height:120px;
-    width:120px;
-    border-style: solid;
-    border-width:4px;
-    border-style: outset;
-    border-color:blue;
-    border-radius:30px;
-    background:-webkit-linear-gradient(white, #F1FAFF);
-    background: -o-linear-gradient(white, #F1FAFF);
-    background: -moz-linear-gradient(white, #F1FAFF);
-    background: linear-gradient(white, #F1FAFF);
-    box-shadow: 2px 2px 8px #888888;
-}
-
-.gallery_assignment_div_public:hover, .gallery_assignment_div_private:hover{
-    box-shadow:none;
-    background:white;
-    border-width:4px;
-    border-style: inset;
-}
-
-.gallery_links{
-    padding-top: 10px;
-    text-align: center;
-    /*text-shadow: 1px 0px #C0C0C0;*/
-    color: #262626;
-    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-}
-
-.gallery_links:hover{
-    text-shadow: none;
-    color:#888888;
-}
-
-.gallery_link_title {
-  font-size: 110%;
-}
-
-.gallery_link_small {
-  font-size: 70%;
-}
-
-.dateCreated {
-  font-size: 80%;
-  font-weight: bold;
-  display: none;
-}
 
 table.full {
     width: 97%;
@@ -213,22 +110,7 @@ td.right {
     vertical-align: middle ;
 }
 
-#assignmentTitle {
-    padding-left: 50px;
-    padding-bottom: 5px;
-    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-    font-size: 180%;
-    max-width: 50%;
-}
 
-#assignmentDescription {
-    padding-top: 15px;
-    padding-left: 5px;
-    margin-bottom: 25px;
-    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-    font-size: 100%;
-    /*max-width: 95%;*/
-}
 
 #updateStatus {
     text-align: -webkit-center;
@@ -251,7 +133,7 @@ div.tooltip {
   line-height: 1;
   padding: 12px;
   font: 14px sans-serif;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.85);
   color: white;
   border: 0px;
   border-radius: 8px;

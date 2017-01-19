@@ -4,6 +4,8 @@ block css
          href='/css/header.css')
     link(rel='stylesheet',
          href='/css/assignment.css')
+    link(rel='stylesheet',
+         href='/css/assignment-menu.css')
     link(rel='stylesheet', href='/components/css-toggle-switch/dist/toggle-switch.css')
 
     svg#svgdfs(height='0',display='block')
@@ -16,63 +18,17 @@ block css
 
 block content
     include ../includes/header.jade
-    div#updateStatus
-    div#assignmentCanvas(overflow='auto')
-        if (owner)
-            #optionContainer.optionContainer
-                div(style='margin:10px 10px 10px 10px;')
-                    label Share #{shared}
-                    div.switch-toggle.well
-                        input#public(type='radio', name='view',
-                            onclick='toggleShare(true)')
-                        label(for='public') Public
-                        input#private(type='radio', name='view',
-                            onclick='toggleShare(false)')
-                        label(for='private') Private
-                        a.btn.btn-primary
-
-
-                button(class='optionButton', id='reset')
-                        label Reset view
-
-                if (vistypeObject.vistype == "nodelink")
-                  button#savePosition.optionButton(
-                          onclick='savePositions()')
-                          label Save Positions
-
-                //button#saveTransform.optionButton(
-                //        onclick='saveTransform()')
-                //        label Save Zoom and Translation
-
-                div#assignmentDescription #{assignmentDescription}
-
-                form(action="/assignments/"+assignmentNumber, method='post')
-                    div(style="margin-top:20px;")
-                        input(type="hidden", name="_csrf", value=csrftoken)
-                        input.form-control(
-                                type="hidden",
-                                name="_method",
-                                value="DELETE")
-
-                        input#submit.btn.btn-danger.center-block(
-                                type='submit',
-                                value="Delete Assignment")
-
-        else if (assignmentDescription.length > 0)
-            #optionContainer.optionContainer
-                div#assignmentDescription #{assignmentDescription}
-
-
+    div#fullContent
+      include ../includes/assignment-menu.jade
+      div#updateStatus
+      div#assignmentCanvas(overflow='auto')
         table.full
                 tr
                 td.left
                     button(class='minimize' id='min')
                         label -
                 td.right
-                      if (assignmentTitle.length > 0)
-                        div#assignmentTitle #{assignmentTitle}
-                      else
-                        div#assignmentTitle Assignment #{assignmentNumber}
+                      
 
 
         -for (var i = 0; i < extent; i++) {
@@ -149,7 +105,7 @@ block footerjs
                 type: "post"
             }).done(function() {
                 console.log('visibility updated')
-            }).error(function(err){
+            }).fail(function(err){
                 console.log(err)
             });
         }

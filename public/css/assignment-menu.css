@@ -1,0 +1,38 @@
+#assignment-menu{
+    position: absolute;
+    right: 0px;
+    width: 300px;
+    height: 100vh;
+    text-align: center;
+    background-color: #f8f8f8;
+    border-left: solid 2px #e7e7e7;
+    padding:20px;
+    overflow: auto;/*hide the scrollbar if not needed, chrome and ie tested*/
+}
+
+#assignmentTitle {
+    padding-left: 30px;
+    margin-bottom: 25px;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 180%;
+    max-width: 90%;
+}
+
+#assignmentDescription {
+    padding-left: 30px;
+    margin-bottom: 25px;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 100%;
+}
+
+.optionButton {
+    margin-right: 0%;
+    width:50%;
+    padding: 2px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.optionButton.pad {
+    margin-top: 100px;
+}

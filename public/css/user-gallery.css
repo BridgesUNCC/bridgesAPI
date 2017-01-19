@@ -1,0 +1,74 @@
+.gallery_assignment_container {
+  float:left;
+  width:160px;
+  height:240px;
+  margin-left:20px;
+  margin-bottom:10px;
+  overflow: hidden;
+}
+
+.gallery_assignment_div_private{
+    height:120px;
+    width:120px;
+    margin-left: 20px;
+    border-style: solid;
+    border-width:4px;
+    border-style: outset;
+    border-color:red;
+    border-radius:10px;
+    background: -webkit-linear-gradient(white, #FFFAFA);
+    background: -o-linear-gradient(white, #FFFAFA);
+    background: -moz-linear-gradient(white, #FFFAFA);
+    background: linear-gradient(white, #FFFAFA);
+    box-shadow: 2px 2px 8px #888888;
+}
+
+.gallery_assignment_div_public{
+     margin-left: 20px;
+    height:120px;
+    width:120px;
+    border-style: solid;
+    border-width:4px;
+    border-style: outset;
+    border-color:blue;
+    border-radius:30px;
+    background:-webkit-linear-gradient(white, #F1FAFF);
+    background: -o-linear-gradient(white, #F1FAFF);
+    background: -moz-linear-gradient(white, #F1FAFF);
+    background: linear-gradient(white, #F1FAFF);
+    box-shadow: 2px 2px 8px #888888;
+}
+
+.gallery_assignment_div_public:hover, .gallery_assignment_div_private:hover{
+    box-shadow:none;
+    background:white;
+    border-width:4px;
+    border-style: inset;
+}
+
+.gallery_links{
+    padding-top: 10px;
+    text-align: center;
+    /*text-shadow: 1px 0px #C0C0C0;*/
+    color: #262626;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+.gallery_links:hover{
+    text-shadow: none;
+    color:#888888;
+}
+
+.gallery_link_title {
+  font-size: 110%;
+}
+
+.gallery_link_small {
+  font-size: 70%;
+}
+
+.dateCreated {
+  font-size: 80%;
+  font-weight: bold;
+  display: none;
+}

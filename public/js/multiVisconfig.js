@@ -1,3 +1,16 @@
+// Toggle the primary assignment menu
+d3.select("#assignment-menu")
+    .on("click", function() {
+      if(d3.select(this).classed('toggle-menu')) {
+        d3.select(this).transition().duration(500).style('right', '0px');
+        d3.select(this).classed('toggle-menu', false);
+      } else {
+        d3.select(this).transition().duration(500).style('right', '-280px');
+        d3.select(this).classed('toggle-menu', true);
+      }
+    });
+
+
 // Bridges visualizer object to remove vis methods from the global scope
 BridgesVisualizer.strokeWidthRange = d3.scale.linear().domain([1,50]).range([1,15]).clamp(true);
 //scale values between 1 and 100 to a reasonable range
@@ -147,6 +160,8 @@ BridgesVisualizer.textMouseout = function(d) {
 // bind event handlers for ui
 d3.selectAll(".minimize").on("click", minimize);
 d3.select("#reset").on("click", reset);
+d3.select("#save").on("click", savePositions);
+d3.select("#delete").on("click", deleteAssignment);
 d3.select("#resize").on("click", resize);
 
 allZoom = [];
@@ -214,6 +229,8 @@ for (var key in data) {
 
 // Reset positions and scales for all visualization divs
 function reset() {
+    d3.event.stopPropagation();
+
     for (var i = 0; i < allZoom.length; i++) {
         var zoom = allZoom[i];
         var svgGroup = allSVG[i];
@@ -243,6 +260,22 @@ function reset() {
         svgGroup.attr("transform", "translate(" + zoom.translate() + ")scale(" + zoom.scale() + ")");
     }
     saveVisStatesAsCookies();
+}
+
+function deleteAssignment() {
+  d3.event.stopPropagation();
+
+  var r = confirm("Are you sure?");
+  if (r === true) {
+      // send delete request
+      $.ajax({
+          url: "/assignments/"+assignmentNumber,
+          type: "DELETE",
+          success: function(status) {
+              window.location = '../../username';
+          }
+      });
+  }
 }
 
 // Toggle resizing of visualization divs (swaps between two sizes)
@@ -340,6 +373,8 @@ function minimize() {
 
 // Asynchronously update the node positions
 function savePositions () {
+  d3.event.stopPropagation();
+
   var updateTheseNodes = {};
 
   // store indices for all fixed nodes
