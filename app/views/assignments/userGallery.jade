@@ -17,7 +17,7 @@ block content
                 div(style="float:left; margin-left:50px")
                     h1(style="text-align: left") #{usernames}'s Gallery
 
-    div(style='margin:5%')
+    div.gallery_row
         - for (var x = 0; x < assignments.length; x++)
             div(class='gallery_assignment_container')
                 a(href='/assignments/'+assignments[x].assignmentNumber+'/'+usernames)
@@ -42,9 +42,14 @@ block content
 
                   a(style='text-decoration: none; ' href='/assignments/'+assignments[x].assignmentNumber+'/'+usernames)
                       div(class='gallery_links')
-                        div.gallery_link_title #{assignments[x].title}
-                        div.gallery_link_small Assignment #{assignments[x].assignmentNumber}
-                        div.gallery_link_small #{assignments[x].data[0].visual}
-                        div.dateCreated #{assignments[x].dateCreated}
+                        - if (assignments[x].title)
+                            div.gallery_link_title #{assignments[x].title}
+                        - else
+                            div.gallery_link_title Assignment#{assignments[x].assignmentNumber}
+
+                  div.user-gallery-menu
+                    div.gallery_link_small Assignment #{assignments[x].assignmentNumber}
+                    div.gallery_link_small #{assignments[x].data[0].visual}
+                    div.gallery_link_small #{assignments[x].dateCreated}
 
       script( src = '/js/gallery/userGallery.js' )

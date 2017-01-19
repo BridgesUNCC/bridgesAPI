@@ -1,10 +1,11 @@
 .gallery_assignment_container {
   float:left;
   width:160px;
-  height:240px;
+  height:200px;
   margin-left:20px;
   margin-bottom:10px;
-  overflow: hidden;
+  text-align: center;
+  background-color: white;
 }
 
 .gallery_assignment_div_private{
@@ -67,8 +68,17 @@
   font-size: 70%;
 }
 
-.dateCreated {
-  font-size: 80%;
-  font-weight: bold;
+.gallery_row {
+  margin: 50px;
+}
+
+.user-gallery-menu {
   display: none;
+  border: solid 2px steelblue;
+  background-color: white;
+  min-width: 100%;
+  padding: 3px;
+  padding-top: 8px;
+  margin-top: 25px;
+  font-size: 150%;
 }
