@@ -286,7 +286,7 @@ function reset() {
 function deleteAssignment() {
   d3.event.stopPropagation();
 
-  var r = confirm("Are you sure?");
+  var r = confirm("Are you sure you want to delete this assignment?");
   if (r === true) {
       // send delete request
       $.ajax({
