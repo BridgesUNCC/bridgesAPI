@@ -30,6 +30,7 @@
     max-height:200px;
     overflow: scroll;
     margin-bottom: 20px;
+    box-shadow: inset 0px 0px 10px black;
 }
 
 .optionButton {
