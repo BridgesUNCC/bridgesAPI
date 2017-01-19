@@ -5,39 +5,29 @@
   margin-left:20px;
   margin-bottom:10px;
   text-align: center;
-  background-color: white;
+  /*background-color: white;*/
 }
 
-.gallery_assignment_div_private{
-    height:120px;
-    width:120px;
-    margin-left: 20px;
-    border-style: solid;
-    border-width:4px;
-    border-style: outset;
+.gallery_assignment_div {
+  height:120px;
+  width: 120px;
+  margin-left: 20px;
+  border-style: solid;
+  border-width:4px;
+  border-radius:20px;
+  background: -webkit-linear-gradient(white, #FFFAFA);
+  background: -o-linear-gradient(white, #FFFAFA);
+  background: -moz-linear-gradient(white, #FFFAFA);
+  background: linear-gradient(white, #FFFAFA);
+  box-shadow: 2px 2px 8px #888888;
+}
+
+.gallery_assignment_div.private{
     border-color:red;
-    border-radius:10px;
-    background: -webkit-linear-gradient(white, #FFFAFA);
-    background: -o-linear-gradient(white, #FFFAFA);
-    background: -moz-linear-gradient(white, #FFFAFA);
-    background: linear-gradient(white, #FFFAFA);
-    box-shadow: 2px 2px 8px #888888;
 }
 
-.gallery_assignment_div_public{
-     margin-left: 20px;
-    height:120px;
-    width:120px;
-    border-style: solid;
-    border-width:4px;
-    border-style: outset;
-    border-color:blue;
-    border-radius:30px;
-    background:-webkit-linear-gradient(white, #F1FAFF);
-    background: -o-linear-gradient(white, #F1FAFF);
-    background: -moz-linear-gradient(white, #F1FAFF);
-    background: linear-gradient(white, #F1FAFF);
-    box-shadow: 2px 2px 8px #888888;
+.gallery_assignment_div.public{
+    border-color:steelblue;
 }
 
 .gallery_assignment_div_public:hover, .gallery_assignment_div_private:hover{

@@ -22,7 +22,7 @@ block content
             div(class='gallery_assignment_container')
                 a(href='/assignments/'+assignments[x].assignmentNumber+'/'+usernames)
                   - if (assignments[x].shared == false)
-                          div(class='gallery_assignment_div_private')
+                          div(class='gallery_assignment_div private')
                               if(assignments[x].vistype == "nodelink")
                                   img.visimg(src='/img/graph.png' title=assignments[x].vistype)
                               else if(assignments[x].vistype == "Alist")
@@ -31,7 +31,7 @@ block content
                                   img.visimg(src='/img/'+assignments[x].vistype+'.png' title=assignments[x].vistype)
 
                    - else
-                          div(class='gallery_assignment_div_public')
+                          div(class='gallery_assignment_div public')
                               if(assignments[x].vistype == "nodelink")
                                   img.visimg(src='/img/graph.png' title=assignments[x].vistype)
                               else if(assignments[x].vistype == "Alist")
