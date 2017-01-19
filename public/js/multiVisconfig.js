@@ -10,6 +10,17 @@ d3.select("#assignment-menu")
       }
     });
 
+// d3.selectAll(".vis-menu-button")
+//     .on("click", function(d, i) {
+//       console.log(d3.select('#menu'+ i));
+//       if(d3.select('#menu'+ i).classed("on")) {
+//         d3.select('#menu'+ i).transition().duration(500).style("width", "0px");
+//         d3.select('#menu'+ i).classed("on", false);
+//       } else {
+//         d3.select('#menu'+ i).transition().duration(500).style("width", "50px");
+//         d3.select('#menu'+ i).classed("on", true);
+//       }
+//     });
 
 // Bridges visualizer object to remove vis methods from the global scope
 BridgesVisualizer.strokeWidthRange = d3.scale.linear().domain([1,50]).range([1,15]).clamp(true);

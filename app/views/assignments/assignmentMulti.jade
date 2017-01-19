@@ -23,7 +23,10 @@ block content
       div#updateStatus
       div#assignmentCanvas(overflow='auto')
         -for (var i = 0; i < extent; i++) {
-          div(id="vis" + i, class="vis", display="block").assignmentContainer
+          div(id="vis" + i, display="block").assignmentContainer
+            //button(class='vis-menu-button', id='vis-menu-'+i)
+            //div(id="menu"+i, class="vis-menu", display="block")
+              //button(class='vis-menu-button', name='fullscreen')
         -}
 
 block footerjs

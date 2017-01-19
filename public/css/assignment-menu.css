@@ -1,3 +1,6 @@
+/*
+  Primary Assignment Menu
+*/
 #assignment-menu{
     position: fixed;
     top: 0px;
@@ -44,3 +47,23 @@
 .optionButton.pad {
     margin-top: 100px;
 }
+
+
+/*
+  Menus for individual subassignment windows
+
+.vis-menu {
+  position: absolute;
+  width: 0px;
+  height:30px;
+  background-color: #e7e7e7;
+}
+.vis-menu-button {
+  position: relative;
+  top: -20px;
+  width:15px;
+  height:15px;
+  border-radius: 5px;
+  background-color: steelblue;
+}
+*/
