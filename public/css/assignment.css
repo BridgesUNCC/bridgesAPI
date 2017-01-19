@@ -4,40 +4,20 @@
     /*border-radius:2px;*/
     box-shadow: 0px 3px 5px 5px #888888;
     padding:6px;
-    margin-left:10px;
-    margin-right:30%;
-    width:75%;
+    margin-left:25px;
+    margin-top:25px;
     float: left;
-    margin-bottom: 5px;
-    margin-top: 5px;
-    min-height: 500px;
+    min-height: 600px;
+    width: 95%;
 }
 
-.assignmentContainer .maximized{
-    height: 10%;
+#fullContent {
+  height: 100%;
 }
 
-
-.assignmentContainerMinimized {
-    border-color:steelblue;
-    border-style:solid;
-    /*border-radius:25px;*/
-    padding:6px;
-    margin-left:10px;
-    margin-right:30%;
-    width:75%;
-    float: left;
-    margin-bottom: 10px;
-    min-height: 25px;
-    height: 35px;
-    /*background-color: lightsteelblue;*/
-}
-
-/*#vis{
-    width:70%;
-    height:90%;
+#vis{
     position:absolute;
-    overflow: auto;/*hide the scrollbar if not needed, chrome and ie tested*/
+    overflow: auto;/*hide the scrollbar if not needed, chrome and ie tested
     float:left;
 }
 
@@ -72,45 +52,6 @@
     margin-top: 350px;
     height: 350px;
 }
-
-
-#assignmentCanvas{
-    min-width:801px;
-}
-
-
-
-
-.minimize {
-    position: relative;
-    background-color:lightsteelblue;
-    border-color:steelblue;
-    border-radius: 25px;
-    float: left;
-    margin-left: 5px;
-    height: 25px;
-    width: 25px;
-    line-height: 15px;
-    font-weight: bolder;
-}
-
-
-
-table.full {
-    width: 97%;
-}
-
-td.left {
-    width: 3%;
-    vertical-align: middle;
-}
-
-td.right {
-    width: 97%;
-    vertical-align: middle ;
-}
-
-
 
 #updateStatus {
     text-align: -webkit-center;

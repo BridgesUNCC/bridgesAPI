@@ -22,25 +22,8 @@ block content
       include ../includes/assignment-menu.jade
       div#updateStatus
       div#assignmentCanvas(overflow='auto')
-        table.full
-                tr
-                td.left
-                    button(class='minimize' id='min')
-                        label -
-                td.right
-                      
-
-
         -for (var i = 0; i < extent; i++) {
-             table.full
-                tr
-                td.left
-                    button(class='minimize' id='min' + i key=i)
-                        label -
-
-                td.right
-                    div(id="vis" + i, class="vis", display="block").assignmentContainer
-
+          div(id="vis" + i, class="vis", display="block").assignmentContainer
         -}
 
 block footerjs

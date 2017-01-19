@@ -2,10 +2,10 @@
 d3.select("#assignment-menu")
     .on("click", function() {
       if(d3.select(this).classed('toggle-menu')) {
-        d3.select(this).transition().duration(500).style('right', '0px');
+        d3.select(this).transition().duration(500).style('right', '0px').style("background-color", "#f8f8f8");
         d3.select(this).classed('toggle-menu', false);
       } else {
-        d3.select(this).transition().duration(500).style('right', '-280px');
+        d3.select(this).transition().duration(500).style('right', '-280px').style("background-color", "steelblue");
         d3.select(this).classed('toggle-menu', true);
       }
     });
@@ -158,7 +158,7 @@ BridgesVisualizer.textMouseout = function(d) {
 };
 
 // bind event handlers for ui
-d3.selectAll(".minimize").on("click", minimize);
+// d3.selectAll(".minimize").on("click", minimize);
 d3.select("#reset").on("click", reset);
 d3.select("#save").on("click", savePositions);
 d3.select("#delete").on("click", deleteAssignment);
@@ -303,73 +303,73 @@ function resize() {
     }
 }
 
-// Toggle minimizing and maximizing visualization divs
-function minimize() {
-    //Collapse/Expand All
-    if(this.id == "min") {
-        if(d3.select(this).attr("minimized") == "true") {   //MAXIMIZE
-            d3.selectAll(".assignmentContainer")
-                .classed("assignmentContainerMinimized", false);
-            d3.selectAll(".svg")
-                .style("display", "block");
-            d3.selectAll(".minimize")
-                .attr("minimized", false)
-                .text("-");
-
-            maximizedCount = visCount;
-            minimizedCount = 0;
-
-        } else {    //MINIMIZE
-            d3.selectAll(".assignmentContainer")
-                .classed("assignmentContainerMinimized", true);
-            d3.selectAll(".svg")
-                .style("display", "none");
-            d3.selectAll(".minimize")
-                .attr("minimized", true)
-                .text("+");
-
-            maximizedCount = 0;
-            minimizedCount = visCount;
-        }
-
-        return;
-    }
-
-    if(d3.select(this).attr("minimized") == "true") {   //MAXIMIZE
-        d3.select("#vis" + this.id.substr(3))
-            .classed("assignmentContainerMinimized", false);
-        d3.select("#svg" + this.id.substr(3))
-            .style("display", "block");
-        d3.select(this).attr("minimized", false);
-        d3.select(this).text("-");
-
-        maximizedCount++;
-        minimizedCount--;
-
-        if(maximizedCount == visCount) {//ALL vis are minimized
-            d3.select("#min")
-                .attr("minimized", false)
-                .text("-");
-        }
-
-    } else {    //MINIMIZE
-        d3.select("#vis" + this.id.substr(3))
-            .classed("assignmentContainerMinimized", true);
-        d3.select("#svg" + this.id.substr(3))
-            .style("display", "none");
-        d3.select(this).attr("minimized", true);
-        d3.select(this).text("+");
-
-        minimizedCount++;
-        maximizedCount--;
-
-        if(minimizedCount == visCount) {//ALL vis are minimized
-            d3.select("#min")
-                .attr("minimized", true)
-                .text("+");
-        }
-    }
-}
+// // Toggle minimizing and maximizing visualization divs
+// function minimize() {
+//     //Collapse/Expand All
+//     if(this.id == "min") {
+//         if(d3.select(this).attr("minimized") == "true") {   //MAXIMIZE
+//             d3.selectAll(".assignmentContainer")
+//                 .classed("assignmentContainerMinimized", false);
+//             d3.selectAll(".svg")
+//                 .style("display", "block");
+//             d3.selectAll(".minimize")
+//                 .attr("minimized", false)
+//                 .text("-");
+//
+//             maximizedCount = visCount;
+//             minimizedCount = 0;
+//
+//         } else {    //MINIMIZE
+//             d3.selectAll(".assignmentContainer")
+//                 .classed("assignmentContainerMinimized", true);
+//             d3.selectAll(".svg")
+//                 .style("display", "none");
+//             d3.selectAll(".minimize")
+//                 .attr("minimized", true)
+//                 .text("+");
+//
+//             maximizedCount = 0;
+//             minimizedCount = visCount;
+//         }
+//
+//         return;
+//     }
+//
+//     if(d3.select(this).attr("minimized") == "true") {   //MAXIMIZE
+//         d3.select("#vis" + this.id.substr(3))
+//             .classed("assignmentContainerMinimized", false);
+//         d3.select("#svg" + this.id.substr(3))
+//             .style("display", "block");
+//         d3.select(this).attr("minimized", false);
+//         d3.select(this).text("-");
+//
+//         maximizedCount++;
+//         minimizedCount--;
+//
+//         if(maximizedCount == visCount) {//ALL vis are minimized
+//             d3.select("#min")
+//                 .attr("minimized", false)
+//                 .text("-");
+//         }
+//
+//     } else {    //MINIMIZE
+//         d3.select("#vis" + this.id.substr(3))
+//             .classed("assignmentContainerMinimized", true);
+//         d3.select("#svg" + this.id.substr(3))
+//             .style("display", "none");
+//         d3.select(this).attr("minimized", true);
+//         d3.select(this).text("+");
+//
+//         minimizedCount++;
+//         maximizedCount--;
+//
+//         if(minimizedCount == visCount) {//ALL vis are minimized
+//             d3.select("#min")
+//                 .attr("minimized", true)
+//                 .text("+");
+//         }
+//     }
+// }
 
 // Asynchronously update the node positions
 function savePositions () {

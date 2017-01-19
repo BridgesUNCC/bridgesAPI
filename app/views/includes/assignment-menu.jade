@@ -4,6 +4,8 @@
   else
     div#assignmentTitle Assignment #{assignmentNumber}
 
+  if (assignmentDescription.length > 0)
+    div#assignmentDescription #{assignmentDescription}
 
   if (owner)
         div(style='margin:10px 10px 10px 10px;')
@@ -29,7 +31,3 @@
 
       button(class='optionButton btn-danger pad', id='delete')
               label Delete Assignment
-
-  if (assignmentDescription.length > 0)
-    #optionContainer.optionContainer
-        div#assignmentDescription #{assignmentDescription}
