@@ -12,16 +12,17 @@
     text-align: center;
     background-color: #f8f8f8;
     border-left: solid 2px #e7e7e7;
-
     overflow: auto;/*hide the scrollbar if not needed, chrome and ie tested*/
 }
 
 #assignmentTitle {
-    padding-left: 30px;
-    margin-bottom: 10px;
+    background-color: lightgrey;
+    box-shadow: 0px 5px 5px black;
+    margin-bottom: 15px;
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     font-size: 180%;
-    max-width: 90%;
+    width: 100%;
+    text-align: center;
 }
 
 #assignmentDescription {

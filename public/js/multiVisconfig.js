@@ -10,6 +10,7 @@ d3.select("#assignment-menu")
         d3.select(this).transition('brighten').duration(250).style('background-color', 'steelblue');
     })
     .on("click", function() {
+      if(d3.event.target !== d3.event.currentTarget) return;
       if(d3.select(this).classed('toggle-menu')) { // untoggle assignment menu
         d3.select(this).transition('toggle').duration(500).style('right', '0px').style("background-color", "#f8f8f8");
         d3.select(this).classed('toggle-menu', false);
@@ -250,7 +251,6 @@ for (var key in data) {
 
 // Reset positions and scales for all visualization divs
 function reset() {
-    d3.event.stopPropagation();
 
     for (var i = 0; i < allZoom.length; i++) {
         var zoom = allZoom[i];
@@ -284,7 +284,6 @@ function reset() {
 }
 
 function deleteAssignment() {
-  d3.event.stopPropagation();
 
   var r = confirm("Are you sure you want to delete this assignment?");
   if (r === true) {
@@ -394,7 +393,6 @@ function resize() {
 
 // Asynchronously update the node positions
 function savePositions () {
-  d3.event.stopPropagation();
 
   var updateTheseNodes = {};
 
