@@ -461,6 +461,5 @@ exports.deleteAssignment = function (req, res) {
             }
             console.log("Deleted assignment: " + req.params.assignmentNumber, "for user", req.user.email);
         });
-
-    return res.redirect("username/");
+    res.send("OK");
 };
