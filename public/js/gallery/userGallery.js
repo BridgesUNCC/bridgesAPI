@@ -20,7 +20,7 @@ function galleryMenu(me) {
   d3.selectAll('.gallery_assignment_container')
         .transition('userGalleryToggle').duration(250)
     .style('height', function(d, i) {
-      if(i >= me) return '300px';
+      if(i >= me) return '340px';
     });
 
   d3.selectAll('.gallery_assignment_div')
