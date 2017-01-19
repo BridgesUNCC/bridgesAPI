@@ -131,7 +131,7 @@ var div = d3.select("body").append("div")
 BridgesVisualizer.textMouseover = function(d) {
     //the design can be changed later, if not appropriate. Mainly for implementation
     if(d3.select(this).select("rect"))
-        d3.select(this).select("rect").style("stroke", "yellow").style("stroke-width", 10);
+        d3.select(this).select("rect").style("stroke", "yellow").style("stroke-width", 4);
 
     if(d3.select(this).select("path")){
             d3.select(this).select("path").transition()
@@ -139,7 +139,7 @@ BridgesVisualizer.textMouseover = function(d) {
                 .attr('d', function (d) {
                     return d3.svg.symbol().type(d.shape||"circle")
                             .size(BridgesVisualizer.scaleSize(40))();
-                }).style("stroke", "yellow").style("stroke-width", 5);
+                });
     }
     div.transition()
         .duration(200)
@@ -159,18 +159,6 @@ BridgesVisualizer.textMouseout = function(d) {
                 .attr('d', function (d) {
                     return d3.svg.symbol().type(d.shape||"circle")
                             .size(BridgesVisualizer.scaleSize(d.size||1))();
-                })
-                // maintain tree dashArray where necessary
-                .style("stroke", function(d) {
-                  if(d3.select(this).style("stroke-dasharray") == BridgesVisualizer.treeDashArray)
-                      return "#000";
-                  return "";
-                })
-                // maintain tree dashArray where necessary
-                .style("stroke-width", function(d) {
-                  if(d3.select(this).style("stroke-dasharray") == BridgesVisualizer.treeDashArray)
-                      return 3;
-                  return 0;
                 });
     }
 

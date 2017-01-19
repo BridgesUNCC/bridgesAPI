@@ -109,6 +109,13 @@ d3.graph = function(d3, id, W, H, data) {
       .on("mouseover", BridgesVisualizer.textMouseover)
       .on("mouseout", BridgesVisualizer.textMouseout)
       .on("dblclick", dblclick)
+
+      .style("stroke", "black")
+      .style("stroke-width", "1")
+      .style("stroke-dasharray", function(d) {
+          return d.fixed ? BridgesVisualizer.treeDashArray : "0,0";
+      })
+
       .call(force.drag);
 
   //inner nodes
@@ -125,6 +132,7 @@ d3.graph = function(d3, id, W, H, data) {
       .style("opacity", function(d) {
           return d.opacity || 1;
       });
+      //
 
   //inner nodes
   node
@@ -182,13 +190,20 @@ d3.graph = function(d3, id, W, H, data) {
   // Handle doubleclick on node path (shape)
   function dblclick(d) {
       d3.event.stopImmediatePropagation();
-      d3.select(this).classed("fixed", d.fixed = false);
+      d3.select(this)
+        .style("stroke-dasharray", "0,0")
+        .classed("fixed", d.fixed = false);
   }
 
   // Handle dragstart on force.drag()
   function dragstart(d) {
       d3.event.sourceEvent.stopPropagation();
-      d3.select(this).classed("fixed", d.fixed = true);
+      d3.select(this)
+        .style("stroke-width", 1)
+        .style("stroke", "black")
+        .style("stroke-dasharray", BridgesVisualizer.treeDashArray)
+        .classed("fixed", d.fixed = true);
+
       force.start();
   }
 

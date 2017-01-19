@@ -182,7 +182,7 @@ d3.bst = function (d3, canvasID, w, h) {
              if(nullChild == d._children.length) {
                return 0;
              }
-             return 3;
+             return 1;
             }
             return 0;
          })
