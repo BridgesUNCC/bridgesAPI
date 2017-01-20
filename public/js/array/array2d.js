@@ -5,24 +5,23 @@ Array visualization for Bridges
 */
 d3.array2d = function(d3, canvasID, w, h, data, dimensions) {
 
+  var visID = canvasID.substr(4);
+  var finalTranslate = BridgesVisualizer.defaultTransforms.array2d.translate;
+  var finalScale =  BridgesVisualizer.defaultTransforms.array2d.scale;
+
     var elementsPerRow = dimensions[0];
     var spacing = 40;        // spacing between elements
     var marginLeft = 20;
     var defaultSize = 100;  // default size of each element box
-    var dataSize = Object.keys(data).length-1;
     var levelCount = -1;
 
-
-    var visID = canvasID.substr(4);
-    var finalTranslate = [20, 100];
-    var finalScale = 0.4;
 
     var transformObject = BridgesVisualizer.getTransformObjectFromCookie(visID);
     if(transformObject){
       finalTranslate = transformObject.translate;
       finalScale = transformObject.scale;
     }
-    
+
     var zoom = d3.behavior.zoom()
         .translate(finalTranslate)
         .scale(finalScale)
@@ -47,13 +46,8 @@ d3.array2d = function(d3, canvasID, w, h, data, dimensions) {
     var nodes = svgGroup.selectAll("nodes")
         .data(data)
         .enter().append("g")
-        // .on("mouseover", mouseover)
-        // .on("mouseout", mouseout)
         .attr("transform", function(d, i) {
-            //size = parseFloat(d.size || defaultSize);
-            size = defaultSize;
-            // return "translate(" + (marginLeft + i * (spacing + size)) + ")";
-            return "translate(" + (marginLeft + ((i % elementsPerRow) * (spacing + size)))+ "," + ((h/4) + ((Math.floor(i / elementsPerRow)) * (spacing+size))) + ")";
+            return "translate(" + (marginLeft + ((i % elementsPerRow) * (spacing + defaultSize)))+ "," + ((h/4) + ((Math.floor(i / elementsPerRow)) * (spacing + defaultSize))) + ")";
         })
         .on("mouseover", BridgesVisualizer.textMouseover)
         .on("mouseout", BridgesVisualizer.textMouseout);
@@ -61,11 +55,9 @@ d3.array2d = function(d3, canvasID, w, h, data, dimensions) {
     // Create squares for each array element
     nodes.append("rect")
         .attr("height", function(d) {
-            //return parseFloat(d.size || defaultSize);
             return defaultSize;
         })
         .attr("width", function(d) {
-            //return parseFloat(d.size || defaultSize);
             return defaultSize;
         })
         .style("fill", function(d) {
@@ -82,10 +74,12 @@ d3.array2d = function(d3, canvasID, w, h, data, dimensions) {
           if((i % elementsPerRow == 0)){
               levelCount++;
           }
-          return "("+levelCount+", "+(i % elementsPerRow)+")";
+          return "("+(i % elementsPerRow)+", "+ levelCount +")";
         })
         .attr("y", 115)
-        .attr("x", defaultSize / 2 - 5);
+        .attr("x", function(){
+            return BridgesVisualizer.centerTextHorizontallyInRect(this, defaultSize);
+        });
 
     // Show full array label above each element
     nodes
@@ -100,48 +94,20 @@ d3.array2d = function(d3, canvasID, w, h, data, dimensions) {
     // Show array labels inside each element
     nodes
         .append("text")
-        .attr("class", "value-elementview")
+        .attr("class", "nodeLabelInside")
         .style("display", "block")
         .style("font-size", 30)
         .text(function(d) {
-            return d.name.substr(0,3)+"...";
+            return BridgesVisualizer.getShortText(d.name);
         })
         .attr("fill", "black")
-        .attr("x", 10)
+        .attr("x", function(){
+            return BridgesVisualizer.centerTextHorizontallyInRect(this, defaultSize);
+        })
         .attr("y", defaultSize / 2)
         .attr("dy", ".35em");
 
-    // bind linebreaks to text elements
-    var insertLinebreaks = function (d, i) {
-        var el = d3.select(this);
-        var words = d3.select(this).text().split('\n');
-        el.text('');
-
-        for (var j = 0; j < words.length; j++) {
-            var tspan = el.append('tspan').text(words[j]);
-            if (j > 0)
-                tspan.attr('x', 0).attr('dy', '15');
-        }
-    };
-    svgGroup.selectAll('text').each(insertLinebreaks);
-
-    // function mouseover() {
-    //     // scale text size based on zoom factor
-    //     var hoverSize = d3.scale.linear().domain([0,0.7]).range([300, 14]).clamp(true);
-    //     d3.select(this).selectAll(".nodeLabel").transition()
-    //           .duration(250)
-    //           .style("display","block")
-    //           .style("font-size", function(d) {
-    //             return hoverSize(zoom.scale());
-    //           });
-    // }
-    //
-    // function mouseout() {
-    //     d3.select(this).selectAll(".nodeLabel").transition()
-    //         .duration(750)
-    //         .style("display","none")
-    //         .style("font-size", 14);
-    // }
+    svgGroup.selectAll('text').each(BridgesVisualizer.insertLinebreaks);
 
     //// zoom function
     function zoomHandler() {

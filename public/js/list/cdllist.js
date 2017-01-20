@@ -7,7 +7,7 @@ d3.cdllist = function(d3, canvasID, w, h, data) {
     var visID = canvasID.substr(4);
     var finalTranslate = BridgesVisualizer.defaultTransforms.list.translate;
     var finalScale =  BridgesVisualizer.defaultTransforms.list.scale;
-    var dataLength = dataLength;
+    var dataLength = Object.keys(data).length;
 
     // var spacing = 5;        // spacing between elements
     var spacing = 115;
@@ -120,7 +120,7 @@ d3.cdllist = function(d3, canvasID, w, h, data) {
     // Show array labels inside each element
     nodes
         .append("text")
-        .attr("class", "value-elementview")
+        .attr("class", "nodeLabelInside")
         .style("display", "block")
         .style("font-size", 30)
         .text(function(d) {
@@ -541,8 +541,8 @@ d3.cdllist = function(d3, canvasID, w, h, data) {
           last_g.select(".backward-link").attr("y2",30);
 
 
-          // bind linebreaks to text elements
-          // svgGroup.selectAll('text').each(BridgesVisualizer.insertLinebreaks);
+          bind linebreaks to text elements
+          svgGroup.selectAll('text').each(BridgesVisualizer.insertLinebreaks);
 
 
           nodes

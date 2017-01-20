@@ -10,15 +10,15 @@ d3.array = function(d3, canvasID, w, h, data) {
     var defaultSize = 100;  // default size of each element box
 
     var visID = canvasID.substr(4);
-    var finalTranslate = [20, 100];
-    var finalScale = 0.4;
+    var finalTranslate = BridgesVisualizer.defaultTransforms.array.translate;
+    var finalScale =  BridgesVisualizer.defaultTransforms.array.scale;
 
     var transformObject = BridgesVisualizer.getTransformObjectFromCookie(visID);
     if(transformObject){
       finalTranslate = transformObject.translate;
       finalScale = transformObject.scale;
     }
-    
+
     var zoom = d3.behavior.zoom()
         .translate(finalTranslate)
         .scale(finalScale)
@@ -82,7 +82,9 @@ d3.array = function(d3, canvasID, w, h, data) {
           return i;
         })
         .attr("y", 115)
-        .attr("x", defaultSize / 2 - 5);
+        .attr("x", function(){
+            return BridgesVisualizer.centerTextHorizontallyInRect(this, defaultSize);
+        });
 
     // Show full array label above each element
     nodes
@@ -97,30 +99,20 @@ d3.array = function(d3, canvasID, w, h, data) {
     // Show array labels inside each element
     nodes
         .append("text")
-        .attr("class", "value-elementview")
+        .attr("class", "nodeLabelInside")
         .style("display", "block")
         .style("font-size", 30)
         .text(function(d) {
-            return d.name.substr(0,10);
+            return BridgesVisualizer.getShortText(d.name);
         })
         .attr("fill", "black")
-        .attr("x", 10)
+        .attr("x", function(){
+            return BridgesVisualizer.centerTextHorizontallyInRect(this, defaultSize);
+        })
         .attr("y", defaultSize / 2)
         .attr("dy", ".35em");
 
-    // bind linebreaks to text elements
-    var insertLinebreaks = function (d, i) {
-        var el = d3.select(this);
-        var words = d3.select(this).text().split('\n');
-        el.text('');
-
-        for (var j = 0; j < words.length; j++) {
-            var tspan = el.append('tspan').text(words[j]);
-            if (j > 0)
-                tspan.attr('x', 0).attr('dy', '15');
-        }
-    };
-    svgGroup.selectAll('text').each(insertLinebreaks);
+    svgGroup.selectAll('text').each(BridgesVisualizer.insertLinebreaks);
 
     function mouseover() {
         // scale text size based on zoom factor

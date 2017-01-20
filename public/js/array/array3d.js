@@ -92,7 +92,8 @@ d3.array3d = function(d3, canvasID, w, h, data, dimensions) {
           if(levelCount > (elementsPerColumn-1) ){
               levelCount = 0;
           }
-          return "("+threeLevel+", "+(i % elementsPerRow)+", "+levelCount+")";
+          return "("+ (i % elementsPerRow) +", "+ levelCount  +", "+ threeLevel +")";
+          // return "("+threeLevel+", "+(i % elementsPerRow)+", "+levelCount+")";
           // return "("+levelCount+", "+(i % elementsPerRow)+", "+threeLevel+")";
         })
         .attr("y", 115)
@@ -102,7 +103,7 @@ d3.array3d = function(d3, canvasID, w, h, data, dimensions) {
     // Show array labels inside each element
     nodes
         .append("text")
-        .attr("class", "value-elementview")
+        .attr("class", "nodeLabelInside")
         .style("display", "block")
         .style("font-size", 30)
         .text(function(d) {
@@ -175,7 +176,6 @@ d3.array3d = function(d3, canvasID, w, h, data, dimensions) {
             .append("text")
             .text(function(){
                 return "(Slice: "+ i +")";
-                // return "(0,0,"+ i +")";
             })
             .attr("x", (parseFloat(d3.transform(d3.select(this).attr("transform")).translate[0])+half2d) - valueToCenterGridTitle)
             .style("font-size","100px")
@@ -192,33 +192,6 @@ d3.array3d = function(d3, canvasID, w, h, data, dimensions) {
         .attr("x2", d3.select(".last-v").attr("x1"))
         .attr("stroke", "black")
         .attr("stroke-width",5);
-
-    // function mouseover() {
-    //     // scale text size based on zoom factor
-    //     var hoverSize = d3.scale.linear().domain([0,0.7]).range([300, 14]).clamp(true);
-    //     d3.select(this).selectAll(".nodeLabel").transition()
-    //           .duration(250)
-    //           .style("display","block")
-    //           .style("font-size", function(d,i) {
-    //             if(i > elementsPerRow){
-    //               d3.select(this.parentNode).moveToFront();
-    //             }
-    //             return hoverSize(zoom.scale());
-    //           });
-    // }
-    //
-    // function mouseout() {
-    //     d3.select(this).selectAll(".nodeLabel").transition()
-    //         .duration(750)
-    //         .style("display",function(d,i){
-    //           if(i > elementsPerRow){                d3.select(this).moveToFront();
-    //
-    //             d3.select(this.parentNode).moveToBack();
-    //           }
-    //           return "none";
-    //         })
-    //         .style("font-size", 14);
-    // }
 
     //// zoom function
     function zoomHandler() {
