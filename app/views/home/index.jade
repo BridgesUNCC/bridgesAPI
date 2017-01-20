@@ -3,12 +3,22 @@ extends ../includes/boilerplate.jade
 block css
     link(rel='stylesheet',
          href='/css/header.css')
+    link(rel='stylesheet',
+         href='/css/index.css')
+
 block content
     include ../includes/header.jade
 
     .container
-        .row
+        .row.spacer
             .col-lg-6
                 h1 Welcome to Bridges!
 
                 p Create a bridge between your assignments and the world
+
+        .row
+              div#recentAssigns
+                h3.spacer Recent Assignments
+
+
+    script( src = '/js/index.js' )

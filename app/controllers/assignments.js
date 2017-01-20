@@ -469,3 +469,19 @@ exports.deleteAssignment = function (req, res) {
         });
     res.send("OK");
 };
+
+exports.assignmentByEmail = function (req, res) {
+  var email = req.params.email,
+      assignment = req.params.assignmentID;
+
+  User
+      .findOne( { email: email  } )
+      .exec( function( err, usr ){
+          if (err) return next(err);
+          if (!usr)
+              return next("couldn't find the user by email: " + email);
+
+          res.redirect("/assignments/" + assignment + "/" + usr.username);
+
+      });
+};

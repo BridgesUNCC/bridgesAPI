@@ -173,6 +173,8 @@ module.exports = function(app, passport, streamable) {
 
     app.get('/assignments/:assignmentNumber/:username',
               assignments.show, handleError);
+    app.get('/assignmentByEmail/:assignmentID/:email',
+              assignments.assignmentByEmail, handleError);
 
     // update the assignment specified for the current user
     //  save the positions of any fixed nodes
@@ -196,6 +198,9 @@ module.exports = function(app, passport, streamable) {
 
     app.get('/assignments/:assignmentNumber', gallery.view, handleError);
     app.get('/username/:userNameRes', isLoggedIn, userGallery.view, handleError);
+
+    // get the k most recent assignments
+    app.get('/index/recentUploads', gallery.recentUploads, handleError);
 
     app.post('/users/session',
         passport.authenticate('local-log', {

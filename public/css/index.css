@@ -1,0 +1,50 @@
+.row.spacer {
+  margin-bottom: 50px;
+}
+h3.spacer {
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+
+div#recentAssigns {
+  border-left: solid 5px steelblue;
+  padding: 10px;
+  display: inline-block;
+}
+
+div.assignment-preview {
+  vertical-align: top;
+  border: solid 5px white;
+  padding: 10px;
+  margin: 10px;
+  max-width: 400px;
+  display: inline-block;
+  box-shadow: 2px 2px 8px #888888;
+}
+
+div.assignment-text {
+  /*border: solid 1px black;*/
+  display: inline-block;
+  max-width: 200px;
+  margin: 5px;
+}
+
+div.assignment-image {
+  vertical-align: top;
+  display: inline-block;
+  height:120px;
+  width: 120px;
+  margin: 5px;
+  border-style: solid;
+  border-width:2px;
+  border-radius:20px;
+  background: -webkit-linear-gradient(white, #FFFAFA);
+  background: -o-linear-gradient(white, #FFFAFA);
+  background: -moz-linear-gradient(white, #FFFAFA);
+  background: linear-gradient(white, #FFFAFA);
+  box-shadow: 2px 2px 8px #888888;
+}
+
+div.assignment-preview.hover {
+  border: solid 5px steelblue;
+}
