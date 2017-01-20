@@ -240,6 +240,7 @@ for (var key in data) {
         transform = data[key].transform;
 
     //saving a copy of every assignment: type and key of the assignment. Useful when trying to reset them.
+
     BridgesVisualizer.assignmentTypes.push(data[key]['visType']);
 
     if (data[key]['visType'] == "tree" && d3.bst) {
@@ -289,7 +290,7 @@ function reset() {
     for (var i = 0; i < allZoom.length; i++) {
         var zoom = allZoom[i];
         var svgGroup = allSVG[i];
-        console.log(BridgesVisualizer.assignmentTypes[i]);
+        // console.log(BridgesVisualizer.assignmentTypes[i]);
         zoom.scale(1);
 
         /* set default translate based on visualization type */
@@ -395,7 +396,7 @@ function saveTransform(){
           "translatey": parseFloat(my_transform.translate[1])
         };
     }
-    console.log(visTransforms);
+    // console.log(visTransforms);
     // send scale and translation data to the server to save
     $.ajax({
         url: "/assignments/updateTransforms/"+assignmentNumber,
@@ -423,33 +424,6 @@ function alertMessage(message, status) {
      $("#updateStatus").hide();
   },2500);
 }
-
-//this methods sorts any linkedlist by links
-// function sortListByLinks(unsortedNodes){
-//     var getTargetFromSource = {}, getLinkFromSource = {}, sortedNodes = [], head;
-//     var links = unsortedNodes.links;
-//     var nodes = unsortedNodes.nodes;
-//
-//     for(var i = 0; i < links.length; i++){
-//         getTargetFromSource[links[i].source] = links[i].target;//assigning the link source as the key and the target as the value
-//         getLinkFromSource[links[i].source+"-"+links[i].target] = links[i];//creating a unique identifier for every link
-//     }
-//
-//     head = unsortedNodes.head || 0;//Object.keys(nodes).length-1;
-//     // for(var h in nodes){//looping through the length of the nodes
-//     for(var i = 0; i < nodes.length; i++){
-//         var key = head + "-" + getTargetFromSource[head];//link from source to target
-//         var yek = getTargetFromSource[head] + "-" + head;//link from target to source
-//         if(getLinkFromSource[key]) nodes[head]['linkone'] = getLinkFromSource[key];//if there is a link, insert in the nodes
-//         if(getLinkFromSource[yek]) nodes[head]['linktwo'] = getLinkFromSource[yek];//if there is a link, insert in the nodes
-//         if(nodes[head])sortedNodes.push(nodes[head]);
-//         head = getTargetFromSource[head];//getting the next target
-//         // if(!head)break;
-//     }
-//     // links = nodes = undefined; console.log(sortedNodes);
-//     // console.log(sortedNodes);
-//     return sortedNodes;
-// }
 
 // Saved the translate and scale of every visualization in an assignemts
 function saveVisStatesAsCookies(){
@@ -513,7 +487,6 @@ $("body").on("keydown", function(event) {
     }
 });
 
-
 //this methods sorts any Doubly Links linkedlist by links
 function sortCircularSinglyListByLinks(unsortedNodes, listType){
     var links = unsortedNodes.links,
@@ -545,7 +518,6 @@ function sortCircularSinglyListByLinks(unsortedNodes, listType){
         }
         return parseInt(a.split("-")[0]) - parseInt(b.split("-")[0]);
     });
-
 
     for(key in keys){
       nodes[head]['forwardlink'] = uniqueForwardLink[keys[key]];
@@ -610,15 +582,12 @@ function sortCircularDoublyListByLinks(unsortedNodes, listType){
         return parseInt(b.split("-")[0]) - parseInt(a.split("-")[0]);
     });
 
-
-
     for(var i = 0; i < keys.length; i++){
       sortedNodes.push(nodes[head]);
       head = uniqueForwardLink[keys[i]].target;
     }
 
     sortedNodes[lastIndexA.split("-")[1]] = nodes[lastIndexB.split("-")[1]];
-
 
     return sortedNodes;
 }

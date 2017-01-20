@@ -308,6 +308,7 @@ exports.show = function (req, res, next) {
             // This captures the data from the OLD flat tree representation
             if((data.visual == "tree") && !("nodes" in data && "children" in data.nodes)) {
               data = unflatten(data);
+              data['visual'] = "tree";
             }
             // This captures the data from the NEW hierarchical tree representation
             if("nodes" in data && "children" in data.nodes) {
@@ -331,6 +332,7 @@ exports.show = function (req, res, next) {
 
 
             allAssigns[i] = data;
+
         }
 
         // console.log(Array.isArray(toInclude));
