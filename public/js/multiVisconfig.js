@@ -49,13 +49,26 @@ BridgesVisualizer.treeDashArray = "3px, 3px";
 
 // Default scale and transform values for each data structure
 BridgesVisualizer.defaultTransforms = {
+  "Alist": { "scale": 0.4, "translate": [20, 100]},
   "array": { "scale": 0.4, "translate": [20, 100]},
   "array2d": { "scale": 0.4, "translate": [20, 100]},
   "array3d": { "scale": 0.4, "translate": [20, 100]},
+
+  //added this new objects, see 278, method reset()
+  //this changes were made to handle mixed assignments when calling the reset method.
   "list": { "scale": 0.3, "translate": [50, -5]},
+  "llist": { "scale": 0.3, "translate": [50, -5]},
+  "dllist": { "scale": 0.3, "translate": [50, -5]},
+  "cdllist": { "scale": 0.3, "translate": [50, -5]},
+  "cllist": { "scale": 0.3, "translate": [50, -5]},
+
+
   "graph": { "scale": 0.5, "translate": [200, 150]},
+  "nodelink": { "scale": 0.5, "translate": [200, 150]},
+
   "tree": { "scale": 0.9, "translate": [document.getElementById("vis0").clientWidth/2, 50]}
 };
+
 BridgesVisualizer.getDefaultTransforms = function(visType) {
   if(BridgesVisualizer.defaultTransforms[visType]) {
     return BridgesVisualizer.defaultTransforms[visType];
@@ -256,8 +269,6 @@ for (var key in data) {
           d3.array3d(d3, "#vis" + key, width, height, data[key].nodes, data[key].dims, transform);
     }
     else if (data[key]['visType'] == "nodelink" && d3.graph) {
-        BridgesVisualizer.setTicksPerRender(data[key].nodes.length);
-        $("#savePosition").show();
         d3.graph(d3, "#vis" + key, width, height, data[key]);
     }
     else {
@@ -275,29 +286,41 @@ function reset() {
     for (var i = 0; i < allZoom.length; i++) {
         var zoom = allZoom[i];
         var svgGroup = allSVG[i];
+        console.log(BridgesVisualizer.assignmentTypes[i]);
         zoom.scale(1);
 
         /* set default translate based on visualization type */
-        if(d3.array) {
-          zoom.translate(BridgesVisualizer.defaultTransforms.array.translate);
-          zoom.scale(BridgesVisualizer.defaultTransforms.array.scale);
-        } else if(d3.array2d) {
-          zoom.translate(BridgesVisualizer.defaultTransforms.array2d.translate);
-          zoom.scale(BridgesVisualizer.defaultTransforms.array2d.scale);
-        } else if(d3.array3d) {
-          zoom.translate(BridgesVisualizer.defaultTransforms.array3d.translate);
-          zoom.scale(BridgesVisualizer.defaultTransforms.array3d.scale);
+        if(BridgesVisualizer.assignmentTypes[i] in BridgesVisualizer.defaultTransforms){
+            zoom.translate(BridgesVisualizer.defaultTransforms[BridgesVisualizer.assignmentTypes[i]].translate);
+            zoom.scale(BridgesVisualizer.defaultTransforms[BridgesVisualizer.assignmentTypes[i]].scale);
+        }else{
+            try {
+                throw "For some reason this vistype is not being recognized.";
+            } catch( ex ) {
+                console.log(ex);
+            }
         }
-        else if(d3.dllist || d3.sllist || d3.cdllist || d3.csllist) {
-          zoom.translate(BridgesVisualizer.defaultTransforms.list.translate);
-          zoom.scale(BridgesVisualizer.defaultTransforms.list.scale);
-        } else if(d3.graph) {
-          zoom.translate(BridgesVisualizer.defaultTransforms.graph.translate);
-          zoom.scale(BridgesVisualizer.defaultTransforms.graph.scale);
-        } else if(d3.bst) {
-          zoom.translate(BridgesVisualizer.defaultTransforms.tree.translate);
-          zoom.scale(BridgesVisualizer.defaultTransforms.tree.scale);
-        }
+        /* set default translate based on visualization type */
+        // if(d3.array) {
+        //   zoom.translate(BridgesVisualizer.defaultTransforms.array.translate);
+        //   zoom.scale(BridgesVisualizer.defaultTransforms.array.scale);
+        // } else if(d3.array2d) {
+        //   zoom.translate(BridgesVisualizer.defaultTransforms.array2d.translate);
+        //   zoom.scale(BridgesVisualizer.defaultTransforms.array2d.scale);
+        // } else if(d3.array3d) {
+        //   zoom.translate(BridgesVisualizer.defaultTransforms.array3d.translate);
+        //   zoom.scale(BridgesVisualizer.defaultTransforms.array3d.scale);
+        // }
+        // else if(d3.dllist || d3.sllist || d3.cdllist || d3.csllist) {
+        //   zoom.translate(BridgesVisualizer.defaultTransforms.list.translate);
+        //   zoom.scale(BridgesVisualizer.defaultTransforms.list.scale);
+        // } else if(d3.graph) {
+        //   zoom.translate(BridgesVisualizer.defaultTransforms.graph.translate);
+        //   zoom.scale(BridgesVisualizer.defaultTransforms.graph.scale);
+        // } else if(d3.bst) {
+        //   zoom.translate(BridgesVisualizer.defaultTransforms.tree.translate);
+        //   zoom.scale(BridgesVisualizer.defaultTransforms.tree.scale);
+        // }
         svgGroup.attr("transform", "translate(" + zoom.translate() + ")scale(" + zoom.scale() + ")");
     }
     saveVisStatesAsCookies();
