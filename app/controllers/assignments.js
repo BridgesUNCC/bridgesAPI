@@ -269,7 +269,9 @@ exports.show = function (req, res, next) {
         var owner=false,
             allAssigns = {},
             mapData = [],
-            map;
+            map
+            assignmentTypes = {},
+            linkResources = {"script":[], "css":[]};
 
         if (sessionUser) {
             if (sessionUser.email==assignments[0].email) owner = true;
@@ -309,25 +311,27 @@ exports.show = function (req, res, next) {
             }
             // This captures the data from the NEW hierarchical tree representation
             if("nodes" in data && "children" in data.nodes) {
+              var tempVisual = data.visual;
               data = data.nodes;
+              data['visual'] = tempVisual;
             }
+
+            data['visType'] = visTypes.getVisType(data.visual);
+
+            // add new resource info
+            if(!assignmentTypes[data['visType']]){
+                assignmentTypes[data['visType']] = 1;
+
+                var vistypeObjectTemp = visTypes.getVisTypeObject(data);
+                linkResources.script.push(vistypeObjectTemp.script);
+                if(vistypeObjectTemp.link != ""){
+                  linkResources.css.push(vistypeObjectTemp.link);
+                }
+            }
+
 
             allAssigns[i] = data;
         }
-
-        var finalVistype;
-
-        if(data.visual){
-            finalVistype = visTypes.getVisType(data.visual);
-        } else { // hierarchical tree representation does not have data.visual
-            finalVistype = visTypes.getVisType(assignments[0].vistype);
-        }
-
-        if(finalVistype == "Alist" && data.dims){
-            finalVistype = visTypes.getArrayType(data.dims)
-        }
-
-        var vistypeObject = visTypes.getVisTypeObject(finalVistype);
 
         // console.log(Array.isArray(toInclude));
 
@@ -343,7 +347,7 @@ exports.show = function (req, res, next) {
             "assignmentNumber":assignmentNumber,
             "schoolID":assignments[0].schoolID,
             "classID":assignments[0].classID,
-            "vistypeObject":vistypeObject,
+            "linkResources":linkResources,
             "shared":assignments[0].shared,
             "owner":owner,
             "createMap": (function() { return (mapData.length > 0) ? true : false; })(),
