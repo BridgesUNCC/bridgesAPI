@@ -71,6 +71,20 @@ BridgesVisualizer.getColor = function(color) {
   return color;
 };
 
+BridgesVisualizer.assignmentTypes = [];
+
+BridgesVisualizer.centerTextHorizontallyInRect = function(obj, width){
+    return (width - obj.getComputedTextLength()) / 2;
+};
+
+BridgesVisualizer.getShortText = function(text){
+    if(text && text.length > 5){
+      return text.substr(0,4)+"...";
+    }else{
+      return text;
+    }
+}
+
 // function to return the transformObject saved positions
 BridgesVisualizer.getTransformObjectFromCookie = function(visID) {
         var name = "vis"+visID+"-"+location.pathname + "=";
@@ -190,46 +204,47 @@ for (var key in data) {
   if (data.hasOwnProperty(key)) {
     var ele = document.getElementById("vis" + key),
         width = ele.clientWidth - 15,
-        height = ele.clientHeight + 15;
+        height = ele.clientHeight + 15
+        transform = data[key].transform;
 
-    if (d3.bst) {
+    //saving a copy of every assignment: type and key of the assignment. Useful when trying to reset them.
+    BridgesVisualizer.assignmentTypes.push(data[key]['visType']);
+
+    if (data[key]['visType'] == "tree" && d3.bst) {
         bst = d3.bst(d3, "#vis" + key, width, height);
-        // tempAddChildNode(data[key]);
         bst.make(data[key]);
     }
-    else if(d3.dllist){
-        var sortedNodes = sortListByLinks(data[key]);
-        d3.dllist(d3, "#vis" + key, width, height, sortedNodes, data[key].transform);
+    else if(data[key]['visType'] == "dllist" && d3.dllist){
+        d3.dllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key]), transform);
     }
-    else if(d3.cdllist){
-        var sortedNodes = sortListByLinks(data[key]);
-        d3.cdllist(d3, "#vis" + key, width, height, sortedNodes, data[key].transform);
+    else if(data[key]['visType'] == "cdllist" && d3.cdllist){
+        d3.cdllist(d3, "#vis" + key, width, height, sortCircularDoublyListByLinks(data[key]));
     }
-    else if(d3.sllist){
-        var sortedNodes = sortListByLinks(data[key]);
-        d3.sllist(d3, "#vis" + key, width, height, sortedNodes);
+    else if(data[key]['visType'] == "llist" && d3.sllist){
+        d3.sllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key]), transform);;
     }
-    else if(d3.csllist){
-        var sortedNodes = sortListByLinks(data[key]);
-        d3.csllist(d3, "#vis" + key, width, height, sortedNodes, data[key].transform);
+    else if(data[key]['visType'] == "cllist" && d3.csllist){
+        d3.csllist(d3, "#vis" + key, width, height, sortCircularSinglyListByLinks(data[key]), transform);
     }
-    else if (d3.queue) {
-        d3.queue(d3, "#vis" + key, width, height, data[key].nodes);
+    else if (data[key]['visType'] == "queue" && d3.queue) {
+        d3.queue(d3, "#vis" + key, width, height, data[key].nodes, transform);
     }
-    else if (d3.array) {
-          d3.array(d3, "#vis" + key, width, height, data[key].nodes);
+    else if (data[key]['visType'] == "Alist" && d3.array) {
+          d3.array(d3, "#vis" + key, width, height, data[key].nodes, transform);
     }
-    else if (d3.array2d) {
-          d3.array2d(d3, "#vis" + key, width, height, data[key].nodes, data[key].dims);
+    else if (data[key]['visType'] == "Array2D" && d3.array2d) {
+          d3.array2d(d3, "#vis" + key, width, height, data[key].nodes, data[key].dims, transform);
     }
-    else if (d3.array3d) {
-          d3.array3d(d3, "#vis" + key, width, height, data[key].nodes, data[key].dims);
+    else if (data[key]['visType'] == "Array3D" && d3.array3d) {
+          d3.array3d(d3, "#vis" + key, width, height, data[key].nodes, data[key].dims, transform);
     }
-    else if (d3.graph) {
+    else if (data[key]['visType'] == "nodelink" && d3.graph) {
+        BridgesVisualizer.setTicksPerRender(data[key].nodes.length);
+        $("#savePosition").show();
         d3.graph(d3, "#vis" + key, width, height, data[key]);
     }
     else {
-        console.log("unknown data type");
+        // console.log("unknown data type");
         d3.graph(d3, "#vis" + key, width, height, data[key]);
     }
     visCount++;
@@ -522,4 +537,150 @@ try{
     });
 }catch(err){
     console.log(err);
+}
+
+
+//this methods sorts any Doubly Links linkedlist by links
+function sortCircularSinglyListByLinks(unsortedNodes, listType){
+    var links = unsortedNodes.links,
+        nodes = unsortedNodes.nodes,
+        uniqueForwardLink = {},
+        uniqueBackwardLink = {},
+        sortedNodes = [],
+        head = 0,
+        lastIndex;
+
+    //O(n)
+    for(var i = links.length-1; i >= 0; i--){
+        if(parseInt(links[i].source) < parseInt(links[i].target)){
+            uniqueForwardLink[links[i].source+"-"+links[i].target] = links[i];
+        }else{
+            uniqueBackwardLink[links[i].source+"-"+links[i].target] = links[i];
+        }
+    }
+
+    //this is expensive. Previous methods worked, but I find this way is safer.
+    //but it only happens once
+    var keys = Object.keys(uniqueForwardLink).sort(function(a,b){
+        if(a.split("-")[0] == b.split("-")[0]){
+           if(parseInt(a.split("-")[1]) > parseInt(b.split("-")[1])){
+              lastIndex = a;
+           }else{
+              lastIndex = b;
+           }
+        }
+        return parseInt(a.split("-")[0]) - parseInt(b.split("-")[0]);
+    });
+
+
+    for(key in keys){
+      nodes[head]['forwardlink'] = uniqueForwardLink[keys[key]];
+      sortedNodes.push(nodes[head]);
+      head = uniqueForwardLink[keys[key]].target;
+    }if(sortedNodes.length == nodes.length-1){
+      sortedNodes.push(nodes[head]);
+    }
+
+    //this is O(1) since there is only one link from the last node to the first.
+    for(key in uniqueBackwardLink){
+      sortedNodes[sortedNodes.length-1]['forwardlink'] = uniqueBackwardLink[key];
+    }
+
+    return sortedNodes;
+}
+
+//this methods sorts any Doubly Links linkedlist by links
+function sortCircularDoublyListByLinks(unsortedNodes, listType){
+    var links = unsortedNodes.links,
+        nodes = unsortedNodes.nodes,
+        uniqueForwardLink = {},
+        uniqueBackwardLink = {},
+        sortedNodes = [],
+        head = 0,
+        lastIndex,
+        lastElement;
+
+    for(var i = links.length-1; i >= 0; i--){
+        if(parseInt(links[i].source) < parseInt(links[i].target)){
+            uniqueForwardLink[links[i].source+"-"+links[i].target] = links[i];
+            if(links[i].source == 0 && links[i].target == nodes.length-1){
+                nodes[links[i].source]['forwardlink'] = links[i];
+                continue;
+            }else{
+                nodes[links[i].target]['backwardlink'] = links[i];
+                continue;
+            }
+
+        }else{
+            uniqueBackwardLink[links[i].source+"-"+links[i].target] = links[i];
+            if(links[i].source == nodes.length-1 && links[i].target == 0){
+                nodes[links[i].target]['backwardlink'] = links[i];
+                continue;
+            }else{
+                nodes[links[i].source]['forwardlink'] = links[i];
+                continue;
+            }
+        }
+    }
+
+    var keys = Object.keys(uniqueForwardLink).sort(function(a,b){
+        if(a.split("-")[0] == b.split("-")[0]){
+           if(parseInt(a.split("-")[1]) > parseInt(b.split("-")[1])){
+               lastIndexA = a;
+               lastIndexB = b;
+           }else{
+               lastIndexA = a;
+               lastIndexB = b;
+           }
+        }
+        return parseInt(b.split("-")[0]) - parseInt(a.split("-")[0]);
+    });
+
+
+
+    for(var i = 0; i < keys.length; i++){
+      sortedNodes.push(nodes[head]);
+      head = uniqueForwardLink[keys[i]].target;
+    }
+
+    sortedNodes[lastIndexA.split("-")[1]] = nodes[lastIndexB.split("-")[1]];
+
+
+    return sortedNodes;
+}
+
+//this methods sorts any Doubly Links linkedlist by links
+function sortNonCircularListByLinks(unsortedNodes, listType){
+    var links = unsortedNodes.links;
+    var nodes = unsortedNodes.nodes;
+    var uniqueForwardLink = {},
+        uniqueBackwardLink = {},
+        sortedNodes = [],
+        head = 0;
+
+    for(var i = links.length-1; i >= 0; i--){
+        if(parseInt(links[i].source) < parseInt(links[i].target)){
+            uniqueForwardLink[links[i].source+"-"+links[i].target] = links[i];
+        }else{
+            uniqueBackwardLink[links[i].target+"-"+links[i].source] = links[i];
+        }
+    }
+
+    var keys = Object.keys(uniqueForwardLink).sort(function(a,b){
+        return parseInt(a.split("-")[0]) - parseInt(b.split("-")[0]);
+    });
+
+    for(key in keys){
+        nodes[head]['forwardlink'] = uniqueForwardLink[keys[key]];
+        sortedNodes.push(nodes[head]);
+        head = uniqueForwardLink[keys[key]].target;
+    }if(sortedNodes.length == nodes.length-1){
+        sortedNodes.push(nodes[head]);
+    }
+
+    for(key in uniqueBackwardLink){
+        if(sortedNodes[uniqueBackwardLink[key].target])sortedNodes[uniqueBackwardLink[key].target]['backwardlink'] = uniqueBackwardLink[key];
+    }
+
+    return sortedNodes;
 }

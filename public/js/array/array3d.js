@@ -196,7 +196,7 @@ d3.array3d = function(d3, canvasID, w, h, data, dimensions) {
     // function mouseover() {
     //     // scale text size based on zoom factor
     //     var hoverSize = d3.scale.linear().domain([0,0.7]).range([300, 14]).clamp(true);
-    //     d3.select(this).selectAll(".value-textview").transition()
+    //     d3.select(this).selectAll(".nodeLabel").transition()
     //           .duration(250)
     //           .style("display","block")
     //           .style("font-size", function(d,i) {
@@ -208,7 +208,7 @@ d3.array3d = function(d3, canvasID, w, h, data, dimensions) {
     // }
     //
     // function mouseout() {
-    //     d3.select(this).selectAll(".value-textview").transition()
+    //     d3.select(this).selectAll(".nodeLabel").transition()
     //         .duration(750)
     //         .style("display",function(d,i){
     //           if(i > elementsPerRow){                d3.select(this).moveToFront();

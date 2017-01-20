@@ -90,7 +90,7 @@ d3.array2d = function(d3, canvasID, w, h, data, dimensions) {
     // Show full array label above each element
     nodes
         .append("text")
-        .attr("class","value-textview")
+        .attr("class","nodeLabel")
         .text(function(d, i){
           return d.name + " " + d3.select(this.parentNode).select(".index-textview").text();
         })
@@ -128,7 +128,7 @@ d3.array2d = function(d3, canvasID, w, h, data, dimensions) {
     // function mouseover() {
     //     // scale text size based on zoom factor
     //     var hoverSize = d3.scale.linear().domain([0,0.7]).range([300, 14]).clamp(true);
-    //     d3.select(this).selectAll(".value-textview").transition()
+    //     d3.select(this).selectAll(".nodeLabel").transition()
     //           .duration(250)
     //           .style("display","block")
     //           .style("font-size", function(d) {
@@ -137,7 +137,7 @@ d3.array2d = function(d3, canvasID, w, h, data, dimensions) {
     // }
     //
     // function mouseout() {
-    //     d3.select(this).selectAll(".value-textview").transition()
+    //     d3.select(this).selectAll(".nodeLabel").transition()
     //         .duration(750)
     //         .style("display","none")
     //         .style("font-size", 14);

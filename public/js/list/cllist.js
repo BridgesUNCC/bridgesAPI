@@ -113,7 +113,7 @@ d3.csllist = function(d3, canvasID, w, h, data) {
     // Show full array label above each element
     nodes
         .append("text")
-        .attr("class","value-textview")
+        .attr("class","nodeLabel")
         .text(function(d, i){
           return d.name;
         })
