@@ -13,6 +13,7 @@ exports.view = function(req, res, next) {
           description: 1,
           assignmentNumber: 1,
           "data.visual": 1,
+          "data.dims": 1,
           vistype: 1,
           shared: 1,
           dateCreated: 1
@@ -27,9 +28,15 @@ exports.view = function(req, res, next) {
           assignmentResult.sort(function(a, b) {
               return parseFloat(a.assignmentID) - parseFloat(b.assignmentID);
           });
+          //sort on assignement Creation Date. I think sorting based on the date is also important.
+          // assignmentResult.sort(function(a, b) {
+          //     return Date.parse(b.dateCreated) - Date.parse(a.dateCreated);
+          // });
 
           for(var assignmentResultItem in assignmentResult){
-              assignmentResult[assignmentResultItem]['vistype'] = visTypes.getVisType(assignmentResult[assignmentResultItem]['data'][0]['visual']);
+              var $thisVistype = visTypes.getVisType(assignmentResult[assignmentResultItem]['data'][0]['visual']);
+              if($thisVistype == "Alist") $thisVistype = visTypes.checkIfHasDims(assignmentResult[assignmentResultItem]['data'][0]);
+              assignmentResult[assignmentResultItem]['vistype'] = $thisVistype;
           }
 
           return res.render('assignments/userGallery', {

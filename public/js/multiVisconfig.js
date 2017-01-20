@@ -84,13 +84,17 @@ BridgesVisualizer.getColor = function(color) {
   return color;
 };
 
+//this array holds the assignments types; it's used to handle the mixed assignements
 BridgesVisualizer.assignmentTypes = [];
+
+//this boolean is used to deactivate the tooltip when all labels are shown (key 'L')
 BridgesVisualizer.tooltipEnabled = true;
 
 BridgesVisualizer.centerTextHorizontallyInRect = function(obj, width){
     return (width - obj.getComputedTextLength()) / 2;
 };
 
+//add three ellipsis(...) if the text length is greater than 5
 BridgesVisualizer.getShortText = function(text){
     if(text && text.length > 5){
       return text.substr(0,4)+"...";
@@ -111,6 +115,12 @@ BridgesVisualizer.insertLinebreaks = function (d, i) {
             tspan.attr('x', 0).attr('dy', '15');
     }
 };
+
+
+//TODO, need unique ID for local storage
+BridgesVisualizer.getTransformObjectFromLocalStorage = function(visID) {
+
+}
 
 // function to return the transformObject saved positions
 BridgesVisualizer.getTransformObjectFromCookie = function(visID) {
@@ -511,31 +521,31 @@ function alertMessage(message, status) {
 }
 
 //this methods sorts any linkedlist by links
-function sortListByLinks(unsortedNodes){
-    var getTargetFromSource = {}, getLinkFromSource = {}, sortedNodes = [], head;
-    var links = unsortedNodes.links;
-    var nodes = unsortedNodes.nodes;
-
-    for(var i = 0; i < links.length; i++){
-        getTargetFromSource[links[i].source] = links[i].target;//assigning the link source as the key and the target as the value
-        getLinkFromSource[links[i].source+"-"+links[i].target] = links[i];//creating a unique identifier for every link
-    }
-
-    head = unsortedNodes.head || 0;//Object.keys(nodes).length-1;
-    // for(var h in nodes){//looping through the length of the nodes
-    for(var i = 0; i < nodes.length; i++){
-        var key = head + "-" + getTargetFromSource[head];//link from source to target
-        var yek = getTargetFromSource[head] + "-" + head;//link from target to source
-        if(getLinkFromSource[key]) nodes[head]['linkone'] = getLinkFromSource[key];//if there is a link, insert in the nodes
-        if(getLinkFromSource[yek]) nodes[head]['linktwo'] = getLinkFromSource[yek];//if there is a link, insert in the nodes
-        if(nodes[head])sortedNodes.push(nodes[head]);
-        head = getTargetFromSource[head];//getting the next target
-        // if(!head)break;
-    }
-    // links = nodes = undefined; console.log(sortedNodes);
-    // console.log(sortedNodes);
-    return sortedNodes;
-}
+// function sortListByLinks(unsortedNodes){
+//     var getTargetFromSource = {}, getLinkFromSource = {}, sortedNodes = [], head;
+//     var links = unsortedNodes.links;
+//     var nodes = unsortedNodes.nodes;
+//
+//     for(var i = 0; i < links.length; i++){
+//         getTargetFromSource[links[i].source] = links[i].target;//assigning the link source as the key and the target as the value
+//         getLinkFromSource[links[i].source+"-"+links[i].target] = links[i];//creating a unique identifier for every link
+//     }
+//
+//     head = unsortedNodes.head || 0;//Object.keys(nodes).length-1;
+//     // for(var h in nodes){//looping through the length of the nodes
+//     for(var i = 0; i < nodes.length; i++){
+//         var key = head + "-" + getTargetFromSource[head];//link from source to target
+//         var yek = getTargetFromSource[head] + "-" + head;//link from target to source
+//         if(getLinkFromSource[key]) nodes[head]['linkone'] = getLinkFromSource[key];//if there is a link, insert in the nodes
+//         if(getLinkFromSource[yek]) nodes[head]['linktwo'] = getLinkFromSource[yek];//if there is a link, insert in the nodes
+//         if(nodes[head])sortedNodes.push(nodes[head]);
+//         head = getTargetFromSource[head];//getting the next target
+//         // if(!head)break;
+//     }
+//     // links = nodes = undefined; console.log(sortedNodes);
+//     // console.log(sortedNodes);
+//     return sortedNodes;
+// }
 
 // Saved the translate and scale of every visualization in an assignemts
 function saveVisStatesAsCookies(){

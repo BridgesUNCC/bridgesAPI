@@ -34,6 +34,19 @@ exports.getVisType = function(toCheck) {
         return "nodelink";
 };
 
+var checkIfHasDims = function (data){
+    if(data.dims){
+        if(parseInt(data.dims[1]) > 1 && parseInt(data.dims[2]) == 1){
+            return data.visType = "Array2D";
+        }else if(parseInt(data.dims[1]) > 1 && parseInt(data.dims[2]) > 1){
+            return data.visType = "Array3D";
+        }else{
+            return "Alist";
+        }
+    }
+    return "Alist"
+};exports.checkIfHasDims = checkIfHasDims;
+
 exports.getVisTypeObject = function(data) {
   var validTypes = {
       "nodelink":   {"vistype":"nodelink",   "script":"/js/graph.js",          "link":""                  	},
@@ -55,16 +68,4 @@ exports.getVisTypeObject = function(data) {
     else
         return {"vistype":"nodelink",   "script":"/js/graph.js",          "link":""                  	};
 
-    function checkIfHasDims(data){
-        if(data.dims){
-            if(parseInt(data.dims[1]) > 1 && parseInt(data.dims[2]) == 1){
-                return data.visType = "Array2D";
-            }else if(parseInt(data.dims[1]) > 1 && parseInt(data.dims[2]) > 1){
-                return data.visType = "Array3D";
-            }else{
-                return "Alist";
-            }
-        }
-        return "Alist"
-    };
 };

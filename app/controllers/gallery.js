@@ -55,6 +55,7 @@ exports.view = function(req, res) {
               description: 1,
               assignmentNumber: 1,
               "data.visual": 1,
+              "data.dims": 1,
               vistype: 1,
               shared: 1,
               dateCreated: 1
@@ -87,9 +88,15 @@ exports.view = function(req, res) {
 
                   for(var assignmentResultItem in assignmentResult){
                       assignmentResult[assignmentResultItem]['username'] = usernamesmap[assignmentResult[assignmentResultItem]['email']];
-                      assignmentResult[assignmentResultItem]['vistype'] = visTypes.getVisType(assignmentResult[assignmentResultItem]['data'][0].visual);
-                      // assignmentResult[assignmentResultItem]['thumbnail'] = assignmentResult[assignmentResultItem]['vistype'];
+                      var $thisVistype = visTypes.getVisType(assignmentResult[assignmentResultItem]['data'][0]['visual']);
+                      if($thisVistype == "Alist") $thisVistype = visTypes.checkIfHasDims(assignmentResult[assignmentResultItem]['data'][0]);
+                      assignmentResult[assignmentResultItem]['vistype'] = $thisVistype;
                   }
+
+                  assignmentResult.sort(function(a, b) {
+                      return Date.parse(b.dateCreated) - Date.parse(a.dateCreated);
+                      // return parseFloat(a.assignmentID) - parseFloat(b.assignmentID);
+                  });
 
                   return res.render('assignments/gallery', {
                       "title": "Assignment gallery",
