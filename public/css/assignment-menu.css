@@ -18,7 +18,7 @@
 #assignmentTitle {
     background-color: lightgrey;
     box-shadow: 0px 5px 5px black;
-    margin-bottom: 15px;
+    margin-bottom: 30px;
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     font-size: 180%;
     width: 100%;
@@ -33,7 +33,7 @@
     font-size: 90%;
     max-height:200px;
     overflow: scroll;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     box-shadow: inset 0px 0px 10px black;
 }
 

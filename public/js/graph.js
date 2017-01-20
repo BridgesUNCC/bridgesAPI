@@ -53,7 +53,6 @@ d3.graph = function(d3, id, W, H, data) {
       .attr("width", width)
       .attr("height", height)
       .attr("id", "svg" + canvasID.substr(4))
-      .classed("svg", true)
       .call(zoom);
 
   svgGroup = vis.append("g");

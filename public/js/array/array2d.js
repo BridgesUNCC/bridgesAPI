@@ -6,8 +6,8 @@ Array visualization for Bridges
 d3.array2d = function(d3, canvasID, w, h, data, dimensions) {
 
   var visID = canvasID.substr(4);
-  var finalTranslate = BridgesVisualizer.defaultTransforms.array2d.translate;
-  var finalScale =  BridgesVisualizer.defaultTransforms.array2d.scale;
+  var finalTranslate = BridgesVisualizer.defaultTransforms.Array2D.translate;
+  var finalScale =  BridgesVisualizer.defaultTransforms.Array2D.scale;
 
     var elementsPerRow = dimensions[0];
     var spacing = 40;        // spacing between elements

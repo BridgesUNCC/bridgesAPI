@@ -21,17 +21,9 @@ d3.select("#assignment-menu")
       }
     });
 
-// d3.selectAll(".vis-menu-button")
-//     .on("click", function(d, i) {
-//       console.log(d3.select('#menu'+ i));
-//       if(d3.select('#menu'+ i).classed("on")) {
-//         d3.select('#menu'+ i).transition().duration(500).style("width", "0px");
-//         d3.select('#menu'+ i).classed("on", false);
-//       } else {
-//         d3.select('#menu'+ i).transition().duration(500).style("width", "50px");
-//         d3.select('#menu'+ i).classed("on", true);
-//       }
-//     });
+d3.selectAll(".assignmentContainer").on("resize", function(d, i) {
+    console.log('resize', d, i);
+});
 
 // Bridges visualizer object to remove vis methods from the global scope
 BridgesVisualizer.strokeWidthRange = d3.scale.linear().domain([1,50]).range([1,15]).clamp(true);
@@ -51,8 +43,8 @@ BridgesVisualizer.treeDashArray = "3px, 3px";
 BridgesVisualizer.defaultTransforms = {
   "Alist": { "scale": 0.4, "translate": [20, 100]},
   "array": { "scale": 0.4, "translate": [20, 100]},
-  "array2d": { "scale": 0.4, "translate": [20, 100]},
-  "array3d": { "scale": 0.4, "translate": [20, 100]},
+  "Array2D": { "scale": 0.4, "translate": [20, 100]},
+  "Array3D": { "scale": 0.4, "translate": [20, 100]},
 
   //added this new objects, see 278, method reset()
   //this changes were made to handle mixed assignments when calling the reset method.
@@ -120,7 +112,7 @@ BridgesVisualizer.insertLinebreaks = function (d, i) {
 //TODO, need unique ID for local storage
 BridgesVisualizer.getTransformObjectFromLocalStorage = function(visID) {
 
-}
+};
 
 // function to return the transformObject saved positions
 BridgesVisualizer.getTransformObjectFromCookie = function(visID) {
@@ -133,7 +125,7 @@ BridgesVisualizer.getTransformObjectFromCookie = function(visID) {
             while (c.charAt(0)==' ') {
                 c = c.substring(1);
             }
-            if (c.indexOf(name) == 0) {
+            if (c.indexOf(name) === 0) {
                 // return c.substring(name.length, c.length);
                 var cookieStringValue = c.substring(name.length, c.length);
                 var cookieJSONValue;
@@ -244,7 +236,7 @@ for (var key in data) {
   if (data.hasOwnProperty(key)) {
     var ele = document.getElementById("vis" + key),
         width = ele.clientWidth - 15,
-        height = ele.clientHeight + 15
+        height = ele.clientHeight + 15,
         transform = data[key].transform;
 
     //saving a copy of every assignment: type and key of the assignment. Useful when trying to reset them.
@@ -261,7 +253,8 @@ for (var key in data) {
         d3.cdllist(d3, "#vis" + key, width, height, sortCircularDoublyListByLinks(data[key]));
     }
     else if(data[key]['visType'] == "llist" && d3.sllist){
-        d3.sllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key]), transform);;
+        // d3.sllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key]), transform);
+        d3.sllist(d3, "#vis" + key, width, height, sortSLLists(data[key]), transform);
     }
     else if(data[key]['visType'] == "cllist" && d3.csllist){
         d3.csllist(d3, "#vis" + key, width, height, sortCircularSinglyListByLinks(data[key]), transform);
@@ -310,27 +303,6 @@ function reset() {
                 console.log(ex);
             }
         }
-        /* set default translate based on visualization type */
-        // if(d3.array) {
-        //   zoom.translate(BridgesVisualizer.defaultTransforms.array.translate);
-        //   zoom.scale(BridgesVisualizer.defaultTransforms.array.scale);
-        // } else if(d3.array2d) {
-        //   zoom.translate(BridgesVisualizer.defaultTransforms.array2d.translate);
-        //   zoom.scale(BridgesVisualizer.defaultTransforms.array2d.scale);
-        // } else if(d3.array3d) {
-        //   zoom.translate(BridgesVisualizer.defaultTransforms.array3d.translate);
-        //   zoom.scale(BridgesVisualizer.defaultTransforms.array3d.scale);
-        // }
-        // else if(d3.dllist || d3.sllist || d3.cdllist || d3.csllist) {
-        //   zoom.translate(BridgesVisualizer.defaultTransforms.list.translate);
-        //   zoom.scale(BridgesVisualizer.defaultTransforms.list.scale);
-        // } else if(d3.graph) {
-        //   zoom.translate(BridgesVisualizer.defaultTransforms.graph.translate);
-        //   zoom.scale(BridgesVisualizer.defaultTransforms.graph.scale);
-        // } else if(d3.bst) {
-        //   zoom.translate(BridgesVisualizer.defaultTransforms.tree.translate);
-        //   zoom.scale(BridgesVisualizer.defaultTransforms.tree.scale);
-        // }
         svgGroup.attr("transform", "translate(" + zoom.translate() + ")scale(" + zoom.scale() + ")");
     }
     saveVisStatesAsCookies();
@@ -375,74 +347,6 @@ function resize() {
             .attr("height", height);
     }
 }
-
-// // Toggle minimizing and maximizing visualization divs
-// function minimize() {
-//     //Collapse/Expand All
-//     if(this.id == "min") {
-//         if(d3.select(this).attr("minimized") == "true") {   //MAXIMIZE
-//             d3.selectAll(".assignmentContainer")
-//                 .classed("assignmentContainerMinimized", false);
-//             d3.selectAll(".svg")
-//                 .style("display", "block");
-//             d3.selectAll(".minimize")
-//                 .attr("minimized", false)
-//                 .text("-");
-//
-//             maximizedCount = visCount;
-//             minimizedCount = 0;
-//
-//         } else {    //MINIMIZE
-//             d3.selectAll(".assignmentContainer")
-//                 .classed("assignmentContainerMinimized", true);
-//             d3.selectAll(".svg")
-//                 .style("display", "none");
-//             d3.selectAll(".minimize")
-//                 .attr("minimized", true)
-//                 .text("+");
-//
-//             maximizedCount = 0;
-//             minimizedCount = visCount;
-//         }
-//
-//         return;
-//     }
-//
-//     if(d3.select(this).attr("minimized") == "true") {   //MAXIMIZE
-//         d3.select("#vis" + this.id.substr(3))
-//             .classed("assignmentContainerMinimized", false);
-//         d3.select("#svg" + this.id.substr(3))
-//             .style("display", "block");
-//         d3.select(this).attr("minimized", false);
-//         d3.select(this).text("-");
-//
-//         maximizedCount++;
-//         minimizedCount--;
-//
-//         if(maximizedCount == visCount) {//ALL vis are minimized
-//             d3.select("#min")
-//                 .attr("minimized", false)
-//                 .text("-");
-//         }
-//
-//     } else {    //MINIMIZE
-//         d3.select("#vis" + this.id.substr(3))
-//             .classed("assignmentContainerMinimized", true);
-//         d3.select("#svg" + this.id.substr(3))
-//             .style("display", "none");
-//         d3.select(this).attr("minimized", true);
-//         d3.select(this).text("+");
-//
-//         minimizedCount++;
-//         maximizedCount--;
-//
-//         if(minimizedCount == visCount) {//ALL vis are minimized
-//             d3.select("#min")
-//                 .attr("minimized", true)
-//                 .text("+");
-//         }
-//     }
-// }
 
 // Asynchronously update the node positions
 function savePositions () {
@@ -727,6 +631,7 @@ function sortNonCircularListByLinks(unsortedNodes, listType){
         uniqueBackwardLink = {},
         sortedNodes = [],
         head = 0;
+    // console.log(unsortedNodes, listType);
 
     for(var i = links.length-1; i >= 0; i--){
         if(parseInt(links[i].source) < parseInt(links[i].target)){
@@ -752,5 +657,48 @@ function sortNonCircularListByLinks(unsortedNodes, listType){
         if(sortedNodes[uniqueBackwardLink[key].target])sortedNodes[uniqueBackwardLink[key].target]['backwardlink'] = uniqueBackwardLink[key];
     }
 
+    console.log(sortedNodes);
     return sortedNodes;
+}
+
+// Sort old and new SLLists
+//  O(n)
+function sortSLLists(unsortedNodes) {
+  var links = unsortedNodes.links,
+      nodes = unsortedNodes.nodes,
+      sortedNodes = [],
+      forwardLinks = {},
+      forwardLinkObjects = {},
+      backwardLinks = {},
+      curr = null;
+
+  // Store all the forward and backward connections
+  // O(n)
+  for(var i in links) {
+    forwardLinks[links[i].source] = links[i].target;
+    forwardLinkObjects[links[i].source] = links[i];
+    backwardLinks[links[i].target] = links[i].source;
+  }
+
+  // find the head node
+  // O(n) in worst case (old llists)
+  // O(1) in best case (new llist)
+  for(var i in nodes) {
+    if(!backwardLinks[i]) {
+      nodes[i].forwardLink = forwardLinkObjects[i];
+      curr = nodes[i].forwardLink.target;
+      sortedNodes.push(nodes[i]);
+      break;
+    }
+  }
+
+  // add the rest of the nodes in link order
+  // O(n)
+  for(var i = 0; i < links.length-1; i++) {
+      nodes[curr].forwardLink = links[curr];
+      sortedNodes.push(nodes[curr]);
+      curr = nodes[curr].forwardLink.target;
+  }
+
+  return sortedNodes;
 }

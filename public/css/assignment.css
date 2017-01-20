@@ -1,7 +1,4 @@
 .assignmentContainer{
-    /*border-color:steelblue;*/
-    /*border-style:solid;*/
-    /*border-radius:2px;*/
     box-shadow: 0px 3px 5px 5px #888888;
     margin-left:25px;
     margin-top:25px;
@@ -11,25 +8,26 @@
     resize: both;
     overflow: auto;
 }
+.svg {
+  width: 100%;
+  height: 100%;
+}
+
+.assignmenetContainer.responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+}
 
 #fullContent {
   height: 100%;
 }
 
-/*.fullscreen{
-  background-color: steelblue;
-  width: 100%;
-  height: 100%;
-}*/
-
 #vis{
     position:absolute;
     overflow: auto;/*hide the scrollbar if not needed, chrome and ie tested*/
     float:left;
-}
-
-.svg {
-    height: inherit;
 }
 
 #mapContainer{
