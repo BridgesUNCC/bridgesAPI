@@ -100,6 +100,16 @@ d3.array3d = function(d3, canvasID, w, h, data, dimensions) {
         .attr("x", defaultSize / 4);
 
 
+    nodes
+        .append("text")
+        .attr("class","nodeLabel")
+        .text(function(d, i){
+          return d.name;
+        })
+        .attr("y", -10)
+        .style("display","none");
+
+
     // Show array labels inside each element
     nodes
         .append("text")

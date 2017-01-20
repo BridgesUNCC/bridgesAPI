@@ -3,11 +3,11 @@
 
 
 
-d3.selection.prototype.moveToFront = function() {
-  return this.each(function(){
-    this.parentNode.appendChild(this);
-  });
-};
+// d3.selection.prototype.moveToFront = function() {
+//   return this.each(function(){
+//     this.parentNode.appendChild(this);
+//   });
+// };
 
 var scaleSize = d3.scale.linear()
     .domain([1,100])
@@ -169,6 +169,16 @@ d3.bst = function (d3, canvasID, w, h) {
             .attr("text-anchor", "start")
             .text(function(d) { return d.key || ""; } );
        }
+
+       //Added this back, so it can be shown with the new keyboard key 'L'
+       nodeEnter.append("svg:text")
+          .classed("nodeLabel", true)
+          .attr("dy", ".35em")
+          .attr("x", "20px")
+          .attr("y",  "-7px")
+          .attr("text-anchor", "start")
+          .style("display", "none")
+          .text( function( d ) { if( (d && d.name &&d.name != "NULL") ) { return d.name; } else return ""; });
 
        // apply dash array if node has collapsed non-null children
        node.selectAll("path")

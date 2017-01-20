@@ -104,8 +104,6 @@ d3.graph = function(d3, id, W, H, data) {
   var node = svgGroup.selectAll(".node")
       .data(nodes)
       .enter().append("g")
-      // .on("mouseover", mouseover)
-      // .on("mouseout", mouseout)
       .on("mouseover", BridgesVisualizer.textMouseover)
       .on("mouseout", BridgesVisualizer.textMouseout)
       .on("dblclick", dblclick)
@@ -137,6 +135,7 @@ d3.graph = function(d3, id, W, H, data) {
   //inner nodes
   node
       .append("text")
+      .attr("class","nodeLabel")
       .attr("x", BridgesVisualizer.textOffsets.graph.x + 2)
       .attr("y",  BridgesVisualizer.textOffsets.graph.y + 14)
       .style("color",'black')
@@ -146,21 +145,7 @@ d3.graph = function(d3, id, W, H, data) {
           return d.name;
       });
 
-  // Function to add line breaks to node labels/names
-  var insertLineBreaks = function(d) {
-  	var el = d3.select(this);
-  	var words = d3.select(this).text().split('\n');
-  	el.text('');
-
-  	for (var i = 0; i < words.length; i++) {
-  	    var tspan = el.append('tspan').text(words[i]);
-  	    if (i > 0)
-  		tspan.attr('dy','15');
-  	}
-  };
-
-  // Add line breaks to node labels
-  svgGroup.selectAll('text').each(insertLineBreaks);
+  svgGroup.selectAll('text').each(BridgesVisualizer.insertLinebreaks);
 
   force.on("tick", function() {
       node

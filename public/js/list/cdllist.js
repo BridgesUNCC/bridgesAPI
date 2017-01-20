@@ -541,7 +541,6 @@ d3.cdllist = function(d3, canvasID, w, h, data) {
           last_g.select(".backward-link").attr("y2",30);
 
 
-          bind linebreaks to text elements
           svgGroup.selectAll('text').each(BridgesVisualizer.insertLinebreaks);
 
 

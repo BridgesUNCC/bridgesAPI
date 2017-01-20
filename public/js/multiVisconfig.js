@@ -72,6 +72,7 @@ BridgesVisualizer.getColor = function(color) {
 };
 
 BridgesVisualizer.assignmentTypes = [];
+BridgesVisualizer.tooltipEnabled = true;
 
 BridgesVisualizer.centerTextHorizontallyInRect = function(obj, width){
     return (width - obj.getComputedTextLength()) / 2;
@@ -156,6 +157,9 @@ var div = d3.select("body").append("div")
     .style("opacity", 0);
 
 BridgesVisualizer.textMouseover = function(d) {
+
+    if(!BridgesVisualizer.tooltipEnabled) return;
+
     //the design can be changed later, if not appropriate. Mainly for implementation
     if(d3.select(this).select("rect"))
         d3.select(this).select("rect").style("stroke", "yellow").style("stroke-width", 4);
@@ -551,6 +555,26 @@ try{
 }catch(err){
     console.log(err);
 }
+
+function hideTooltip(){
+  div.transition()
+      .duration(500)
+      .style("opacity", 0);
+}
+
+//toggle, show and hide all labels ".nodeLabel"
+$("body").on("keydown", function(event) {
+    if(event.which == "76"){
+        hideTooltip();
+        if($(".nodeLabel").length > 0 && (d3.selectAll(".nodeLabel").style("display") == "none" || d3.selectAll(".nodeLabel").style("opacity") == "0")){
+            d3.selectAll(".nodeLabel").style("display","block").style("opacity","1");
+            BridgesVisualizer.tooltipEnabled = false;
+        }else if($(".nodeLabel").length > 0){
+            d3.selectAll(".nodeLabel").style("display","none").style("opacity","0");
+            BridgesVisualizer.tooltipEnabled = true;
+        }
+    }
+});
 
 
 //this methods sorts any Doubly Links linkedlist by links
