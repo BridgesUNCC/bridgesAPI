@@ -649,6 +649,11 @@ function sortSLLists(unsortedNodes) {
     backwardLinks[links[i].target] = links[i].source;
   }
 
+  // If there are no links, just return nodes
+  if(links.length === 0)
+    return nodes;
+
+
   // find the head node
   // O(n) in worst case (old llists)
   // O(1) in best case (new llist)
@@ -664,10 +669,13 @@ function sortSLLists(unsortedNodes) {
   // add the rest of the nodes in link order
   // O(n)
   for(var i = 0; i < links.length-1; i++) {
-      nodes[curr].forwardLink = links[curr];
+      nodes[curr].forwardLink = forwardLinkObjects[curr];
       sortedNodes.push(nodes[curr]);
       curr = nodes[curr].forwardLink.target;
   }
+
+  // add last node
+  sortedNodes.push(nodes[curr]);
 
   return sortedNodes;
 }
