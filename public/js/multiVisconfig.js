@@ -108,21 +108,6 @@ BridgesVisualizer.insertLinebreaks = function (d, i) {
     }
 };
 
-// bind linebreaks to text elements
-BridgesVisualizer.tooltipLinebreaks = function (d, i) {
-    var el = d3.select('.tooltip');
-    var words = el.text().split('\n');
-
-    el.text('');
-    for (var j = 0; j < words.length; j++) {
-        var tspan = el.append('tspan').text(words[j]);
-        if (j > 0)
-            tspan.attr('x', 0).attr('y', '15');
-    }
-
-    console.log(words, el);
-};
-
 //TODO, need unique ID for local storage
 BridgesVisualizer.getTransformObjectFromLocalStorage = function(visID) {
 
