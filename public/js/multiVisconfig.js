@@ -631,7 +631,7 @@ function sortNonCircularListByLinks(unsortedNodes, listType){
         if(sortedNodes[uniqueBackwardLink[key].target])sortedNodes[uniqueBackwardLink[key].target]['backwardlink'] = uniqueBackwardLink[key];
     }
 
-    console.log(sortedNodes);
+    // console.log(sortedNodes);
     return sortedNodes;
 }
 

@@ -40,7 +40,8 @@ block content
                             div.gallery_link_title Assignment#{assignments[x].email}
 
                   div.user-gallery-menu
-                    div.gallery_link_small Assignment #{assignments[x].username}
+                    div.gallery_link_small #{assignments[x].username} #{assignments[x].email}
+                    div.gallery_link_small Assignment #{assignments[x].assignmentNumber}
                     div.gallery_link_small Data Structure: #{assignments[x].data[0].visual}
                     div.gallery_link_small Date Created: #{assignments[x].dateCreated}
 
