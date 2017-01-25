@@ -32,7 +32,7 @@ block content
                             else
                                 img.visimg(src='/img/'+assignments[x].vistype+'.png' title=assignments[x].vistype)
 
-                  a(style='text-decoration: none; ' href='/assignments/'+assignments[x].assignmentNumber+'/'+usernames)
+                  a(style='text-decoration: none;' href='/assignments/'+assignments[x].assignmentNumber+'/'+assignments[x].username)
                       div(class='gallery_links')
                         - if (assignments[x].username)
                             div.gallery_link_title #{assignments[x].username}
