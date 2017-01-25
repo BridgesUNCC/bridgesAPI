@@ -108,6 +108,20 @@ BridgesVisualizer.insertLinebreaks = function (d, i) {
     }
 };
 
+// bind linebreaks to text elements
+BridgesVisualizer.tooltipLinebreaks = function (d, i) {
+    var el = d3.select('.tooltip');
+    var words = el.text().split('\n');
+
+    el.text('');
+    for (var j = 0; j < words.length; j++) {
+        var tspan = el.append('tspan').text(words[j]);
+        if (j > 0)
+            tspan.attr('x', 0).attr('y', '15');
+    }
+
+    console.log(words, el);
+};
 
 //TODO, need unique ID for local storage
 BridgesVisualizer.getTransformObjectFromLocalStorage = function(visID) {
@@ -167,11 +181,17 @@ d3.selection.prototype.moveToBack = function() {
 };
 
 // Define the div for the tooltip
-var div = d3.select("body").append("div")
+var tooltip = d3.select("body").append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
 
 BridgesVisualizer.textMouseover = function(d) {
+
+    function addLineBreaks(str) {
+      str = str.split("\n");
+      str = str.join("<br>");
+      return str;
+    }
 
     if(!BridgesVisualizer.tooltipEnabled) return;
 
@@ -187,10 +207,10 @@ BridgesVisualizer.textMouseover = function(d) {
                             .size(BridgesVisualizer.scaleSize(40))();
                 });
     }
-    div.transition()
+    tooltip.transition()
         .duration(200)
         .style("opacity", 0.9);
-    div	.html(d.name)
+    tooltip.html(addLineBreaks(d.name))
         .style("left", (d3.event.pageX) + "px")
         .style("top", (d3.event.pageY) + "px");
     };
@@ -208,7 +228,7 @@ BridgesVisualizer.textMouseout = function(d) {
                 });
     }
 
-    div.transition()
+    tooltip.transition()
         .duration(500)
         .style("opacity", 0);
 };
@@ -468,7 +488,7 @@ try{
 }
 
 function hideTooltip(){
-  div.transition()
+  tooltip.transition()
       .duration(500)
       .style("opacity", 0);
 }

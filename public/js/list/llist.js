@@ -307,9 +307,6 @@ d3.sllist = function(d3, canvasID, w, h, data) {
             .attr("height",40)
             .style("display","block");
 
-
-    svgGroup.selectAll('text').each(BridgesVisualizer.insertLinebreaks);
-
     //transparent layer on top of the node, so the mouseover only enters to this rectangle on top.
     nodes
         .append("rect")
