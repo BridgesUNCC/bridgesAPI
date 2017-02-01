@@ -17,7 +17,7 @@ d3.csllist = function(d3, canvasID, w, h, data) {
     var defaultSizeW = 160;  // default width of each element box
     var elementsPerRow = 4 * parseInt((w - (spacing + defaultSizeH)) / (spacing + defaultSizeH));
 
-    var transformObject = BridgesVisualizer.getTransformObjectFromCookie(visID);
+    var transformObject = BridgesVisualizer.getTransformObjectFromLocalStorage(visID);
     if(transformObject){
         finalTranslate = transformObject.translate;
         finalScale = transformObject.scale;

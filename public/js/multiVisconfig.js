@@ -70,18 +70,18 @@ BridgesVisualizer.defaultTransforms = {
 };
 
 BridgesVisualizer.getDefaultTransforms = function(visType) {
-  if(BridgesVisualizer.defaultTransforms[visType]) {
-    return BridgesVisualizer.defaultTransforms[visType];
-  } else {
-    return {"scale": 0.9, "translate": [50, 100]};
-  }
+    if(BridgesVisualizer.defaultTransforms[visType]) {
+      return BridgesVisualizer.defaultTransforms[visType];
+    } else {
+      return {"scale": 0.9, "translate": [50, 100]};
+    }
 };
 
 // function to return color depending on the style of representation
 BridgesVisualizer.getColor = function(color) {
-  if(Array.isArray(color))
-    return "rgba(" + color[0] + "," + color[1] + "," + color[2] + "," + color[3] + ")";
-  return color;
+    if(Array.isArray(color))
+      return "rgba(" + color[0] + "," + color[1] + "," + color[2] + "," + color[3] + ")";
+    return color;
 };
 
 //this array holds the assignments types; it's used to handle the mixed assignements
@@ -116,47 +116,63 @@ BridgesVisualizer.insertLinebreaks = function (d, i) {
     }
 };
 
-//TODO, need unique ID for local storage
-BridgesVisualizer.getTransformObjectFromLocalStorage = function(visID) {
-
+BridgesVisualizer.assignmentUniqueIdentifier = location.pathname+dateCreated;
+BridgesVisualizer.getTransformObjectFromLocalStorage = function(key) {
+      return JSON.parse(localStorage.getItem(key + BridgesVisualizer.assignmentUniqueIdentifier));
 };
+// Saved the translate and scale of every visualization in an assignemts using localStorage
+BridgesVisualizer.saveVisStatesInLocalStorage = function(){
+    for (var key in data) {
+        var my_transform = d3.transform(d3.select("#vis"+key).select("g").attr("transform"));
+        var transformObjectValue = JSON.stringify({
+              "scale": parseFloat(my_transform.scale[0]),
+          "translate": [parseFloat(my_transform.translate[0]), parseFloat(my_transform.translate[1])]
+        });
+        localStorage.setItem(key + BridgesVisualizer.assignmentUniqueIdentifier, transformObjectValue);
+    }
+}
+BridgesVisualizer.removeVisStatesFromLocalStorage = function(transformObjectKey){
+    for (var key in data) {
+        localStorage.removeItem(key + BridgesVisualizer.assignmentUniqueIdentifier);
+    }
+}
 
 // function to return the transformObject saved positions
-BridgesVisualizer.getTransformObjectFromCookie = function(visID) {
-        var name = "vis"+visID+"-"+location.pathname + "=";
-        // var name = cname + "=";
-        var ca = document.cookie.split(';');
-        // console.log(ca);
-        for(var i=0; i<ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0)==' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) === 0) {
-                // return c.substring(name.length, c.length);
-                var cookieStringValue = c.substring(name.length, c.length);
-                var cookieJSONValue;
-                try{
-                    cookieJSONValue = JSON.parse(cookieStringValue);
-                }catch(err){
-                    console.log(err, cookieStringValue);
-                }
-
-                if(cookieJSONValue){
-                  if(cookieJSONValue.hasOwnProperty("translatex") &&
-                     cookieJSONValue.hasOwnProperty("translatey") &&
-                     cookieJSONValue.hasOwnProperty("scale")){
-                       var finalTranslate = [parseFloat(cookieJSONValue.translatex), parseFloat(cookieJSONValue.translatey)];
-                       var finalScale = [parseFloat(cookieJSONValue.scale)];
-                       return {"translate":finalTranslate, "scale":finalScale};
-                  }
-                }else{
-                  return undefined;
-                }
-            }
-        }
-        return "";
-};
+// BridgesVisualizer.getTransformObjectFromCookie = function(visID) {
+//         var name = "vis"+visID+"-"+location.pathname + "=";
+//         // var name = cname + "=";
+//         var ca = document.cookie.split(';');
+//         // console.log(ca);
+//         for(var i=0; i<ca.length; i++) {
+//             var c = ca[i];
+//             while (c.charAt(0)==' ') {
+//                 c = c.substring(1);
+//             }
+//             if (c.indexOf(name) === 0) {
+//                 // return c.substring(name.length, c.length);
+//                 var cookieStringValue = c.substring(name.length, c.length);
+//                 var cookieJSONValue;
+//                 try{
+//                     cookieJSONValue = JSON.parse(cookieStringValue);
+//                 }catch(err){
+//                     console.log(err, cookieStringValue);
+//                 }
+//
+//                 if(cookieJSONValue){
+//                   if(cookieJSONValue.hasOwnProperty("translatex") &&
+//                      cookieJSONValue.hasOwnProperty("translatey") &&
+//                      cookieJSONValue.hasOwnProperty("scale")){
+//                        var finalTranslate = [parseFloat(cookieJSONValue.translatex), parseFloat(cookieJSONValue.translatey)];
+//                        var finalScale = [parseFloat(cookieJSONValue.scale)];
+//                        return {"translate":finalTranslate, "scale":finalScale};
+//                   }
+//                 }else{
+//                   return undefined;
+//                 }
+//             }
+//         }
+//         return "";
+// };
 
 d3.selection.prototype.moveToFront = function() {
     return this.each(function(){
@@ -244,6 +260,7 @@ var map = map || null;
 if( map )
   map( mapData );
 
+console.log(data);
 /* create new assignments  */
 for (var key in data) {
   if (data.hasOwnProperty(key)) {
@@ -319,7 +336,7 @@ function reset() {
         }
         svgGroup.attr("transform", "translate(" + zoom.translate() + ")scale(" + zoom.scale() + ")");
     }
-    saveVisStatesAsCookies();
+    BridgesVisualizer.saveVisStatesInLocalStorage;
 }
 
 function deleteAssignment() {
@@ -399,6 +416,7 @@ function savePositions () {
 //Asynchronously update the vis transform values
 //this method is just for testing, if approved, it still needs the ajax call and routing set up as well as the dabatase.
 //It also can be used with the tree visualization
+//TODO never used
 function saveTransform(){
     var visTransforms = {};
     for (var key in data) {
@@ -438,41 +456,42 @@ function alertMessage(message, status) {
   },2500);
 }
 
-// Saved the translate and scale of every visualization in an assignemts
-function saveVisStatesAsCookies(){
-    // console.log(this);
-    var exdays = 30;
-    try{
-      for (var key in data) {
-          var cookieName = "vis"+key+"-"+location.pathname;
-          var my_transform = d3.transform(d3.select("#vis"+key).select("g").attr("transform"));
+// // Saved the translate and scale of every visualization in an assignemts
+// function saveVisStatesAsCookies(){
+//     // console.log(this);
+//     var exdays = 30;
+//     try{
+//       for (var key in data) {
+//           var cookieName = "vis"+key+"-"+location.pathname;
+//           var my_transform = d3.transform(d3.select("#vis"+key).select("g").attr("transform"));
+//
+//           var cookieValue = JSON.stringify({
+//             "scale": parseFloat(my_transform.scale[0]),
+//             "translatex": parseFloat(my_transform.translate[0]),
+//             "translatey": parseFloat(my_transform.translate[1])
+//           });
+//           var d = new Date();
+//           d.setTime(d.getTime() + (exdays*24*60*60*1000));
+//           var expires = "expires=" + d.toGMTString();
+//           document.cookie = cookieName+"="+cookieValue+"; "+expires;
+//       }
+//       var today = new Date().toLocaleTimeString()+" - "+new Date().toLocaleDateString();
+//       //  alertMessage("Scale and translation saved!", "success");
+//     } catch(err){
+//       console.log(err);
+//     }
+// }
 
-          var cookieValue = JSON.stringify({
-            "scale": parseFloat(my_transform.scale[0]),
-            "translatex": parseFloat(my_transform.translate[0]),
-            "translatey": parseFloat(my_transform.translate[1])
-          });
-          var d = new Date();
-          d.setTime(d.getTime() + (exdays*24*60*60*1000));
-          var expires = "expires=" + d.toGMTString();
-          document.cookie = cookieName+"="+cookieValue+"; "+expires;
-      }
-      var today = new Date().toLocaleTimeString()+" - "+new Date().toLocaleDateString();
-      //  alertMessage("Scale and translation saved!", "success");
-    } catch(err){
-      console.log(err);
-    }
-}
 
 // Save cookies when scale and translation are updated
 //  only updates zoom after scrolling has stopped
 try{
     var wheeling = null;
-    $("svg").mouseup(saveVisStatesAsCookies);
+    $("svg").mouseup(BridgesVisualizer.saveVisStatesInLocalStorage);
     $("svg").on('wheel', function (e) {
       clearTimeout(wheeling);
       wheeling = setTimeout(function() {
-        saveVisStatesAsCookies();
+        BridgesVisualizer.saveVisStatesInLocalStorage();
         wheeling = undefined;
       }, 250);
     });

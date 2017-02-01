@@ -335,10 +335,6 @@ exports.show = function (req, res, next) {
 
         }
 
-        // console.log(Array.isArray(toInclude));
-
-        // console.log(finalVistype);
-
         return res.render ('assignments/assignmentMulti', {
             "title":"Assignment " + assignmentNumber,
             "assignmentTitle": assignments[0].title,
@@ -349,6 +345,7 @@ exports.show = function (req, res, next) {
             "assignmentNumber":assignmentNumber,
             "schoolID":assignments[0].schoolID,
             "classID":assignments[0].classID,
+            "dateCreated":Date.parse(assignments[0].dateCreated),
             "linkResources":linkResources,
             "shared":assignments[0].shared,
             "owner":owner,

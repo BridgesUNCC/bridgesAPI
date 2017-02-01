@@ -17,7 +17,7 @@ d3.array3d = function(d3, canvasID, w, h, data, dimensions) {
         visID = canvasID.substr(4),
         finalTranslate = BridgesVisualizer.defaultTransforms.Array3D.translate,
         finalScale =  BridgesVisualizer.defaultTransforms.Array3D.scale,
-        transformObject = BridgesVisualizer.getTransformObjectFromCookie(visID),
+        transformObject = BridgesVisualizer.getTransformObjectFromLocalStorage(visID),
         elementsPerRow = dimOne,
         elementsPerColumn = (dimOne * dimTwo) / dimOne;
 

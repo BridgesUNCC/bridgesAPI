@@ -13,7 +13,7 @@ d3.array = function(d3, canvasID, w, h, data) {
     var finalTranslate = BridgesVisualizer.defaultTransforms.array.translate;
     var finalScale =  BridgesVisualizer.defaultTransforms.array.scale;
 
-    var transformObject = BridgesVisualizer.getTransformObjectFromCookie(visID);
+    var transformObject = BridgesVisualizer.getTransformObjectFromLocalStorage(visID);
     if(transformObject){
       finalTranslate = transformObject.translate;
       finalScale = transformObject.scale;
