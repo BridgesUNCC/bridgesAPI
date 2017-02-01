@@ -1,3 +1,11 @@
+/*******Added this this method to use retrieve asssignment in iframe***********/
+$(function(){
+    if(window.location.hash == "#onlyshowvis0"){
+        $("#assignment-menu").hide();
+        $(".navbar").hide();
+    }
+});
+
 // Toggle the primary assignment menu
 d3.select("#assignment-menu")
     .on('mouseover', function() {
