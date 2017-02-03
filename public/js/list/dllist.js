@@ -171,7 +171,10 @@ d3.dllist = function(d3, canvasID, w, h, data) {
             if(d.forwardlink) return BridgesVisualizer.getColor(d.forwardlink.color);
             else return "black";
         })
-        .attr("stroke-width",5)
+        .attr("stroke-width",function(d){
+            if(d.forwardlink) return d.forwardlink.thickness;
+            else return 3;
+        })
         .attr("marker-end",function(d,i){
           if(i % elementsPerRow == (elementsPerRow-1) && (i != dataLength-1) ){
             return "url('#Circle')";
@@ -229,7 +232,10 @@ d3.dllist = function(d3, canvasID, w, h, data) {
             else return "black";
         })
         // .attr("stroke","pink")
-        .attr("stroke-width",5)
+        .attr("stroke-width",function(d){
+            if(d.backwardlink) return d.backwardlink.thickness;
+            else return 3;
+        })
         .attr("marker-end",function(d,i){
           if(i % elementsPerRow == (elementsPerRow-1) && (i != dataLength-1) ){
             return "url('#Triangle')";
@@ -307,7 +313,9 @@ d3.dllist = function(d3, canvasID, w, h, data) {
               .attr("stroke",function(d,i){
                   return d3.select(this.parentNode).select(".forward-link").attr("stroke") || "black";
               })
-              .attr("stroke-width",5)
+              .attr("stroke-width",function(){
+                  return d3.select(this.parentNode).select(".forward-link").attr("stroke-width") || 3;
+              })
               .attr("y1", function(d,i){
                   return parseInt(d3.select(this.parentNode).select(".backward-horizontal-link").attr("y1")) - 3;
               })
@@ -331,7 +339,9 @@ d3.dllist = function(d3, canvasID, w, h, data) {
               .attr("stroke",function(d,i){
                 return d3.select(this.parentNode).select(".backward-link").attr("stroke") || "black";
               })
-              .attr("stroke-width",5)
+              .attr("stroke-width",function(){
+                  return d3.select(this.parentNode).select(".backward-link").attr("stroke-width") || 3;
+              })
               .attr("y1", function(d,i){
                   return parseInt(d3.select(this.parentNode).select(".forward-horizontal-link").attr("y1")) - 3;
               })

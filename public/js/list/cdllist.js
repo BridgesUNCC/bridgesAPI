@@ -172,7 +172,10 @@ d3.cdllist = function(d3, canvasID, w, h, data) {
               if(d.forwardlink != undefined && d.forwardlink.color) return BridgesVisualizer.getColor(d.forwardlink.color);
               else return "black";
           })
-          .attr("stroke-width",5)
+          .attr("stroke-width",function(d){
+              if(d.backwardlink) return d.backwardlink.thickness;
+              else return 3;
+          })
           .attr("marker-end",function(d,i){
             if(i % elementsPerRow == (elementsPerRow-1) && (i != dataLength-1) ){
               return "url('#Circle')";
@@ -230,7 +233,10 @@ d3.cdllist = function(d3, canvasID, w, h, data) {
             if(d.backwardlink != undefined && d.backwardlink.color) return BridgesVisualizer.getColor(d.backwardlink.color);
             else return "black";
         })
-        .attr("stroke-width",5)
+        .attr("stroke-width",function(d,i){
+            if(d.backwardlink) return d.backwardlink.thickness;
+            else return 3;
+        })
         .attr("marker-end",function(d,i){
           if(i % elementsPerRow == (elementsPerRow-1) && (i != dataLength-1) ){
             return "url('#Triangle')";
@@ -256,7 +262,9 @@ d3.cdllist = function(d3, canvasID, w, h, data) {
                     .attr("stroke",function(d,i){
                         return d3.select(this.parentNode).select(".forward-link").attr("stroke") || "black";
                     })
-                    .attr("stroke-width",5)
+                    .attr("stroke-width",function(){
+                        return d3.select(this.parentNode).select(".forward-link").attr("stroke-width") || 3;
+                    })
                     .attr("y1", function(d,i){
                       // console.log(  );
                       return d3.select(this.parentNode).select(".forward-link").attr("y1");
