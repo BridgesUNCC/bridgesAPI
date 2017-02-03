@@ -113,7 +113,8 @@ exports.recentUploads = function(req, res) {
   Assignment
       .find({
         shared: true,
-        subAssignment: "00"
+        subAssignment: "00",
+        email: {$nin : ["lestrell@uncc.edu", "mmehedin@uncc.edu", "krs@uncc.edu"]}
       }, {
           _id: 0,
           email: 1,
