@@ -201,6 +201,7 @@ module.exports = function(app, passport, streamable) {
 
     // get the k most recent assignments
     app.get('/index/recentUploads', gallery.recentUploads, handleError);
+    app.get('/index/topAssignments', gallery.topAssignments, handleError);
 
     app.post('/users/session',
         passport.authenticate('local-log', {

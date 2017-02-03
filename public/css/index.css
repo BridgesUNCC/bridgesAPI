@@ -6,6 +6,13 @@ h3.spacer {
   margin-left: 20px;
 }
 
+div#topAssigns {
+  border-left: solid 5px steelblue;
+  padding: 10px;
+  display: inline-block;
+  margin-top: 30px;
+}
+
 div#recentAssigns {
   border-left: solid 5px steelblue;
   padding: 10px;
@@ -17,17 +24,29 @@ div.assignment-preview {
   border: solid 5px white;
   padding: 10px;
   margin: 10px;
-  max-width: 400px;
+  /*max-width: 200px;/*/
+  width: 200px;
   display: inline-block;
   box-shadow: 2px 2px 8px #888888;
 }
 
 div.assignment-text {
   /*border: solid 1px black;*/
-  display: inline-block;
-  max-width: 200px;
-  margin: 5px;
+  /*display: inline-block;*/
+  /*max-width: 200px;*/
+  /*width: 200px;*/
+  /*margin: auto;;*/
+  /*margin: 5px;*/
   text-align: center;
+}
+
+div.assignment-text span{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 1.2em;
+    display: -webkit-inline-box;
+    display: inline-block;
+    word-wrap: break-word;
 }
 
 div.assignment-image {
