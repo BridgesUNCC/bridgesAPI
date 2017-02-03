@@ -27,14 +27,16 @@ div.assignment-text {
   display: inline-block;
   max-width: 200px;
   margin: 5px;
+  text-align: center;
 }
 
 div.assignment-image {
   vertical-align: top;
-  display: inline-block;
+  /*display: inline-block;*/
   height:120px;
   width: 120px;
-  margin: 5px;
+  /*margin: 5px;*/
+  margin: auto;
   border-style: solid;
   border-width:2px;
   border-radius:20px;

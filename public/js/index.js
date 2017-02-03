@@ -1,12 +1,12 @@
 var getContent = function(d) {
-  var content = "",
-      linebreak = " <br /> ";
+  var linebreak = " <br> ",
+      content = linebreak;
 
   content += d.title ? d.title : "Assignment " + d.assignmentNumber;
-  content += linebreak + linebreak;
-  content += d.email + linebreak + linebreak;
-  content += "Type: " + d.vistype + linebreak + linebreak;
-  content += d.description + linebreak + linebreak;
+  content += linebreak;
+  content += d.email + linebreak
+  content += "Type: " + d.vistype + linebreak;
+  content += d.description + linebreak;
 
 
   return content;
@@ -27,9 +27,6 @@ var initGallery = function(data) {
           d3.select(this).classed("hover", false);
         });
 
-  assignmentWindow.append("div")
-    .classed("assignment-text", true)
-    .html(function(d, i) { return getContent(d); });
 
   assignmentWindow.append("div")
       .classed("assignment-image", true)
@@ -44,6 +41,18 @@ var initGallery = function(data) {
             return '/img/'+d.vistype.toLowerCase()+'.png';
 
       });
+
+  assignmentWindow.append("div")
+    .classed("assignment-text", true)
+    .html(function(d, i) { return getContent(d); });
+
+  var defaultAssignmentWindowWidth = 0;
+  assignmentWindow.each(function(d,i){
+      if(i == 0) defaultAssignmentWindowWidth = $(this).width();
+      if($(this).width() < defaultAssignmentWindowWidth) defaultAssignmentWindowWidth = $(this).width();
+  });
+  $(".assignment-preview").width(defaultAssignmentWindowWidth);
+
 };
 
 var getMore = function(cb) {
