@@ -260,7 +260,9 @@ d3.dllist = function(d3, canvasID, w, h, data) {
                 .attr("stroke",function(d,i){
                   return d3.select(this.parentNode).select(".forward-link").attr("stroke") || "black";
                 })
-                .attr("stroke-width",5)
+                .attr("stroke-width",function(d,i){
+                  return d3.select(this.parentNode).select(".forward-link").attr("stroke-width");
+                })
                 .attr("y1", function(d,i){
                   return d3.select(this.parentNode).select(".forward-link").attr("y1");
                 })
@@ -268,7 +270,8 @@ d3.dllist = function(d3, canvasID, w, h, data) {
                   return d3.select(this.parentNode).select(".forward-link").attr("y1");
                 })
                 .attr("x1", function(d,i){
-                  return d3.select(this.parentNode).select(".forward-link").attr("x1");
+                  return ( (elementsPerRow-1) * (-1*(spacing + defaultSizeH) ) ) + 25;
+
                 })
                 .attr("x2", function(d,i){
                   return d3.select(this.parentNode).select(".forward-link").attr("x1");
@@ -286,7 +289,10 @@ d3.dllist = function(d3, canvasID, w, h, data) {
                 .attr("stroke",function(d,i){
                     return d3.select(this.parentNode).select(".backward-link").attr("stroke") || "black";
                 })
-                .attr("stroke-width",5)
+                .attr("stroke-width",function(d){
+                    if(d.forwardlink) return d.forwardlink.thickness;
+                    return d3.select(this.parentNode).select(".backward-link").attr("stroke-width");
+                })
                 .attr("y1", function(d,i){
                   return d3.select(this.parentNode).select(".backward-link").attr("y1");
                 })
