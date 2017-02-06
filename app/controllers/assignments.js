@@ -279,7 +279,7 @@ exports.show = function (req, res, next) {
         }
 
         // Add way to track popular ass
-        if(req.user.username){
+        if(req && req.user && req.user.username){
               var count = 1;
               if(req.user.username in assignments[0].visitors){
                   count = assignments[0].visitors[req.user.username];
@@ -289,7 +289,7 @@ exports.show = function (req, res, next) {
               //Tested it and it works, but further testing and improvements might required.
               assignments[0].visitorsCount = Object.keys(assignments[0].visitors).length;
               assignments[0].visitors[req.user.username] = count;
-              
+
               // save the updated data
               assignments[0].markModified('visitors'); //http://mongoosejs.com/docs/faq.html
               assignments[0].save();
