@@ -1,11 +1,3 @@
-/*******Added this this method to use retrieve asssignment in iframe***********/
-$(function(){
-    if(window.location.hash == "#onlyshowvis0"){
-        $("#assignment-menu").hide();
-        $(".navbar").hide();
-    }
-});
-
 // Toggle the primary assignment menu
 d3.select("#assignment-menu")
     .on('mouseover', function() {
@@ -711,3 +703,12 @@ function sortSLLists(unsortedNodes) {
 
   return sortedNodes;
 }
+
+/*******Added this this method to use retrieve asssignment in iframe***********/
+$(function(){
+    if(window.location.hash == "#onlyshowvis0"){
+        if(allSVG.length > 0)allSVG[0].attr("transform","translate(157.09,221.37)scale(0.53)");
+        $("#assignment-menu").hide();
+        $(".navbar").hide();
+    }
+});
