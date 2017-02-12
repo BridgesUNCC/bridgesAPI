@@ -508,6 +508,8 @@ $("body").on("keydown", function(event) {
             d3.selectAll(".nodeLabel").style("display","none").style("opacity","0");
             BridgesVisualizer.tooltipEnabled = true;
         }
+    }else if(event.which == "82"){
+        reset();
     }
 });
 
@@ -707,7 +709,10 @@ function sortSLLists(unsortedNodes) {
 /*******Added this this method to use retrieve asssignment in iframe***********/
 $(function(){
     if(window.location.hash == "#onlyshowvis0"){
-        if(allSVG.length > 0)allSVG[0].attr("transform","translate(157.09,221.37)scale(0.53)");
+        if(allSVG.length > 0){
+          allSVG[0].attr("transform","translate(157.09,221.37)scale(0.53)");
+          // allZoom[0].on("zoom",null);
+        }
         $("#assignment-menu").hide();
         $(".navbar").hide();
     }

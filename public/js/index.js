@@ -6,7 +6,7 @@ var getContent = function(d) {
   content += linebreak;
   content += d.email + linebreak
   content += "Type: " + d.vistype + linebreak;
-  content += d.description + linebreak;
+  // content += d.description + linebreak;
 
 
   return content;
