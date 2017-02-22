@@ -270,7 +270,10 @@ for (var key in data) {
         bst.make(data[key]);
     }
     else if(data[key]['visType'] == "dllist" && d3.dllist){
-        d3.dllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key]), transform);
+        var nodes = sortNonCircularListByLinks(data[key], d3, "#vis" + key, width, height);
+        if(nodes){
+            d3.dllist(d3, "#vis" + key, width, height, nodes, transform);
+        }
     }
     else if(data[key]['visType'] == "cdllist" && d3.cdllist){
         d3.cdllist(d3, "#vis" + key, width, height, sortCircularDoublyListByLinks(data[key]));
@@ -619,7 +622,7 @@ function sortCircularDoublyListByLinks(unsortedNodes, listType){
 }
 
 //this methods sorts any Doubly Links linkedlist by links
-function sortNonCircularListByLinks(unsortedNodes, listType){
+function sortNonCircularListByLinks(unsortedNodes, d3, assignmentKey, width, height){
     var links = unsortedNodes.links;
     var nodes = unsortedNodes.nodes;
     var uniqueForwardLink = {},
@@ -634,6 +637,22 @@ function sortNonCircularListByLinks(unsortedNodes, listType){
         }else{
             uniqueBackwardLink[links[i].target+"-"+links[i].source] = links[i];
         }
+
+        if(Math.abs(links[i].source-links[i].target) != 1){
+            if(!d3.graph){
+                $.getScript("../../js/graph.js", function( data, textStatus, jqxhr ) {
+                    if(d3.graph){
+                        d3.graph(d3, assignmentKey, width, height, unsortedNodes);
+                        return undefined;
+                    }
+                });
+            }
+            if(d3.graph){
+                d3.graph(d3, assignmentKey, width, height, unsortedNodes);
+                return undefined;
+            }
+        }
+
     }
 
     var keys = Object.keys(uniqueForwardLink).sort(function(a,b){
