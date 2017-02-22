@@ -276,7 +276,10 @@ for (var key in data) {
         }
     }
     else if(data[key]['visType'] == "cdllist" && d3.cdllist){
-        d3.cdllist(d3, "#vis" + key, width, height, sortCircularDoublyListByLinks(data[key]));
+        var nodes = sortCircularDoublyListByLinks(data[key], d3, "#vis" + key, width, height);
+        if(nodes){
+            d3.cdllist(d3, "#vis" + key, width, height, nodes);
+        }
     }
     else if(data[key]['visType'] == "llist" && d3.sllist){
         // d3.sllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key]), transform);
@@ -565,7 +568,7 @@ function sortCircularSinglyListByLinks(unsortedNodes, listType){
 }
 
 //this methods sorts any Doubly Links linkedlist by links
-function sortCircularDoublyListByLinks(unsortedNodes, listType){
+function sortCircularDoublyListByLinks(unsortedNodes, d3, assignmentKey, width, height){
     var links = unsortedNodes.links,
         nodes = unsortedNodes.nodes,
         uniqueForwardLink = {},
@@ -576,6 +579,25 @@ function sortCircularDoublyListByLinks(unsortedNodes, listType){
         lastElement;
 
     for(var i = links.length-1; i >= 0; i--){
+
+      // console.log("source : " + links[i].source + " ___ " + "target: " + links[i].target);
+
+      if(Math.abs(links[i].source-links[i].target) != 1 &&
+         (links[i].source != 0 && links[i].target != nodes.length-1) &&
+         (links[i].target != 0 && links[i].source != nodes.length-1) )
+      {
+          // console.log("!1 == source : " + links[i].source + " ___ " + "target: " + links[i].target);
+          if(!d3.graph){
+              $.getScript("../../js/graph.js", function( data, textStatus, jqxhr ) {
+                  if(d3.graph){
+                      d3.graph(d3, assignmentKey, width, height, unsortedNodes);
+                  }
+              });
+          }
+          return undefined;
+      }
+
+
         if(parseInt(links[i].source) < parseInt(links[i].target)){
             uniqueForwardLink[links[i].source+"-"+links[i].target] = links[i];
             if(links[i].source == 0 && links[i].target == nodes.length-1){
@@ -596,6 +618,10 @@ function sortCircularDoublyListByLinks(unsortedNodes, listType){
                 continue;
             }
         }
+
+
+
+
     }
 
     var keys = Object.keys(uniqueForwardLink).sort(function(a,b){
@@ -643,14 +669,10 @@ function sortNonCircularListByLinks(unsortedNodes, d3, assignmentKey, width, hei
                 $.getScript("../../js/graph.js", function( data, textStatus, jqxhr ) {
                     if(d3.graph){
                         d3.graph(d3, assignmentKey, width, height, unsortedNodes);
-                        return undefined;
                     }
                 });
             }
-            if(d3.graph){
-                d3.graph(d3, assignmentKey, width, height, unsortedNodes);
-                return undefined;
-            }
+            return undefined;
         }
 
     }
