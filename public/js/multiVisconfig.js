@@ -82,6 +82,9 @@ BridgesVisualizer.assignmentTypes = [];
 //this boolean is used to deactivate the tooltip when all labels are shown (key 'L')
 BridgesVisualizer.tooltipEnabled = true;
 
+//this object stores backward links that were wrongly set in doubly list types
+BridgesVisualizer.wrongLinksMap = {};
+
 BridgesVisualizer.centerTextHorizontallyInRect = function(obj, width){
     return (width - obj.getComputedTextLength()) / 2;
 };
@@ -270,10 +273,7 @@ for (var key in data) {
         bst.make(data[key]);
     }
     else if(data[key]['visType'] == "dllist" && d3.dllist){
-        var nodes = sortNonCircularListByLinks(data[key], d3, "#vis" + key, width, height);
-        if(nodes){
-            d3.dllist(d3, "#vis" + key, width, height, nodes, transform);
-        }
+        d3.dllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key], key), transform);
     }
     else if(data[key]['visType'] == "cdllist" && d3.cdllist){
         var nodes = sortCircularDoublyListByLinks(data[key], d3, "#vis" + key, width, height);
@@ -648,7 +648,7 @@ function sortCircularDoublyListByLinks(unsortedNodes, d3, assignmentKey, width, 
 }
 
 //this methods sorts any Doubly Links linkedlist by links
-function sortNonCircularListByLinks(unsortedNodes, d3, assignmentKey, width, height){
+function sortNonCircularListByLinks(unsortedNodes, assignmentKey){
     var links = unsortedNodes.links;
     var nodes = unsortedNodes.nodes;
     var uniqueForwardLink = {},
@@ -662,19 +662,15 @@ function sortNonCircularListByLinks(unsortedNodes, d3, assignmentKey, width, hei
             uniqueForwardLink[links[i].source+"-"+links[i].target] = links[i];
         }else{
             uniqueBackwardLink[links[i].target+"-"+links[i].source] = links[i];
-        }
 
-        if(Math.abs(links[i].source-links[i].target) != 1){
-            if(!d3.graph){
-                $.getScript("../../js/graph.js", function( data, textStatus, jqxhr ) {
-                    if(d3.graph){
-                        d3.graph(d3, assignmentKey, width, height, unsortedNodes);
-                    }
-                });
+            if(Math.abs(links[i].source-links[i].target) != 1){
+                if(BridgesVisualizer.wrongLinksMap && !BridgesVisualizer.wrongLinksMap[assignmentKey])
+                    BridgesVisualizer.wrongLinksMap[assignmentKey] = {};
+
+                BridgesVisualizer.wrongLinksMap[assignmentKey][links[i].source] = links[i].target;
             }
-            return undefined;
+            
         }
-
     }
 
     var keys = Object.keys(uniqueForwardLink).sort(function(a,b){
