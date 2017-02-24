@@ -580,6 +580,10 @@ d3.cdllist = function(d3, canvasID, w, h, data) {
               })
               .style("opacity","0");
 
+
+          BridgesVisualizer.drawWrongLinks(svgGroup, visID, elementsPerRow);
+
+
           //// zoom function
           function zoomHandler() {
               zoom.translate(d3.event.translate);

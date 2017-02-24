@@ -15,7 +15,6 @@ d3.dllist = function(d3, canvasID, w, h, data) {
     var defaultSizeH = 100;  // default size of each element box
     var defaultSizeW = 160;  // default size of each element box
     var elementsPerRow = 4 * parseInt((w - (spacing + defaultSizeH)) / (spacing + defaultSizeH));
-    elementsPerRow = 2;
 
     var transformObject = BridgesVisualizer.getTransformObjectFromLocalStorage(visID);
     if(transformObject){
@@ -480,32 +479,8 @@ d3.dllist = function(d3, canvasID, w, h, data) {
 
     svgGroup.selectAll('text').each(BridgesVisualizer.insertLinebreaks);
 
-    // for(var wrongLink in Object.keys(BridgesVisualizer.wrongLinksMap[visID])){
-    // TODO tomorrow 22/23/2017. Take the exact location of the of the removing x2 and draw a line using that those 2 points.
-    for(var x in BridgesVisualizer.wrongLinksMap[visID]){
-        console.log(x);
-        console.log(BridgesVisualizer.wrongLinksMap[visID][x]);
-        // d3.select("#svg"+visID+"g"+x).select("backward-link");
-        console.log(d3.select("#svg"+visID+"g"+ (parseInt(x)-1) ).select(".backward-link").attr("x1"));
-        d3.select("#svg"+visID+"g"+ (parseInt(x)-1) ).select(".backward-link").attr("x1",function(d,i){
-            return (-1 * parseInt(BridgesVisualizer.wrongLinksMap[visID][x]) ) * defaultSizeW;
-        });
 
-
-        console.log(d3.select("#svg"+visID+"g"+ parseInt(BridgesVisualizer.wrongLinksMap[visID][x]) ).select(".backward-link"));
-
-        d3.select("#svg"+visID+"g"+ parseInt(BridgesVisualizer.wrongLinksMap[visID][x]) )
-          .select(".backward-link").remove();
-        d3.select("#svg"+visID+"g"+ parseInt(BridgesVisualizer.wrongLinksMap[visID][x]) )
-          .select(".forward-horizontal-link").remove();
-        d3.select("#svg"+visID+"g"+ parseInt(BridgesVisualizer.wrongLinksMap[visID][x]) )
-          .select(".test-class-class").remove();
-
-
-
-
-    }
-
+    BridgesVisualizer.drawWrongLinks(svgGroup, visID, elementsPerRow);
 
     //// zoom function
     function zoomHandler() {

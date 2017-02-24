@@ -132,6 +132,73 @@ BridgesVisualizer.removeVisStatesFromLocalStorage = function(transformObjectKey)
     }
 }
 
+BridgesVisualizer.drawWrongLinks = function(svgGroup, visID, elementsPerRow) {
+      for(var x in BridgesVisualizer.wrongLinksMap[visID]){
+
+          var sourceClass;
+          var targetClass;
+          var defaultLinkLength = 80;
+
+          if(!d3.select("#svg"+visID+"g"+ (parseInt(x) -1 ) ).select(".test-class-class")[0][0])
+              sourceClass = ".backward-link";
+          else
+              sourceClass = ".test-class-class";
+
+          targetClass = ".backward-link";
+
+          if(elementsPerRow == 2) defaultLinkLength = 0;
+
+          // if(!d3.select("#svg"+visID+"g"+ (parseInt(BridgesVisualizer.wrongLinksMap[visID][x].target) ) ).select(".test-class-class")[0][0])
+          //     targetClass = ".backward-link";
+          // else
+          //     targetClass = ".test-class-class";
+
+
+          var translateSource =  d3.transform(d3.select("#svg"+visID+"g"+ (parseInt(x) - 1) ).attr("transform")).translate;
+          var sourceElem = d3.select("#svg"+visID+"g"+ (parseInt(x) - 1) ).select(sourceClass);
+
+
+          var translateTarget = d3.transform(d3.select("#svg"+visID+"g"+ (parseInt(BridgesVisualizer.wrongLinksMap[visID][x].target) ) ).attr("transform")).translate;
+          var targetElem = d3.select("#svg"+visID+"g"+ (parseInt(BridgesVisualizer.wrongLinksMap[visID][x].target) ) ).select(targetClass);
+
+          svgGroup
+                  .append("line")
+                  .attr("y1", parseFloat(translateSource[1]) + parseFloat(sourceElem.attr("y2")))
+                  .attr("y2", parseFloat(translateTarget[1]) + parseFloat(targetElem.attr("y2")))
+                  .attr("x1", parseFloat(translateSource[0]) + parseFloat(sourceElem.attr("x2")))
+                  .attr("x2", parseFloat(translateTarget[0]) + parseFloat(targetElem.attr("x2")) - defaultLinkLength)
+                  .attr("marker-start","url('#Circle')")
+                  .attr("marker-end","url('#Triangle')")
+                  .attr("stroke", "red")//might consider using a bright color because the default, blue, it's not so visible
+                  // .attr("stroke",function(){
+                  //     if(BridgesVisualizer.wrongLinksMap[visID][x] && BridgesVisualizer.wrongLinksMap[visID][x].color)
+                  //         return BridgesVisualizer.getColor(BridgesVisualizer.wrongLinksMap[visID][x].color);
+                  //     else
+                  //         return "black";
+                  // })
+                  .attr("stroke-width",function(){
+                      if(BridgesVisualizer.wrongLinksMap[visID][x] && BridgesVisualizer.wrongLinksMap[visID][x].thickness)
+                          return BridgesVisualizer.wrongLinksMap[visID][x].thickness;
+                      else
+                          return 3;
+                  });
+
+          d3.select("#svg"+visID+"g"+ (parseInt(x) - 1)).select(sourceClass).remove();
+          d3.select("#svg"+visID+"g"+ (parseInt(BridgesVisualizer.wrongLinksMap[visID][x].target)) ).select(targetClass).remove();
+
+          if(sourceClass == ".test-class-class"){
+              d3.select("#svg"+visID+"g"+ (parseInt(x) - 1) ).select(".backward-link").remove();
+              d3.select("#svg"+visID+"g"+ (parseInt(x) - 1) ).select(".forward-horizontal-link").remove();
+          }
+
+          if(targetClass == ".test-class-class"){
+              d3.select("#svg"+visID+"g"+ (parseInt(BridgesVisualizer.wrongLinksMap[visID][x].target)) ).select(".backward-link").remove();
+              d3.select("#svg"+visID+"g"+ (parseInt(BridgesVisualizer.wrongLinksMap[visID][x].target)) ).select(".forward-horizontal-link").remove();
+          }
+
+      }
+}
+
 // function to return the transformObject saved positions
 // BridgesVisualizer.getTransformObjectFromCookie = function(visID) {
 //         var name = "vis"+visID+"-"+location.pathname + "=";
@@ -203,7 +270,7 @@ BridgesVisualizer.textMouseover = function(d) {
     if(d3.select(this).select("rect"))
         d3.select(this).select("rect").style("stroke", "yellow").style("stroke-width", 4);
 
-    if(d3.select(this).select("path")){
+    if(!d3.dllist && d3.select(this).select("path")){
             d3.select(this).select("path").transition()
                 .duration(750)
                 .attr('d', function (d) {
@@ -223,7 +290,7 @@ BridgesVisualizer.textMouseout = function(d) {
     if(d3.select(this).select("rect"))
         d3.select(this).select("rect").style("stroke", "gray").style("stroke-width", 2);
 
-    if(d3.select(this).select("path")){
+    if(!d3.dllist && d3.select(this).select("path")){
             d3.select(this).select("path").transition()
                 .duration(750)
                 .attr('d', function (d) {
@@ -276,10 +343,7 @@ for (var key in data) {
         d3.dllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key], key), transform);
     }
     else if(data[key]['visType'] == "cdllist" && d3.cdllist){
-        var nodes = sortCircularDoublyListByLinks(data[key], d3, "#vis" + key, width, height);
-        if(nodes){
-            d3.cdllist(d3, "#vis" + key, width, height, nodes);
-        }
+        d3.cdllist(d3, "#vis" + key, width, height, sortCircularDoublyListByLinks(data[key], key), transform);
     }
     else if(data[key]['visType'] == "llist" && d3.sllist){
         // d3.sllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key]), transform);
@@ -568,7 +632,7 @@ function sortCircularSinglyListByLinks(unsortedNodes, listType){
 }
 
 //this methods sorts any Doubly Links linkedlist by links
-function sortCircularDoublyListByLinks(unsortedNodes, d3, assignmentKey, width, height){
+function sortCircularDoublyListByLinks(unsortedNodes, assignmentKey){
     var links = unsortedNodes.links,
         nodes = unsortedNodes.nodes,
         uniqueForwardLink = {},
@@ -580,12 +644,16 @@ function sortCircularDoublyListByLinks(unsortedNodes, d3, assignmentKey, width, 
 
     for(var i = links.length-1; i >= 0; i--){
 
-      // console.log("source : " + links[i].source + " ___ " + "target: " + links[i].target);
-
+      //conditional to determine wheather there is  alink pointing to a wrong element
       if(Math.abs(links[i].source-links[i].target) != 1 &&
          (links[i].source != 0 && links[i].target != nodes.length-1) &&
-         (links[i].target != 0 && links[i].source != nodes.length-1) )
-      {
+         (links[i].target != 0 && links[i].source != nodes.length-1) ){
+
+           if(BridgesVisualizer.wrongLinksMap && !BridgesVisualizer.wrongLinksMap[assignmentKey])
+               BridgesVisualizer.wrongLinksMap[assignmentKey] = {};
+
+           BridgesVisualizer.wrongLinksMap[assignmentKey][links[i].source] = links[i];
+          /*
           // console.log("!1 == source : " + links[i].source + " ___ " + "target: " + links[i].target);
           if(!d3.graph){
               $.getScript("../../js/graph.js", function( data, textStatus, jqxhr ) {
@@ -595,7 +663,8 @@ function sortCircularDoublyListByLinks(unsortedNodes, d3, assignmentKey, width, 
               });
           }
           return undefined;
-      }
+          */
+        }
 
 
         if(parseInt(links[i].source) < parseInt(links[i].target)){
@@ -655,7 +724,6 @@ function sortNonCircularListByLinks(unsortedNodes, assignmentKey){
         uniqueBackwardLink = {},
         sortedNodes = [],
         head = 0;
-    // console.log(unsortedNodes, listType);
 
     for(var i = links.length-1; i >= 0; i--){
         if(parseInt(links[i].source) < parseInt(links[i].target)){
@@ -667,9 +735,9 @@ function sortNonCircularListByLinks(unsortedNodes, assignmentKey){
                 if(BridgesVisualizer.wrongLinksMap && !BridgesVisualizer.wrongLinksMap[assignmentKey])
                     BridgesVisualizer.wrongLinksMap[assignmentKey] = {};
 
-                BridgesVisualizer.wrongLinksMap[assignmentKey][links[i].source] = links[i].target;
+                BridgesVisualizer.wrongLinksMap[assignmentKey][links[i].source] = links[i];
             }
-            
+
         }
     }
 
