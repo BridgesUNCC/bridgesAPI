@@ -161,7 +161,7 @@ BridgesVisualizer.drawWrongLinks = function(svgGroup, visID, elementsPerRow) {
           var translateTarget = d3.transform( targetParentGroup.attr("transform") ).translate;
           var targetElem = d3.select("#svg"+visID+"g"+ (parseInt(targetIndex) ) ).select(targetClass);
 
-          if( sourceParentGroup.attr("x2") == targetParentGroup.attr("x2") ) defaultLinkLength = 0;
+          // if( sourceParentGroup.attr("x2") == targetParentGroup.attr("x2") ) defaultLinkLength = 0;
 
           svgGroup
                   .append("line")
