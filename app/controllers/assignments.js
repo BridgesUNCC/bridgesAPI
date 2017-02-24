@@ -290,9 +290,15 @@ exports.show = function (req, res, next) {
               assignments[0].visitorsCount = Object.keys(assignments[0].visitors).length;
               assignments[0].visitors[req.user.username] = count;
 
+
               // save the updated data
-              assignments[0].markModified('visitors'); //http://mongoosejs.com/docs/faq.html
-              assignments[0].save();
+              try {
+                  assignments[0].markModified('visitors'); //http://mongoosejs.com/docs/faq.html
+                  assignments[0].save();
+              } catch (e) {
+                  console.log(e);
+              }
+
               //Testing
               // assignments[0].save(function (err) {
               //     if(err) {

@@ -133,67 +133,73 @@ BridgesVisualizer.removeVisStatesFromLocalStorage = function(transformObjectKey)
 }
 
 BridgesVisualizer.drawWrongLinks = function(svgGroup, visID, elementsPerRow) {
-      for(var x in BridgesVisualizer.wrongLinksMap[visID]){
+      for(var sourceIndex in BridgesVisualizer.wrongLinksMap[visID]){
 
           var sourceClass;
-          var targetClass;
-          var defaultLinkLength = 80;
+          var targetClass = ".backward-link";
+          var defaultLinkLength = -80;
 
-          if(!d3.select("#svg"+visID+"g"+ (parseInt(x) -1 ) ).select(".test-class-class")[0][0])
+          var targetIndex = BridgesVisualizer.wrongLinksMap[visID][sourceIndex].target;
+
+          if(!d3.select("#svg"+visID+"g"+ (parseInt(sourceIndex) -1 ) ).select(".test-class-class")[0][0])
               sourceClass = ".backward-link";
           else
               sourceClass = ".test-class-class";
 
-          targetClass = ".backward-link";
-
-          if(elementsPerRow == 2) defaultLinkLength = 0;
-
-          // if(!d3.select("#svg"+visID+"g"+ (parseInt(BridgesVisualizer.wrongLinksMap[visID][x].target) ) ).select(".test-class-class")[0][0])
+          // if(!d3.select("#svg"+visID+"g"+ (parseInt(targetIndex) ) ).select(".test-class-class")[0][0])
           //     targetClass = ".backward-link";
           // else
           //     targetClass = ".test-class-class";
 
 
-          var translateSource =  d3.transform(d3.select("#svg"+visID+"g"+ (parseInt(x) - 1) ).attr("transform")).translate;
-          var sourceElem = d3.select("#svg"+visID+"g"+ (parseInt(x) - 1) ).select(sourceClass);
+          var sourceParentGroup = d3.select("#svg"+visID+"g"+ (parseInt(sourceIndex) - 1));
+          var translateSource =  d3.transform( sourceParentGroup.attr("transform") ).translate;
+          var sourceElem = d3.select("#svg"+visID+"g"+ (parseInt(sourceIndex) - 1) ).select(sourceClass);
 
 
-          var translateTarget = d3.transform(d3.select("#svg"+visID+"g"+ (parseInt(BridgesVisualizer.wrongLinksMap[visID][x].target) ) ).attr("transform")).translate;
-          var targetElem = d3.select("#svg"+visID+"g"+ (parseInt(BridgesVisualizer.wrongLinksMap[visID][x].target) ) ).select(targetClass);
+          var targetParentGroup = d3.select("#svg"+visID+"g"+ (parseInt(targetIndex) ));
+          var translateTarget = d3.transform( targetParentGroup.attr("transform") ).translate;
+          var targetElem = d3.select("#svg"+visID+"g"+ (parseInt(targetIndex) ) ).select(targetClass);
+
+          if( sourceParentGroup.attr("x2") == targetParentGroup.attr("x2") ) defaultLinkLength = 0;
 
           svgGroup
                   .append("line")
                   .attr("y1", parseFloat(translateSource[1]) + parseFloat(sourceElem.attr("y2")))
                   .attr("y2", parseFloat(translateTarget[1]) + parseFloat(targetElem.attr("y2")))
                   .attr("x1", parseFloat(translateSource[0]) + parseFloat(sourceElem.attr("x2")))
-                  .attr("x2", parseFloat(translateTarget[0]) + parseFloat(targetElem.attr("x2")) - defaultLinkLength)
+                  .attr("x2", parseFloat(translateTarget[0]) + parseFloat(targetElem.attr("x2")) + defaultLinkLength)
                   .attr("marker-start","url('#Circle')")
                   .attr("marker-end","url('#Triangle')")
                   .attr("stroke", "red")//might consider using a bright color because the default, blue, it's not so visible
                   // .attr("stroke",function(){
-                  //     if(BridgesVisualizer.wrongLinksMap[visID][x] && BridgesVisualizer.wrongLinksMap[visID][x].color)
-                  //         return BridgesVisualizer.getColor(BridgesVisualizer.wrongLinksMap[visID][x].color);
+                  //     if(BridgesVisualizer.wrongLinksMap[visID][sourceIndex] && BridgesVisualizer.wrongLinksMap[visID][sourceIndex].color)
+                  //         return BridgesVisualizer.getColor(BridgesVisualizer.wrongLinksMap[visID][sourceIndex].color);
                   //     else
                   //         return "black";
                   // })
                   .attr("stroke-width",function(){
-                      if(BridgesVisualizer.wrongLinksMap[visID][x] && BridgesVisualizer.wrongLinksMap[visID][x].thickness)
-                          return BridgesVisualizer.wrongLinksMap[visID][x].thickness;
+                      if(BridgesVisualizer.wrongLinksMap[visID][sourceIndex] && BridgesVisualizer.wrongLinksMap[visID][sourceIndex].thickness)
+                          return BridgesVisualizer.wrongLinksMap[visID][sourceIndex].thickness;
                       else
                           return 3;
                   });
 
-          d3.select("#svg"+visID+"g"+ (parseInt(x) - 1)).select(sourceClass).remove();
-          d3.select("#svg"+visID+"g"+ (parseInt(BridgesVisualizer.wrongLinksMap[visID][x].target)) ).select(targetClass).remove();
+          d3.select("#svg"+visID+"g"+ (parseInt(sourceIndex) - 1)).select(sourceClass).remove();
+          d3.select("#svg"+visID+"g"+ (parseInt(targetIndex)) ).select(targetClass).remove();
 
           if(sourceClass == ".test-class-class"){
-              d3.select("#svg"+visID+"g"+ (parseInt(x) - 1) ).select(".backward-link").remove();
-              d3.select("#svg"+visID+"g"+ (parseInt(x) - 1) ).select(".forward-horizontal-link").remove();
+              d3.select("#svg"+visID+"g"+ (parseInt(sourceIndex) - 1) ).select(".backward-link").remove();
+              d3.select("#svg"+visID+"g"+ (parseInt(sourceIndex) - 1) ).select(".forward-horizontal-link").remove();
           }
 
-          if(targetClass == ".test-class-class"){
-              d3.select("#svg"+visID+"g"+ (parseInt(BridgesVisualizer.wrongLinksMap[visID][x].target)) ).select(".backward-link").remove();
-              d3.select("#svg"+visID+"g"+ (parseInt(BridgesVisualizer.wrongLinksMap[visID][x].target)) ).select(".forward-horizontal-link").remove();
+          //I was going to verify if the elements existed before trying to remove them, but it seems d3js handles that.
+          try{
+              d3.select("#svg"+visID+"g"+ targetIndex).select(".test-class-class").remove();
+              d3.select("#svg"+visID+"g"+ targetIndex).select(".backward-link").remove();
+              d3.select("#svg"+visID+"g"+ targetIndex).select(".forward-horizontal-link").remove();
+          }catch(e){
+              console.log(e);
           }
 
       }
