@@ -27,7 +27,7 @@ npm install -g yo
 Then we need to get BRIDGES' server code
 
 ```
-git clone https://github.com/stevemacn/bridgesAPI
+git clone https://github.com/squeetus/bridgesAPI
 ```  
 
 We install it (bower needs --allow-root to be sudoed)
