@@ -30,7 +30,7 @@ d3.graph = function(d3, id, W, H, data) {
   }
 
   var force = d3.layout.force()
-      .charge([-500])
+      .charge([-5000])
       .linkDistance([100])
       .linkStrength(0.5)
       .size([width, height])
@@ -65,7 +65,7 @@ d3.graph = function(d3, id, W, H, data) {
       .data(["end"])// Different path types defined here
       .enter().append("svg:marker")
       .attr("id", String)
-      .attr("viewBox", "0 -5 10 10")
+      .attr("viewBox", "0 -50 10 10")
       .attr("refX", 15)
       .attr("refY", 0)
       .attr("markerUnits", "userSpaceOnUse")
