@@ -30,7 +30,7 @@ d3.graph = function(d3, id, W, H, data) {
   }
 
   var force = d3.layout.force()
-      .charge([-5000])
+      .charge([-1000])
       .linkDistance([100])
       .linkStrength(0.5)
       .size([width, height])
