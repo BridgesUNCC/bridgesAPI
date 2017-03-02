@@ -30,8 +30,9 @@ d3.graph = function(d3, id, W, H, data) {
   }
 
   var force = d3.layout.force()
-      .charge([-250])
-      .linkDistance([50])
+      .charge([-500])
+      .linkDistance([100])
+      .linkStrength(0.5)
       .size([width, height])
       .nodes(nodes)
       .links(links)
@@ -82,7 +83,7 @@ d3.graph = function(d3, id, W, H, data) {
 
   var link = svgGroup.append("svg:g").selectAll("path")
       .data(links)
-      .enter().append("svg:path")
+      .enter().insert("svg:path")
       .attr("class", "link")
       .attr("marker-end", "url(#end)")
       .style("stroke-width", function (d) {
@@ -112,7 +113,6 @@ d3.graph = function(d3, id, W, H, data) {
       .style("stroke-dasharray", function(d) {
           return d.fixed ? BridgesVisualizer.treeDashArray : "0,0";
       })
-
       .call(force.drag);
 
   //inner nodes
