@@ -146,7 +146,8 @@ d3.graph = function(d3, id, W, H, data) {
       .style("stroke-dasharray", function(d) {
           return d.dasharray || "";
       })
-      .style("fill", "none");
+      .style("fill", "none")
+      .style("pointer-events", "none");
 
   svgGroup.selectAll('text').each(BridgesVisualizer.insertLinebreaks);
 
