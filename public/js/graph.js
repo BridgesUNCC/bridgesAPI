@@ -65,9 +65,9 @@ d3.graph = function(d3, id, W, H, data) {
       .data(["end"])// Different path types defined here
       .enter().append("svg:marker")
       .attr("id", String)
-      .attr("viewBox", "0 -50 10 10")
-      .attr("refX", 15)
-      .attr("refY", 0)
+      .attr("viewBox", "0 0 15 15")
+      .attr("refX", 1)
+      .attr("refY", 5)
       .attr("markerUnits", "userSpaceOnUse")
       .style("fill", function (d) {
           return BridgesVisualizer.getColor(d.color) || "black";
@@ -79,26 +79,9 @@ d3.graph = function(d3, id, W, H, data) {
       .attr("markerHeight", 10)
       .attr("orient", "auto")
       .append("svg:path")
-      .attr("d", "M0,-5L10,0L0,5");
+      .attr("d", "M 0 0 L 10 5 L 0 10 z");
 
-  var link = svgGroup.append("svg:g").selectAll("path")
-      .data(links)
-      .enter().insert("svg:path")
-      .attr("class", "link")
-      .attr("marker-end", "url(#end)")
-      .style("stroke-width", function (d) {
-          return BridgesVisualizer.strokeWidthRange(d.thickness) || 1;
-      })
-      .style("stroke", function (d) {
-          return BridgesVisualizer.getColor(d.color) || "black";
-      })
-      .style("opacity", function(d) {
-          return d.opacity || 1;
-      })
-      .style("stroke-dasharray", function(d) {
-          return d.dasharray || "";
-      })
-      .style("fill", "none");
+
 
   //outer node
   var node = svgGroup.selectAll(".node")
@@ -129,7 +112,6 @@ d3.graph = function(d3, id, W, H, data) {
       .style("opacity", function(d) {
           return d.opacity || 1;
       });
-      //
 
   //inner nodes
   node
@@ -143,6 +125,28 @@ d3.graph = function(d3, id, W, H, data) {
       .text(function(d) {
           return d.name;
       });
+
+  var link = svgGroup.append("svg:g").selectAll("path")
+      .data(links.reverse())  // reverse to draw end markers over links
+      .enter().insert("svg:path")
+      .attr("class", "link")
+      .attr("marker-end", "url(#end)")
+      // .attr("marker-end", function(d) {  // modify this for programmatic arrow points
+      //   return BridgesVisualizer.marker(vis, (BridgesVisualizer.getColor(d.color) || "black"), {});
+      // })
+      .style("stroke-width", function (d) {
+          return BridgesVisualizer.strokeWidthRange(d.thickness) || 1;
+      })
+      .style("stroke", function (d) {
+          return BridgesVisualizer.getColor(d.color) || "black";
+      })
+      .style("opacity", function(d) {
+          return d.opacity || 1;
+      })
+      .style("stroke-dasharray", function(d) {
+          return d.dasharray || "";
+      })
+      .style("fill", "none");
 
   svgGroup.selectAll('text').each(BridgesVisualizer.insertLinebreaks);
 

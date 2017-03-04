@@ -113,6 +113,26 @@ BridgesVisualizer.getTransformObjectFromLocalStorage = function(visID) {
 
 };
 
+// Add newly-styled markers to the defs for the given svg
+// BridgesVisualizer.marker = function(svg, color, otherAttr) {
+//     console.log('making marker', color);
+//     var val;
+//     svg.select("svg:defs").selectAll("marker")
+//          .data([val])
+//          .enter().append("svg:marker")
+//          .attr("id", String)
+//          .attr("viewBox", "0 -5 10 10")
+//          .attr("refX", 20)
+//          .attr("refY", 0)
+//          .attr("markerWidth", 6)
+//          .attr("markerHeight", 6)
+//          .attr("orient", "auto")
+//          .style("fill", color)
+//          .append("svg:path")
+//          .attr("d", "M0,-5L10,0L0,5");
+//     return "url(#" +val+ ")";
+// };
+
 // function to return the transformObject saved positions
 BridgesVisualizer.getTransformObjectFromCookie = function(visID) {
         var name = "vis"+visID+"-"+location.pathname + "=";
