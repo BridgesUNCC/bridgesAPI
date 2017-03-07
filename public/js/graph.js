@@ -61,12 +61,13 @@ d3.graph = function(d3, id, W, H, data) {
       svgGroup.attr('transform', 'translate(' + zoom.translate() + ') scale(' + zoom.scale() + ')');
       allSVG.push(svgGroup);
 
+  // http://stackoverflow.com/questions/27802669/how-do-i-change-the-colour-of-markers-arrow-heads-solved
   vis.append("svg:defs").selectAll("marker")
       .data(["end"])// Different path types defined here
       .enter().append("svg:marker")
       .attr("id", String)
       .attr("viewBox", "0 0 15 15")
-      .attr("refX", 1)
+      .attr("refX", 15) // increase this to move the pointer back along the line
       .attr("refY", 5)
       .attr("markerUnits", "userSpaceOnUse")
       .style("fill", function (d) {
@@ -80,7 +81,6 @@ d3.graph = function(d3, id, W, H, data) {
       .attr("orient", "auto")
       .append("svg:path")
       .attr("d", "M 0 0 L 10 5 L 0 10 z");
-
 
 
   //outer node
