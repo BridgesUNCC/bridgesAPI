@@ -51,6 +51,7 @@ exports.saveSnapshot = function(req, res, next) {
 //API route for uploading assignment data. If the
 //assignment already exists it will be replaced.
 exports.upload = function (req, res, next) {
+
     // C++ version posts JSON as object, JAVA posts as plain string
     if(typeof req.body != "object") {
         try { rawBody = JSON.parse(req.body); } // try parsing to object
@@ -64,6 +65,7 @@ exports.upload = function (req, res, next) {
     } else {  // object already
         rawBody = req.body;
     }
+
 
     // Handle assignment number
     var assignmentID = req.params.assignmentID;
@@ -89,6 +91,7 @@ exports.upload = function (req, res, next) {
         replaceAssignment(res, user, assignmentID);
     });
 
+    // if the assignment is new, remove old assignments with the same ID
     function replaceAssignment (res, user, assignmentID) {
 
         if (subAssignment == '0' || subAssignment == '00') {
@@ -100,60 +103,45 @@ exports.upload = function (req, res, next) {
                  if(err)
                     console.log(err);
                 console.log("replaceAssignment() removed assignments (" + assignmentNumber + ".*) from user: \"" + user.username + "\"");
-
-
-                // have to put this code to create/save assignment in both cases
-                // since the removal happens asynchronously for assignments
-                assignment = new Assignment();
-                assignment.email = user.email;
-                assignment.vistype = visualizationType;
-                assignment.data = rawBody;
-                assignment.assignmentID = assignmentID;
-                assignment.assignmentNumber = assignmentNumber;
-                assignment.subAssignment = subAssignment;
-                // assignment.schoolID = req.params.schoolID || "";
-                // assignment.classID = req.params.classID || "";
-                assignment.title = title;
-                assignment.description = description;
-
-                // Utilizing the mongoose save callback function to log potential errors in saving the assignment
-                assignment.save(function(err, assignment, numAffected) {
-                  if(err) console.log(err);
-                  // console.log('assignment added; saveCallback', assignment, numAffected);
-                });
-
-                User.findOne({
-                    email: user.email
-                }).exec(function (err, resp) {
-                    res.json( { "msg":assignmentID+"/"+resp.username } );
-                });
-
-                //log new assignment
-                // console.log( "assignment added: " + user.email + " " + assignment, assignment.data[0].nodes.length );
-
+                saveAssignment(user, assignmentNumber);
             });
         } else {
-          // have to put this code to create/save assignment in both cases
-          // since the removal happens asynchronously for new assignments
-          assignment = new Assignment();
-          assignment.email = user.email;
-          assignment.vistype = visualizationType;
-          assignment.data = rawBody;
-          assignment.assignmentID = assignmentID;
-          assignment.assignmentNumber = assignmentNumber;
-          assignment.subAssignment = subAssignment;
-          // assignment.schoolID = req.params.schoolID || "";
-          // assignment.classID = req.params.classID || "";
-          assignment.save();
-
-          User.findOne({
-              email: user.email
-          }).exec(function (err, resp) {
-              res.json( { "msg":assignmentID + "/" + resp.username } );
-          });
-
-          console.log( "subassignment added" );
+          saveAssignment(user, assignmentNumber);
         }
+    }
+
+    // save the assignment to the DB
+    function saveAssignment(user, assignmentNumber) {
+
+      assignment = new Assignment();
+
+      if (subAssignment == '0' || subAssignment == '00') {
+        assignment.title = title;
+        assignment.description = description;
+      }
+
+      assignment.email = user.email;
+      assignment.vistype = visualizationType;
+      assignment.data = rawBody;
+      assignment.assignmentID = assignmentID;
+      assignment.assignmentNumber = assignmentNumber;
+      assignment.subAssignment = subAssignment;
+
+      assignment.save(function (err, product, numAffected) {
+        if (err) {
+          // trap errors saving the assignment to the DB
+          console.log(err);
+          next(err);
+        }
+
+        User.findOne({
+            email: user.email
+        }).exec(function (err, resp) {
+            res.json( 200, { "msg":assignmentID + "/" + resp.username } );
+        });
+
+        console.log( "subassignment added" );
+      });
     }
 };
 
