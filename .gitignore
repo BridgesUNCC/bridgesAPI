@@ -21,7 +21,7 @@ config/keys.json
 
 # Don't steal our DB!! #
 ###################
-/config/config.js
+#/config/config.js
 
 # Logs and databases #
 ######################
@@ -43,7 +43,6 @@ Thumbs.db
 ################################
 .gitignore
 .*
-config/config.js
 
 app/views/users/forgot.jade
 public/js/oldGraph.js
