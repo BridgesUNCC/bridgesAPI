@@ -11,7 +11,7 @@ var config = {
       name: 'bridgesapi'
     },
     port: 3000,
-    db: 'mongodb://heroku_app27208241:lg0jm38s5r1pbl0g6e68fcbiih@ds061228.mongolab.com:61228/heroku_app27208241'
+    db: 'mongodb://bridges-db:BiFrost@ds163400-a0.mlab.com:63400,ds163400-a1.mlab.com:63400/bridges-db?replicaSet=rs-ds163400'
     // db: 'mongodb://localhost/bridgesapi-development'
   },
 
@@ -31,10 +31,8 @@ var config = {
     },
     port: 3000,
     // db: 'mongodb://localhost/bridgesapi-production'
-    db: 'mongodb://heroku_app27208241:lg0jm38s5r1pbl0g6e68fcbiih@ds061228.mongolab.com:61228/heroku_app27208241'
+    db: 'mongodb://bridges-db:BiFrost@ds163400-a0.mlab.com:63400,ds163400-a1.mlab.com:63400/bridges-db?replicaSet=rs-ds163400'
   }
-
-
 
 };
 
