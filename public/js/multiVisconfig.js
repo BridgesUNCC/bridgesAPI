@@ -62,18 +62,18 @@ BridgesVisualizer.defaultTransforms = {
 };
 
 BridgesVisualizer.getDefaultTransforms = function(visType) {
-  if(BridgesVisualizer.defaultTransforms[visType]) {
-    return BridgesVisualizer.defaultTransforms[visType];
-  } else {
-    return {"scale": 0.9, "translate": [50, 100]};
-  }
+    if(BridgesVisualizer.defaultTransforms[visType]) {
+      return BridgesVisualizer.defaultTransforms[visType];
+    } else {
+      return {"scale": 0.9, "translate": [50, 100]};
+    }
 };
 
 // function to return color depending on the style of representation
 BridgesVisualizer.getColor = function(color) {
-  if(Array.isArray(color))
-    return "rgba(" + color[0] + "," + color[1] + "," + color[2] + "," + color[3] + ")";
-  return color;
+    if(Array.isArray(color))
+      return "rgba(" + color[0] + "," + color[1] + "," + color[2] + "," + color[3] + ")";
+    return color;
 };
 
 //this array holds the assignments types; it's used to handle the mixed assignements
@@ -81,6 +81,9 @@ BridgesVisualizer.assignmentTypes = [];
 
 //this boolean is used to deactivate the tooltip when all labels are shown (key 'L')
 BridgesVisualizer.tooltipEnabled = true;
+
+//this object stores backward links that were wrongly set in doubly list types
+BridgesVisualizer.wrongLinksMap = {};
 
 BridgesVisualizer.centerTextHorizontallyInRect = function(obj, width){
     return (width - obj.getComputedTextLength()) / 2;
@@ -108,10 +111,99 @@ BridgesVisualizer.insertLinebreaks = function (d, i) {
     }
 };
 
-//TODO, need unique ID for local storage
-BridgesVisualizer.getTransformObjectFromLocalStorage = function(visID) {
-
+BridgesVisualizer.assignmentUniqueIdentifier = location.pathname+dateCreated;
+BridgesVisualizer.getTransformObjectFromLocalStorage = function(key) {
+      return JSON.parse(localStorage.getItem(key + BridgesVisualizer.assignmentUniqueIdentifier));
 };
+// Saved the translate and scale of every visualization in an assignemts using localStorage
+BridgesVisualizer.saveVisStatesInLocalStorage = function(){
+    for (var key in data) {
+        var my_transform = d3.transform(d3.select("#vis"+key).select("g").attr("transform"));
+        var transformObjectValue = JSON.stringify({
+              "scale": parseFloat(my_transform.scale[0]),
+          "translate": [parseFloat(my_transform.translate[0]), parseFloat(my_transform.translate[1])]
+        });
+        localStorage.setItem(key + BridgesVisualizer.assignmentUniqueIdentifier, transformObjectValue);
+    }
+}
+BridgesVisualizer.removeVisStatesFromLocalStorage = function(transformObjectKey){
+    for (var key in data) {
+        localStorage.removeItem(key + BridgesVisualizer.assignmentUniqueIdentifier);
+    }
+}
+
+BridgesVisualizer.drawWrongLinks = function(svgGroup, visID, elementsPerRow) {
+      for(var sourceIndex in BridgesVisualizer.wrongLinksMap[visID]){
+
+          var sourceClass;
+          var targetClass = ".backward-link";
+          var defaultLinkLength = -80;
+
+          var targetIndex = BridgesVisualizer.wrongLinksMap[visID][sourceIndex].target;
+
+          if(!d3.select("#svg"+visID+"g"+ (parseInt(sourceIndex) -1 ) ).select(".test-class-class")[0][0])
+              sourceClass = ".backward-link";
+          else
+              sourceClass = ".test-class-class";
+
+          // if(!d3.select("#svg"+visID+"g"+ (parseInt(targetIndex) ) ).select(".test-class-class")[0][0])
+          //     targetClass = ".backward-link";
+          // else
+          //     targetClass = ".test-class-class";
+
+
+          var sourceParentGroup = d3.select("#svg"+visID+"g"+ (parseInt(sourceIndex) - 1));
+          var translateSource =  d3.transform( sourceParentGroup.attr("transform") ).translate;
+          var sourceElem = d3.select("#svg"+visID+"g"+ (parseInt(sourceIndex) - 1) ).select(sourceClass);
+
+
+          var targetParentGroup = d3.select("#svg"+visID+"g"+ (parseInt(targetIndex) ));
+          var translateTarget = d3.transform( targetParentGroup.attr("transform") ).translate;
+          var targetElem = d3.select("#svg"+visID+"g"+ (parseInt(targetIndex) ) ).select(targetClass);
+
+          // if( sourceParentGroup.attr("x2") == targetParentGroup.attr("x2") ) defaultLinkLength = 0;
+
+          svgGroup
+                  .append("line")
+                  .attr("y1", parseFloat(translateSource[1]) + parseFloat(sourceElem.attr("y2")))
+                  .attr("y2", parseFloat(translateTarget[1]) + parseFloat(targetElem.attr("y2")))
+                  .attr("x1", parseFloat(translateSource[0]) + parseFloat(sourceElem.attr("x2")))
+                  .attr("x2", parseFloat(translateTarget[0]) + parseFloat(targetElem.attr("x2")) + defaultLinkLength)
+                  .attr("marker-start","url('#Circle')")
+                  .attr("marker-end","url('#Triangle')")
+                  .attr("stroke", "red")//might consider using a bright color because the default, blue, it's not so visible
+                  // .attr("stroke",function(){
+                  //     if(BridgesVisualizer.wrongLinksMap[visID][sourceIndex] && BridgesVisualizer.wrongLinksMap[visID][sourceIndex].color)
+                  //         return BridgesVisualizer.getColor(BridgesVisualizer.wrongLinksMap[visID][sourceIndex].color);
+                  //     else
+                  //         return "black";
+                  // })
+                  .attr("stroke-width",function(){
+                      if(BridgesVisualizer.wrongLinksMap[visID][sourceIndex] && BridgesVisualizer.wrongLinksMap[visID][sourceIndex].thickness)
+                          return BridgesVisualizer.wrongLinksMap[visID][sourceIndex].thickness;
+                      else
+                          return 3;
+                  });
+
+          d3.select("#svg"+visID+"g"+ (parseInt(sourceIndex) - 1)).select(sourceClass).remove();
+          d3.select("#svg"+visID+"g"+ (parseInt(targetIndex)) ).select(targetClass).remove();
+
+          if(sourceClass == ".test-class-class"){
+              d3.select("#svg"+visID+"g"+ (parseInt(sourceIndex) - 1) ).select(".backward-link").remove();
+              d3.select("#svg"+visID+"g"+ (parseInt(sourceIndex) - 1) ).select(".forward-horizontal-link").remove();
+          }
+
+          //I was going to verify if the elements existed before trying to remove them, but it seems d3js handles that.
+          try{
+              d3.select("#svg"+visID+"g"+ targetIndex).select(".test-class-class").remove();
+              d3.select("#svg"+visID+"g"+ targetIndex).select(".backward-link").remove();
+              d3.select("#svg"+visID+"g"+ targetIndex).select(".forward-horizontal-link").remove();
+          }catch(e){
+              console.log(e);
+          }
+
+      }
+}
 
 // Add newly-styled markers to the defs for the given svg
 // BridgesVisualizer.marker = function(svg, color, otherAttr) {
@@ -134,41 +226,41 @@ BridgesVisualizer.getTransformObjectFromLocalStorage = function(visID) {
 // };
 
 // function to return the transformObject saved positions
-BridgesVisualizer.getTransformObjectFromCookie = function(visID) {
-        var name = "vis"+visID+"-"+location.pathname + "=";
-        // var name = cname + "=";
-        var ca = document.cookie.split(';');
-        // console.log(ca);
-        for(var i=0; i<ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0)==' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) === 0) {
-                // return c.substring(name.length, c.length);
-                var cookieStringValue = c.substring(name.length, c.length);
-                var cookieJSONValue;
-                try{
-                    cookieJSONValue = JSON.parse(cookieStringValue);
-                }catch(err){
-                    console.log(err, cookieStringValue);
-                }
-
-                if(cookieJSONValue){
-                  if(cookieJSONValue.hasOwnProperty("translatex") &&
-                     cookieJSONValue.hasOwnProperty("translatey") &&
-                     cookieJSONValue.hasOwnProperty("scale")){
-                       var finalTranslate = [parseFloat(cookieJSONValue.translatex), parseFloat(cookieJSONValue.translatey)];
-                       var finalScale = [parseFloat(cookieJSONValue.scale)];
-                       return {"translate":finalTranslate, "scale":finalScale};
-                  }
-                }else{
-                  return undefined;
-                }
-            }
-        }
-        return "";
-};
+// BridgesVisualizer.getTransformObjectFromCookie = function(visID) {
+//         var name = "vis"+visID+"-"+location.pathname + "=";
+//         // var name = cname + "=";
+//         var ca = document.cookie.split(';');
+//         // console.log(ca);
+//         for(var i=0; i<ca.length; i++) {
+//             var c = ca[i];
+//             while (c.charAt(0)==' ') {
+//                 c = c.substring(1);
+//             }
+//             if (c.indexOf(name) === 0) {
+//                 // return c.substring(name.length, c.length);
+//                 var cookieStringValue = c.substring(name.length, c.length);
+//                 var cookieJSONValue;
+//                 try{
+//                     cookieJSONValue = JSON.parse(cookieStringValue);
+//                 }catch(err){
+//                     console.log(err, cookieStringValue);
+//                 }
+//
+//                 if(cookieJSONValue){
+//                   if(cookieJSONValue.hasOwnProperty("translatex") &&
+//                      cookieJSONValue.hasOwnProperty("translatey") &&
+//                      cookieJSONValue.hasOwnProperty("scale")){
+//                        var finalTranslate = [parseFloat(cookieJSONValue.translatex), parseFloat(cookieJSONValue.translatey)];
+//                        var finalScale = [parseFloat(cookieJSONValue.scale)];
+//                        return {"translate":finalTranslate, "scale":finalScale};
+//                   }
+//                 }else{
+//                   return undefined;
+//                 }
+//             }
+//         }
+//         return "";
+// };
 
 d3.selection.prototype.moveToFront = function() {
     return this.each(function(){
@@ -204,7 +296,7 @@ BridgesVisualizer.textMouseover = function(d) {
     if(d3.select(this).select("rect"))
         d3.select(this).select("rect").style("stroke", "yellow").style("stroke-width", 4);
 
-    if(d3.select(this).select("path")){
+    if(!d3.dllist && d3.select(this).select("path")){
             d3.select(this).select("path").transition()
                 .duration(750)
                 .attr('d', function (d) {
@@ -224,7 +316,7 @@ BridgesVisualizer.textMouseout = function(d) {
     if(d3.select(this).select("rect"))
         d3.select(this).select("rect").style("stroke", "gray").style("stroke-width", 2);
 
-    if(d3.select(this).select("path")){
+    if(!d3.dllist && d3.select(this).select("path")){
             d3.select(this).select("path").transition()
                 .duration(750)
                 .attr('d', function (d) {
@@ -256,6 +348,7 @@ var map = map || null;
 if( map )
   map( mapData );
 
+console.log(data);
 /* create new assignments  */
 for (var key in data) {
   if (data.hasOwnProperty(key)) {
@@ -273,10 +366,10 @@ for (var key in data) {
         bst.make(data[key]);
     }
     else if(data[key]['visType'] == "dllist" && d3.dllist){
-        d3.dllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key]), transform);
+        d3.dllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key], key), transform);
     }
     else if(data[key]['visType'] == "cdllist" && d3.cdllist){
-        d3.cdllist(d3, "#vis" + key, width, height, sortCircularDoublyListByLinks(data[key]));
+        d3.cdllist(d3, "#vis" + key, width, height, sortCircularDoublyListByLinks(data[key], key), transform);
     }
     else if(data[key]['visType'] == "llist" && d3.sllist){
         // d3.sllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key]), transform);
@@ -331,7 +424,7 @@ function reset() {
         }
         svgGroup.attr("transform", "translate(" + zoom.translate() + ")scale(" + zoom.scale() + ")");
     }
-    saveVisStatesAsCookies();
+    BridgesVisualizer.saveVisStatesInLocalStorage;
 }
 
 function deleteAssignment() {
@@ -411,6 +504,7 @@ function savePositions () {
 //Asynchronously update the vis transform values
 //this method is just for testing, if approved, it still needs the ajax call and routing set up as well as the dabatase.
 //It also can be used with the tree visualization
+//TODO never used
 function saveTransform(){
     var visTransforms = {};
     for (var key in data) {
@@ -450,41 +544,42 @@ function alertMessage(message, status) {
   },2500);
 }
 
-// Saved the translate and scale of every visualization in an assignemts
-function saveVisStatesAsCookies(){
-    // console.log(this);
-    var exdays = 30;
-    try{
-      for (var key in data) {
-          var cookieName = "vis"+key+"-"+location.pathname;
-          var my_transform = d3.transform(d3.select("#vis"+key).select("g").attr("transform"));
+// // Saved the translate and scale of every visualization in an assignemts
+// function saveVisStatesAsCookies(){
+//     // console.log(this);
+//     var exdays = 30;
+//     try{
+//       for (var key in data) {
+//           var cookieName = "vis"+key+"-"+location.pathname;
+//           var my_transform = d3.transform(d3.select("#vis"+key).select("g").attr("transform"));
+//
+//           var cookieValue = JSON.stringify({
+//             "scale": parseFloat(my_transform.scale[0]),
+//             "translatex": parseFloat(my_transform.translate[0]),
+//             "translatey": parseFloat(my_transform.translate[1])
+//           });
+//           var d = new Date();
+//           d.setTime(d.getTime() + (exdays*24*60*60*1000));
+//           var expires = "expires=" + d.toGMTString();
+//           document.cookie = cookieName+"="+cookieValue+"; "+expires;
+//       }
+//       var today = new Date().toLocaleTimeString()+" - "+new Date().toLocaleDateString();
+//       //  alertMessage("Scale and translation saved!", "success");
+//     } catch(err){
+//       console.log(err);
+//     }
+// }
 
-          var cookieValue = JSON.stringify({
-            "scale": parseFloat(my_transform.scale[0]),
-            "translatex": parseFloat(my_transform.translate[0]),
-            "translatey": parseFloat(my_transform.translate[1])
-          });
-          var d = new Date();
-          d.setTime(d.getTime() + (exdays*24*60*60*1000));
-          var expires = "expires=" + d.toGMTString();
-          document.cookie = cookieName+"="+cookieValue+"; "+expires;
-      }
-      var today = new Date().toLocaleTimeString()+" - "+new Date().toLocaleDateString();
-      //  alertMessage("Scale and translation saved!", "success");
-    } catch(err){
-      console.log(err);
-    }
-}
 
 // Save cookies when scale and translation are updated
 //  only updates zoom after scrolling has stopped
 try{
     var wheeling = null;
-    $("svg").mouseup(saveVisStatesAsCookies);
+    $("svg").mouseup(BridgesVisualizer.saveVisStatesInLocalStorage);
     $("svg").on('wheel', function (e) {
       clearTimeout(wheeling);
       wheeling = setTimeout(function() {
-        saveVisStatesAsCookies();
+        BridgesVisualizer.saveVisStatesInLocalStorage();
         wheeling = undefined;
       }, 250);
     });
@@ -509,6 +604,8 @@ $("body").on("keydown", function(event) {
             d3.selectAll(".nodeLabel").style("display","none").style("opacity","0");
             BridgesVisualizer.tooltipEnabled = true;
         }
+    }else if(event.which == "82"){
+        reset();
     }
 });
 
@@ -561,7 +658,7 @@ function sortCircularSinglyListByLinks(unsortedNodes, listType){
 }
 
 //this methods sorts any Doubly Links linkedlist by links
-function sortCircularDoublyListByLinks(unsortedNodes, listType){
+function sortCircularDoublyListByLinks(unsortedNodes, assignmentKey){
     var links = unsortedNodes.links,
         nodes = unsortedNodes.nodes,
         uniqueForwardLink = {},
@@ -572,6 +669,30 @@ function sortCircularDoublyListByLinks(unsortedNodes, listType){
         lastElement;
 
     for(var i = links.length-1; i >= 0; i--){
+
+      //conditional to determine wheather there is  alink pointing to a wrong element
+      if(Math.abs(links[i].source-links[i].target) != 1 &&
+         (links[i].source != 0 && links[i].target != nodes.length-1) &&
+         (links[i].target != 0 && links[i].source != nodes.length-1) ){
+
+           if(BridgesVisualizer.wrongLinksMap && !BridgesVisualizer.wrongLinksMap[assignmentKey])
+               BridgesVisualizer.wrongLinksMap[assignmentKey] = {};
+
+           BridgesVisualizer.wrongLinksMap[assignmentKey][links[i].source] = links[i];
+          /*
+          // console.log("!1 == source : " + links[i].source + " ___ " + "target: " + links[i].target);
+          if(!d3.graph){
+              $.getScript("../../js/graph.js", function( data, textStatus, jqxhr ) {
+                  if(d3.graph){
+                      d3.graph(d3, assignmentKey, width, height, unsortedNodes);
+                  }
+              });
+          }
+          return undefined;
+          */
+        }
+
+
         if(parseInt(links[i].source) < parseInt(links[i].target)){
             uniqueForwardLink[links[i].source+"-"+links[i].target] = links[i];
             if(links[i].source == 0 && links[i].target == nodes.length-1){
@@ -592,6 +713,10 @@ function sortCircularDoublyListByLinks(unsortedNodes, listType){
                 continue;
             }
         }
+
+
+
+
     }
 
     var keys = Object.keys(uniqueForwardLink).sort(function(a,b){
@@ -618,20 +743,27 @@ function sortCircularDoublyListByLinks(unsortedNodes, listType){
 }
 
 //this methods sorts any Doubly Links linkedlist by links
-function sortNonCircularListByLinks(unsortedNodes, listType){
+function sortNonCircularListByLinks(unsortedNodes, assignmentKey){
     var links = unsortedNodes.links;
     var nodes = unsortedNodes.nodes;
     var uniqueForwardLink = {},
         uniqueBackwardLink = {},
         sortedNodes = [],
         head = 0;
-    // console.log(unsortedNodes, listType);
 
     for(var i = links.length-1; i >= 0; i--){
         if(parseInt(links[i].source) < parseInt(links[i].target)){
             uniqueForwardLink[links[i].source+"-"+links[i].target] = links[i];
         }else{
             uniqueBackwardLink[links[i].target+"-"+links[i].source] = links[i];
+
+            if(Math.abs(links[i].source-links[i].target) != 1){
+                if(BridgesVisualizer.wrongLinksMap && !BridgesVisualizer.wrongLinksMap[assignmentKey])
+                    BridgesVisualizer.wrongLinksMap[assignmentKey] = {};
+
+                BridgesVisualizer.wrongLinksMap[assignmentKey][links[i].source] = links[i];
+            }
+
         }
     }
 
@@ -704,3 +836,15 @@ function sortSLLists(unsortedNodes) {
 
   return sortedNodes;
 }
+
+/*******Added this this method to use retrieve asssignment in iframe***********/
+$(function(){
+    if(window.location.hash == "#onlyshowvis0"){
+        if(allSVG.length > 0){
+          allSVG[0].attr("transform","translate(157.09,221.37)scale(0.53)");
+          // allZoom[0].on("zoom",null);
+        }
+        $("#assignment-menu").hide();
+        $(".navbar").hide();
+    }
+});

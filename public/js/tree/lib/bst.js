@@ -37,7 +37,7 @@ d3.bst = function (d3, canvasID, w, h) {
     var finalTranslate = BridgesVisualizer.defaultTransforms.tree.translate;
     var finalScale =  BridgesVisualizer.defaultTransforms.tree.scale;
 
-    var transformObject = BridgesVisualizer.getTransformObjectFromCookie(visID);
+    var transformObject = BridgesVisualizer.getTransformObjectFromLocalStorage(visID);
     if(transformObject){
         finalTranslate = transformObject.translate;
         finalScale = transformObject.scale;

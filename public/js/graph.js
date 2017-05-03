@@ -19,7 +19,7 @@ d3.graph = function(d3, id, W, H, data) {
     var nodes = data.nodes;
     var links = data.links;
 
-  var transformObject = BridgesVisualizer.getTransformObjectFromCookie(visID);
+  var transformObject = BridgesVisualizer.getTransformObjectFromLocalStorage(visID);
   if(transformObject){
       finalTranslate = transformObject.translate;
       finalScale = transformObject.scale;

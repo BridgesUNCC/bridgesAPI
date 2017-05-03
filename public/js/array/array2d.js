@@ -16,7 +16,7 @@ d3.array2d = function(d3, canvasID, w, h, data, dimensions) {
     var levelCount = -1;
 
 
-    var transformObject = BridgesVisualizer.getTransformObjectFromCookie(visID);
+    var transformObject = BridgesVisualizer.getTransformObjectFromLocalStorage(visID);
     if(transformObject){
       finalTranslate = transformObject.translate;
       finalScale = transformObject.scale;

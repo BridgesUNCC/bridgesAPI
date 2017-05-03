@@ -24,7 +24,9 @@ var Assignment = new Schema ({
     dateCreated:        {type: Date, default: Date.now()},
     shared:             {type: Boolean, default: 'true'}, //public or private
     vistype:            {type: String, default:'nodelink'},
-    thumbnail:          {type: String, default:'nodelink'},
+    visitors:           {type: Object, default: {}},//uniqueVisitors [{"uniqueUser":"timeVisited"},"lestrell","timesVisited"].length
+    visitorsCount:      {type: Number, default: 0},
+    // thumbnail:          {type: String, default:'nodelink'},
     //use mongoose thumbnail right here....
 
     //uploaded data, nodes can be x,y as in scatteplots

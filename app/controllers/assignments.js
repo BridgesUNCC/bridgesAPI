@@ -261,8 +261,40 @@ exports.show = function (req, res, next) {
             assignmentTypes = {},
             linkResources = {"script":[], "css":[]};
 
+        // console.log(res);
         if (sessionUser) {
             if (sessionUser.email==assignments[0].email) owner = true;
+        }
+
+        // Add way to track popular ass
+        if(req && req.user && req.user.username){
+              var count = 1;
+              if(req.user.username in assignments[0].visitors){
+                  count = assignments[0].visitors[req.user.username];
+                  count++;
+              }
+
+              //Tested it and it works, but further testing and improvements might required.
+              assignments[0].visitorsCount = Object.keys(assignments[0].visitors).length;
+              assignments[0].visitors[req.user.username] = count;
+
+
+              // save the updated data
+              try {
+                  assignments[0].markModified('visitors'); //http://mongoosejs.com/docs/faq.html
+                  assignments[0].save();
+              } catch (e) {
+                  console.log(e);
+              }
+
+              //Testing
+              // assignments[0].save(function (err) {
+              //     if(err) {
+              //         console.error('ERROR!');
+              //         console.log(err);
+              //     }else{console.log("saved");  }
+              // });
+
         }
 
         var unflatten = function (data) {
@@ -323,10 +355,9 @@ exports.show = function (req, res, next) {
 
         }
 
-        // console.log(Array.isArray(toInclude));
 
-        // console.log(finalVistype);
-
+        console.log(assignments[0].visitors);
+        console.log(assignments[0].visitorsCount);
         return res.render ('assignments/assignmentMulti', {
             "title":"Assignment " + assignmentNumber,
             "assignmentTitle": assignments[0].title,
@@ -337,6 +368,7 @@ exports.show = function (req, res, next) {
             "assignmentNumber":assignmentNumber,
             "schoolID":assignments[0].schoolID,
             "classID":assignments[0].classID,
+            "dateCreated":Date.parse(assignments[0].dateCreated),
             "linkResources":linkResources,
             "shared":assignments[0].shared,
             "owner":owner,

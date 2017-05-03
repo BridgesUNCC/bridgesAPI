@@ -16,7 +16,7 @@ d3.dllist = function(d3, canvasID, w, h, data) {
     var defaultSizeW = 160;  // default size of each element box
     var elementsPerRow = 4 * parseInt((w - (spacing + defaultSizeH)) / (spacing + defaultSizeH));
 
-    var transformObject = BridgesVisualizer.getTransformObjectFromCookie(visID);
+    var transformObject = BridgesVisualizer.getTransformObjectFromLocalStorage(visID);
     if(transformObject){
         finalTranslate = transformObject.translate;
         finalScale = transformObject.scale;
@@ -171,7 +171,10 @@ d3.dllist = function(d3, canvasID, w, h, data) {
             if(d.forwardlink) return BridgesVisualizer.getColor(d.forwardlink.color);
             else return "black";
         })
-        .attr("stroke-width",5)
+        .attr("stroke-width",function(d){
+            if(d.forwardlink) return d.forwardlink.thickness;
+            else return 3;
+        })
         .attr("marker-end",function(d,i){
           if(i % elementsPerRow == (elementsPerRow-1) && (i != dataLength-1) ){
             return "url('#Circle')";
@@ -229,7 +232,10 @@ d3.dllist = function(d3, canvasID, w, h, data) {
             else return "black";
         })
         // .attr("stroke","pink")
-        .attr("stroke-width",5)
+        .attr("stroke-width",function(d){
+            if(d.backwardlink) return d.backwardlink.thickness;
+            else return 3;
+        })
         .attr("marker-end",function(d,i){
           if(i % elementsPerRow == (elementsPerRow-1) && (i != dataLength-1) ){
             return "url('#Triangle')";
@@ -254,7 +260,9 @@ d3.dllist = function(d3, canvasID, w, h, data) {
                 .attr("stroke",function(d,i){
                   return d3.select(this.parentNode).select(".forward-link").attr("stroke") || "black";
                 })
-                .attr("stroke-width",5)
+                .attr("stroke-width",function(d,i){
+                  return d3.select(this.parentNode).select(".forward-link").attr("stroke-width");
+                })
                 .attr("y1", function(d,i){
                   return d3.select(this.parentNode).select(".forward-link").attr("y1");
                 })
@@ -262,7 +270,8 @@ d3.dllist = function(d3, canvasID, w, h, data) {
                   return d3.select(this.parentNode).select(".forward-link").attr("y1");
                 })
                 .attr("x1", function(d,i){
-                  return d3.select(this.parentNode).select(".forward-link").attr("x1");
+                  return ( (elementsPerRow-1) * (-1*(spacing + defaultSizeH) ) ) + 25;
+
                 })
                 .attr("x2", function(d,i){
                   return d3.select(this.parentNode).select(".forward-link").attr("x1");
@@ -280,7 +289,10 @@ d3.dllist = function(d3, canvasID, w, h, data) {
                 .attr("stroke",function(d,i){
                     return d3.select(this.parentNode).select(".backward-link").attr("stroke") || "black";
                 })
-                .attr("stroke-width",5)
+                .attr("stroke-width",function(d){
+                    if(d.forwardlink) return d.forwardlink.thickness;
+                    return d3.select(this.parentNode).select(".backward-link").attr("stroke-width");
+                })
                 .attr("y1", function(d,i){
                   return d3.select(this.parentNode).select(".backward-link").attr("y1");
                 })
@@ -307,7 +319,9 @@ d3.dllist = function(d3, canvasID, w, h, data) {
               .attr("stroke",function(d,i){
                   return d3.select(this.parentNode).select(".forward-link").attr("stroke") || "black";
               })
-              .attr("stroke-width",5)
+              .attr("stroke-width",function(){
+                  return d3.select(this.parentNode).select(".forward-link").attr("stroke-width") || 3;
+              })
               .attr("y1", function(d,i){
                   return parseInt(d3.select(this.parentNode).select(".backward-horizontal-link").attr("y1")) - 3;
               })
@@ -326,12 +340,16 @@ d3.dllist = function(d3, canvasID, w, h, data) {
                     return "none";
                 }
               });
+
           d3.select(d3.select("#svg"+visID+"backward-link"+qq)[0][0].parentNode)
               .append("line")
+              .attr("class","test-class-class")
               .attr("stroke",function(d,i){
                 return d3.select(this.parentNode).select(".backward-link").attr("stroke") || "black";
               })
-              .attr("stroke-width",5)
+              .attr("stroke-width",function(){
+                  return d3.select(this.parentNode).select(".backward-link").attr("stroke-width") || 3;
+              })
               .attr("y1", function(d,i){
                   return parseInt(d3.select(this.parentNode).select(".forward-horizontal-link").attr("y1")) - 3;
               })
@@ -461,6 +479,8 @@ d3.dllist = function(d3, canvasID, w, h, data) {
 
     svgGroup.selectAll('text').each(BridgesVisualizer.insertLinebreaks);
 
+
+    BridgesVisualizer.drawWrongLinks(svgGroup, visID, elementsPerRow);
 
     //// zoom function
     function zoomHandler() {

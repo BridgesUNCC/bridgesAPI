@@ -113,7 +113,8 @@ exports.recentUploads = function(req, res) {
   Assignment
       .find({
         shared: true,
-        subAssignment: "00"
+        subAssignment: "00",
+        email: {$nin : ["lestrell@uncc.edu", "mmehedin@uncc.edu", "krs@uncc.edu"]}
       }, {
           _id: 0,
           email: 1,
@@ -128,6 +129,35 @@ exports.recentUploads = function(req, res) {
           dateCreated: 1
       })
       .sort({"dateCreated": -1})
+      .limit(5)
+      .exec(function(err, recentAssigns) {
+          if (err) return next(err);
+          if (!recentAssigns) return next("error obtaining recent assignment data");
+          res.send(recentAssigns);
+      });
+
+};
+
+exports.topAssignments = function(req, res) {
+  Assignment
+      .find({
+        shared: true,
+        subAssignment: "00"
+      }, {
+          _id: 0,
+          email: 1,
+          assignmentID: 1,
+          title: 1,
+          description: 1,
+          assignmentNumber: 1,
+          "data.visual": 1,
+          "data.dims": 1,
+          vistype: 1,
+          shared: 1,
+          dateCreated: 1,
+          visitorsCount: 1
+      })
+      .sort({"visitorsCount": -1})
       .limit(5)
       .exec(function(err, recentAssigns) {
           if (err) return next(err);
