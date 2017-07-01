@@ -191,7 +191,6 @@ var tooltip = d3.select("body").append("div")
     .style("opacity", 0);
 
 BridgesVisualizer.textMouseover = function(d) {
-
     function addLineBreaks(str) {
       str = str.split("\n");
       str = str.join("<br>");
@@ -252,10 +251,6 @@ var visCount = 0,
     minimizedCount = 0,
     maximizedCount = 0;
 
-var map = map || null;
-if( map )
-  map( mapData );
-
 /* create new assignments  */
 for (var key in data) {
   if (data.hasOwnProperty(key)) {
@@ -263,7 +258,6 @@ for (var key in data) {
         width = ele.clientWidth - 15,
         height = ele.clientHeight + 15,
         transform = data[key].transform;
-
     //saving a copy of every assignment: type and key of the assignment. Useful when trying to reset them.
 
     BridgesVisualizer.assignmentTypes.push(data[key]['visType']);
@@ -299,13 +293,23 @@ for (var key in data) {
     }
     else if (data[key]['visType'] == "nodelink" && d3.graph) {
         d3.graph(d3, "#vis" + key, width, height, data[key]);
+        // handle map overlay for subassignment if appropriate
+        if(data[key].map_overlay) {
+          console.log(data[key].map_overlay);
+          map('svg'+key);
+        }
     }
     else {
         // console.log("unknown data type");
         d3.graph(d3, "#vis" + key, width, height, data[key]);
+        if(data[key].map_overlay) {
+          console.log(data[key].map_overlay);
+          map('svg'+key);
+        }
     }
     visCount++;
     maximizedCount++;
+
   }
 }
 

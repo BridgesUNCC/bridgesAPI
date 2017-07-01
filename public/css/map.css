@@ -1,10 +1,18 @@
-.graticule {
+
+
+path {
+  fill: #ccc;
+  stroke: #fff;
+  stroke-linejoin: round;
+}
+
+/*.graticule {
   fill: none;
   stroke: #777;
   stroke-width: .5px;
   stroke-opacity: .5;
-}
-
+}*/
+/*
 .sphere {
   fill: #fff;
 }
@@ -29,4 +37,4 @@
 .overlay {
   fill: none;
   pointer-events: all;
-}
+}*/

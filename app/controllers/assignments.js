@@ -256,8 +256,6 @@ exports.show = function (req, res, next) {
     function renderMultiVis (res, assignments) {
         var owner=false,
             allAssigns = {},
-            mapData = [],
-            map
             assignmentTypes = {},
             linkResources = {"script":[], "css":[]};
 
@@ -284,13 +282,6 @@ exports.show = function (req, res, next) {
         /* parse and store all subassignments */
         for(var i = 0; i < assignments.length; i++) {
             data = assignments[i].data.toObject()[0];
-
-            // pull out all coordinates from JSON
-            // data.nodes.forEach(function(d) {
-            //   if(d.location && d.location[0] !== 0 && d.location[1] !== 0)
-            //     mapData.push( { "lat": d.location[0], "long": d.location[1] } );
-            // });
-            mapData = [];
 
             // Client should send trees as hierarchical representation now..
             // This captures the data from the OLD flat tree representation
@@ -339,9 +330,7 @@ exports.show = function (req, res, next) {
             "classID":assignments[0].classID,
             "linkResources":linkResources,
             "shared":assignments[0].shared,
-            "owner":owner,
-            "createMap": (function() { return (mapData.length > 0) ? true : false; })(),
-            "mapData": mapData
+            "owner":owner
         });
       }
   };
@@ -353,11 +342,9 @@ exports.testJSON = function (req, res, next) {
 
     var owner=false,
         allAssigns = {},
-        mapData = [],
-        map;
 
     // Add test JSON here
-    var JSONdata = {"version":"0.4.0","visual":"BinarySearchTree","nodes":[{"color":[255,0,255,255],"shape":"circle","size":10,"name":"Hi","key":"5.4","children":[{"linkProperties":{"color":[0,0,0,255],"thickness":1.000000},"color":[0,255,0,255],"shape":"circle","size":10,"name":"Hello","key":"1.4","children":[{"name":"NULL"},{"name":"NULL"}]},{"linkProperties":{"color":[0,0,0,255],"thickness":1.000000},"color":[0,255,0,255],"shape":"circle","size":10,"name":"World","key":"1.12","children":[{"name":"NULL"},{"linkProperties":{"color":[0,0,0,255],"thickness":1.000000},"color":[0,255,0,255],"shape":"circle","size":10,"name":"World","key":"4.3","children":[{"name":"NULL"},{"name":"NULL"}]}]}]}]};
+    JSONdata = {"visual":"BinarySearchTree","nodes":[{"color":[255,0,255,255],"shape":"circle","size":10,"name":"Hi","key":"5.4","children":[{"linkProperties":{"color":[0,0,0,255],"thickness":1.000000},"color":[0,255,0,255],"shape":"circle","size":10,"name":"Hello","key":"1.4","children":[{"name":"NULL"},{"name":"NULL"}]},{"linkProperties":{"color":[0,0,0,255],"thickness":1.000000},"color":[0,255,0,255],"shape":"circle","size":10,"name":"World","key":"1.12","children":[{"name":"NULL"},{"linkProperties":{"color":[0,0,0,255],"thickness":1.000000},"color":[0,255,0,255],"shape":"circle","size":10,"name":"World","key":"4.3","children":[{"name":"NULL"},{"name":"NULL"}]}]}]}]};
 
     return res.render ('assignments/assignmentMulti', {
         "title":"testJSON",
@@ -367,9 +354,7 @@ exports.testJSON = function (req, res, next) {
         "assignmentNumber":1,
         "vistype":"tree",
         "shared":false,
-        "owner":"test",
-        "createMap": false,
-        "mapData": null
+        "owner":"test"
     });
 
   };

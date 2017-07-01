@@ -35,8 +35,8 @@ d3.graph = function(d3, id, W, H, data) {
       .linkStrength(0.5)
       .size([width, height])
       .nodes(nodes)
-      .links(links)
-      .start();
+      .links(links);
+      // .start();
 
   var drag = force.drag();
   drag.on("dragstart",dragstart);
@@ -111,6 +111,13 @@ d3.graph = function(d3, id, W, H, data) {
       })
       .style("opacity", function(d) {
           return d.opacity || 1;
+      })
+      .each(function(d, i) {
+        if(d.location) {
+          d.x = d.location[0];
+          d.y = -1 * d.location[1];
+          d.fixed = true;
+        }
       });
 
   //inner nodes
@@ -196,4 +203,5 @@ d3.graph = function(d3, id, W, H, data) {
       force.start();
   }
 
+  force.start();
 };

@@ -31,12 +31,12 @@ block content
 
 block footerjs
 
-    script(src = '/components/d3/d3.min.js')
-    script(src = '/components/jquery/dist/jquery.min.js')
-    
+    //script(src = '/components/d3/d3.min.js')
+    //script(src = '/components/jquery/dist/jquery.min.js')
+
     each script in linkResources.script
         script(src = script)
-    
+
     each css in linkResources.css
         link(rel='stylesheet', href=css)
 
@@ -53,30 +53,16 @@ block footerjs
             $('#public').prop('checked',true)
         else
             $('#private').prop('checked',true)
-            
+
         var data = !{JSON.stringify(data)};
         var user = !{JSON.stringify(user)};
         var assignmentNumber = !{JSON.stringify(assignmentNumber)};
-        var mapData =  !{JSON.stringify(mapData)};
-        var createMap =  !{JSON.stringify(createMap)};
-        var BridgesVisualizer = {};  
+        var BridgesVisualizer = {};
 
-    // Map demonstrating locations in the assignment
-    - if ( createMap )
-        #mapContainer.mapContainer
-        link(rel='stylesheet', href='/css/map.css')
-        script( src = '//d3js.org/topojson.v1.min.js' )
-        script( src = '/js/map.js' )
-    - else
-        script.
-            var error = !{JSON.stringify(data)};
-            if(error.error){
-              $("#vis0")
-                  .html(error.error)
-                  .css('color', '#eb6864')
-                  .css('font-size', '24px')
-                  .css('padding', '50px');
-            }
+    link(rel='stylesheet', href='/css/map.css')
+    script( src = 'https://d3js.org/topojson.v1.min.js' )
+    script( src = '/js/map.js' )
+
     script(src = '/js/multiVisconfig.js')
 
 
