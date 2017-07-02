@@ -114,9 +114,25 @@ d3.graph = function(d3, id, W, H, data) {
       })
       .each(function(d, i) {
         if(d.location) {
-          d.x = d.location[0];
-          d.y = -1 * d.location[1];
           d.fixed = true;
+
+          // apply relevant transformations to location attributes
+          if(d3.geo[data.coord_system_type]) { // d3 projection
+            var proj = d3.geo[data.coord_system_type]();
+            var point = proj([d.location[1], d.location[0]]);
+
+            // make sure the transformed location exists
+            if(point) {
+              d.x = point[0];
+              d.y = point[1];
+            } else {  // default location for bad transform
+              d.x = 0;
+              d.y = 0;
+            }
+          } else {  // cartesian space
+            d.x = d.location[0];
+            d.y = -1 * d.location[1];
+          }
         }
       });
 

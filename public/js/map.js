@@ -1,7 +1,6 @@
 var map = function(svg) {
 
   var svg = d3.select("#" + svg);
-  console.log('map?');
   d3.json("/geoJSON/us-10m.v1.json", function(error, us) {
     if (error) throw error;
     var states = svg.select("g")
@@ -23,6 +22,4 @@ var map = function(svg) {
     // Send the overlay to the back to catch mouse events
     svg.select("g").selectAll("#map_overlay").moveToBack();
   });
-
-
 };
