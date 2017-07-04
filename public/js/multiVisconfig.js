@@ -295,16 +295,14 @@ for (var key in data) {
         d3.graph(d3, "#vis" + key, width, height, data[key]);
         // handle map overlay for subassignment if appropriate
         if(data[key].map_overlay) {
-          // console.log(data[key].map_overlay);
-          map('svg'+key);
+          map('svg'+key, data[key].coord_system_type);
         }
     }
     else {
         // console.log("unknown data type");
         d3.graph(d3, "#vis" + key, width, height, data[key]);
         if(data[key].map_overlay) {
-          // console.log(data[key].map_overlay);
-          map('svg'+key);
+          map('svg'+key, data[key].coord_system_type);
         }
     }
     visCount++;
