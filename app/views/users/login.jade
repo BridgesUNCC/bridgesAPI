@@ -1,9 +1,5 @@
 extends layout
 
-block css
-    link(rel='stylesheet',
-         href='/css/header.css')
-
 block form
     .well
         form(action='/users/session', method='post').form-horizontal
@@ -25,8 +21,10 @@ block form
                         name='password',
                         placeholder='Password')
             .form-group
-                div.col-lg-10
+                div.col-lg-12
                     input#submit(type='submit', value='Log In').btn.btn-primary
+                    a(href='/forgot' style='float: right') forgot password?
+
             .form-group
                 div.col-lg-10
                     p Don't have an account?

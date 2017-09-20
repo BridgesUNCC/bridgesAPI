@@ -47,6 +47,24 @@ exports.login = function (req, res) {
 
 }
 
+exports.forgot = function (req, res) {
+  if (!user) var user;
+  if (req.user)
+      user = req.user;
+  else
+      var user = "";
+
+  res.render("users/forgot", {
+    title: 'Forgot Password',
+    user: user
+  });
+};
+
+exports.resetPassword = function (req, res) {
+  console.log('reset that pass');
+  res.sendStatus(200);
+};
+
 exports.logout = function (req, res) {
     req.logout()
     user=""

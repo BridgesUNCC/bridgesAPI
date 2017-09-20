@@ -127,6 +127,8 @@ module.exports = function(app, passport, streamable) {
     app.post('/users', users.create, handleError);
 
     app.get('/login', users.login, handleError);
+    app.get('/forgot', users.forgot, handleError);
+    app.post('/forgot', users.resetPassword, handleError);
     app.get('/home', isLoggedIn, users.display, handleError);
     app.get('/profile', isLoggedIn, users.profile, handleError);
     app.get('/username', isLoggedInGallery, users.display, handleError);  //Login
