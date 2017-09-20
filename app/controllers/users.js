@@ -1,7 +1,9 @@
-var mongoose = require('mongoose')
-    , User = mongoose.model('User')
-    , Account = mongoose.model('Account')
-    , Assignment = mongoose.model('Assignment')
+var mongoose = require('mongoose'),
+    User = mongoose.model('User'),
+    Account = mongoose.model('Account'),
+    Assignment = mongoose.model('Assignment'),
+    validator = require('validator');
+
 //Setup for logging in via twitter
 var login = function (req, res) {
     if (req.session.returnTo) {
@@ -61,8 +63,12 @@ exports.forgot = function (req, res) {
 };
 
 exports.resetPassword = function (req, res) {
-  console.log('reset that pass');
-  res.sendStatus(200);
+  var email = req.body.email;
+
+  if( !validator.isEmail(email) )
+    res.status(400).json({"error": email + " is not a valid email address. Please try again:"});
+  else
+    res.status(202).json({"email": email});
 };
 
 exports.logout = function (req, res) {
