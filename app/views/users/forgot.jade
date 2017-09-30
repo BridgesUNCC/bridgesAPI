@@ -1,0 +1,21 @@
+extends layout
+
+link(rel='stylesheet',
+     href='/css/forgot.css')
+
+block content
+  include ../includes/header.jade
+  div.center-block(style='width: 600px')
+    div.row
+      div.col-lg-10
+        form#reset.center-block.well(style='margin-top: 50px; padding: 50px')
+          legend Forgot your password?
+          p Enter your email address to reset your password. You will receive an email with further instructions. You may need to check your spam folder.
+
+          .form-group
+            label(for='email') Email:
+            input#email.form-control(type='email', name='email', autofocus)
+
+          button.btn.btn-primary(type='submit') Reset Password
+
+  script( src = '/js/forgot.js' )
