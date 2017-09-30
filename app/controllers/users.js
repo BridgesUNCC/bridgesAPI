@@ -2,7 +2,6 @@ var mongoose = require('mongoose'),
     User = mongoose.model('User'),
     Account = mongoose.model('Account'),
     Assignment = mongoose.model('Assignment'),
-    validator = require('validator'),
     crypto = require('crypto'),
     mail = require('./mail');
 
@@ -132,11 +131,6 @@ exports.getNewPassword = function(req, res) {
 */
 exports.sendResetEmail = function (req, res) {
   var email = req.body.email;
-
-  // first check if the email is valid
-  // ### NOTE ### some emails have been used that are not actually valid
-  // if( !validator.isEmail(email) )
-  //   res.status(400).json({"error": email + " is not a valid email address. Please try again:"});
 
   // Find the user with the given email address
   User.findOne({ 'email': email }).exec(function (err, user) {
