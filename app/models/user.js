@@ -13,7 +13,11 @@ var UserSchema = new Schema({
     provider: { type: String, default: '' },
     hashed_password: { type: String, default: '' },
     salt: { type: String, default: '' },
-    apikey: {type: String, default: ''}
+    apikey: {type: String, default: ''},
+    password_reset: {
+      reset_token: {type: String},
+      reset_timeout: {type: Date}
+    }
 })
 
 // Virtuals
@@ -40,7 +44,7 @@ UserSchema.path('email').validate(function (email) {
 
 UserSchema.path('email').validate(function (email, fn) {
     var User = mongoose.model('User')
-  
+
     // if authenticating by an oauth strategies, don't validate
     if (authTypes.indexOf(this.provider) !== -1) fn(true)
 
@@ -61,7 +65,7 @@ UserSchema.path('username').validate(function (username) {
 
 UserSchema.path('username').validate(function (username, fn) {
     var User = mongoose.model('User')
-  
+
     // if authenticating by an oauth strategies, don't validate
     if (authTypes.indexOf(this.provider) !== -1) fn(true)
 
@@ -106,11 +110,11 @@ UserSchema.methods = {
    */
 
   authenticate: function (plainText) {
-    return this.encryptPassword(plainText) === this.hashed_password
+    return this.encryptPassword(plainText) === this.hashed_password;
   },
 
   generateKey: function () {
-    this.apikey = Math.round(new Date().valueOf() * Math.random()) 
+    this.apikey = Math.round(new Date().valueOf() * Math.random());
   },
 
   /**
@@ -121,7 +125,7 @@ UserSchema.methods = {
    */
 
   makeSalt: function () {
-    return Math.round((new Date().valueOf() * Math.random())) + ''
+    return Math.round((new Date().valueOf() * Math.random())) + '';
   },
 
   /**
@@ -133,15 +137,33 @@ UserSchema.methods = {
    */
 
   encryptPassword: function (password) {
-    if (!password) return ''
-    var encrypred
+    if (!password) return '';
+    var encrypred;
     try {
-      encrypred = crypto.createHmac('sha1', this.salt).update(password).digest('hex')
-      return encrypred
+      encrypred = crypto.createHmac('sha1', this.salt).update(password).digest('hex');
+      return encrypred;
     } catch (err) {
-      return ''
+      return '';
     }
-  }
-}
+  },
 
-mongoose.model('User', UserSchema)
+
+  /**
+   * Add password reset token and expiry date
+   *
+   * @param {String} token
+   * @api public
+   */
+   setToken: function(token, cb) {
+     if(!token) return false;
+     this.password_reset.reset_token = crypto.createHash('sha512').update(token).digest('hex');
+     this.password_reset.reset_timeout = new Date(Date.now() + (2*1000*60*60));
+     this.save(function(err, usr) {
+       if(err) cb(err);
+       cb(null);
+     });
+   }
+
+};
+
+mongoose.model('User', UserSchema);

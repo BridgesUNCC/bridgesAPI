@@ -125,10 +125,20 @@ module.exports = function(app, passport, streamable) {
 
     app.get('/signup', users.signup, handleError);
     app.post('/users', users.create, handleError);
-
     app.get('/login', users.login, handleError);
+
+    // allow user to request a password reset email
     app.get('/forgot', users.forgot, handleError);
-    app.post('/forgot', users.resetPassword, handleError);
+
+    // send a password reset email
+    app.post('/forgot', users.sendResetEmail, handleError);
+
+    // allow user to set new password
+    app.get('/reset/:token', users.getNewPassword, handleError);
+
+    // reset a user's password
+    app.post('/reset/:token', users.resetPassword, handleError);
+
     app.get('/home', isLoggedIn, users.display, handleError);
     app.get('/profile', isLoggedIn, users.profile, handleError);
     app.get('/username', isLoggedInGallery, users.display, handleError);  //Login

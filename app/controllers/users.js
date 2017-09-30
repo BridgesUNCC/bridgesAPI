@@ -2,7 +2,9 @@ var mongoose = require('mongoose'),
     User = mongoose.model('User'),
     Account = mongoose.model('Account'),
     Assignment = mongoose.model('Assignment'),
-    validator = require('validator');
+    validator = require('validator'),
+    crypto = require('crypto'),
+    mail = require('./mail');
 
 //Setup for logging in via twitter
 var login = function (req, res) {
@@ -62,13 +64,103 @@ exports.forgot = function (req, res) {
   });
 };
 
-exports.resetPassword = function (req, res) {
+/*
+  POST route to reset the password of the account with the given token
+*/
+exports.resetPassword = function(req, res) {
+  var findthis = crypto.createHash('sha512').update(req.params.token).digest('hex');
+
+  // Find the user with the valid unique token
+  User.findOne({'password_reset.reset_token': findthis,
+                'password_reset.reset_timeout': {$gte: new Date()}
+  }).exec(function (err, user) {
+    // if the token is invalid or expired, alert the user
+    if(err || !user) {
+      res.render("users/noreset", {
+        title: 'Cannot Reset'
+      });
+    } else {
+      // otherwise, update the password
+      user.password = req.body.password1;
+
+      // remove the token
+      user.password_reset = undefined;
+
+      // save the user model
+      user.save(function(err, user) {
+        if(err) {
+          console.log(err);
+          return res.render("users/noreset", {
+            title: 'Cannot Reset'
+          });
+        }
+
+        // finally, ask the user to login with their new password
+        res.send(200, {"redirect": '/login'});
+      });
+    }
+  });
+};
+
+/*
+  POST route to begin password reset process for the account with the given token
+*/
+exports.getNewPassword = function(req, res) {
+  var findthis = crypto.createHash('sha512').update(req.params.token).digest('hex');
+
+  // Find the user with the valid unique token
+  User.findOne({'password_reset.reset_token': findthis,
+                'password_reset.reset_timeout': {$gte: new Date()}
+  }).exec(function (err, user) {
+    // if the token is invalid or expired, alert the user
+    if(err || !user) {
+      res.render("users/noreset", {
+        title: 'Cannot Reset'
+      });
+    } else {
+      // otherwise, render the reset page
+      res.render("users/reset", {
+        title: 'Reset Password',
+        token: req.params.token
+      });
+    }
+  });
+};
+
+/*
+  POST route to send a password reset email and token
+*/
+exports.sendResetEmail = function (req, res) {
   var email = req.body.email;
 
-  if( !validator.isEmail(email) )
-    res.status(400).json({"error": email + " is not a valid email address. Please try again:"});
-  else
-    res.status(202).json({"email": email});
+  // first check if the email is valid
+  // ### NOTE ### some emails have been used that are not actually valid
+  // if( !validator.isEmail(email) )
+  //   res.status(400).json({"error": email + " is not a valid email address. Please try again:"});
+
+  // Find the user with the given email address
+  User.findOne({ 'email': email }).exec(function (err, user) {
+    if(err || user === null) {
+      res.status(400).json({"error": email + " is not associated with a Bridges account. Please try again:"});
+    } else {
+      // pass the email address to generate the email
+      mail.resetPass(email, function(err, email, token) {
+        if(err) {
+          console.log(err);
+          return res.status(400).json({"error": "Email could not be sent at this time. Please try again:"});
+        }
+
+        // store the token (and expiry datetime) in user model
+        user.setToken(token, function(err) {
+          if(err) {
+            console.log(err);
+            return res.status(400).json({"error": "Token could not be saved. Please contact a Bridges administrator."});
+          }
+          res.status(202).json({"email": email});
+        });
+      });
+    }
+  });
 };
 
 exports.logout = function (req, res) {
