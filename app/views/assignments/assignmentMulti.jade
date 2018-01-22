@@ -1,4 +1,5 @@
 extends ../includes/boilerplate.jade
+
 block css
     link(rel='stylesheet',
          href='/css/header.css')
@@ -60,10 +61,13 @@ block footerjs
         var BridgesVisualizer = {};
 
     link(rel='stylesheet', href='/css/map.css')
+    script(src='/socket.io/socket.io.js')
+    script(src='/js/socket.js')
     script( src = 'https://d3js.org/topojson.v1.min.js' )
     script( src = '/js/map.js' )
 
     script(src = '/js/multiVisconfig.js')
+
 
 
     script.
