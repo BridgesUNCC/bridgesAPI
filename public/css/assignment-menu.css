@@ -12,7 +12,6 @@
     text-align: center;
     background-color: #f8f8f8;
     border-left: solid 2px #e7e7e7;
-    overflow: auto;/*hide the scrollbar if not needed, chrome and ie tested*/
 }
 
 #assignmentTitle {
@@ -35,6 +34,18 @@
     overflow: scroll;
     margin-bottom: 30px;
     box-shadow: inset 0px 0px 10px black;
+}
+
+#collapseExpand {
+  position: absolute;
+  top: 50%;
+  left: -5px;
+  background-color: white;
+  box-shadow: 0px 1px 5px black;
+  border-radius: 25px;
+  padding: 5px;
+  pointer-events: none;
+  display: none;
 }
 
 .optionButton {
