@@ -14,16 +14,16 @@ d3.graph = function(d3, id, W, H, data) {
     var vis, svgGroup, defs;
     var count = 0;
     var finalTranslate = BridgesVisualizer.defaultTransforms.graph.translate;
-    var finalScale =  BridgesVisualizer.defaultTransforms.graph.scale;
+    var finalScale = BridgesVisualizer.defaultTransforms.graph.scale;
 
     var nodes = data.nodes;
     var links = data.links;
 
-  var transformObject = BridgesVisualizer.getTransformObjectFromCookie(visID);
-  if(transformObject){
-      finalTranslate = transformObject.translate;
-      finalScale = transformObject.scale;
-  }
+  // var transformObject = BridgesVisualizer.getTransformObjectFromCookie(visID);
+  // if(transformObject){
+  //     finalTranslate = transformObject.translate;
+  //     finalScale = transformObject.scale;
+  // }
 
   for (i in links) {
      if (count<links[i].value) count = links[i].value;

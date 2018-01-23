@@ -39,6 +39,12 @@ BridgesVisualizer.textOffsets = {
 
 BridgesVisualizer.treeDashArray = "3px, 3px";
 
+// Keep track of the center of the default vis window
+BridgesVisualizer.visCenter = function() {
+  return [document.getElementById("vis0").clientWidth/2 || 0,
+          document.getElementById("vis0").clientHeight/2 || 0];
+};
+
 // Default scale and transform values for each data structure
 BridgesVisualizer.defaultTransforms = {
   "Alist": { "scale": 0.4, "translate": [20, 100]},
@@ -54,9 +60,8 @@ BridgesVisualizer.defaultTransforms = {
   "cdllist": { "scale": 0.3, "translate": [50, -5]},
   "cllist": { "scale": 0.3, "translate": [50, -5]},
 
-
-  "graph": { "scale": 0.5, "translate": [200, 150]},
-  "nodelink": { "scale": 0.5, "translate": [200, 150]},
+  "graph": { "scale": 0.5, "translate": BridgesVisualizer.visCenter()},
+  "nodelink": { "scale": 0.5, "translate": BridgesVisualizer.visCenter()},
 
   "tree": { "scale": 0.9, "translate": [document.getElementById("vis0").clientWidth/2, 50]}
 };
@@ -317,11 +322,11 @@ function reset() {
     for (var i = 0; i < allZoom.length; i++) {
         var zoom = allZoom[i];
         var svgGroup = allSVG[i];
-        // console.log(BridgesVisualizer.assignmentTypes[i]);
         zoom.scale(1);
 
         /* set default translate based on visualization type */
         if(BridgesVisualizer.assignmentTypes[i] in BridgesVisualizer.defaultTransforms){
+
             zoom.translate(BridgesVisualizer.defaultTransforms[BridgesVisualizer.assignmentTypes[i]].translate);
             zoom.scale(BridgesVisualizer.defaultTransforms[BridgesVisualizer.assignmentTypes[i]].scale);
         }else{
@@ -706,3 +711,12 @@ function sortSLLists(unsortedNodes) {
 
   return sortedNodes;
 }
+
+// Update default transforms that rely on window sizes
+$(window).resize(function() {
+    clearTimeout(window.resizedFinished);
+    window.resizedFinished = setTimeout(function(){
+        BridgesVisualizer.defaultTransforms.graph.translate = BridgesVisualizer.visCenter();
+        BridgesVisualizer.defaultTransforms.nodelink.translate = BridgesVisualizer.visCenter();
+    }, 250);
+});
