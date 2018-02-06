@@ -76,3 +76,14 @@
   padding-left: 20px;
   line-height: 120%;
 }
+
+#welcome {
+  margin-top: 40px;
+  padding: 50px;
+  font-size: 18px;
+  background: -webkit-linear-gradient(white, #FFFAFA);
+  background: -o-linear-gradient(white, #FFFAFA);
+  background: -moz-linear-gradient(white, #FFFAFA);
+  background: linear-gradient(white, #FFFAFA);
+  box-shadow: 2px 2px 8px #888888;
+}
