@@ -17,6 +17,16 @@ block content
                 div(style="float:left; margin-left:50px")
                     h1(style="text-align: left") #{usernames}'s Gallery
 
+        -if(assignments.length == 0)
+          .row(style="margin-top:40px")
+            .col-lg-6.col-lg-offset-3.text-center
+              p Welcome to BRIDGES!
+              p If you're ready to get started, check out the following links:
+              p
+                a(href='http://bridgesuncc.github.io/bridges_setup.html' target='_blank') Bridges Setup
+              p
+                a(href='https://bridgesdata.herokuapp.com' target='_blank') Bridges Datasources
+
     div.gallery_row
         - for (var x = 0; x < assignments.length; x++)
             div(class='gallery_assignment_container')
