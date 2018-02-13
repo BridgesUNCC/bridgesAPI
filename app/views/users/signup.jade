@@ -4,26 +4,26 @@ block form
      .well
        form(action='/users', method='post').form-horizontal.bs-example
          .fieldset
-           legend Create an account!   
+           legend Create an account!
             input(type="hidden", name="_csrf", value=csrftoken)
            .form-group
               label.col-lg-2.control-label  Username
               div.col-lg-10
-                  input.form-control(type='text', 
-                       name='username', 
+                  input.form-control(type='text',
+                       name='username',
                        placeholder='User Name')
            .form-group
               label.col-lg-2.control-label  Password
               div.col-lg-10
                   input.form-control(
-                       type='password', 
+                       type='password',
                        name='password',
                        placeholder='Password')
            .form-group
               label.col-lg-2.control-label  Email
               div.col-lg-10
                   input.form-control(
-                       type='email', 
+                       type='email',
                        name='email',
                        placeholder='Your Email')
            .form-group
@@ -33,20 +33,18 @@ block form
 block validate
     -if (typeof locals.errors !== 'undefined') {
       - if (typeof locals.errors.username != 'undefined'){
-          .alert.alert-danger 
-            strong Username:    
-            .err #{errors.username.type}    
+          .alert.alert-danger
+            strong Username:
+            .err #{errors.username.message}
       - }
       - if (typeof locals.errors.hashed_password != 'undefined'){
-          .alert.alert-danger 
-            strong Password:  
-            .err  #{errors.hashed_password.type}    
+          .alert.alert-danger
+            strong Password:
+            .err  #{errors.hashed_password.message}
       - }
       - if (typeof locals.errors.email != 'undefined'){
-          .alert.alert-danger 
-              strong Email: 
-              .err #{errors.email.type}    
+          .alert.alert-danger
+              strong Email:
+              .err #{errors.email.message}
       - }
     - }
-              
-

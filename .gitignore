@@ -11,6 +11,7 @@
 ###################
 node_modules/
 public/components/
+public/components/modernizr/modernizr.js
 
 # Don't include test output
 test/imgs/
