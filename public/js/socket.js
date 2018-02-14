@@ -1,7 +1,28 @@
-var socket = io('http://localhost:3000');
+var socket = io.connect('http://localhost:3000');
 
 socket.on('ok', function (data) {
   console.log(data);
+});
+
+socket.on('dataframe', function (dataframe) {
+  console.log('new dataframe', dataframe);
+
+  var cols = 10, rows = 10;
+
+  d3.selectAll("rect").each(function(d, i) {
+    // console.log(i);
+    // console.log("I am column", Math.floor((i) / cols));
+    var row = Math.floor((i) / cols);
+    //
+    // console.log("I am row", (i) % cols);
+    var col = Math.floor((i) % cols);
+    if(dataframe.dataframe[col][row] == 1) {
+      d3.select(this).style("fill", "white");
+    } else {
+      d3.select(this).style("fill", "black");
+    }
+  });
+
 });
 
 $(document).keydown(function(e) {

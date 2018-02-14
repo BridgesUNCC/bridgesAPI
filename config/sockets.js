@@ -4,19 +4,37 @@ module.exports.listen = function(app) {
   var io = socketio.listen(app);
   var socks = {};
 
+
   io.sockets.on('connection', function (socket) {
     console.log('adding new socket', socket.id);
     socks[socket.id] = "user";
 
+    socket.join('user1_assignment1');
+    socket.broadcast.to('user1_assignment1').emit('announcement', {message: "User " + socket.id + " connected"});
+
+    /* Receives keydown events from web-based application sockets */
     socket.on('keydown', function (data) {
-      console.log('ok', { pressed: 'key ' + data.key });
-      socket.emit('ok', { pressed: 'key ' + data.key, all: socks });
+      console.log('keydown', { pressed: 'key ' + data.key, sock: socket.id });
+      socket.broadcast.to('user1_assignment1').emit('keydown', { pressed: 'key ' + data.key });
     });
 
-    socket.on('disconnect', function(socket) {
-      console.log('ok bye');
-      delete socks[socket.id];
+    /* Receives dataframe events from client-based sockets */
+    socket.on('dataframe', function (dataframe) {
+        console.log('dataframe', {data: dataframe, sock: socket.id });
+        socket.broadcast.to('user1_assignment1').emit('dataframe', { dataframe: dataframe });
     });
+
+    socket.on('disconnect', function() {
+      if(socket && socket.id) {
+        console.log(socket.id, 'logged off');
+        socket.broadcast.to('user1_assignment1').emit('announcement', {message: "User " + socket.id + " disconnected"});
+        delete socks[socket.id];
+      } else {
+        console.log('okbye');
+      }
+    });
+
+
   });
 
   return io;
