@@ -33,10 +33,15 @@ exports.view = function(req, res, next) {
           //     return Date.parse(b.dateCreated) - Date.parse(a.dateCreated);
           // });
 
-          for(var assignmentResultItem in assignmentResult){
-              var $thisVistype = visTypes.getVisType(assignmentResult[assignmentResultItem]['data'][0]['visual']);
-              if($thisVistype == "Alist") $thisVistype = visTypes.checkIfHasDims(assignmentResult[assignmentResultItem]['data'][0]);
-              assignmentResult[assignmentResultItem]['vistype'] = $thisVistype;
+          try{
+            for(var assignmentResultItem in assignmentResult){
+                  var thisVistype = visTypes.getVisType(assignmentResult[assignmentResultItem]['data'][0]['visual']);
+                  if(thisVistype == "Alist") thisVistype = visTypes.checkIfHasDims(assignmentResult[assignmentResultItem]['data'][0]);
+                  assignmentResult[assignmentResultItem]['vistype'] = thisVistype;
+            }
+          } catch (error) {
+              console.log("Error processing assignments. Data may be corrupted. ", error);
+              assignmentResult = [];
           }
 
           return res.render('assignments/userGallery', {
