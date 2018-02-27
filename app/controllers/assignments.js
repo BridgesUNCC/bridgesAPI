@@ -51,8 +51,7 @@ exports.saveSnapshot = function(req, res, next) {
 //API route for uploading assignment data. If the
 //assignment already exists it will be replaced.
 exports.upload = function (req, res, next) {
-
-    // C++ version posts JSON as object, JAVA posts as plain string
+    // C++ version posts JSON as object, JAVA and Python post as plain string
     if(typeof req.body != "object") {
         try { rawBody = JSON.parse(req.body); } // try parsing to object
         catch (e) {
@@ -65,7 +64,6 @@ exports.upload = function (req, res, next) {
     } else {  // object already
         rawBody = req.body;
     }
-
 
     // Handle assignment number
     var assignmentID = req.params.assignmentID;
@@ -309,14 +307,8 @@ exports.show = function (req, res, next) {
                 }
             }
 
-
             allAssigns[i] = data;
-
         }
-
-        // console.log(Array.isArray(toInclude));
-
-        // console.log(finalVistype);
 
         return res.render ('assignments/assignmentMulti', {
             "title":"Assignment " + assignmentNumber,

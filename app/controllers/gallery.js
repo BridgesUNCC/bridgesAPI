@@ -86,12 +86,17 @@ exports.view = function(req, res) {
               var usernamesmap = {};
               getAssignmentsEmailAndUsernameMap(users, usernamesmap, function(usernamesmap) {
 
+                try {
                   for(var assignmentResultItem in assignmentResult){
                       assignmentResult[assignmentResultItem]['username'] = usernamesmap[assignmentResult[assignmentResultItem]['email']];
                       var $thisVistype = visTypes.getVisType(assignmentResult[assignmentResultItem]['data'][0]['visual']);
                       if($thisVistype == "Alist") $thisVistype = visTypes.checkIfHasDims(assignmentResult[assignmentResultItem]['data'][0]);
                       assignmentResult[assignmentResultItem]['vistype'] = $thisVistype;
                   }
+                } catch (error) {
+                    console.log("Error processing assignments. Data may be corrupted. ", error);
+                    assignmentResult = [];
+                }
 
                   assignmentResult.sort(function(a, b) {
                       return Date.parse(b.dateCreated) - Date.parse(a.dateCreated);
