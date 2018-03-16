@@ -310,11 +310,13 @@ exports.show = function (req, res, next) {
             allAssigns[i] = data;
         }
 
+        sessionUser = sessionUser ? {"username": sessionUser.username, "email": sessionUser.email} : null;
+
         return res.render ('assignments/assignmentMulti', {
             "title":"Assignment " + assignmentNumber,
             "assignmentTitle": assignments[0].title,
             "assignmentDescription": assignments[0].description.replace("\"", ""),
-            "user":sessionUser,
+            "user": sessionUser,
             "data":allAssigns,
             "extent":Object.keys(allAssigns).length,
             "assignmentNumber":assignmentNumber,

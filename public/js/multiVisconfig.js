@@ -197,9 +197,33 @@ d3.selection.prototype.moveToBack = function() {
 };
 
 // Define the div for the tooltip
-var tooltip = d3.select("body").append("div")
+BridgesVisualizer.tooltip = d3.select("body").append("div")
     .attr("class", "tooltip")
+    .classed("shown", false)
+    .style("pointer-events", "none")
     .style("opacity", 0);
+
+BridgesVisualizer.showTooltip = function(text, x, y) {
+  function addLineBreaks(str) {
+    str = str.split("\n");
+    str = str.join("<br>");
+    return str;
+  }
+  if(text) {
+    BridgesVisualizer.tooltip
+        // .transition("tooltip")
+        // .duration(200)
+        .style("opacity", 0.9);
+    BridgesVisualizer.tooltip.html(addLineBreaks(text))
+      .style("left", (x) + "px")
+      .style("top", (y) + "px");
+  } else {
+    BridgesVisualizer.tooltip
+        // .transition("tooltip")
+        // .duration(200)
+        .style("opacity", 0);
+  }
+};
 
 BridgesVisualizer.textMouseover = function(d) {
     function addLineBreaks(str) {
@@ -259,8 +283,7 @@ allZoom = [];
 allSVG = [];
 
 var visCount = 0,
-    minimizedCount = 0,
-    maximizedCount = 0;
+    minimizedCount = 0;
 
 /* create new assignments  */
 for (var key in data) {
@@ -303,7 +326,10 @@ for (var key in data) {
           d3.array3d(d3, "#vis" + key, width, height, data[key].nodes, data[key].dims, transform);
     }
     else if (data[key]['visType'] == "nodelink" && d3.graph) {
-        d3.graph(d3, "#vis" + key, width, height, data[key]);
+        var canvas = d3.select("#vis" + key).append("canvas")
+        	.attr("id", "canvas" + key);
+
+        d3.graph(canvas, width, height, data[key]);
         // handle map overlay for subassignment if appropriate
         if(data[key].map_overlay) {
           map('svg'+key, data[key].coord_system_type);
@@ -317,7 +343,6 @@ for (var key in data) {
         }
     }
     visCount++;
-    maximizedCount++;
 
   }
 }
