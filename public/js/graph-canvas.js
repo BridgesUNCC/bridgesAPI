@@ -22,22 +22,33 @@ d3.graph = function(canvas, W, H, data) {
     var nodes = data.nodes;
     var links = data.links;
 
-    for(var i = 1744; i < 5000; i++) {
-      nodes.push({color: [70, 130, 180, 1], size: 10, shape: "circle", name: "Actor" + i});
-      links.push({source: i, target: i-1});
-    }
+    // set fixed locations or projections where appropriate
+    nodes.forEach(function(d) {
+      if(d.location) {
+        var proj, point;
 
-    console.log(nodes.length);
+        if(data.coord_system_type == "equirectangular") {
+          proj = d3.geoEquirectangular();
+        } else if(data.coord_system_type == "albersUsa") {
+          proj = d3.geoAlbersUsa();
+        } else {  // cartesian space
+          d.fx = d.location[0];
+          d.fy = d.location[1];
+          return;
+        }
 
-    // var transformObject = BridgesVisualizer.getTransformObjectFromCookie(visID);
-    // if(transformObject){
-    //     finalTranslate = transformObject.translate;
-    //     finalScale = transformObject.scale;
-    // }
-    //
-    // for (i in links) {
-    //    if (count<links[i].value) count = links[i].value;
-    // }
+        point = proj([d.location[1], d.location[0]]);
+
+        // make sure the transformed location exists
+        if(point) {
+          d.fx = point[0];
+          d.fy = point[1];
+        } else {  // default location for bad transform
+          d.fx = 0;
+          d.fy = 0;
+        }
+      }
+    });
 
     var simulation = d3.forceSimulation()
         .force("link", d3.forceLink()
@@ -50,15 +61,6 @@ d3.graph = function(canvas, W, H, data) {
 
 
     var defaultColors = d3.scale.category20(); //10 or 20
-
-    // canvas.attr("width", width)
-    //     .attr("height", height)
-    //     .call(zoom);
-
-    // svgGroup = canvas.append("g");
-    //     // initialize the scale and translation
-    //     svgGroup.attr('transform', 'translate(' + zoom.translate() + ') scale(' + zoom.scale() + ')');
-    //     allSVG.push(svgGroup);
 
     // http://stackoverflow.com/questions/27802669/how-do-i-change-the-colour-of-markers-arrow-heads-solved
     // canvas.append("svg:defs").selectAll("marker")
