@@ -24,7 +24,9 @@ exports.getVisType = function(toCheck) {
     "AVLTree":         						"tree",
 
     "GraphAdjacencyList":  				"nodelink",
-    "GraphAdjacencyMatrix":				"nodelink"
+    "GraphAdjacencyMatrix":				"nodelink",
+
+    "ColorGrid":                  "grid"
   };
     if( toCheck && validTypes[toCheck] )
       return validTypes[toCheck];
@@ -50,6 +52,7 @@ var checkIfHasDims = function (data){
 exports.getVisTypeObject = function(data) {
   var validTypes = {
       "nodelink":   {"vistype":"nodelink",   "script":"/js/graph-canvas.js",          "link":""                  	},
+      "grid":   {"vistype":"grid",   "script":"/js/grid.js",          "link":""                  	},
           "tree":   {"vistype":"tree",       "script":"/js/tree/lib/bst.js",   "link":"/css/vis/tree.css" 	},
          "queue":   {"vistype":"queue",      "script":"/js/queue.js",          "link":""                  	},
          "Alist":   {"vistype":"Alist",      "script":"/js/array/array.js",    "link":""						        },

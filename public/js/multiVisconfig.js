@@ -294,6 +294,9 @@ for (var key in data) {
         transform = data[key].transform;
     //saving a copy of every assignment: type and key of the assignment. Useful when trying to reset them.
 
+    var canvas = d3.select("#vis" + key).append("canvas")
+      .attr("id", "canvas" + key);
+
     BridgesVisualizer.assignmentTypes.push(data[key]['visType']);
 
     if (data[key]['visType'] == "tree" && d3.bst) {
@@ -325,9 +328,11 @@ for (var key in data) {
     else if (data[key]['visType'] == "Array3D" && d3.array3d) {
           d3.array3d(d3, "#vis" + key, width, height, data[key].nodes, data[key].dims, transform);
     }
+    else if (data[key]['visType'] == "grid" && d3.grid) {
+
+        d3.grid(canvas, width, height, data[key]);
+    }
     else if (data[key]['visType'] == "nodelink" && d3.graph) {
-        var canvas = d3.select("#vis" + key).append("canvas")
-        	.attr("id", "canvas" + key);
 
         d3.graph(canvas, width, height, data[key]);
         // handle map overlay for subassignment if appropriate
