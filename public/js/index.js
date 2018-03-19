@@ -35,6 +35,7 @@ var initGallery = function(data) {
       .classed("assignment-image", true)
     .append('img')
       .attr('class', 'picture')
+      .classed("visimg", true)
       .attr('src', function(d) {
         if(d.vistype == "nodelink")
             return '/img/graph.png';
