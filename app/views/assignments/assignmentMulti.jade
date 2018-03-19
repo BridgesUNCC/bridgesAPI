@@ -1,11 +1,8 @@
 extends ../includes/boilerplate.jade
 block css
-    link(rel='stylesheet',
-         href='/css/header.css')
-    link(rel='stylesheet',
-         href='/css/assignment.css')
-    link(rel='stylesheet',
-         href='/css/assignment-menu.css')
+    link(rel='stylesheet', href='/css/header.css')
+    link(rel='stylesheet', href='/css/assignment.css')
+    link(rel='stylesheet', href='/css/assignment-menu.css')
     link(rel='stylesheet', href='/components/css-toggle-switch/dist/toggle-switch.css')
 
     svg#svgdfs(height='0',display='block')
@@ -30,6 +27,10 @@ block content
         -}
 
 block footerjs
+
+    //link(rel='stylesheet', href='/css/map.css')
+    //script( src = 'https://d3js.org/topojson.v1.min.js' )
+    //script( src = '/js/map.js' )
 
     each script in linkResources.script
         script(src = script)
@@ -56,12 +57,8 @@ block footerjs
         var assignmentNumber = !{JSON.stringify(assignmentNumber)};
         var BridgesVisualizer = {};
 
-    link(rel='stylesheet', href='/css/map.css')
-    script( src = 'https://d3js.org/topojson.v1.min.js' )
-    script( src = '/js/map.js' )
-
+    script(src = '/js/Bridges/BridgesVisualizer.js')
     script(src = '/js/multiVisconfig.js')
-
 
     script.
         // Asynchronously update the assignment visibility
