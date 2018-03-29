@@ -253,6 +253,7 @@ exports.show = function (req, res, next) {
 
     function renderMultiVis (res, assignments) {
         var owner=false,
+            map=false,
             allAssigns = {},
             assignmentTypes = {},
             linkResources = {"script":[], "css":[]};
@@ -307,6 +308,9 @@ exports.show = function (req, res, next) {
                 }
             }
 
+            if(data.map_overlay)
+              map = true;
+
             allAssigns[i] = data;
         }
 
@@ -317,11 +321,10 @@ exports.show = function (req, res, next) {
             "assignmentTitle": assignments[0].title,
             "assignmentDescription": assignments[0].description.replace("\"", ""),
             "user": sessionUser,
-            "data":allAssigns,
+            "data": allAssigns,
+            "map": map,
             "extent":Object.keys(allAssigns).length,
             "assignmentNumber":assignmentNumber,
-            "schoolID":assignments[0].schoolID,
-            "classID":assignments[0].classID,
             "linkResources":linkResources,
             "shared":assignments[0].shared,
             "owner":owner
