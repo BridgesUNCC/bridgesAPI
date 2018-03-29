@@ -6,7 +6,7 @@ var express = require('express'),
 
 //Set up database
 var mongoose = require('mongoose');
-mongoose.connect(config.db, { useMongoClient: true });
+mongoose.connect(config.db);
 mongoose.Promise = global.Promise;
 
 var db = mongoose.connection;
