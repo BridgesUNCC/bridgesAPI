@@ -1,17 +1,8 @@
 extends ../includes/boilerplate.jade
 block css
-    link(rel='stylesheet', href='/css/header.css')
     link(rel='stylesheet', href='/css/assignment.css')
     link(rel='stylesheet', href='/css/assignment-menu.css')
     link(rel='stylesheet', href='/components/css-toggle-switch/dist/toggle-switch.css')
-
-    svg#svgdfs(height='0',display='block')
-        defs
-          marker#Triangle(viewbox='0 0 10 10', refx='0', refy='5', markerunits='strokeWidth', markerwidth='4', markerheight='3', orient='auto-start-reverse')
-            path(d='M 0 0 L 10 5 L 0 10 z')
-        defs
-          marker#Circle(markerwidth='10', markerheight='10', refx='5', refy='5')
-            circle.marker(cx='5', cy='5', r='1.5')
 
 block content
     include ../includes/header.jade
@@ -28,15 +19,17 @@ block content
 
 block footerjs
 
-    //link(rel='stylesheet', href='/css/map.css')
-    //script( src = 'https://d3js.org/topojson.v1.min.js' )
-    //script( src = '/js/map.js' )
-
     each script in linkResources.script
         script(src = script)
 
     each css in linkResources.css
         link(rel='stylesheet', href=css)
+
+    -if(map) {
+      link(rel='stylesheet', href='/css/map.css')
+      script( src = 'https://d3js.org/topojson.v1.min.js' )
+      script( src = '/js/map.js' )
+    -}
 
     script.
         var owner = '#{owner}'

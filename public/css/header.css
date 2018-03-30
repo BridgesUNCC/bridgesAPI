@@ -1,11 +1,3 @@
-html {
-  /*height: 100%;*/
-}
-body{
-    background-color:white;
-    height: 100%;
-    overflow-x: hidden;
-}
 .centerForm {
     padding-top: 10px;
 }
@@ -13,6 +5,12 @@ body{
     padding-right: 10px;
 }
 
-div.navbar.navbar-default {
-  margin: 0px;
+.navbar{
+  font:'Arial Narrow Bold', sans-serif !important;
+  font-size:18px;
+  color:#000;
+}
+
+.navbar-brand{
+  text-transform:uppercase;
 }

@@ -4,20 +4,17 @@
   "ignore": [
     "**/.*",
     "node_modules"
-
   ],
   "dependencies": {
-
-    "d3": "3.5.17",
-    "jquery": "latest",
-    "css-toggle-switch": "~2.1.5",
-    "angular": "~1.2.22"
+    "d3": "4.12.2",
+    "bootstrap": "3.3.5",
+    "jquery": ">= 1.9.1",
+    "css-toggle-switch": "~2.1.5"
   },
   "devDependencies": {
-
-    "d3": "3.5.17",
-    "jquery": "latest",
-    "css-toggle-switch": "~2.1.5",
-    "angular": "~1.2.22"
+    "d3": "4.12.2",
+    "bootstrap": "3.3.5",
+    "jquery": ">= 1.9.1",
+    "css-toggle-switch": "~2.1.5"
   }
 }
