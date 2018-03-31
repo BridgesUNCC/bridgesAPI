@@ -6,22 +6,21 @@ BridgesVisualizer.map = function(svg, overlay) {
   var albersUsa = function() {
     d3.json("/geoJSON/us-10m.v1.json", function(error, us) {
       if (error) throw error;
+      path = d3.geoPath();
 
-      var states = svg.select("g")
+      var projection = d3.geoAlbersUsa();
+
+      var path = d3.geoPath()
+          .projection(projection);
+
+      states = svg.select("g")
         .append("g")
-          .attr("id","map_overlay")
-        .selectAll("states")
-        .data(topojson.feature(us, us.objects.states).features)
-        .enter().insert("path", ".graticule")
-                  .attr("class", "states")
-                  .attr("d", d3.geo.path())
-                  .on('mouseover', function(d) {
-                    d3.select(this).style('opacity', 0.3);
-                    console.log(d);
-                  })
-                  .on('mouseout', function(d) {
-                    d3.select(this).style('opacity', 1);
-                  });
+          .attr("id","map_overlay");
+
+      states.insert("path", ".graticule")
+          .datum(topojson.feature(us, us.objects.states))
+          .attr("class", "land")
+          .attr("d", path);
 
       // Send the overlay to the back to catch mouse events
       svg.select("g").selectAll("#map_overlay").moveToBack();
