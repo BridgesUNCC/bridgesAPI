@@ -11,8 +11,7 @@ d3.grid = function(canvas, W, H, data) {
         mw = 10, mh = 15,
         w = W || 1280,
         h = H || 800,
-        offset = parseInt(w/6),
-        defaultColors = d3.scale.category20(); //10 or 20
+        offset = parseInt(w/6);
 
     // set canvas attrs
     canvas.attr("width", w).attr("height", h);
@@ -29,7 +28,7 @@ d3.grid = function(canvas, W, H, data) {
 
     // draw a node of the grid
     function drawNode(d, i) {
-      context.fillStyle = BridgesVisualizer.getColor(d);
+      context.fillStyle = BridgesVisualizer.getColor(data.colors[d]);
       context.fillRect(offset + mw + parseInt(i%dims)*nodeSize, mh + parseInt((i/dims))*nodeSize, nodeSize, nodeSize);
     }
 
