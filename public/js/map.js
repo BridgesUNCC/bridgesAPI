@@ -1,5 +1,4 @@
-var map = function(svg, overlay) {
-  svg = d3.select("#" + svg);
+BridgesVisualizer.map = function(svg, overlay) {
 
   /*
     D3's albersUsa overlay and projection - USA with Alaska and Hawaii to the south west
@@ -7,6 +6,7 @@ var map = function(svg, overlay) {
   var albersUsa = function() {
     d3.json("/geoJSON/us-10m.v1.json", function(error, us) {
       if (error) throw error;
+
       var states = svg.select("g")
         .append("g")
           .attr("id","map_overlay")
@@ -35,9 +35,9 @@ var map = function(svg, overlay) {
     d3.json("/geoJSON/world-50m.json", function(error, world) {
       if (error) throw error;
 
-      var projection = d3.geo.equirectangular();
+      var projection = d3.geoEquirectangular();
 
-      var path = d3.geo.path()
+      var path = d3.geoPath()
           .projection(projection);
 
       countries = svg.select("g")

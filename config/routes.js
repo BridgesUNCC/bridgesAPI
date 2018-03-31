@@ -43,7 +43,7 @@ module.exports = function(app, passport, streamable) {
     };
 
     var handleError = function(err, req, res, next) {
-      console.log(':/');
+
         //if provided an object
         if (err.err) return errObj(err);
 

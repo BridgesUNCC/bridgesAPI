@@ -1,20 +1,47 @@
 //based loosely on bostock's example and
 //http://bl.ocks.org/d3noob/5141278
-d3.graph = function(d3, id, W, H, data) {
+d3.graph = function(svg, W, H, data) {
 
      //defaults
     var graph = {},
-        //mw = 20, mh = 50,
         mw = 0, mh = 0,
         w = W || 1280,
         h = H || 800,
         i = 0,
-        canvasID = id; //canvasID must have hash like "#vis" or "#canvas"
-    var visID = canvasID.substr(4);
-    var vis, svgGroup, defs;
-    var count = 0;
-    var finalTranslate = BridgesVisualizer.defaultTransforms.graph.translate;
-    var finalScale = BridgesVisualizer.defaultTransforms.graph.scale;
+        vis,
+        svgGroup,
+        defs,
+        finalTranslate,
+        finalScale,
+        transform;
+
+    var zoom = d3.zoom()
+        .scaleExtent([0.1,10])
+        .on("zoom", zoomed);
+
+    graph.reset = function() {
+      if(data.coord_system_type == "Cartesian") {
+        finalTranslate = BridgesVisualizer.defaultTransforms.graph.translate;
+        finalScale = BridgesVisualizer.defaultTransforms.graph.scale;
+        transform = d3.zoomIdentity.translate(finalTranslate[0], finalTranslate[1]).scale(finalScale);
+      } else {
+        finalTranslate = BridgesVisualizer.defaultTransforms[data.coord_system_type].translate;
+        finalScale = BridgesVisualizer.defaultTransforms[data.coord_system_type].scale;
+        transform = d3.zoomIdentity.translate(finalTranslate[0], finalTranslate[1]).scale(finalScale);
+      }
+      svg.call(zoom.transform, transform);
+    };
+    graph.reset();
+
+    vis = svg.attr("width", w)
+            .attr("height", h)
+            .attr("preserveAspectRatio", "xMinYMin meet")
+            .attr("viewBox", "0 0 " + w + " " + h)
+            .classed("svg-content", true)
+            .call(zoom)
+            .call(zoom.transform, transform);
+
+    svgGroup = vis.append("g").attr('transform', transform);
 
     var nodes = data.nodes;
     var links = data.links;
@@ -25,113 +52,75 @@ d3.graph = function(d3, id, W, H, data) {
   //     finalScale = transformObject.scale;
   // }
 
-  for (i in links) {
-     if (count<links[i].value) count = links[i].value;
-  }
+  var simulation = d3.forceSimulation()
+      .force("link", d3.forceLink()
+                        .id(function(d) { return d.index; })
+                        .distance(100)
+                        .strength(0.5))
+      .force("charge", d3.forceManyBody()
+                          .strength(-50))
+      .force("center", d3.forceCenter(BridgesVisualizer.visCenter()[0], BridgesVisualizer.visCenter()[1]));
 
-  var force = d3.layout.force()
-      .charge([-1000])
-      .linkDistance([100])
-      .linkStrength(0.5)
-      .size([width, height])
-      .nodes(nodes)
-      .links(links);
-      // .start();
+  simulation.nodes(nodes).on("tick", ticked);
+  simulation.force("link").links(links);
 
-  var drag = force.drag();
-  drag.on("dragstart",dragstart);
-
-  var zoom = d3.behavior.zoom()
-          .translate(finalTranslate)
-          .scale(finalScale)
-          .scaleExtent([0.1,5])
-          .on("zoom", zoomHandler);
-      allZoom.push(zoom);
-
-  var defaultColors = d3.scale.category20(); //10 or 20
-
-  vis = d3.select(canvasID).append("svg")
-      .attr("width", width)
-      .attr("height", height)
-      .attr("id", "svg" + canvasID.substr(4))
-      .call(zoom);
-
-  svgGroup = vis.append("g");
-      // initialize the scale and translation
-      svgGroup.attr('transform', 'translate(' + zoom.translate() + ') scale(' + zoom.scale() + ')');
-      allSVG.push(svgGroup);
-
-  // http://stackoverflow.com/questions/27802669/how-do-i-change-the-colour-of-markers-arrow-heads-solved
-  vis.append("svg:defs").selectAll("marker")
-      .data(["end"])// Different path types defined here
-      .enter().append("svg:marker")
-      .attr("id", String)
-      .attr("viewBox", "0 0 15 15")
-      .attr("refX", 15) // increase this to move the pointer back along the line
-      .attr("refY", 5)
-      .attr("markerUnits", "userSpaceOnUse")
-      .style("fill", function (d) {
-          return BridgesVisualizer.getColor(d.color) || "black";
-      })
-      .style("opacity", function(d) {
-          return d.opacity || 1;
-      })
-      .attr("markerWidth", 10)
-      .attr("markerHeight", 10)
-      .attr("orient", "auto")
-      .append("svg:path")
-      .attr("d", "M 0 0 L 10 5 L 0 10 z");
-
+  // Add marker defs to the svg element
+  BridgesVisualizer.addMarkerDefs(vis);
 
   //outer node
   var node = svgGroup.selectAll(".node")
       .data(nodes)
       .enter().append("g")
-      .on("mouseover", BridgesVisualizer.textMouseover)
+      .on("mouseover", function(d) {BridgesVisualizer.textMouseover(d.name); } )
       .on("mouseout", BridgesVisualizer.textMouseout)
       .on("dblclick", dblclick)
-
+      .call(d3.drag()
+       .on("start", dragstart)
+       .on("drag", dragged)
+       .on("end", dragended))
       .style("stroke", "black")
       .style("stroke-width", "1")
       .style("stroke-dasharray", function(d) {
           return d.fixed ? BridgesVisualizer.treeDashArray : "0,0";
-      })
-      .call(force.drag);
+      });
 
   //inner nodes
   node
       .append('path')
       .attr("class", "node")
-      .attr("d", d3.svg.symbol()
-          .type(function(d) { return d.shape || "circle"; })
-          .size(function(d) {return BridgesVisualizer.scaleSize(d.size || 1); })
+      .attr("d", d3.symbol()
+          .type(function(d) { return BridgesVisualizer.shapeLookup(d.shape); })
+          .size(function(d) { return BridgesVisualizer.scaleSize(d.size) || 1; })
       )
       .style("fill", function(d, i) {
-          return BridgesVisualizer.getColor(d.color) || defaultColors(i);
+          return BridgesVisualizer.getColor(d.color) || "steelblue";
       })
       .style("opacity", function(d) {
           return d.opacity || 1;
       })
       .each(function(d, i) {
         if(d.location) {
-          d.fixed = true;
+          var proj, point;
 
-          // apply relevant transformations to location attributes
-          if(d3.geo[data.coord_system_type]) { // d3 projection
-            var proj = d3.geo[data.coord_system_type]();
-            var point = proj([d.location[1], d.location[0]]);
-
-            // make sure the transformed location exists
-            if(point) {
-              d.x = point[0];
-              d.y = point[1];
-            } else {  // default location for bad transform
-              d.x = 0;
-              d.y = 0;
-            }
+          if(data.coord_system_type == "equirectangular") {
+            proj = d3.geoEquirectangular();
+          } else if(data.coord_system_type == "albersUsa") {
+            proj = d3.geoAlbersUsa();
           } else {  // cartesian space
-            d.x = d.location[0];
-            d.y = -1 * d.location[1];
+            d.fx = d.location[0];
+            d.fy = d.location[1];
+            return;
+          }
+
+          point = proj([d.location[1], d.location[0]]);
+
+          // make sure the transformed location exists
+          if(point) {
+            d.fx = point[0];
+            d.fy = point[1];
+          } else {  // default location for bad transform
+            d.fx = 0;
+            d.fy = 0;
           }
         }
       });
@@ -153,7 +142,7 @@ d3.graph = function(d3, id, W, H, data) {
       .data(links.reverse())  // reverse to draw end markers over links
       .enter().insert("svg:path")
       .attr("class", "link")
-      .attr("marker-end", "url(#end)")
+      .attr("marker-mid", "url(#marker_arrow)")
       // .attr("marker-end", function(d) {  // modify this for programmatic arrow points
       //   return BridgesVisualizer.marker(vis, (BridgesVisualizer.getColor(d.color) || "black"), {});
       // })
@@ -172,9 +161,7 @@ d3.graph = function(d3, id, W, H, data) {
       .style("fill", "none")
       .style("pointer-events", "none");
 
-  svgGroup.selectAll('text').each(BridgesVisualizer.insertLinebreaks);
-
-  force.on("tick", function() {
+  function ticked() {
       node
         .attr("transform", function(d, i) {
           return "translate(" + d.x + "," + d.y + ")";
@@ -192,16 +179,22 @@ d3.graph = function(d3, id, W, H, data) {
                   d.target.x + "," +
                   d.target.y;
           });
-  });
+  }
 
   // zoom function
-  function zoomHandler() {
-      svgGroup.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+  function zoomed() {
+    if(svgGroup) {
+      svgGroup.attr("transform", d3.event.transform);
+    }
   }
 
   // Handle doubleclick on node path (shape)
   function dblclick(d) {
       d3.event.stopImmediatePropagation();
+      d.x = d.fx;
+      d.y = d.fy;
+      d.fy = null;
+      d.fx = null;
       d3.select(this)
         .style("stroke-dasharray", "0,0")
         .classed("fixed", d.fixed = false);
@@ -209,15 +202,29 @@ d3.graph = function(d3, id, W, H, data) {
 
   // Handle dragstart on force.drag()
   function dragstart(d) {
-      d3.event.sourceEvent.stopPropagation();
       d3.select(this)
         .style("stroke-width", 1)
         .style("stroke", "black")
-        .style("stroke-dasharray", BridgesVisualizer.treeDashArray)
-        .classed("fixed", d.fixed = true);
+        .style("stroke-dasharray", BridgesVisualizer.treeDashArray);
 
-      force.start();
+      if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
   }
 
-  force.start();
+  function dragged(d) {
+      d.fx = d3.event.x;
+      d.fy = d3.event.y;
+  }
+
+  function dragended(d) {
+      // d3.select(this)
+      //   .style("stroke-width", 0)
+      //   .style("stroke", "black")
+      //   .style("stroke-dasharray", BridgesVisualizer.treeDashArray);
+
+      if (!d3.event.active) simulation.alphaTarget(0);
+  }
+
+  return graph;
 };

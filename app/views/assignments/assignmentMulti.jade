@@ -18,19 +18,6 @@ block content
         -}
 
 block footerjs
-
-    each script in linkResources.script
-        script(src = script)
-
-    each css in linkResources.css
-        link(rel='stylesheet', href=css)
-
-    -if(map) {
-      link(rel='stylesheet', href='/css/map.css')
-      script( src = 'https://d3js.org/topojson.v1.min.js' )
-      script( src = '/js/map.js' )
-    -}
-
     script.
         var owner = '#{owner}'
         if ( owner=="false" && "#{assignmentDescription}".length <= 0 ) {
@@ -50,7 +37,14 @@ block footerjs
         var assignmentNumber = !{JSON.stringify(assignmentNumber)};
         var BridgesVisualizer = {};
 
+    each script in linkResources.script
+        script(src = script)
+
+    each css in linkResources.css
+        link(rel='stylesheet', href=css)
+
     script(src = '/js/Bridges/BridgesVisualizer.js')
+
     script(src = '/js/multiVisconfig.js')
 
     script.

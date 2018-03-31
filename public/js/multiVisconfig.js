@@ -1,80 +1,50 @@
-
-d3.selectAll(".assignmentContainer").on("resize", function(d, i) {
-    console.log('resize', d, i);
-});
-
-d3.selection.prototype.moveToFront = function() {
-    return this.each(function(){
-      this.parentNode.appendChild(this);
-    });
-};
-
-d3.selection.prototype.moveToBack = function() {
-    return this.each(function() {
-        var firstChild = this.parentNode.firstChild;
-        if (firstChild) {
-            this.parentNode.insertBefore(this, firstChild);
-        }
-    });
-};
-
-// Define the div for the tooltip
-BridgesVisualizer.tooltip = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .classed("shown", false)
-    .style("pointer-events", "none")
-    .style("opacity", 0);
-
-
+(function() {
 
 // bind event handlers for ui
 // d3.selectAll(".minimize").on("click", minimize);
 d3.select("#reset").on("click", reset);
 d3.select("#save").on("click", savePositions);
 d3.select("#delete").on("click", deleteAssignment);
-d3.select("#resize").on("click", resize);
-
-allZoom = [];
-allSVG = [];
-
-var visCount = 0,
-    minimizedCount = 0;
 
 /* create new assignments  */
 for (var key in data) {
   if (data.hasOwnProperty(key)) {
     var ele = document.getElementById("vis" + key),
-        width = ele.clientWidth - 15,
-        height = ele.clientHeight + 15,
-        transform = data[key].transform;
+        width = ele.clientWidth,
+        height = ele.clientHeight,
+        transform = data[key].transform,
+        vis,
+        visualizations = [];
+
     //saving a copy of every assignment: type and key of the assignment. Useful when trying to reset them.
-
-    var canvas = d3.select("#vis" + key).append("canvas")
-      .attr("id", "canvas" + key);
-
-    BridgesVisualizer.assignmentTypes.push(data[key]['visType']);
+    // BridgesVisualizer.assignmentTypes.push(data[key]['visType']);
 
     if (data[key]['visType'] == "tree" && d3.bst) {
-        bst = d3.bst(d3, "#vis" + key, width, height);
+        vis = d3.select("#vis" + key).append("svg")
+          .attr("id", "vis" + key);
+        bst = d3.bst(vis, width, height);
         bst.make(data[key]);
+        visualizations.push(bst);
     }
-    else if(data[key]['visType'] == "dllist" && d3.dllist){
-        d3.dllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key]), transform);
-    }
-    else if(data[key]['visType'] == "cdllist" && d3.cdllist){
-        d3.cdllist(d3, "#vis" + key, width, height, sortCircularDoublyListByLinks(data[key]));
-    }
-    else if(data[key]['visType'] == "llist" && d3.sllist){
-        // d3.sllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key]), transform);
-        d3.sllist(d3, "#vis" + key, width, height, sortSLLists(data[key]), transform);
-    }
-    else if(data[key]['visType'] == "cllist" && d3.csllist){
-        d3.csllist(d3, "#vis" + key, width, height, sortCircularSinglyListByLinks(data[key]), transform);
-    }
-    else if (data[key]['visType'] == "queue" && d3.queue) {
-        d3.queue(d3, "#vis" + key, width, height, data[key].nodes, transform);
-    }
+    // else if(data[key]['visType'] == "dllist" && d3.dllist){
+    //     d3.dllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key]), transform);
+    // }
+    // else if(data[key]['visType'] == "cdllist" && d3.cdllist){
+    //     d3.cdllist(d3, "#vis" + key, width, height, sortCircularDoublyListByLinks(data[key]));
+    // }
+    // else if(data[key]['visType'] == "llist" && d3.sllist){
+    //     // d3.sllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key]), transform);
+    //     d3.sllist(d3, "#vis" + key, width, height, sortSLLists(data[key]), transform);
+    // }
+    // else if(data[key]['visType'] == "cllist" && d3.csllist){
+    //     d3.csllist(d3, "#vis" + key, width, height, sortCircularSinglyListByLinks(data[key]), transform);
+    // }
+    // else if (data[key]['visType'] == "queue" && d3.queue) {
+    //     d3.queue(d3, "#vis" + key, width, height, data[key].nodes, transform);
+    // }
     else if (data[key]['visType'] == "Alist" && d3.array) {
+          vis = d3.select("#vis" + key).append("svg")
+            .attr("id", "vis" + key);
           d3.array(d3, "#vis" + key, width, height, data[key].nodes, transform);
     }
     else if (data[key]['visType'] == "Array2D" && d3.array2d) {
@@ -84,52 +54,45 @@ for (var key in data) {
           d3.array3d(d3, "#vis" + key, width, height, data[key].nodes, data[key].dims, transform);
     }
     else if (data[key]['visType'] == "grid" && d3.grid) {
-
-        d3.grid(canvas, width, height, data[key]);
+        vis = d3.select("#vis" + key).append("canvas")
+          .attr("id", "vis" + key);
+        d3.grid(vis, width, height, data[key]);
     }
     else if (data[key]['visType'] == "nodelink" && d3.graph) {
+        vis = d3.select("#vis" + key).append("svg")
+          .attr("id", "vis" + key);
+        graph = d3.graph(vis, width, height, data[key]);
+        visualizations.push(graph);
 
-        d3.graph(canvas, width, height, data[key]);
         // handle map overlay for subassignment if appropriate
         if(data[key].map_overlay) {
-          map('svg'+key, data[key].coord_system_type);
+          BridgesVisualizer.map(vis, data[key].coord_system_type);
         }
+    }
+    else if (data[key].visType == "nodelink-canvas" && d3.graph_canvas) {
+        vis = d3.select("#vis" + key).append("canvas")
+          .attr("id", "vis" + key);
+        graph = d3.graph_canvas(vis, width, height, data[key]);
+        visualizations.push(graph);
+
+        // handle map overlay for subassignment if appropriate
+        // if(data[key].map_overlay) {
+        //   BridgesVisualizer.map(vis, data[key].coord_system_type);
+        // }
     }
     else {
         // console.log("unknown data type");
-        d3.graph(d3, "#vis" + key, width, height, data[key]);
-        if(data[key].map_overlay) {
-          map('svg'+key, data[key].coord_system_type);
-        }
+        graph = d3.graph(d3, "#vis" + key, width, height, data[key]);
+        visualizations.push(graph);
     }
-    visCount++;
-
   }
 }
 
 // Reset positions and scales for all visualization divs
 function reset() {
-
-    for (var i = 0; i < allZoom.length; i++) {
-        var zoom = allZoom[i];
-        var svgGroup = allSVG[i];
-        zoom.scale(1);
-
-        /* set default translate based on visualization type */
-        if(BridgesVisualizer.assignmentTypes[i] in BridgesVisualizer.defaultTransforms){
-
-            zoom.translate(BridgesVisualizer.defaultTransforms[BridgesVisualizer.assignmentTypes[i]].translate);
-            zoom.scale(BridgesVisualizer.defaultTransforms[BridgesVisualizer.assignmentTypes[i]].scale);
-        }else{
-            try {
-                throw "For some reason this vistype is not being recognized.";
-            } catch( ex ) {
-                console.log(ex);
-            }
-        }
-        svgGroup.attr("transform", "translate(" + zoom.translate() + ")scale(" + zoom.scale() + ")");
-    }
-    saveVisStatesAsCookies();
+  visualizations.forEach(function(d) {
+    d.reset();
+  });
 }
 
 function deleteAssignment() {
@@ -147,31 +110,6 @@ function deleteAssignment() {
   }
 }
 
-// Toggle resizing of visualization divs (swaps between two sizes)
-function resize() {
-    var sentinel = false;
-
-    for(var i = 0; i < visCount; i++) {
-        if ((d3.select("#vis" + i)).attr("height") < 400)
-            sentinel = true;
-    }
-    if(sentinel) {
-        height *= 2;
-
-        d3.selectAll(".assignmentContainer")
-            .attr( "height", height );
-        d3.selectAll(".svg")
-            .attr( "height", height );
-    } else {
-        height /= 2;
-
-        d3.selectAll(".assignmentContainer")
-            .attr("height", height);
-        d3.selectAll(".svg")
-            .attr("height", height);
-    }
-}
-
 // Asynchronously update the node positions
 function savePositions () {
 
@@ -186,7 +124,9 @@ function savePositions () {
     if (data.hasOwnProperty(key)) {
       d3.select("#vis" + key).selectAll(".node").each(function(d, i) {
         // we need to name the nodes so we can identify them on the server; indices don't suffice
-        if(d.fixed) updateTheseNodes[key].fixedNodes["n" + i] = {"x": d.x, "y": d.y};
+        if(d.fx && d.fy) {
+          updateTheseNodes[key].fixedNodes["n" + i] = {"x": d.fx, "y": d.fy};
+        }
         else updateTheseNodes[key].unfixedNodes["n" + i] = true;
       });
     }
@@ -276,39 +216,44 @@ function saveVisStatesAsCookies(){
 
 // Save cookies when scale and translation are updated
 //  only updates zoom after scrolling has stopped
-try{
-    var wheeling = null;
-    $("svg").mouseup(saveVisStatesAsCookies);
-    $("svg").on('wheel', function (e) {
-      clearTimeout(wheeling);
-      wheeling = setTimeout(function() {
-        saveVisStatesAsCookies();
-        wheeling = undefined;
-      }, 250);
-    });
-}catch(err){
-    console.log(err);
-}
+// try{
+//     var wheeling = null;
+//     $("svg").mouseup(saveVisStatesAsCookies);
+//     $("svg").on('wheel', function (e) {
+//       clearTimeout(wheeling);
+//       wheeling = setTimeout(function() {
+//         saveVisStatesAsCookies();
+//         wheeling = undefined;
+//       }, 250);
+//     });
+// }catch(err){
+//     console.log(err);
+// }
 
-function hideTooltip(){
-  tooltip.transition()
-      .duration(500)
-      .style("opacity", 0);
-}
-
-//toggle, show and hide all labels ".nodeLabel"
-$("body").on("keydown", function(event) {
-    if(event.which == "76"){
-        hideTooltip();
-        if($(".nodeLabel").length > 0 && (d3.selectAll(".nodeLabel").style("display") == "none" || d3.selectAll(".nodeLabel").style("opacity") == "0")){
-            d3.selectAll(".nodeLabel").style("display","block").style("opacity","1");
-            BridgesVisualizer.tooltipEnabled = false;
-        }else if($(".nodeLabel").length > 0){
-            d3.selectAll(".nodeLabel").style("display","none").style("opacity","0");
-            BridgesVisualizer.tooltipEnabled = true;
-        }
-    }
-});
+// function hideTooltip(){
+//   BridgesVisualizer.tooltip.transition()
+//       .duration(500)
+//       .style("opacity", 0);
+// }
+//
+// //toggle, show and hide all labels ".nodeLabel"
+// $("body").on("keydown", function(event) {
+//     if(event.which == "76"){
+//         // hide tooltip
+//         BridgesVisualizer.tooltip.transition()
+//             .duration(500)
+//             .style("opacity", 0);
+//
+//         // show tooltip
+//         if($(".nodeLabel").length > 0 && (d3.selectAll(".nodeLabel").style("display") == "none" || d3.selectAll(".nodeLabel").style("opacity") == "0")){
+//             d3.selectAll(".nodeLabel").style("display","block").style("opacity","1");
+//             BridgesVisualizer.tooltipEnabled = false;
+//         }else if($(".nodeLabel").length > 0){
+//             d3.selectAll(".nodeLabel").style("display","none").style("opacity","0");
+//             BridgesVisualizer.tooltipEnabled = true;
+//         }
+//     }
+// });
 
 //this methods sorts any Doubly Links linkedlist by links
 function sortCircularSinglyListByLinks(unsortedNodes, listType){
@@ -511,3 +456,5 @@ $(window).resize(function() {
         BridgesVisualizer.defaultTransforms.nodelink.translate = BridgesVisualizer.visCenter();
     }, 250);
 });
+
+})();

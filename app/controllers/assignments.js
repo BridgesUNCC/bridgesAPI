@@ -292,10 +292,15 @@ exports.show = function (req, res, next) {
             if("nodes" in data && "children" in data.nodes) {
               var tempVisual = data.visual;
               data = data.nodes;
-              data['visual'] = tempVisual;
+              data.visual = tempVisual;
             }
 
-            data['visType'] = visTypes.getVisType(data.visual);
+            data.visType = visTypes.getVisType(data.visual);
+
+            if(data.visType == "nodelink" && data.nodes.length > 100) {
+              data.visType = "nodelink-canvas";
+              linkResources.script.push('/js/graph-canvas.js');
+            }
 
             // add new resource info
             if(!assignmentTypes[data['visType']]){
@@ -308,8 +313,12 @@ exports.show = function (req, res, next) {
                 }
             }
 
-            if(data.map_overlay)
+            if(data.map_overlay) {
               map = true;
+              linkResources.script.push('/js/map.js');
+              linkResources.script.push('https://d3js.org/topojson.v1.min.js');
+              linkResources.css.push('/css/map.css');
+            }
 
             allAssigns[i] = data;
         }
@@ -373,16 +382,16 @@ exports.savePositions = function(req, res) {
                 n = +j.slice(1);
                 // set the relevant nodes to be fixed
                 assign[i].data[0].nodes[n].fixed = true;
-                assign[i].data[0].nodes[n].x = +req.body[i].fixedNodes[j].x;
-                assign[i].data[0].nodes[n].y = +req.body[i].fixedNodes[j].y;
+                assign[i].data[0].nodes[n].fx = +req.body[i].fixedNodes[j].x;
+                assign[i].data[0].nodes[n].fy = +req.body[i].fixedNodes[j].y;
                 delete assign[i].data[0].nodes[n].location;
               }
               // update all unfixed nodes
               for(var j in req.body[i].unfixedNodes) {
                 n = +j.slice(1);
                 delete assign[i].data[0].nodes[n].fixed;
-                delete assign[i].data[0].nodes[n].x;
-                delete assign[i].data[0].nodes[n].y;
+                delete assign[i].data[0].nodes[n].fx;
+                delete assign[i].data[0].nodes[n].fy;
                 delete assign[i].data[0].nodes[n].location;
               }
               // save the updated data
