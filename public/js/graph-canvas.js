@@ -31,6 +31,7 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
         canvas.call(zoom.transform, transform);
     };
 
+    BridgesVisualizer.tooltipEnabled = false;
 
     var nodes = data.nodes;
     var links = data.links;
@@ -141,6 +142,8 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
     function drawNode(d) {
       context.beginPath();
 
+      drawText(d);
+
       // context.strokeStyle = BridgesVisualizer.getColor(d.color);
       context.strokeStyle = "black";
       context.fillStyle = BridgesVisualizer.getColor(d.color);
@@ -151,6 +154,14 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
 
       context.fill();
       context.stroke();
+    }
+
+    function drawText(d) {
+      if(BridgesVisualizer.tooltipEnabled) {
+        context.fillStyle = "black";
+        context.fillText(d.name, d.x+10, d.y+3);
+        context.fillStyle = BridgesVisualizer.getColor(d.color);
+      }
     }
 
     function zoomed(d) {

@@ -296,6 +296,7 @@
 
   $("body").on("keydown", function(event) {
       if(event.which == "76"){
+          BridgesVisualizer.tooltipEnabled = (BridgesVisualizer.tooltipEnabled) ? false : true;
           if($(".nodeLabel").length > 0 && (d3.selectAll(".nodeLabel").style("display") == "none" || d3.selectAll(".nodeLabel").style("opacity") == "0")){
               d3.selectAll(".nodeLabel").style("display","block").style("opacity","1");
               BridgesVisualizer.tooltipEnabled = false;
