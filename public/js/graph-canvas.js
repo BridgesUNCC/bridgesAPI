@@ -67,10 +67,16 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
     var simulation = d3.forceSimulation()
         .force("link", d3.forceLink()
                           .id(function(d) { return d.index; })
-                          .distance(100)
-                          .strength(0.5))
+                          .distance(200))
         .force("charge", d3.forceManyBody()
-                            .strength(-30))
+                          .strength(function(d) {
+                            return -30 - (d.size * 5) ;
+                          })
+                          .distanceMax(500))
+        .force("collision", d3.forceCollide()
+                          .radius(function(d) {
+                            return d.size || 10;
+                          }))
         .force("center", d3.forceCenter(BridgesVisualizer.visCenter()[0], BridgesVisualizer.visCenter()[1]));
 
     simulation.nodes(nodes).on("tick", ticked);
@@ -81,8 +87,10 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
             .on("start", dragstarted)
             .on("drag", dragged)
             .on("end", dragended));
+    canvas.on("dblclick", dblclick);
     canvas.call(zoom).call(zoom.transform, transform);
     canvas.on("mousemove", mousemoved);
+
 
     function ticked() {
       context.save();
@@ -91,8 +99,8 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
       context.scale(transform.k, transform.k);
 
       // links
-      links.forEach(drawLink);
-      // links.forEach(drawCurvedLink);
+      // links.forEach(drawLink);
+      links.forEach(drawCurvedLink);
 
       // nodes
       nodes.forEach(drawNode);
@@ -113,54 +121,73 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
       context.stroke();
     }
 
+    function getControlPoint(d) {
+      var p1 = d.source,
+          p2 = d.target,
+          midpoint = [(p1.x + p2.x)/2, (p1.y + p2.y)/2],
+          dist = Math.sqrt(Math.pow(p2.y - p1.y, 2) + Math.pow(p2.x - p1.x, 2)),
+          p3 = {},
+          length = 50;
+
+      p3.x = midpoint[0] + ((length / dist) * (p1.y - p2.y));
+      p3.y = midpoint[1] + ((length / dist) * (p1.x - p2.x));
+
+      return p3;
+    }
+
     function drawCurvedLink(d) {
-      curveRadius = 5;
-      angleRadians = 0.3;
-
       context.beginPath();
-
+    
       context.strokeStyle = BridgesVisualizer.getColor(d.color);
       context.lineWidth = BridgesVisualizer.strokeWidthRange(d.thickness);
       context.globalAlpha = d.opacity;
 
-      midX = d.source.x + ((d.target.x - d.source.x) / 2);
-      midY = d.source.y + ((d.target.y - d.source.y) / 2);
-      xDiff = midX - d.source.x;
-      yDiff = midY - d.source.y;
-      angle = (Math.atan2(yDiff, xDiff) * (180 / Math.PI)) - 90;
-      angleRadians = Math.toRadians(angle);
-      pointX = (midX + curveRadius * Math.cos(angleRadians));
-      pointY = (midY + curveRadius * Math.sin(angleRadians));
-
-      path.moveTo(d.source.x, d.source.y);
-      path.cubicTo(d.source.x, d.source.y,pointX, pointY, d.target.x, d.target.y);
-      canvas.drawPath(path, paint);
-
-      // return this;
-    }
-
-    function drawNode(d) {
-      context.beginPath();
-
-      drawText(d);
-
-      // context.strokeStyle = BridgesVisualizer.getColor(d.color);
-      context.strokeStyle = "black";
-      context.fillStyle = BridgesVisualizer.getColor(d.color);
-      context.globalAlpha = d.opacity;
-
-      // context.arc(x,y,r,sAngle,eAngle,counterclockwise);
-      context.arc(d.x, d.y, d.size/2, 0, 2 * Math.PI);
-
-      context.fill();
+      var ctrl = getControlPoint(d);
+      context.moveTo(d.source.x, d.source.y);
+      context.quadraticCurveTo(ctrl.x, ctrl.y,d.target.x,d.target.y);
       context.stroke();
     }
 
+    function drawNode(d) {
+      context.translate(d.x, d.y);
+      context.beginPath();
+
+      // draw fixed nodes with dashed stroke
+      if(d.fx) {
+        context.setLineDash([2]);
+      } else {
+        context.setLineDash([]);
+      }
+
+      // context.strokeStyle = BridgesVisualizer.getColor(d.color);
+      context.strokeStyle = "black";
+
+      context.fillStyle = BridgesVisualizer.getColor(d.color);
+      context.globalAlpha = d.opacity;
+
+      var symbol = d3.symbol()
+          .type(BridgesVisualizer.shapeLookup(d.shape))
+          .size(BridgesVisualizer.scaleSize(d.size) || 1)
+          .context(context);
+
+      // context.arc(d.x, d.y, d.size/2, 0, 2 * Math.PI);
+      symbol();
+
+      context.fill();
+      context.stroke();
+      context.translate(-d.x, -d.y);
+      drawText(d);
+
+    }
+
     function drawText(d) {
-      if(BridgesVisualizer.tooltipEnabled) {
-        context.fillStyle = "black";
-        context.fillText(d.name, d.x+10, d.y+3);
-        context.fillStyle = BridgesVisualizer.getColor(d.color);
+      if(BridgesVisualizer.tooltipEnabled || d.hovering) {
+        lines = d.name.split("\n");
+        lines.forEach(function(line, i) {
+          context.fillStyle = "black";
+          context.fillText(line, d.x+10, d.y+(i*10)+3);
+          context.fillStyle = BridgesVisualizer.getColor(d.color);
+        });
       }
     }
 
@@ -169,7 +196,30 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
       ticked(); //<-- use tick to redraw regardless of event
     }
 
+    function dblclick(e) {
+      d3.event.stopImmediatePropagation();
+      var i,
+          x = transform.invertX(d3.mouse(this)[0]),
+          y = transform.invertY(d3.mouse(this)[1]),
+          dx,
+          dy;
+
+      for (i = nodes.length - 1; i >= 0; --i) {
+        n = nodes[i];
+        dx = x - n.x;
+        dy = y - n.y;
+        if (dx * dx + dy * dy < (n.size/2) * (n.size/2)) {
+          n.x = n.fx;
+          n.y = n.fy;
+          n.fy = null;
+          n.fx = null;
+          ticked();
+        }
+      }
+    }
+
     function dragsubject() {
+      if (d3.event.defaultPrevented) return;
       var i,
           x = transform.invertX(d3.event.x),
           y = transform.invertY(d3.event.y),
@@ -189,12 +239,14 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
     }
 
     function dragstarted() {
+      if (d3.event.defaultPrevented) return;
       if (!d3.event.active) simulation.alphaTarget(0.3).restart();
       d3.event.subject.fx = transform.invertX(d3.event.x);
       d3.event.subject.fy = transform.invertY(d3.event.y);
     }
 
     function dragged() {
+      if (d3.event.defaultPrevented) return;
       d3.event.subject.fx = transform.invertX(d3.event.x);
       d3.event.subject.fy = transform.invertY(d3.event.y);
       ticked();
@@ -202,12 +254,11 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
 
     function dragended() {
       if (!d3.event.active) simulation.alphaTarget(0);
-      d3.event.subject.fx = null;
-      d3.event.subject.fy = null;
+      // d3.event.subject.fx = null;
+      // d3.event.subject.fy = null;
     }
 
     function mousemoved() {
-      return;
       d3.event.preventDefault();
       d3.event.stopPropagation();
 
@@ -227,13 +278,21 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
         dy = y - n.y;
 
         if (dx * dx + dy * dy < (n.size/2) * (n.size/2)) {
-          BridgesVisualizer.showTooltip(n.name, d3.event.layerX, d3.event.layerY);
+          n.hovering = true;
+          ticked();
           return;
         }
+
+        n.hovering = false;
       }
 
-      BridgesVisualizer.showTooltip();
     }
 
-  return graph;
+    $("body").on("keydown", function(event) {
+      if(event.which == "76"){
+        ticked();
+      }
+    });
+
+    return graph;
 };
