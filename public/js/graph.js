@@ -20,7 +20,8 @@ d3.graph = function(svg, W, H, data) {
         .on("zoom", zoomed);
 
     graph.reset = function() {
-      if(data.coord_system_type == "Cartesian") {
+
+      if(!data.coord_system_type || data.coord_system_type == "Cartesian") {
         finalTranslate = BridgesVisualizer.defaultTransforms.graph.translate;
         finalScale = BridgesVisualizer.defaultTransforms.graph.scale;
         transform = d3.zoomIdentity.translate(finalTranslate[0], finalTranslate[1]).scale(finalScale);
@@ -55,10 +56,16 @@ d3.graph = function(svg, W, H, data) {
   var simulation = d3.forceSimulation()
       .force("link", d3.forceLink()
                         .id(function(d) { return d.index; })
-                        .distance(100)
-                        .strength(0.5))
+                        .distance(200))
       .force("charge", d3.forceManyBody()
-                          .strength(-50))
+                        .strength(function(d) {
+                          return -30 - (d.size * 5) ;
+                        })
+                        .distanceMax(500))
+      .force("collision", d3.forceCollide()
+                        .radius(function(d) {
+                          return d.size || 10;
+                        }))
       .force("center", d3.forceCenter(BridgesVisualizer.visCenter()[0], BridgesVisualizer.visCenter()[1]));
 
   simulation.nodes(nodes).on("tick", ticked);
