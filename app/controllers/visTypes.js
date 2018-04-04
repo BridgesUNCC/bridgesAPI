@@ -10,12 +10,12 @@ exports.getVisType = function(toCheck) {
     "LinkedListStack": 						"nodelink",
     "LinkedListQueue": 						"nodelink",
 
-    "SinglyLinkedList":						"llist",
-    "llist":           						"llist",
-    "DoublyLinkedList":						"dllist",
-    "dllist":          						"dllist",
-    "CircularSinglyLinkedList": 	"cllist",
-    "CircularDoublyLinkedList": 	"cdllist",
+    "SinglyLinkedList":						"nodelink",//"llist",
+    "llist":           						"nodelink",//"llist",
+    "DoublyLinkedList":						"nodelink",//"dllist",
+    "dllist":          						"nodelink",//"dllist",
+    "CircularSinglyLinkedList": 	"nodelink",//"cllist",
+    "CircularDoublyLinkedList": 	"nodelink",//"cdllist",
 
     "tree":            						"tree",
     "Tree":            						"tree",
@@ -107,22 +107,22 @@ exports.getVisTypeObject = function(data) {
       //   "link":""
       // },
       "llist": {
-        "vistype":"llist",
+        "vistype":"nodelink",
         "script":"/js/graph.js",
         "link":""
       },
       "dllist": {
-        "vistype":"dllist",
+        "vistype":"nodelink",
         "script":"/js/graph.js",
         "link":""
       },
       "cllist": {
-        "vistype":"cllist",
+        "vistype":"nodelink",
         "script":"/js/graph.js",
         "link":""
       },
       "cdllist": {
-        "vistype":"cdllist",
+        "vistype":"nodelink",
         "script":"/js/graph.js",
         "link":""
       }
