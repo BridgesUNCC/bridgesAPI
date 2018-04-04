@@ -45,13 +45,20 @@ for (var key in data) {
     else if (data[key]['visType'] == "Alist" && d3.array) {
           vis = d3.select("#vis" + key).append("svg")
             .attr("id", "vis" + key);
-          d3.array(d3, "#vis" + key, width, height, data[key].nodes, transform);
+          array = d3.array(vis, width, height, data[key].nodes);
+          visualizations.push(array);
     }
     else if (data[key]['visType'] == "Array2D" && d3.array2d) {
-          d3.array2d(d3, "#vis" + key, width, height, data[key].nodes, data[key].dims, transform);
+          vis = d3.select("#vis" + key).append("svg")
+            .attr("id", "vis" + key);
+          array2d = d3.array2d(vis, width, height, data[key].nodes, data[key].dims);
+          visualizations.push(array2d);
     }
     else if (data[key]['visType'] == "Array3D" && d3.array3d) {
-          d3.array3d(d3, "#vis" + key, width, height, data[key].nodes, data[key].dims, transform);
+          vis = d3.select("#vis" + key).append("svg")
+            .attr("id", "vis" + key);
+          array3d = d3.array3d(vis, width, height, data[key].nodes, data[key].dims);
+          visualizations.push(array3d);
     }
     else if (data[key]['visType'] == "grid" && d3.grid) {
         vis = d3.select("#vis" + key).append("canvas")

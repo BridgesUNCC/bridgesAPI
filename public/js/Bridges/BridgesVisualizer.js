@@ -45,8 +45,8 @@
   // Default scale and transform values for each data structure
   BridgesVisualizer.defaultTransforms = {
     "Alist": { "scale": 0.4, "translate": [20, 100]},
-    "array": { "scale": 0.4, "translate": [20, 100]},
-    "Array2D": { "scale": 0.4, "translate": [20, 100]},
+    "array": { "scale": 0.5, "translate": [50, 100]},
+    "Array2D": { "scale": 0.4, "translate": [50, 50]},
     "Array3D": { "scale": 0.4, "translate": [20, 100]},
     "list": { "scale": 0.3, "translate": [50, -5]},
     "llist": { "scale": 0.3, "translate": [50, -5]},
@@ -210,7 +210,7 @@
         return str;
       }
 
-      if(!BridgesVisualizer.tooltipEnabled) return;
+      if(!BridgesVisualizer.tooltipEnabled || label === "") return;
 
       //the design can be changed later, if not appropriate. Mainly for implementation
       // if(d3.select(this).select("rect"))

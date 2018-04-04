@@ -1,61 +1,64 @@
 /*
 
-Array visualization for Bridges
+3D Array visualization for Bridges
 
 */
-d3.array3d = function(d3, canvasID, w, h, data, dimensions) {
+d3.array3d = function(svg, W, H, data, dimensions) {
 
-    var dimOne = dimensions[0],
+    var array3d = {},
+        svgGroup,
+        w = W || 1280,
+        h = H || 800,
+        dimOne = dimensions[0],
         dimTwo = dimensions[1],
         dimThree = dimensions[2],
-        spacing = 40,        // spacing between elements
-        marginLeft = 20,
+        spacing = 40, // spacing between elements
         defaultSize = 100,  // default size of each element box
         spacingBetweenGrid = defaultSize + 400,
-        valueToCenterGridTitle = 195;
+        valueToCenterGridTitle = 195,
         levelCount = -1,
-        visID = canvasID.substr(4),
-        finalTranslate = BridgesVisualizer.defaultTransforms.Array3D.translate,
-        finalScale =  BridgesVisualizer.defaultTransforms.Array3D.scale,
-        transformObject = BridgesVisualizer.getTransformObjectFromCookie(visID),
+        finalTranslate,
+        finalScale,
         elementsPerRow = dimOne,
         elementsPerColumn = (dimOne * dimTwo) / dimOne;
 
-    if(transformObject){
-        finalTranslate = transformObject.translate;
-        finalScale = transformObject.scale;
-    }
+    var zoom = d3.zoom()
+        .scaleExtent([0.1,2])
+        .on("zoom", zoomed);
 
-    var zoom = d3.behavior.zoom()
-        .translate(finalTranslate)
-        .scale(finalScale)
-        .scaleExtent([0,5])
-        .on("zoom", zoomHandler);
-    allZoom.push(zoom);
+    array3d.reset = function() {
+      finalTranslate = BridgesVisualizer.defaultTransforms.Array3D.translate;
+      finalScale =  BridgesVisualizer.defaultTransforms.Array3D.scale;
+      transform = d3.zoomIdentity.translate(finalTranslate[0], finalTranslate[1]).scale(finalScale);
 
-    chart = d3.select(canvasID).append("svg")
-        .attr("width", w)
-        .attr("height", h)
-        .attr("id", "svg" + canvasID.substr(4))
-        .classed("svg", true)
-        .call(zoom);
+      svg.call(zoom.transform, transform);
+    };
+    array3d.reset();
 
-    var svgGroup = chart.append("g").attr("id","myG");
-    // initialize the scale and translation
-    svgGroup.attr('transform', 'translate(' + zoom.translate() + ') scale(' + zoom.scale() + ')');
-    allSVG.push(svgGroup);
+    vis = svg
+          .attr("width", w)
+          .attr("height", h)
+          .attr("preserveAspectRatio", "xMinYMin meet")
+          .attr("viewBox", "0 0 " + w + " " + h)
+          .classed("svg-content", true)
+          .call(zoom)
+          .call(zoom.transform, transform);
+
+    svgGroup = vis.append("g").attr('transform', transform);
 
     // Bind nodes to array elements
     var nodes = svgGroup.selectAll("nodes")
         .data(data)
         .enter().append("g")
+        .attr("xformx", function(d, i) { return (i % elementsPerRow) * (spacing + defaultSize); })
+        .attr("xformy", function(d, i) { return Math.floor(i / elementsPerRow) * (spacing+defaultSize); })
         .attr("transform", function(d, i) {
-            return "translate(" + (marginLeft + ((i % elementsPerRow) * (spacing + defaultSize)))+ "," + ((h/4) + ((Math.floor(i / elementsPerRow)) * (spacing+defaultSize))) + ")";
+            return "translate(" + ((i % elementsPerRow) * (spacing + defaultSize))+ "," + ((Math.floor(i / elementsPerRow)) * (spacing+defaultSize)) + ")";
         })
         .attr("id",function(d,i){
             return "g"+i;
         })
-        .on("mouseover", BridgesVisualizer.textMouseover)
+        .on("mouseover", function(d) { BridgesVisualizer.textMouseover(d.name); } )
         .on("mouseout", BridgesVisualizer.textMouseout);
 
 
@@ -64,14 +67,8 @@ d3.array3d = function(d3, canvasID, w, h, data, dimensions) {
         .attr("id",function(d,i){
             return "rect"+i;
         })
-        .attr("height", function(d) {
-            //return parseFloat(d.size || defaultSize);
-            return defaultSize;
-        })
-        .attr("width", function(d) {
-            //return parseFloat(d.size || defaultSize);
-            return defaultSize;
-        })
+        .attr("height", defaultSize)
+        .attr("width", defaultSize)
         .style("fill", function(d) {
             return BridgesVisualizer.getColor(d.color) || "steelblue";
         })
@@ -85,7 +82,7 @@ d3.array3d = function(d3, canvasID, w, h, data, dimensions) {
         .text(function(d, i){
           var threeLevel = parseInt(i / (dimOne*dimTwo));
 
-          if((i % elementsPerRow == 0)){
+          if((i % elementsPerRow === 0)){
               levelCount++;
           }
 
@@ -125,21 +122,7 @@ d3.array3d = function(d3, canvasID, w, h, data, dimensions) {
         .attr("y", defaultSize / 2)
         .attr("dy", ".35em");
 
-    // bind linebreaks to text elements
-    var insertLinebreaks = function (d, i) {
-        var el = d3.select(this);
-        var words = d3.select(this).text().split('\n');
-        el.text('');
-
-        for (var j = 0; j < words.length; j++) {
-            var tspan = el.append('tspan').text(words[j]);
-            if (j > 0)
-                tspan.attr('x', 0).attr('dy', '15');
-        }
-    };
-    svgGroup.selectAll('text').each(insertLinebreaks);
-
-    var my_translateX = parseFloat(d3.transform(d3.select("#g"+(elementsPerRow-1)).attr("transform")).translate[0]) + spacingBetweenGrid;
+    var my_translateX = parseFloat(d3.select("#g"+(elementsPerRow-1)).attr("xformx")) + spacingBetweenGrid;
     d3.select("#g0").attr("class","first-2d");
 
     var ii = 0;
@@ -147,20 +130,19 @@ d3.array3d = function(d3, canvasID, w, h, data, dimensions) {
 
         if(i >= dimOne*dimTwo){
             d3.select(this).attr("transform",function(){
-                if( i % (dimOne*dimTwo) == 0 ){
+                if( i % (dimOne*dimTwo) === 0 ){
                     d3.select("#g"+i).attr("class","first-2d");
                     ii++;
                 }
                 var tempI = i % (dimOne*dimTwo);
-                return "translate("+(parseFloat(d3.transform(d3.select(this).attr("transform")).translate[0])+parseFloat(my_translateX*ii))
-                                    +","+
-                                    d3.transform(d3.select("#g"+tempI).attr("transform")).translate[1]
-                                    +")";
-            });
+                return "translate("+(parseFloat(d3.select(this).attr("xformx"))+parseFloat(my_translateX*ii)) +","+  d3.select("#g"+tempI).attr("xformy") + ")";
+            })
+            .attr("xformx", (parseFloat(d3.select(this).attr("xformx"))+parseFloat(my_translateX*ii)))
+            .attr("xformy", d3.select("#g"+(i % (dimOne*dimTwo))).attr("xformy"));
         }
     });
 
-    var half2d = ( ( (spacing + defaultSize) * elementsPerRow) / 2 ) - marginLeft;
+    var half2d = ( ( (spacing + defaultSize) * elementsPerRow) / 2 );
 
     //first2Ditems is the collection of the first node of every grid
     var first2Ditems = d3.selectAll(".first-2d");
@@ -168,17 +150,17 @@ d3.array3d = function(d3, canvasID, w, h, data, dimensions) {
         svgGroup
             .append("line")
             .attr("class",function(){
-                if(i == 0){
+                if(i === 0){
                     return "first-v";
                 }
-                else if(i == first2Ditems[0].length-1){
+                else if(i == first2Ditems._groups[0].length-1){
                     return "last-v";
                 }
             })
-            .attr("y1", -50)
-            .attr("y2", 20)
-            .attr("x1", parseFloat(d3.transform(d3.select(this).attr("transform")).translate[0])+half2d)
-            .attr("x2", parseFloat(d3.transform(d3.select(this).attr("transform")).translate[0])+half2d)
+            .attr("y1", -170)
+            .attr("y2", -140)
+            .attr("x1", parseFloat(d3.select(this).attr("xformx"))+half2d)
+            .attr("x2", parseFloat(d3.select(this).attr("xformx"))+half2d)
             .attr("stroke", "black")
             .attr("stroke-width",5);
 
@@ -187,7 +169,7 @@ d3.array3d = function(d3, canvasID, w, h, data, dimensions) {
             .text(function(){
                 return "(Slice: "+ i +")";
             })
-            .attr("x", (parseFloat(d3.transform(d3.select(this).attr("transform")).translate[0])+half2d) - valueToCenterGridTitle)
+            .attr("x", (parseFloat(d3.select(this).attr("xformx"))+half2d) - valueToCenterGridTitle)
             .style("font-size","100px")
             .attr("y", parseInt(d3.select(".first-v").attr("y2")) + 80);
 
@@ -198,16 +180,17 @@ d3.array3d = function(d3, canvasID, w, h, data, dimensions) {
         .append("line")
         .attr("y1", d3.select(".first-v").attr("y1"))
         .attr("y2", d3.select(".first-v").attr("y1"))
-        .attr("x1", d3.select(".first-v").attr("x1"))
-        .attr("x2", d3.select(".last-v").attr("x1"))
+        .attr("x1", d3.select(".first-v").attr("x1")-2)
+        .attr("x2", +d3.select(".last-v").attr("x1")+2)
         .attr("stroke", "black")
         .attr("stroke-width",5);
 
-    //// zoom function
-    function zoomHandler() {
-        zoom.translate(d3.event.translate);
-        zoom.scale(d3.event.scale);
-        svgGroup.attr("transform", "translate(" + (d3.event.translate) + ")scale(" + d3.event.scale + ")");
+    // zoom function
+    function zoomed() {
+      if(svgGroup) {
+        svgGroup.attr("transform", d3.event.transform);
+      }
     }
 
+    return array3d;
 };

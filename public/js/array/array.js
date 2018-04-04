@@ -3,71 +3,59 @@
 Array visualization for Bridges
 
 */
-d3.array = function(d3, canvasID, w, h, data) {
+d3.array = function(svg, W, H, data) {
 
-    var spacing = 5;        // spacing between elements
-    var marginLeft = 20;
-    var defaultSize = 100;  // default size of each element box
+    // defaults
+    var array = {},
+        svgGroup,
+        w = W || 1280,
+        h = H || 800,
+        finalTranslate,
+        finalScale,
+        transform,
+        spacing = 5, // spacing between elements
+        defaultSize = 100;  // default size of each element box
 
-    var visID = canvasID.substr(4);
-    var finalTranslate = BridgesVisualizer.defaultTransforms.array.translate;
-    var finalScale =  BridgesVisualizer.defaultTransforms.array.scale;
+    var zoom = d3.zoom()
+        .scaleExtent([0.1,2])
+        .on("zoom", zoomed);
 
-    var transformObject = BridgesVisualizer.getTransformObjectFromCookie(visID);
-    if(transformObject){
-      finalTranslate = transformObject.translate;
-      finalScale = transformObject.scale;
-    }
+    array.reset = function() {
+      finalTranslate = BridgesVisualizer.defaultTransforms.array.translate;
+      finalScale =  BridgesVisualizer.defaultTransforms.array.scale;
+      transform = d3.zoomIdentity.translate(finalTranslate[0], finalTranslate[1]).scale(finalScale);
 
-    var zoom = d3.behavior.zoom()
-        .translate(finalTranslate)
-        .scale(finalScale)
-        .scaleExtent([0,5])
-        .on("zoom", zoomHandler);
-    allZoom.push(zoom);
+      svg.call(zoom.transform, transform);
+    };
+    array.reset();
 
-    chart = d3.select(canvasID).append("svg")
-        .attr("width", w)
-        .attr("height", h)
-        .attr("id", "svg" + canvasID.substr(4))
-        .classed("svg", true)
-        .call(zoom);
-        // .call(BridgesVisualizer.tip);
+    vis = svg
+          .attr("width", w)
+          .attr("height", h)
+          .attr("preserveAspectRatio", "xMinYMin meet")
+          .attr("viewBox", "0 0 " + w + " " + h)
+          .classed("svg-content", true)
+          .call(zoom)
+          .call(zoom.transform, transform);
 
-    var svgGroup = chart.append("g");
-    // initialize the scale and translation
-    svgGroup.attr('transform', 'translate(' + zoom.translate() + ') scale(' + zoom.scale() + ')');
-    allSVG.push(svgGroup);
-
-    // var elementsPerRow = 4 * parseInt((w - (spacing + defaultSize)) / (spacing + defaultSize));
+    svgGroup = vis.append("g").attr('transform', transform);
 
     // Bind nodes to array elements
     var nodes = svgGroup.selectAll("nodes")
         .data(data)
         .enter().append("g")
-        .on("mouseover", mouseover)
-        .on("mouseout", mouseout)
         .attr("transform", function(d, i) {
             //size = parseFloat(d.size || defaultSize);
             size = defaultSize;
-            return "translate(" + (marginLeft + i * (spacing + size)) + ")";
-            // return "translate(" + (marginLeft + ((i % elementsPerRow) * (spacing + size)))+ "," + ((h/4) + ((Math.floor(i / elementsPerRow)) * (spacing+size))) + ")";
+            return "translate(" + (i * (spacing + size)) + ")";
         })
-        // .on("mouseover", tip.show)
-        // .on("mouseout", tip.hide)
-        .on("mouseover", BridgesVisualizer.textMouseover)
+        .on("mouseover", function(d) { BridgesVisualizer.textMouseover(d.name); } )
         .on("mouseout", BridgesVisualizer.textMouseout);
 
     // Create squares for each array element
     nodes.append("rect")
-        .attr("height", function(d) {
-            //return parseFloat(d.size || defaultSize);
-            return defaultSize;
-        })
-        .attr("width", function(d) {
-            //return parseFloat(d.size || defaultSize);
-            return defaultSize;
-        })
+        .attr("height", defaultSize)
+        .attr("width", defaultSize)
         .style("fill", function(d) {
             return BridgesVisualizer.getColor(d.color) || "steelblue";
         })
@@ -112,31 +100,13 @@ d3.array = function(d3, canvasID, w, h, data) {
         .attr("y", defaultSize / 2)
         .attr("dy", ".35em");
 
-    svgGroup.selectAll('text').each(BridgesVisualizer.insertLinebreaks);
-
-    function mouseover() {
-        // scale text size based on zoom factor
-        var hoverSize = d3.scale.linear().domain([0,0.7]).range([300, 14]).clamp(true);
-        d3.select(this).selectAll(".nodeLabel").transition()
-              .duration(250)
-              .style("display","block")
-              .style("font-size", function(d) {
-                return hoverSize(zoom.scale());
-              });
+    // zoom function
+    function zoomed() {
+      if(svgGroup) {
+        svgGroup.attr("transform", d3.event.transform);
+      }
     }
 
-    function mouseout() {
-        d3.select(this).selectAll(".nodeLabel").transition()
-            .duration(750)
-            .style("display","none")
-            .style("font-size", 14);
-    }
-
-    //// zoom function
-    function zoomHandler() {
-        zoom.translate(d3.event.translate);
-        zoom.scale(d3.event.scale);
-        svgGroup.attr("transform", "translate(" + (d3.event.translate) + ")scale(" + d3.event.scale + ")");
-    }
+    return array;
 
 };
