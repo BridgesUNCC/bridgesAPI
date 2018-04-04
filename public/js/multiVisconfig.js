@@ -74,11 +74,6 @@ for (var key in data) {
           .attr("id", "vis" + key);
         graph = d3.graph_canvas(vis, width, height, data[key]);
         visualizations.push(graph);
-
-        // handle map overlay for subassignment if appropriate
-        // if(data[key].map_overlay) {
-        //   BridgesVisualizer.map(vis, data[key].coord_system_type);
-        // }
     }
     else {
         // console.log("unknown data type");
@@ -121,9 +116,16 @@ function savePositions () {
       'fixedNodes': {},
       'unfixedNodes': {}
     };
-    if (data.hasOwnProperty(key)) {
+    if (data.hasOwnProperty(key) && data[key].visType == "nodelink") {
       d3.select("#vis" + key).selectAll(".node").each(function(d, i) {
         // we need to name the nodes so we can identify them on the server; indices don't suffice
+        if(d.fx && d.fy) {
+          updateTheseNodes[key].fixedNodes["n" + i] = {"x": d.fx, "y": d.fy};
+        }
+        else updateTheseNodes[key].unfixedNodes["n" + i] = true;
+      });
+    } else if(data.hasOwnProperty(key) && data[key].visType == "nodelink-canvas") {
+      visualizations[key].nodes.forEach(function(d, i) {
         if(d.fx && d.fy) {
           updateTheseNodes[key].fixedNodes["n" + i] = {"x": d.fx, "y": d.fy};
         }

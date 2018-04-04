@@ -47,12 +47,6 @@ d3.graph = function(svg, W, H, data) {
     var nodes = data.nodes;
     var links = data.links;
 
-  // var transformObject = BridgesVisualizer.getTransformObjectFromCookie(visID);
-  // if(transformObject){
-  //     finalTranslate = transformObject.translate;
-  //     finalScale = transformObject.scale;
-  // }
-
   var simulation = d3.forceSimulation()
       .force("link", d3.forceLink()
                         .id(function(d) { return d.index; })

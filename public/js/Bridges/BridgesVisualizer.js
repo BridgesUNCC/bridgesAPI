@@ -18,7 +18,7 @@
 
   BridgesVisualizer.strokeWidthRange = d3.scaleLinear().domain([1,50]).range([1,15]).clamp(true);
   //scale values between 1 and 100 to a reasonable range
-  BridgesVisualizer.scaleSize = d3.scaleLinear().domain([1,50]).range([80,4000]);
+  BridgesVisualizer.scaleSize = d3.scaleLinear().domain([1,50]).range([10,500]);
 
   // Define the div for the tooltip
   BridgesVisualizer.tooltip = d3.select("body").append("div")

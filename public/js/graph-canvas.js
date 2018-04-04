@@ -1,5 +1,3 @@
-//based loosely on bostock's example and
-//http://bl.ocks.org/d3noob/5141278
 d3.graph_canvas = function(canvas, W, H, data, map) {
     var context = canvas.node().getContext("2d");
 
@@ -12,9 +10,6 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
 
     canvas.attr("width", w).attr("height", h);
 
-
-    var vis, svgGroup, defs;
-    var count = 0;
     var finalTranslate = BridgesVisualizer.defaultTransforms.graph.translate;
     var finalScale = BridgesVisualizer.defaultTransforms.graph.scale;
     var transform = d3.zoomIdentity.translate(finalTranslate[0], finalTranslate[1]).scale(finalScale);
@@ -36,8 +31,15 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
     var nodes = data.nodes;
     var links = data.links;
 
-    // set fixed locations or projections where appropriate
+    // set fixed locations or projections where appropriate,
+    //   set up symbol function
     nodes.forEach(function(d) {
+
+      d.symbol = d3.symbol()
+          .type(BridgesVisualizer.shapeLookup(d.shape))
+          .size(BridgesVisualizer.scaleSize(d.size) || 10)
+          .context(context);
+
       if(d.location) {
         var proj, point;
 
@@ -70,7 +72,7 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
                           .distance(200))
         .force("charge", d3.forceManyBody()
                           .strength(function(d) {
-                            return -30 - (d.size * 5) ;
+                            return -30 - (d.size * 5);
                           })
                           .distanceMax(500))
         .force("collision", d3.forceCollide()
@@ -108,6 +110,7 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
       context.restore();
     }
 
+    // draw a straight line between source and target nodes
     function drawLink(d) {
       context.beginPath();
 
@@ -121,6 +124,7 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
       context.stroke();
     }
 
+    // get control point for quadratic curve link
     function getControlPoint(d) {
       var p1 = d.source,
           p2 = d.target,
@@ -135,9 +139,10 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
       return p3;
     }
 
+    // draw a curved line between source and target nodes
     function drawCurvedLink(d) {
       context.beginPath();
-    
+
       context.strokeStyle = BridgesVisualizer.getColor(d.color);
       context.lineWidth = BridgesVisualizer.strokeWidthRange(d.thickness);
       context.globalAlpha = d.opacity;
@@ -148,6 +153,7 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
       context.stroke();
     }
 
+    // draw each node
     function drawNode(d) {
       context.translate(d.x, d.y);
       context.beginPath();
@@ -159,27 +165,18 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
         context.setLineDash([]);
       }
 
-      // context.strokeStyle = BridgesVisualizer.getColor(d.color);
       context.strokeStyle = "black";
-
       context.fillStyle = BridgesVisualizer.getColor(d.color);
       context.globalAlpha = d.opacity;
-
-      var symbol = d3.symbol()
-          .type(BridgesVisualizer.shapeLookup(d.shape))
-          .size(BridgesVisualizer.scaleSize(d.size) || 1)
-          .context(context);
-
-      // context.arc(d.x, d.y, d.size/2, 0, 2 * Math.PI);
-      symbol();
-
+      d.symbol();
       context.fill();
       context.stroke();
       context.translate(-d.x, -d.y);
-      drawText(d);
 
+      drawText(d);
     }
 
+    // draw text labels with line breaks
     function drawText(d) {
       if(BridgesVisualizer.tooltipEnabled || d.hovering) {
         lines = d.name.split("\n");
@@ -196,6 +193,7 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
       ticked(); //<-- use tick to redraw regardless of event
     }
 
+    // handle double clicks on the canvas - unstick node
     function dblclick(e) {
       d3.event.stopImmediatePropagation();
       var i,
@@ -218,6 +216,7 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
       }
     }
 
+    // find a node on click
     function dragsubject() {
       if (d3.event.defaultPrevented) return;
       var i,
@@ -254,10 +253,9 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
 
     function dragended() {
       if (!d3.event.active) simulation.alphaTarget(0);
-      // d3.event.subject.fx = null;
-      // d3.event.subject.fy = null;
     }
 
+    // track mousemove to trigger label hovering
     function mousemoved() {
       d3.event.preventDefault();
       d3.event.stopPropagation();
@@ -282,17 +280,19 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
           ticked();
           return;
         }
-
         n.hovering = false;
       }
-
     }
 
+    // Redraw graph if labels are toggled
     $("body").on("keydown", function(event) {
       if(event.which == "76"){
         ticked();
       }
     });
+
+    // Expose nodes to allow saving fixed positions
+    graph.nodes = nodes;
 
     return graph;
 };
