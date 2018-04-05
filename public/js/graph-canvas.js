@@ -40,6 +40,13 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
           .size(BridgesVisualizer.scaleSize(d.size) || 10)
           .context(context);
 
+      if(d.fx && d.fx === 0) {
+        d.fx = null;
+      }
+      if(d.fy && d.fy === 0) {
+        d.fy = null;
+      }
+
       if(d.location) {
         var proj, point;
 

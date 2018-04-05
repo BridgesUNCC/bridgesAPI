@@ -100,6 +100,13 @@ d3.graph = function(svg, W, H, data) {
           return d.opacity || 1;
       })
       .each(function(d, i) {
+        if(d.fx && d.fx === 0) {
+          d.fx = null;
+        }
+        if(d.fy && d.fy === 0) {
+          d.fy = null;
+        }
+        
         if(d.location) {
           var proj, point;
 
