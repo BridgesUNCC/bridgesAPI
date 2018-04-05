@@ -40,13 +40,6 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
           .size(BridgesVisualizer.scaleSize(d.size) || 10)
           .context(context);
 
-      if(d.fx && d.fx === 0) {
-        d.fx = null;
-      }
-      if(d.fy && d.fy === 0) {
-        d.fy = null;
-      }
-
       if(d.location) {
         var proj, point;
 
@@ -54,9 +47,13 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
           proj = d3.geoEquirectangular();
         } else if(data.coord_system_type == "albersUsa") {
           proj = d3.geoAlbersUsa();
-        } else {  // cartesian space
+        } else if(data.coord_system_type == "Cartesian"){
           d.fx = d.location[0];
           d.fy = d.location[1];
+          return;
+        } else {
+          d.fx = null;
+          d.fy = null;
           return;
         }
 

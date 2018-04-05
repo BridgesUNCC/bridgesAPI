@@ -106,7 +106,7 @@ d3.graph = function(svg, W, H, data) {
         if(d.fy && d.fy === 0) {
           d.fy = null;
         }
-        
+
         if(d.location) {
           var proj, point;
 
@@ -114,12 +114,16 @@ d3.graph = function(svg, W, H, data) {
             proj = d3.geoEquirectangular();
           } else if(data.coord_system_type == "albersUsa") {
             proj = d3.geoAlbersUsa();
-          } else {  // cartesian space
+          } else if(data.coord_system_type == "Cartesian"){
             d.fx = d.location[0];
             d.fy = d.location[1];
             return;
+          } else {
+            d.fx = null;
+            d.fy = null;
+            return;
           }
-
+          
           point = proj([d.location[1], d.location[0]]);
 
           // make sure the transformed location exists
