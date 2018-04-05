@@ -211,19 +211,6 @@
       }
 
       if(!BridgesVisualizer.tooltipEnabled || label === "") return;
-
-      //the design can be changed later, if not appropriate. Mainly for implementation
-      // if(d3.select(this).select("rect"))
-      //     d3.select(this).select("rect").style("stroke", "yellow").style("stroke-width", 4);
-
-      // if(d3.select(this).select("path")){
-      //         d3.select(this).select("path").transition()
-      //             .duration(750)
-      //             .attr('d', function (d) {
-      //                 return d3.svg.symbol().type(d.shape||"circle")
-      //                         .size(BridgesVisualizer.scaleSize(40))();
-      //             });
-      // }
       BridgesVisualizer.tooltip.transition()
           .duration(200)
           .style("opacity", 0.9);
@@ -233,18 +220,6 @@
       };
 
   BridgesVisualizer.textMouseout = function(d) {
-      // if(d3.select(this).select("rect"))
-      //     d3.select(this).select("rect").style("stroke", "gray").style("stroke-width", 2);
-      //
-      // if(d3.select(this).select("path")){
-      //         d3.select(this).select("path").transition()
-      //             .duration(750)
-      //             .attr('d', function (d) {
-      //                 return d3.svg.symbol().type(d.shape||"circle")
-      //                         .size(BridgesVisualizer.scaleSize(d.size||1))();
-      //             });
-      // }
-
       BridgesVisualizer.tooltip.transition()
           .duration(500)
           .style("opacity", 0);

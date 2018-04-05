@@ -6,6 +6,8 @@ d3.select("#reset").on("click", reset);
 d3.select("#save").on("click", savePositions);
 d3.select("#delete").on("click", deleteAssignment);
 
+var visualizations = [];
+
 /* create new assignments  */
 for (var key in data) {
   if (data.hasOwnProperty(key)) {
@@ -13,8 +15,8 @@ for (var key in data) {
         width = ele.clientWidth,
         height = ele.clientHeight,
         transform = data[key].transform,
-        vis,
-        visualizations = [];
+        vis;
+
 
     //saving a copy of every assignment: type and key of the assignment. Useful when trying to reset them.
     // BridgesVisualizer.assignmentTypes.push(data[key]['visType']);
