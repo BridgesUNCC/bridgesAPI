@@ -210,7 +210,13 @@ d3.bst = function (vis, W, H) {
               return diagonal(o, o);
             })
             .attr('marker-start', function(d,i){ return 'url(#marker_circle)'; })
-            .attr('marker-end', function(d,i){ return 'url(#marker_arrow)'; });
+            .attr('marker-end', function(d,i){ return 'url(#marker_arrow)'; })
+            .on("mouseover", function(d) {
+              if(d.data && d.data.linkProperties) {
+               BridgesVisualizer.textMouseover("weight: " + d.data.linkProperties.thickness);
+              }
+             })
+            .on("mouseout", BridgesVisualizer.textMouseout);
 
         // Draw links
         var linkUpdate = linkEnter.merge(link)
