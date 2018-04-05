@@ -84,6 +84,10 @@ d3.bst = function (vis, W, H) {
         // Normalize for fixed-depth.
         nodes.forEach(function(d) { d.y = 50 + d.depth * depthStep; });
 
+        /*
+              N O D E S
+        */
+
         // Update the nodes with ids
         var node = svgGroup.selectAll("g.node")
             .data(nodes, function(d) { return d.id || (d.id = ++i); });
@@ -113,68 +117,62 @@ d3.bst = function (vis, W, H) {
             })
             .style("opacity", function(d) {
                 return d.data.role ? 0 : ( d.data.opacity || 1 );
-            });
+            })
+            .style("stroke", "black")
+            .style("stroke-width", 1);
 
-       // add text label for key where appropriate
-       if(nodes[0].key !== null) {
+        // add text label for key where appropriate
+        if(nodes[0].key !== null) {
            nodeEnter.append("svg:text")
             .attr("dy", ".35em")
             .attr("x", "-8px")
             .attr("y",  "-15px")
             .text(function(d) { return d.data.key || ""; } );
-       }
+        }
 
-       // Text label
-       nodeEnter.append("svg:text")
+        // Text label
+        nodeEnter.append("svg:text")
           .classed("nodeLabel", true)
           .attr("dy", ".35em")
           .attr("x", "20px")
           .attr("y",  "-7px")
-          .style("display", "none")
+          .style("display", function() {
+            return !BridgesVisualizer.tooltipEnabled ? "block" : "none";
+          })
           .text( function( d ) { if( (d && d.data.name &&d.data.name != "NULL") ) { return d.data.name; } else return ""; });
 
-       // apply dash array if node has collapsed non-null children
-       node.selectAll("path")
-         .style("stroke", "#000")
-         .style("stroke-width", function(d) {
-           if(d._children) {
-             var nullChild = 0;
-             for (var c = 0; c < d._children.length; c++) {
-               if(d._children[c].name == 'NULL') nullChild++;
-             }
-             if(nullChild == d._children.length) {
-               return 0;
-             }
-             return 1;
-            }
-            return 0;
-         })
-         .style("stroke-dasharray", function(d) {
-             if(d._children) {
-               var nullChild = 0;
-               for (var c = 0; c < d._children.length; c++) {
-                 if(d._children[c].name == 'NULL') nullChild++;
-               }
-               if(nullChild == d._children.length) {
-                 return "0,0";
-               }
-               return BridgesVisualizer.treeDashArray;
-              }
-              return "0,0";
-         });
+        // apply dash array if node has collapsed non-null children
+        node.selectAll(".node")
+          .style("stroke", "black")
+          .style("stroke-width", function(d) {
+            return (d.data.name == "NULL") ? 0 : 1;
+          })
+          .style("stroke-dasharray", function(d) {
+            return (d._children) ? BridgesVisualizer.treeDashArray : "0,0";
+          });
+
+        nodeEnter.selectAll(".node")
+          .style("stroke", "black")
+          .style("stroke-width", function(d) {
+            return (d.data.name == "NULL") ? 0 : 1;
+          })
+          .style("stroke-dasharray", function(d) {
+            return (d._children) ? BridgesVisualizer.treeDashArray : "0,0";
+          });
 
         // Transition nodes to their new position.
         var nodeUpdate = nodeEnter
             .merge(node)
-            .transition()
+            .transition("nodeEnter")
             .duration(duration)
             .attr("transform", function(d) {
                 return "translate(" + d.x + "," + d.y + ")";
             });
 
         // Transition exiting nodes to the parent's new position.
-        var nodeExit = node.exit().transition()
+        var nodeExit = node.exit().transition("nodeExit")
             .duration(duration)
+            .attr("opacity", 0)
             .attr("transform", function(d) {
                 return "translate(" + (source.x) + "," + source.y + ")";
             })
@@ -183,6 +181,10 @@ d3.bst = function (vis, W, H) {
         // On exit reduce the opacity of text labels
         nodeExit.select('text')
           .style('fill-opacity', 1e-6);
+
+        /*
+              L I N K S
+        */
 
         // Update the links…
         var link = svgGroup.selectAll("path.link")
@@ -196,7 +198,7 @@ d3.bst = function (vis, W, H) {
                 return "#ccc";
             })
             .style("stroke-width", function(d,i) {
-                if(d.linkProperties) return BridgesVisualizer.strokeWidthRange(d.linkProperties.thickness);
+                if(d.data.linkProperties) return BridgesVisualizer.strokeWidthRange(d.data.linkProperties.thickness);
                 return BridgesVisualizer.strokeWidthRange(1);
             })
             .style("opacity", function(d,i) {
@@ -212,16 +214,60 @@ d3.bst = function (vis, W, H) {
 
         // Draw links
         var linkUpdate = linkEnter.merge(link)
-            .transition()
+            .transition("linkUpdate")
             .duration(duration)
             .attr('d', function(d){ return diagonal(d.parent, d); });
 
         // Transition exiting links to the parent's new position.
-        var linkExit = link.exit().transition()
+        var linkExit = link.exit().transition("linkExit")
             .duration(duration)
+            .attr("opacity", 0)
             .attr("d", function(d) {
               var o = {x: source.x, y: source.y};
               return diagonal(o,o);
+            })
+            .remove();
+
+        /*
+              L I N K   L A B E L S
+        */
+
+        var linkText = svgGroup.selectAll(".linkLabel")
+            .data(links, function(d) { return d.id; });
+
+        // Weight label
+        var linkTextEnter = linkText.enter().append("svg:text")
+          .classed("linkLabel", true)
+          .attr("dy", ".35em")
+          .attr("text-anchor", "middle")
+          .attr("transform", function(d) {
+                return "translate(" + source.x + "," + source.y + ")";
+          })
+          .style("display", function() {
+            return !BridgesVisualizer.tooltipEnabled ? "block" : "none";
+          })
+          .text( function( d ) {
+           if( (d.data && d.data.linkProperties) ) {
+             return d.data.linkProperties.thickness; // change to link label!
+           } else return "";
+          });
+
+        var linkTextUpdate = linkTextEnter.merge(linkText)
+            .transition("linkTextUpdate")
+            .duration(duration)
+            .attr("transform", function(d) {
+                  return "translate(" +
+                      (((d.parent.x + d.x)/2)+10) + "," +
+                      ((d.parent.y + d.y)/2) + ")";
+            });
+
+        var linkTextExit = linkText.exit().transition("linkTextExit")
+            .duration(duration)
+            .style("display", "none")
+            .attr("transform", function(d) {
+                  return "translate(" +
+                      d.parent.x + "," +
+                      d.parent.y + ")";
             })
             .remove();
 
@@ -254,6 +300,18 @@ d3.bst = function (vis, W, H) {
       svgGroup.attr("transform", d3.event.transform);
     }
   }
+
+  // Add link labels to keyboard shortcut
+  $("body").on("keydown", function(event) {
+      if(event.which == "76"){
+        // labels are hidden
+        if(!BridgesVisualizer.tooltipEnabled) {
+          d3.selectAll(".linkLabel").style("display", "block");
+        } else {
+          d3.selectAll(".linkLabel").style("display", "none");
+        }
+      }
+  });
 
   return bst;
 };
