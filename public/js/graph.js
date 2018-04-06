@@ -123,7 +123,7 @@ d3.graph = function(svg, W, H, data) {
             d.fy = null;
             return;
           }
-          
+
           point = proj([d.location[1], d.location[0]]);
 
           // make sure the transformed location exists
@@ -150,28 +150,43 @@ d3.graph = function(svg, W, H, data) {
           return d.name;
       });
 
-  var link = svgGroup.append("svg:g").selectAll("path")
+  var linkG = svgGroup.selectAll(".link")
       .data(links.reverse())  // reverse to draw end markers over links
-      .enter().insert("svg:path")
-      .attr("class", "link")
-      .attr("marker-mid", "url(#marker_arrow)")
-      // .attr("marker-end", function(d) {  // modify this for programmatic arrow points
-      //   return BridgesVisualizer.marker(vis, (BridgesVisualizer.getColor(d.color) || "black"), {});
-      // })
-      .style("stroke-width", function (d) {
-          return BridgesVisualizer.strokeWidthRange(d.thickness) || 1;
+      .enter().append("svg:g");
+  linkG
+      .insert("svg:path")
+        .attr("class", "link")
+        .attr("id", function(d,i) { return "linkId_" + i; })
+        .attr("marker-end", "url(#marker_arrow)")
+        // .attr("marker-end", function(d) {  // modify this for programmatic arrow points
+        //   return BridgesVisualizer.marker(vis, (BridgesVisualizer.getColor(d.color) || "black"), {});
+        // })
+        .style("stroke-width", function (d) {
+            return BridgesVisualizer.strokeWidthRange(d.thickness) || 1;
+        })
+        .style("stroke", function (d) {
+            return BridgesVisualizer.getColor(d.color) || "black";
+        })
+        .style("opacity", function(d) {
+            return d.opacity || 1;
+        })
+        .style("stroke-dasharray", function(d) {
+            return d.dasharray || "";
+        })
+        .style("fill", "none")
+        .on("mouseover", function(d) {BridgesVisualizer.textMouseover("weight: " + d.weight); } )
+        .on("mouseout", BridgesVisualizer.textMouseout);
+
+  // append link weight labels
+  linkG.append("svg:text")
+    .append("textPath")
+      .classed("linkLabel", true)
+      .attr("xlink:href",function(d,i) { return "#linkId_" + i;})
+      .style("display", function() {
+        return !BridgesVisualizer.tooltipEnabled ? "block" : "none";
       })
-      .style("stroke", function (d) {
-          return BridgesVisualizer.getColor(d.color) || "black";
-      })
-      .style("opacity", function(d) {
-          return d.opacity || 1;
-      })
-      .style("stroke-dasharray", function(d) {
-          return d.dasharray || "";
-      })
-      .style("fill", "none")
-      .style("pointer-events", "none");
+      .text(function(d,i) { return d.weight || ""; });
+
 
   function ticked() {
       node
@@ -179,11 +194,15 @@ d3.graph = function(svg, W, H, data) {
           return "translate(" + d.x + "," + d.y + ")";
         });
 
-      link
+      linkG.selectAll("path")
+          .each(function(d) {
+
+          })
           .attr("d", function(d) {
               var dx = d.target.x - d.source.x,
                   dy = d.target.y - d.source.y,
                   dr = Math.sqrt(dx * dx + dy * dy);
+
               return "M" +
                   d.source.x + "," +
                   d.source.y + "A" +
@@ -191,6 +210,14 @@ d3.graph = function(svg, W, H, data) {
                   d.target.x + "," +
                   d.target.y;
           });
+
+      // adjust the weight label positioning along links
+      linkG.selectAll("text")
+        .attr("dx", function(d) {
+          var xdiff = Math.abs((d.source.x - d.target.x)/2);
+          var ydiff = Math.abs((d.source.y - d.target.y)/2);
+          return (xdiff>ydiff) ? xdiff : ydiff;
+        });
   }
 
   // zoom function
@@ -230,11 +257,6 @@ d3.graph = function(svg, W, H, data) {
   }
 
   function dragended(d) {
-      // d3.select(this)
-      //   .style("stroke-width", 0)
-      //   .style("stroke", "black")
-      //   .style("stroke-dasharray", BridgesVisualizer.treeDashArray);
-
       if (!d3.event.active) simulation.alphaTarget(0);
   }
 

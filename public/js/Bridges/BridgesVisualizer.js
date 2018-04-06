@@ -132,10 +132,10 @@
      .append('svg:marker')
        .attr('id', function(d){ return 'marker_' + d.name; })
        .attr("markerUnits", "userSpaceOnUse")
-       .attr("markerUnits", "strokeWidth")
+      //  .attr("markerUnits", "strokeWidth")
        .attr('markerHeight', 5)
        .attr('markerWidth', 5)
-       //.attr('markerUnits', 'strokeWidth')
+       .style("pointer-events", "none")
        .attr('orient', 'auto')
        .attr('refX', 0)
        .attr('refY', 0)
@@ -271,12 +271,13 @@
 
   $("body").on("keydown", function(event) {
       if(event.which == "76"){
-          BridgesVisualizer.tooltipEnabled = (BridgesVisualizer.tooltipEnabled) ? false : true;
-          if($(".nodeLabel").length > 0 && (d3.selectAll(".nodeLabel").style("display") == "none" || d3.selectAll(".nodeLabel").style("opacity") == "0")){
+          if(BridgesVisualizer.tooltipEnabled) {
               d3.selectAll(".nodeLabel").style("display","block").style("opacity","1");
+              d3.selectAll(".linkLabel").style("display", "block");
               BridgesVisualizer.tooltipEnabled = false;
-          }else if($(".nodeLabel").length > 0){
+          } else {
               d3.selectAll(".nodeLabel").style("display","none").style("opacity","0");
+              d3.selectAll(".linkLabel").style("display", "none");
               BridgesVisualizer.tooltipEnabled = true;
           }
       }

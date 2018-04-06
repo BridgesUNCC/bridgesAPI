@@ -32,7 +32,7 @@ block content
                   - if (assignments[x].shared == false)
                           div(class='gallery_assignment_div private')
                               if(assignments[x].vistype == "nodelink")
-                                  img.visimg(src='/img/graph.png' title=assignments[x].vistype)
+                                  img.visimg(src='/img/nodelink.png' title=assignments[x].vistype)
                               else if(assignments[x].vistype == "Alist")
                                   img.visimg(src='/img/array.png' title=assignments[x].vistype)
                               else
@@ -41,7 +41,7 @@ block content
                    - else
                           div(class='gallery_assignment_div public')
                               if(assignments[x].vistype == "nodelink")
-                                  img.visimg(src='/img/graph.png' title=assignments[x].vistype)
+                                  img.visimg(src='/img/nodelink.png' title=assignments[x].vistype)
                               else if(assignments[x].vistype == "Alist")
                                   img.visimg(src='/img/array.png' title=assignments[x].vistype)
                               else

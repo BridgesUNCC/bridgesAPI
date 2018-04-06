@@ -307,17 +307,5 @@ d3.bst = function (vis, W, H) {
     }
   }
 
-  // Add link labels to keyboard shortcut
-  $("body").on("keydown", function(event) {
-      if(event.which == "76"){
-        // labels are hidden
-        if(!BridgesVisualizer.tooltipEnabled) {
-          d3.selectAll(".linkLabel").style("display", "block");
-        } else {
-          d3.selectAll(".linkLabel").style("display", "none");
-        }
-      }
-  });
-
   return bst;
 };

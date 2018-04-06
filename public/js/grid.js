@@ -32,16 +32,5 @@ d3.grid = function(canvas, W, H, data) {
       context.fillRect(offset + mw + parseInt(i%dims)*nodeSize, mh + parseInt((i/dims))*nodeSize, nodeSize, nodeSize);
     }
 
-    //
-    // function zoomed(d) {
-    //   transform = d3.event.transform; //<-- set to current transform
-    //   context.save();
-    //   context.clearRect(0, 0, width, height);
-    //   context.translate(transform.x, transform.y);
-    //   context.scale(transform.k, transform.k);
-    //   draw();
-    //   context.restore();
-    // }
-
-    window.requestAnimationFrame(draw);
+    draw();
 };

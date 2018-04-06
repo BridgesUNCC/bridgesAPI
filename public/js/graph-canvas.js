@@ -143,6 +143,19 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
       return p3;
     }
 
+    function _getQBezierValue(t, p1, p2, p3) {
+        var iT = 1 - t;
+        return iT * iT * p1 + 2 * iT * t * p2 + t * t * p3;
+    }
+
+    // get point along quadratic curve
+    function getQuadraticCurvePoint(startX, startY, cpX, cpY, endX, endY, position) {
+        return {
+            x:  _getQBezierValue(position, startX, cpX, endX),
+            y:  _getQBezierValue(position, startY, cpY, endY)
+        };
+    }
+
     // draw a curved line between source and target nodes
     function drawCurvedLink(d) {
       context.beginPath();
@@ -155,6 +168,8 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
       context.moveTo(d.source.x, d.source.y);
       context.quadraticCurveTo(ctrl.x, ctrl.y,d.target.x,d.target.y);
       context.stroke();
+
+      drawLinkText(d, getQuadraticCurvePoint(d.source.x, d.source.y, ctrl.x, ctrl.y, d.target.x, d.target.y, 0.5));
     }
 
     // draw each node
@@ -189,6 +204,15 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
           context.fillText(line, d.x+10, d.y+(i*10)+3);
           context.fillStyle = BridgesVisualizer.getColor(d.color);
         });
+      }
+    }
+
+    // draw text labels with line breaks
+    function drawLinkText(d, anchor) {
+      if(BridgesVisualizer.tooltipEnabled || d.hovering) {
+        context.fillStyle = "black";
+        context.fillText(d.weight, anchor.x, anchor.y);
+        context.fillStyle = BridgesVisualizer.getColor(d.color);
       }
     }
 

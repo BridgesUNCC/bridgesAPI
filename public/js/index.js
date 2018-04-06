@@ -38,7 +38,7 @@ var initGallery = function(data) {
       .classed("visimg", true)
       .attr('src', function(d) {
         if(d.vistype == "nodelink")
-            return '/img/graph.png';
+            return '/img/nodelink.png';
         else if(d.vistype == "Alist")
             return '/img/array.png';
         else
