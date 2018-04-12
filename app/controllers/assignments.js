@@ -287,6 +287,10 @@ exports.show = function (req, res, next) {
             return next(err);
           }
 
+          if(data === null) {
+            console.log("Erroneous data");
+            return next("Erroneous data");
+          }
 
 
             // Client should send trees as hierarchical representation now..
