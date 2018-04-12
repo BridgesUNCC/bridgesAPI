@@ -8,56 +8,42 @@ block css
 
 block content
     include ../includes/header.jade
-    .container
-        .row
-            .col-lg-6
 
-                div(style="float:left; margin-left:50px")
-                    h1(style="text-align: left") #{usernames}'s Gallery
+    div.col-lg-10.col-lg-offset-2
+        div.title
+            h1(style="text-align: left") #{usernames}'s Gallery
 
-        -if(assignments.length == 0)
-          .row
-            .col-lg-6.col-lg-offset-3.text-center#welcome
-              p Welcome to BRIDGES!
-              p If you're ready to get started, check out the following links:
-              p
-                a(href='http://bridgesuncc.github.io/bridges_setup.html' target='_blank') Bridges Setup
-              p
-                a(href='https://bridgesdata.herokuapp.com' target='_blank') Bridges Datasources
+    div.col-lg-2.col-md-2.col-sm-12.col-xs-12#gallery_fixed_tooltip
 
-    div.gallery_row
-        - for (var x = 0; x < assignments.length; x++)
-            div(class='gallery_assignment_container')
-                a(href='/assignments/'+assignments[x].assignmentNumber+'/'+usernames)
-                  - if (assignments[x].shared == false)
-                          div(class='gallery_assignment_div private')
-                              if(assignments[x].vistype == "nodelink")
-                                  img.visimg(src='/img/nodelink.png' title=assignments[x].vistype)
-                              else if(assignments[x].vistype == "Alist")
-                                  img.visimg(src='/img/array.png' title=assignments[x].vistype)
-                              else
-                                  img.visimg(src='/img/'+assignments[x].vistype+'.png' title=assignments[x].vistype)
+    -if(assignments.length == 0)
+        .col-lg-6.text-center#welcome
+          p Welcome to BRIDGES!
+          p If you're ready to get started, check out the following links:
+          p
+            a(href='http://bridgesuncc.github.io/bridges_setup.html' target='_blank') Bridges Setup
+          p
+            a(href='https://bridgesdata.herokuapp.com' target='_blank') Bridges Datasources
 
-                   - else
-                          div(class='gallery_assignment_div public')
-                              if(assignments[x].vistype == "nodelink")
-                                  img.visimg(src='/img/nodelink.png' title=assignments[x].vistype)
-                              else if(assignments[x].vistype == "Alist")
-                                  img.visimg(src='/img/array.png' title=assignments[x].vistype)
-                              else
-                                  img.visimg(src='/img/'+assignments[x].vistype+'.png' title=assignments[x].vistype)
+    .container.col-lg-8.col-md-8.col-sm-12.col-xs-12
+      - for (var x = 0; x < assignments.length; x++)
+          .col-md-2.col-sm-4.col-xs-4.gallery_assignment_container
+            a(href='/assignments/'+assignments[x].assignmentNumber+'/'+usernames)
+               div.gallery_assignment_div(class=(assignments[x].shared == false) ? 'private' : 'public')
+                  if(assignments[x].vistype == "Alist")
+                      img.visimg(src='/img/array.png' title=assignments[x].vistype)
+                  else if(assignments[x].data[0].visual.indexOf("Graph") >= 0)
+                      img.visimg(src='/img/graph.png' title='assignments[x].data[0].visual')
+                  else
+                      img.visimg(src='/img/'+assignments[x].vistype+'.png' title=assignments[x].vistype)
 
+              a(style='text-decoration: none; ' href='/assignments/'+assignments[x].assignmentNumber+'/'+usernames)
+                div(class='gallery_links')
+                  - if (assignments[x].title)
+                      div.gallery_link_title #{assignments[x].title}
+                  - else
+                      div.gallery_link_title Assignment#{assignments[x].assignmentNumber}
 
-                  a(style='text-decoration: none; ' href='/assignments/'+assignments[x].assignmentNumber+'/'+usernames)
-                      div(class='gallery_links')
-                        - if (assignments[x].title)
-                            div.gallery_link_title #{assignments[x].title}
-                        - else
-                            div.gallery_link_title Assignment#{assignments[x].assignmentNumber}
-
-                  div.user-gallery-menu
-                    div.gallery_link_small Assignment #{assignments[x].assignmentNumber}
-                    div.gallery_link_small Data Structure: #{assignments[x].data[0].visual}
-                    div.gallery_link_small Date Created: #{assignments[x].dateCreated}
+      script.
+          var assignments = !{JSON.stringify(assignments)};
 
       script( src = '/js/gallery/userGallery.js' )

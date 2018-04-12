@@ -1,58 +1,32 @@
 /* Scripts related to the Bridges user gallery */
 
-var galleryImages = d3.selectAll('.visimg');
+var galleryImages = d3.selectAll('.gallery_assignment_container');
 
-// on mouseover of gallery image, display gallery menu
+// on mouseover of an assignment, display a tooltip
 galleryImages.on('mouseover', function(d, i) {
-  d3.select(this).attr('timeout', setTimeout(function () {
-       galleryMenu(i);
-   }, 500)); // delay gallery menu transition
+  galleryImages
+    .style('opacity', function(d, j) {
+      return i == j ? 1 : 0.5;
+    });
+  displayDetails(assignments[i]);
 });
 
-// on mouseout, hide gallery menu
 galleryImages.on('mouseout', function(d, i) {
-  clearTimeout(d3.select(this).attr('timeout'));
-  hideGallery(i);
+  galleryImages.style("opacity", 1);
 });
 
-/* move gallery elements and show relevant menu */
-function galleryMenu(me) {
-  d3.selectAll('.gallery_assignment_container')
-        .transition('userGalleryToggle'+me).duration(250)
-    .style('height', function(d, i) {
-      if(i >= me) return '300px';
-    });
+function displayDetails(assignment) {
+  if(!assignment) return;
 
-  d3.selectAll('.gallery_assignment_div')
-    .style("opacity", function(d, i) {
-        return (i != me) ? '0.2' : 1;
-    });
-  d3.selectAll('.gallery_links')
-    .style("opacity", function(d, i) {
-        return (i != me) ? '0.2' : 1;
-    });
+  var text = "";
+  if(assignment.title) { text+= "<h3>" + assignment.title + "</h3><br/>"; }
+  if(assignment.description) { text+= "<i>\"" + assignment.description + "\"</i><br/><br/>"; }
+  text+= "<b>Assignment:</b> " + assignment.assignmentNumber + "<br/>";
+  text+= "<b>Data Structure:</b> " + assignment.data[0].visual  + "<br/>";
+  text+= "<b>Date Created:</b> " + assignment.dateCreated  + "<br/>";
 
-
-  d3.selectAll(".user-gallery-menu")
-        .transition('userGalleryToggle'+me).delay(250)
-    .style("display", function(d, i) {
-      if(i == me) return "block";
-    })
-    .style("width", "280px")
-    .style("left");
-}
-
-/* return gallery elements to normal characteristics */
-function hideGallery(me) {
-  d3.selectAll('.gallery_assignment_container')
-        .transition('userGalleryToggle'+me).duration(500)
-    .style('height', '200px');
-
-  d3.selectAll('.gallery_assignment_div, .gallery_links')
-        .transition('userGalleryToggle'+me).duration(500)
-      .style("opacity", 1);
-
-  d3.selectAll(".user-gallery-menu")
-        .transition('userGalleryToggle'+me).duration(500)
-    .style("display", "none");
+  d3.select('#gallery_fixed_tooltip')
+      .style("opacity", 1)
+      .style('border-left', 'solid 2px steelblue')
+      .html(text);
 }
