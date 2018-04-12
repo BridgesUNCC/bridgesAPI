@@ -280,7 +280,14 @@ exports.show = function (req, res, next) {
 
         /* parse and store all subassignments */
         for(var i = 0; i < assignments.length; i++) {
+          try{
             data = assignments[i].data.toObject()[0];
+          } catch(err) {
+            console.log("Error getting data object");
+            return next(err);
+          }
+
+
 
             // Client should send trees as hierarchical representation now..
             // This captures the data from the OLD flat tree representation
