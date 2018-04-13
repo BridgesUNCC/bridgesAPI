@@ -1,0 +1,95 @@
+.navbar-assignment {
+  background-color: #f8f8f8;
+  min-height:100%;
+  right: 0px;
+  position: absolute;
+  top: 51px;
+  max-width: 250px;
+  z-index: 8;
+  overflow: hidden;
+  border-radius: 0px;
+  -webkit-transition: all 0.1s ease-in-out;
+  -moz-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+}
+
+.navbar-assignment.collapsed {
+  max-width: 60px;
+}
+
+.navbar-assignment.collapsed .glyphicon {
+  font-size: 22px;
+}
+
+.navbar-assignment.collapsed .nav-label {
+  display: none;
+}
+
+.navbar-assignment.collapsed .switch-toggle {
+  display: none;
+}
+
+
+
+.btn-expand-collapse {
+    position: relative;
+    display: block;
+    left: 0px;
+    top:0px;
+    width: 100%;
+    padding: 8px 0;
+    border-bottom:solid 1px #e7e7e7;
+    color: grey;
+    font-size: 20px;
+    text-align: center;
+}
+
+.btn-expand-collapse:hover,
+.btn-expand-collapse:focus {
+    background-color: #e7e7e7;
+    color: #666;
+}
+
+.btn-expand-collapse:active {
+    background-color: #666;
+}
+
+.navbar-assignment-menu,
+.navbar-assignment-menu li {
+  margin:0; padding:0;
+  list-style: none;
+}
+
+.navbar-assignment-menu #toggle {
+  height: 28px;
+  padding: 0px;
+  opacity: 0.75;
+}
+
+.navbar-assignment-menu label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.navbar-assignment-menu li a {
+  display: block;
+  padding: 18px 18px;
+  text-align: left;
+  border-bottom:solid 1px #444;
+  color: #666;
+  text-decoration: none;
+}
+
+.navbar-assignment-menu li a:hover {
+  background-color: #e7e7e7;
+  text-decoration: none;
+  color: #666;
+}
+
+.navbar-assignment-menu li a .glyphicon {
+  margin-right: 20px;
+}
+
+.navbar-assignment-menu li a:hover .glyphicon {
+  color: steelblue;
+}

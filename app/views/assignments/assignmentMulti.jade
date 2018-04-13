@@ -1,13 +1,22 @@
 extends ../includes/boilerplate.jade
 block css
     link(rel='stylesheet', href='/css/assignment.css')
-    link(rel='stylesheet', href='/css/assignment-menu.css')
+    link(rel='stylesheet', href='/css/assignment-nav.css')
     link(rel='stylesheet', href='/components/css-toggle-switch/dist/toggle-switch.css')
 
 block content
-    include ../includes/header.jade
     div#fullContent
-      include ../includes/assignment-menu.jade
+      include ../includes/header.jade
+      include ../includes/assignment-nav.jade
+
+      if (assignmentTitle && assignmentTitle.length > 0)
+        h1.assignmentTitle #{assignmentTitle}
+      else
+        h1.assignmentTitle Assignment #{assignmentNumber}
+
+      if (assignmentDescription.length > 0)
+        div.assignmentDescription #{assignmentDescription}
+
       div#updateStatus
       div#assignmentCanvas(overflow='auto')
         -for (var i = 0; i < extent; i++) {

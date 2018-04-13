@@ -1,0 +1,33 @@
+.navbar.navbar-assignment
+  a.btn-expand-collapse(href="#")
+    span.glyphicon.glyphicon-menu-right
+  ul.navbar-assignment-menu
+    li
+      if (owner)
+          span.switch-toggle
+              input#public(type='radio', name='view',
+                  onclick='toggleShare(true)')
+              label(for='public') Public
+              input#private(type='radio', name='view',
+                  onclick='toggleShare(false)')
+              label(for='private') Private
+              a#toggle.btn.btn-primary
+
+        if (linkResources.script[0] == "/js/graph.js" || linkResources.script[0] == "/js/graph-canvas.js")
+          a#save(href="#")
+            span.glyphicon.glyphicon-save
+            span.nav-label  Save Node Positions
+
+      a#reset(href="#")
+        span.glyphicon.glyphicon-resize-full
+        span.nav-label Reset View
+
+      if (owner)
+        a#delete(href="#")
+          span.glyphicon.glyphicon-trash
+          span.nav-label Delete Assignment
+
+script.
+  $('.btn-expand-collapse').click(function(e) {
+      $('.navbar-assignment').toggleClass('collapsed');
+  });

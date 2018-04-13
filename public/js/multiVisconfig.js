@@ -94,13 +94,14 @@ for (var key in data) {
 
 // Reset positions and scales for all visualization divs
 function reset() {
+  d3.event.preventDefault();
   visualizations.forEach(function(d) {
     d.reset();
   });
 }
 
 function deleteAssignment() {
-
+  d3.event.preventDefault();
   var r = confirm("Are you sure you want to delete this assignment?");
   if (r === true) {
       // send delete request
@@ -116,7 +117,7 @@ function deleteAssignment() {
 
 // Asynchronously update the node positions
 function savePositions () {
-
+  d3.event.preventDefault();
   var updateTheseNodes = {};
 
   // store indices for all fixed nodes
