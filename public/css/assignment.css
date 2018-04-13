@@ -15,7 +15,7 @@ html, body {
     height: 600px;
     width: 93%;
     resize: both;
-    overflow: auto;
+    overflow: hidden;
 }
 .svg {
   width: 100%;
@@ -27,6 +27,7 @@ html, body {
     position: absolute;
     top: 10px;
     left: 0;
+    overflow:hidden;
 }
 
 #vis{
