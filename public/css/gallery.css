@@ -41,7 +41,7 @@ div.title {
 }
 
 .gallery_link_title {
-  font-size: 110%;
+  font-size: 90%;
 }
 
 .gallery_link_small {
@@ -52,7 +52,7 @@ div.title {
   margin-left: 15px;
   float: left;
   line-height: 1.7;
-  min-height: 200px;
+  min-height: 250px;
 }
 
 #welcome {

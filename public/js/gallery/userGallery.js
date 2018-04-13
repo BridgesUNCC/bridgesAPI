@@ -5,6 +5,7 @@ var galleryImages = d3.selectAll('.gallery_assignment_container');
 // on mouseover of an assignment, display a tooltip
 galleryImages.on('mouseover', function(d, i) {
   galleryImages
+    .transition().duration(50)
     .style('opacity', function(d, j) {
       return i == j ? 1 : 0.5;
     });
@@ -12,7 +13,7 @@ galleryImages.on('mouseover', function(d, i) {
 });
 
 galleryImages.on('mouseout', function(d, i) {
-  galleryImages.style("opacity", 1);
+  galleryImages.transition().duration(150).style("opacity", 1);
 });
 
 function displayDetails(assignment) {
@@ -26,7 +27,8 @@ function displayDetails(assignment) {
   text+= "<b>Date Created:</b> " + assignment.dateCreated  + "<br/>";
 
   d3.select('#gallery_fixed_tooltip')
+      .transition().duration(150)
       .style("opacity", 1)
-      .style('border-left', 'solid 2px steelblue')
-      .html(text);
+      .style('border-left', 'solid 2px steelblue');
+  d3.select('#gallery_fixed_tooltip').html(text);
 }
