@@ -2,8 +2,9 @@
   background-color: #f8f8f8;
   min-height:100%;
   right: 0px;
-  position: absolute;
-  top: 51px;
+  position: fixed;
+  top: 0px;
+  padding-top: 51px;
   max-width: 250px;
   z-index: 8;
   overflow: hidden;
@@ -21,15 +22,19 @@
   font-size: 22px;
 }
 
+.navbar-assignment.collapsed a {
+  max-height: 60px;
+}
+
 .navbar-assignment.collapsed .nav-label {
-  display: none;
+  max-width: 0px;
+  opacity: 0;
 }
 
 .navbar-assignment.collapsed .switch-toggle {
-  display: none;
+  opacity: 0;
+  visibility: hidden;
 }
-
-
 
 .btn-expand-collapse {
     position: relative;
@@ -37,7 +42,8 @@
     left: 0px;
     top:0px;
     width: 100%;
-    padding: 8px 0;
+    padding: 20px 0;
+    margin-bottom:15px;
     border-bottom:solid 1px #e7e7e7;
     color: grey;
     font-size: 20px;
@@ -51,7 +57,7 @@
 }
 
 .btn-expand-collapse:active {
-    background-color: #666;
+    background-color: #e7e7e7;
 }
 
 .navbar-assignment-menu,

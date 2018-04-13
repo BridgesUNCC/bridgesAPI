@@ -1,7 +1,7 @@
 (function() {
 
 // bind event handlers for ui
-// d3.selectAll(".minimize").on("click", minimize);
+d3.selectAll("#collapse").on("click", collapse);
 d3.select("#reset").on("click", reset);
 d3.select("#save").on("click", savePositions);
 d3.select("#delete").on("click", deleteAssignment);
@@ -90,6 +90,10 @@ for (var key in data) {
         visualizations.push(graph);
     }
   }
+}
+
+function collapse() {
+  d3.event.preventDefault();
 }
 
 // Reset positions and scales for all visualization divs
