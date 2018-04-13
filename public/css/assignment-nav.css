@@ -12,6 +12,7 @@
   -webkit-transition: all 0.1s ease-in-out;
   -moz-transition: all 0.1s ease-in-out;
   transition: all 0.1s ease-in-out;
+  border: solid 1px #e7e7e7;
 }
 
 .navbar-assignment.collapsed {

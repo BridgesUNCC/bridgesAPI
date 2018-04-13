@@ -13,10 +13,10 @@
               label(for='private') Private
               a#toggle.btn.btn-primary
 
-        if (linkResources.script[0] == "/js/graph.js" || linkResources.script[0] == "/js/graph-canvas.js")
-          a#save(href="#")
-            span.glyphicon.glyphicon-save
-            span.nav-label  Save Node Positions
+          if (linkResources.script[0] == "/js/graph.js" || linkResources.script[0] == "/js/graph-canvas.js")
+            a#save(href="#")
+              span.glyphicon.glyphicon-save
+              span.nav-label  Save Node Positions
 
       a#reset(href="#")
         span.glyphicon.glyphicon-resize-full
