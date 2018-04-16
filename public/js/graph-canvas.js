@@ -209,10 +209,13 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
 
     // draw text labels with line breaks
     function drawLinkText(d, anchor) {
-      if(BridgesVisualizer.tooltipEnabled || d.hovering) {
-        context.fillStyle = "black";
-        context.fillText(d.weight, anchor.x, anchor.y);
-        context.fillStyle = BridgesVisualizer.getColor(d.color);
+      if((BridgesVisualizer.tooltipEnabled || d.hovering) && d.label && d.label.length > 0 ) {
+        lines = d.label.split("\n");
+        lines.forEach(function(line, i) {
+          context.fillStyle = "black";
+          context.fillText(line, anchor.x, anchor.y+(i*10));
+          context.fillStyle = BridgesVisualizer.getColor(d.color);
+        });
       }
     }
 

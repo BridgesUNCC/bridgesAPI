@@ -145,10 +145,13 @@ d3.graph = function(svg, W, H, data) {
       .attr("y",  BridgesVisualizer.textOffsets.graph.y + 14)
       .style("color",'black')
       .style("pointer-events", "none")
+      .style("stroke-dasharray", "0,0")
       .style("opacity", 0.0)
       .text(function(d) {
           return d.name;
       });
+
+  d3.selectAll(".nodeLabel").each(BridgesVisualizer.insertLinebreaks);
 
   var linkG = svgGroup.selectAll(".link")
       .data(links.reverse())  // reverse to draw end markers over links
@@ -174,10 +177,14 @@ d3.graph = function(svg, W, H, data) {
             return d.dasharray || "";
         })
         .style("fill", "none")
-        .on("mouseover", function(d) {BridgesVisualizer.textMouseover("weight: " + d.weight); } )
+        .on("mouseover", function(d) {
+          if(d.label) {
+            BridgesVisualizer.textMouseover(d.label);
+          }
+        })
         .on("mouseout", BridgesVisualizer.textMouseout);
 
-  // append link weight labels
+  // append link labels
   linkG.append("svg:text")
     .append("textPath")
       .classed("linkLabel", true)
@@ -185,7 +192,9 @@ d3.graph = function(svg, W, H, data) {
       .style("display", function() {
         return !BridgesVisualizer.tooltipEnabled ? "block" : "none";
       })
-      .text(function(d,i) { return d.weight || ""; });
+      .text(function(d,i) { return d.label || ""; });
+
+    d3.selectAll(".linkLabel").each(BridgesVisualizer.insertLinkLinebreaks);
 
 
   function ticked() {
