@@ -64,8 +64,8 @@ for (var key in data) {
     }
     else if (data[key]['visType'] == "grid" && d3.grid) {
         vis = d3.select("#vis" + key).append("canvas")
-          .attr("id", "vis" + key);
-        d3.grid(vis, width, height, data[key]);
+          .attr("id", "canvas" + key);
+        d3.grid(vis, width, height, data[key], d3.select("#vis" + key));
     }
     else if (data[key]['visType'] == "nodelink" && d3.graph) {
         vis = d3.select("#vis" + key).append("svg")

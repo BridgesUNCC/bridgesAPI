@@ -13,7 +13,7 @@ html, body {
     margin-left:15px;
     margin-top:15px;
     height: 600px;
-    width: 93%;
+    max-width: 90%;
     resize: both;
     overflow: hidden;
 }
