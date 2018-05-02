@@ -5,6 +5,10 @@ d3.selectAll("#collapse").on("click", collapse);
 d3.select("#reset").on("click", reset);
 d3.select("#save").on("click", savePositions);
 d3.select("#delete").on("click", deleteAssignment);
+d3.select("#nodelabels").on("click", BridgesVisualizer.displayNodeLabels);
+d3.select("#linklabels").on("click", BridgesVisualizer.displayLinkLabels);
+
+
 
 var visualizations = [];
 

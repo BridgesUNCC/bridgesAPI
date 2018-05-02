@@ -81,6 +81,8 @@
 
   //this boolean is used to deactivate the tooltip when all labels are shown (key 'L')
   BridgesVisualizer.tooltipEnabled = true;
+  BridgesVisualizer.showingNodeLabels = false;
+  BridgesVisualizer.showingLinkLabels = false;
 
   BridgesVisualizer.centerTextHorizontallyInRect = function(obj, width){
       return (width - obj.getComputedTextLength()) / 2;
@@ -282,17 +284,30 @@
     }
   };
 
+  BridgesVisualizer.displayNodeLabels = function() {
+    if(!BridgesVisualizer.showingNodeLabels) {
+        d3.selectAll(".nodeLabel").style("display","block").style("opacity","1");
+        BridgesVisualizer.showingNodeLabels = true;
+    } else {
+        d3.selectAll(".nodeLabel").style("display","none").style("opacity","0");
+        BridgesVisualizer.showingNodeLabels = false;
+    }
+  };
+
+  BridgesVisualizer.displayLinkLabels = function() {
+    if(!BridgesVisualizer.showingLinkLabels) {
+        d3.selectAll(".linkLabel").style("display", "block");
+        BridgesVisualizer.showingLinkLabels = true;
+    } else {
+        d3.selectAll(".linkLabel").style("display", "none");
+        BridgesVisualizer.showingLinkLabels = false;
+    }
+  };
+
   $("body").on("keydown", function(event) {
       if(event.which == "76"){
-          if(BridgesVisualizer.tooltipEnabled) {
-              d3.selectAll(".nodeLabel").style("display","block").style("opacity","1");
-              d3.selectAll(".linkLabel").style("display", "block");
-              BridgesVisualizer.tooltipEnabled = false;
-          } else {
-              d3.selectAll(".nodeLabel").style("display","none").style("opacity","0");
-              d3.selectAll(".linkLabel").style("display", "none");
-              BridgesVisualizer.tooltipEnabled = true;
-          }
+        BridgesVisualizer.displayNodeLabels();
+        BridgesVisualizer.displayLinkLabels();
       }
   });
 

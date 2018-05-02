@@ -13,10 +13,21 @@
               label(for='private') Private
               a#toggle.btn.btn-primary
 
+
           if (linkResources.script[0] == "/js/graph.js" || linkResources.script[0] == "/js/graph-canvas.js")
             a#save(href="#")
               span.glyphicon.glyphicon-save
               span.nav-label  Save Node Positions
+
+      // if NOT grid or array type, give buttons to show labels
+      if(linkResources.script.indexOf('/js/grid.js') < 0 && linkResources.script.indexOf('/js/array/array.js') < 0 && linkResources.script.indexOf('/js/array/array2d.js') < 0 && linkResources.script.indexOf('/js/array/array3d.js') < 0)
+        a#nodelabels(href="#")
+          span.glyphicon.glyphicon-tag
+          span.nav-label Node Labels
+
+        a#linklabels(href="#")
+          span.glyphicon.glyphicon-tags
+          span.nav-label Link Labels
 
       a#reset(href="#")
         span.glyphicon.glyphicon-resize-full
