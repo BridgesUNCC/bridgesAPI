@@ -197,7 +197,7 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
 
     // draw text labels with line breaks
     function drawText(d) {
-      if(BridgesVisualizer.tooltipEnabled || d.hovering) {
+      if(BridgesVisualizer.showingNodeLabels || d.hovering) {
         lines = d.name.split("\n");
         lines.forEach(function(line, i) {
           context.fillStyle = "black";
@@ -209,7 +209,7 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
 
     // draw text labels with line breaks
     function drawLinkText(d, anchor) {
-      if((BridgesVisualizer.tooltipEnabled || d.hovering) && d.label && d.label.length > 0 ) {
+      if((BridgesVisualizer.showingLinkLabels || d.hovering) && d.label && d.label.length > 0 ) {
         lines = d.label.split("\n");
         lines.forEach(function(line, i) {
           context.fillStyle = "black";
