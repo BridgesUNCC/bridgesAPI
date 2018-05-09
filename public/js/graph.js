@@ -51,7 +51,7 @@ d3.graph = function(svg, W, H, data) {
     var selflinks = data.links.filter(function(d){
       return d.target == d.source;
     });
-    console.log(selflinks);
+    console.log(links, selflinks);
 
     var simulation = d3.forceSimulation(nodes)
       .force("link", d3.forceLink(links)
@@ -72,6 +72,48 @@ d3.graph = function(svg, W, H, data) {
 
   // Add marker defs to the svg element
   BridgesVisualizer.addMarkerDefs(vis);
+
+  if(selflinks.length > 0) {
+    var selfLinkG = svgGroup.selectAll(".selflink")
+      .data(selflinks.reverse())  // reverse to draw end markers over links
+      .enter().append("svg:g");
+      selfLinkG
+          .insert("svg:path")
+            .attr("class", "selflink")
+            .attr("id", function(d,i) { return "selflinkId_" + i; })
+            .style("stroke-width", function (d) {
+                return BridgesVisualizer.strokeWidthRange(d.thickness) || 1;
+            })
+            .style("stroke", function (d) {
+                return BridgesVisualizer.getColor(d.color) || "black";
+            })
+            .style("opacity", function(d) {
+                return d.opacity || 1;
+            })
+            .style("stroke-dasharray", function(d) {
+                return d.dasharray || "";
+            })
+            .style("fill", "none")
+            .on("mouseover", function(d) {
+              if(d.label) {
+                BridgesVisualizer.textMouseover(d.label);
+              }
+            })
+            .on("mouseout", BridgesVisualizer.textMouseout);
+
+      // append link labels
+      selfLinkG.append("svg:text")
+        .append("textPath")
+          .classed("selfLinkLabel", true)
+          .attr("xlink:href",function(d,i) { return "#selflinkId_" + i;})
+          .style("display", function() {
+            return !BridgesVisualizer.tooltipEnabled ? "block" : "none";
+          })
+          .attr("startOffset", "20%")
+          .text(function(d,i) { return d.label || ""; });
+
+        d3.selectAll(".selfLinkLabel").each(BridgesVisualizer.insertLinkLinebreaks);
+  }
 
   var linkG = svgGroup.selectAll(".link")
       .data(links.reverse())  // reverse to draw end markers over links
@@ -207,6 +249,27 @@ d3.graph = function(svg, W, H, data) {
           return "translate(" + d.x + "," + d.y + ")";
         });
 
+      if(selflinks.length > 0) {
+        selfLinkG.selectAll("path")
+            .attr("d", function(d) {
+              var node = nodes[d.source],
+                  x1 = node.x,
+                  y1 = node.y,
+                  x2 = x1 + 0.1,
+                  y2 = y1 + 0.1,
+                  dr = BridgesVisualizer.selfEdge(node.size),
+                  arc = 1,
+                  rotation = -45;
+
+              return "M" +
+                  (x1) + "," +
+                  (y1) + "A" +
+                  dr + "," + dr + " " + rotation + "," + arc + ",1 " +
+                  (x2) + "," +
+                  (y2);
+            });
+      }
+
       linkG.selectAll("path")
           .attr("d", function(d) {
               var x1 = d.source.x,
@@ -221,21 +284,6 @@ d3.graph = function(svg, W, H, data) {
                   d2 = dr - (d.target.size / BridgesVisualizer.shapeEdge(d.target.size)),
                   ratio = d2/dr;
 
-              // if(dr === 0) {  // self link?
-              //   dr = 10;
-              //   arc = 1;
-              //   rotation = -45;
-              //   x2 += 1;
-              //   y2 += 1;
-              //   r = d.target.size/1.5/dr;
-              // }
-
-              // return "M" +
-              //     (x1) + "," +
-              //     (y1) + "A" +
-              //     dr + "," + dr + " " + rotation + "," + arc + ",1 " +
-              //     (r*x1 + (1-r)*x2) + "," +
-              //     (r*y1 + (1-r)*y2);
               return "M" +
                   (x1) + "," +
                   (y1) + "A" +

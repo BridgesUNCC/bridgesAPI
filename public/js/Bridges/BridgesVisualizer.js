@@ -20,6 +20,7 @@
   //scale values between 1 and 100 to a reasonable range
   BridgesVisualizer.scaleSize = d3.scaleLinear().domain([1,50]).range([10,500]);
   BridgesVisualizer.shapeEdge = d3.scaleLinear().domain([1,50]).range([1,3.3]);
+  BridgesVisualizer.selfEdge = d3.scaleLinear().domain([1,50]).range([3,13]);
 
   // Define the div for the tooltip
   BridgesVisualizer.tooltip = d3.select("body").append("div")
@@ -298,9 +299,11 @@
   BridgesVisualizer.displayLinkLabels = function() {
     if(!BridgesVisualizer.showingLinkLabels) {
         d3.selectAll(".linkLabel").style("display", "block");
+        d3.selectAll(".selfLinkLabel").style("display", "block");
         BridgesVisualizer.showingLinkLabels = true;
     } else {
         d3.selectAll(".linkLabel").style("display", "none");
+        d3.selectAll(".selfLinkLabel").style("display", "none");
         BridgesVisualizer.showingLinkLabels = false;
     }
   };
