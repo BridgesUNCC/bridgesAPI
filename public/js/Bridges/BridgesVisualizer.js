@@ -294,6 +294,7 @@
         d3.selectAll(".nodeLabel").style("display","none").style("opacity","0");
         BridgesVisualizer.showingNodeLabels = false;
     }
+    BridgesVisualizer.redraw();
   };
 
   BridgesVisualizer.displayLinkLabels = function() {
@@ -305,6 +306,15 @@
         d3.selectAll(".linkLabel").style("display", "none");
         d3.selectAll(".selfLinkLabel").style("display", "none");
         BridgesVisualizer.showingLinkLabels = false;
+    }
+    BridgesVisualizer.redraw();
+  };
+
+  // trigger redrawing of visualizations where appropriate
+  BridgesVisualizer.redraw = function() {
+    for(var vis in this.visualizations) {
+      if(this.visualizations[vis].draw)
+        this.visualizations[vis].draw();
     }
   };
 

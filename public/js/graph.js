@@ -51,7 +51,6 @@ d3.graph = function(svg, W, H, data) {
     var selflinks = data.links.filter(function(d){
       return d.target == d.source;
     });
-    console.log(links, selflinks);
 
     var simulation = d3.forceSimulation(nodes)
       .force("link", d3.forceLink(links)

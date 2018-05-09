@@ -6,7 +6,8 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
         mw = 0, mh = 0,
         w = W || 1280,
         h = H || 800,
-        i = 0;
+        i = 0,
+        edgeLength = d3.scaleLinear().domain([1,1000]).range([100,250]);
 
     canvas.attr("width", w).attr("height", h);
 
@@ -34,6 +35,7 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
     // set fixed locations or projections where appropriate,
     //   set up symbol function
     nodes.forEach(function(d) {
+      d.degree = 0;
 
       d.symbol = d3.symbol()
           .type(BridgesVisualizer.shapeLookup(d.shape))
@@ -70,10 +72,16 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
       }
     });
 
-    var simulation = d3.forceSimulation()
-        .force("link", d3.forceLink()
+    links.forEach(function(d) {
+      nodes[d.target].degree++;
+    });
+
+    var simulation = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(links)
                           .id(function(d) { return d.index; })
-                          .distance(200))
+                          .distance(function(d) {
+                            return edgeLength(d.target.degree);
+                          }))
         .force("charge", d3.forceManyBody()
                           .strength(function(d) {
                             return -30 - (d.size * 5);
@@ -83,10 +91,8 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
                           .radius(function(d) {
                             return d.size || 10;
                           }))
-        .force("center", d3.forceCenter(BridgesVisualizer.visCenter()[0], BridgesVisualizer.visCenter()[1]));
-
-    simulation.nodes(nodes).on("tick", ticked);
-    simulation.force("link").links(links);
+        .force("center", d3.forceCenter(BridgesVisualizer.visCenter()[0], BridgesVisualizer.visCenter()[1]))
+        .on("tick", ticked);
 
     canvas.call(d3.drag()
             .subject(dragsubject)
@@ -135,10 +141,10 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
           midpoint = [(p1.x + p2.x)/2, (p1.y + p2.y)/2],
           dist = Math.sqrt(Math.pow(p2.y - p1.y, 2) + Math.pow(p2.x - p1.x, 2)),
           p3 = {},
-          length = 50;
+          length = 0.2;
 
-      p3.x = midpoint[0] + ((length / dist) * (p1.y - p2.y));
-      p3.y = midpoint[1] + ((length / dist) * (p1.x - p2.x));
+      p3.x = midpoint[0] + ((length) * (p1.y - p2.y));
+      p3.y = midpoint[1] - ((length) * (p1.x - p2.x));
 
       return p3;
     }
@@ -324,6 +330,9 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
 
     // Expose nodes to allow saving fixed positions
     graph.nodes = nodes;
+
+    // Expose tick method to allow redrawing in Bridges Visualizer
+    graph.draw = ticked;
 
     return graph;
 };

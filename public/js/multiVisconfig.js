@@ -10,7 +10,7 @@ d3.select("#linklabels").on("click", BridgesVisualizer.displayLinkLabels);
 
 
 
-var visualizations = [];
+BridgesVisualizer.visualizations = [];
 
 /* create new assignments  */
 for (var key in data) {
@@ -30,7 +30,7 @@ for (var key in data) {
           .attr("id", "vis" + key);
         bst = d3.bst(vis, width, height);
         bst.make(data[key]);
-        visualizations.push(bst);
+        BridgesVisualizer.visualizations.push(bst);
     }
     // else if(data[key]['visType'] == "dllist" && d3.dllist){
     //     d3.dllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key]), transform);
@@ -52,19 +52,19 @@ for (var key in data) {
           vis = d3.select("#vis" + key).append("svg")
             .attr("id", "vis" + key);
           array = d3.array(vis, width, height, data[key].nodes);
-          visualizations.push(array);
+          BridgesVisualizer.visualizations.push(array);
     }
     else if (data[key]['visType'] == "Array2D" && d3.array2d) {
           vis = d3.select("#vis" + key).append("svg")
             .attr("id", "vis" + key);
           array2d = d3.array2d(vis, width, height, data[key].nodes, data[key].dims);
-          visualizations.push(array2d);
+          BridgesVisualizer.visualizations.push(array2d);
     }
     else if (data[key]['visType'] == "Array3D" && d3.array3d) {
           vis = d3.select("#vis" + key).append("svg")
             .attr("id", "vis" + key);
           array3d = d3.array3d(vis, width, height, data[key].nodes, data[key].dims);
-          visualizations.push(array3d);
+          BridgesVisualizer.visualizations.push(array3d);
     }
     else if (data[key]['visType'] == "grid" && d3.grid) {
         vis = d3.select("#vis" + key).append("canvas")
@@ -75,7 +75,7 @@ for (var key in data) {
         vis = d3.select("#vis" + key).append("svg")
           .attr("id", "vis" + key);
         graph = d3.graph(vis, width, height, data[key]);
-        visualizations.push(graph);
+        BridgesVisualizer.visualizations.push(graph);
 
         // handle map overlay for subassignment if appropriate
         if(data[key].map_overlay) {
@@ -86,12 +86,12 @@ for (var key in data) {
         vis = d3.select("#vis" + key).append("canvas")
           .attr("id", "vis" + key);
         graph = d3.graph_canvas(vis, width, height, data[key]);
-        visualizations.push(graph);
+        BridgesVisualizer.visualizations.push(graph);
     }
     else {
         // console.log("unknown data type");
         graph = d3.graph(d3, "#vis" + key, width, height, data[key]);
-        visualizations.push(graph);
+        BridgesVisualizer.visualizations.push(graph);
     }
   }
 }
@@ -103,7 +103,7 @@ function collapse() {
 // Reset positions and scales for all visualization divs
 function reset() {
   d3.event.preventDefault();
-  visualizations.forEach(function(d) {
+  BridgesVisualizer.visualizations.forEach(function(d) {
     d.reset();
   });
 }
@@ -143,7 +143,7 @@ function savePositions () {
         else updateTheseNodes[key].unfixedNodes["n" + i] = true;
       });
     } else if(data.hasOwnProperty(key) && data[key].visType == "nodelink-canvas") {
-      visualizations[key].nodes.forEach(function(d, i) {
+      BridgesVisualizer.visualizations[key].nodes.forEach(function(d, i) {
         if(d.fx && d.fy) {
           updateTheseNodes[key].fixedNodes["n" + i] = {"x": d.fx, "y": d.fy};
         }
