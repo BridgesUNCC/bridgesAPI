@@ -135,11 +135,10 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
     }
 
     // get control point for quadratic curve link
-    function getControlPoint(d) {
-      var p1 = d.source,
-          p2 = d.target,
+    function getControlPoint(from, to) {
+      var p1 = from,
+          p2 = to,
           midpoint = [(p1.x + p2.x)/2, (p1.y + p2.y)/2],
-          dist = Math.sqrt(Math.pow(p2.y - p1.y, 2) + Math.pow(p2.x - p1.x, 2)),
           p3 = {},
           length = 0.2;
 
@@ -186,18 +185,28 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
     function drawCurvedLink(d) {
       if(d.source == d.target) return drawSelfLink(d);
 
+      var dx = d.target.x - d.source.x,
+          dy = d.target.y - d.source.y,
+          dist = Math.sqrt(dx * dx + dy * dy),
+          d2 = dist - (d.target.size / BridgesVisualizer.shapeEdge(d.target.size)),
+          ratio = d2/dist,
+          to = {x: d.source.x + (dx * ratio), y: d.source.y + (dy * ratio)};
+
       context.beginPath();
 
       context.strokeStyle = BridgesVisualizer.getColor(d.color);
+      context.fillStyle = BridgesVisualizer.getColor(d.color);
       context.lineWidth = BridgesVisualizer.strokeWidthRange(d.thickness);
       context.globalAlpha = d.opacity;
 
-      var ctrl = getControlPoint(d);
+      var ctrl = getControlPoint(d.source, to);
       context.moveTo(d.source.x, d.source.y);
-      context.quadraticCurveTo(ctrl.x, ctrl.y,d.target.x,d.target.y);
+      context.quadraticCurveTo(ctrl.x, ctrl.y,to.x,to.y);
       context.stroke();
 
       drawLinkText(d, getQuadraticCurvePoint(d.source.x, d.source.y, ctrl.x, ctrl.y, d.target.x, d.target.y, 0.5));
+
+      drawArrowhead(ctrl, to, Math.max(context.lineWidth, 3));
     }
 
     // draw each node
@@ -211,7 +220,7 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
       } else {
         context.setLineDash([]);
       }
-
+      context.lineWidth = 1;
       context.strokeStyle = "black";
       context.fillStyle = BridgesVisualizer.getColor(d.color);
       context.globalAlpha = d.opacity;
@@ -245,6 +254,39 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
           context.fillStyle = BridgesVisualizer.getColor(d.color);
         });
       }
+    }
+
+    function drawArrowhead(from, to, radius) {
+    	var x_center = to.x;
+    	var y_center = to.y;
+
+    	var angle;
+    	var x;
+    	var y;
+
+    	context.beginPath();
+
+    	angle = Math.atan2(to.y - from.y, to.x - from.x);
+    	x = radius * Math.cos(angle) + x_center;
+    	y = radius * Math.sin(angle) + y_center;
+
+    	context.moveTo(x, y);
+
+    	angle += (1.0/3.0) * (2 * Math.PI);
+    	x = radius * Math.cos(angle) + x_center;
+    	y = radius * Math.sin(angle) + y_center;
+
+    	context.lineTo(x, y);
+
+    	angle += (1.0/3.0) * (2 * Math.PI);
+    	x = radius *Math.cos(angle) + x_center;
+    	y = radius *Math.sin(angle) + y_center;
+
+    	context.lineTo(x, y);
+
+    	context.closePath();
+
+    	context.fill();
     }
 
     function zoomed(d) {
@@ -341,6 +383,7 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
         }
         n.hovering = false;
       }
+      ticked();
     }
 
     // Redraw graph if labels are toggled

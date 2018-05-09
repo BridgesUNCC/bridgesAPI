@@ -56,7 +56,7 @@ d3.graph = function(svg, W, H, data) {
       .force("link", d3.forceLink(links)
                         .id(function(d) { return d.index; })
                         .distance(function(d) {
-                          return 25 + links.length;
+                          return 40 + links.length;
                         }))
       .force("charge", d3.forceManyBody()
                         .strength(function(d) {
