@@ -45,45 +45,93 @@ d3.graph = function(svg, W, H, data) {
     svgGroup = vis.append("g").attr('transform', transform);
 
     var nodes = data.nodes;
-    var links = data.links;
+    var links = data.links.filter(function(d){
+      return d.target != d.source;
+    });
+    var selflinks = data.links.filter(function(d){
+      return d.target == d.source;
+    });
+    console.log(selflinks);
 
-  var simulation = d3.forceSimulation()
-      .force("link", d3.forceLink()
+    var simulation = d3.forceSimulation(nodes)
+      .force("link", d3.forceLink(links)
                         .id(function(d) { return d.index; })
-                        .distance(200))
+                        .distance(function(d) {
+                          return 25 + links.length;
+                        }))
       .force("charge", d3.forceManyBody()
                         .strength(function(d) {
-                          return -30 - (d.size * 5) ;
-                        })
-                        .distanceMax(500))
+                          return -30 - (d.size*5);
+                        }))
       .force("collision", d3.forceCollide()
                         .radius(function(d) {
                           return d.size || 10;
                         }))
-      .force("center", d3.forceCenter(BridgesVisualizer.visCenter()[0], BridgesVisualizer.visCenter()[1]));
-
-  simulation.nodes(nodes).on("tick", ticked);
-  simulation.force("link").links(links);
+      .force("center", d3.forceCenter(BridgesVisualizer.visCenter()[0], BridgesVisualizer.visCenter()[1]))
+      .on("tick", ticked);
 
   // Add marker defs to the svg element
   BridgesVisualizer.addMarkerDefs(vis);
 
-  //outer node
-  var node = svgGroup.selectAll(".node")
-      .data(nodes)
-      .enter().append("g")
-      .on("mouseover", function(d) {BridgesVisualizer.textMouseover(d.name); } )
-      .on("mouseout", BridgesVisualizer.textMouseout)
-      .on("dblclick", dblclick)
-      .call(d3.drag()
-       .on("start", dragstart)
-       .on("drag", dragged)
-       .on("end", dragended))
-      .style("stroke", "black")
-      .style("stroke-width", "1")
-      .style("stroke-dasharray", function(d) {
-          return d.fixed ? BridgesVisualizer.treeDashArray : "0,0";
-      });
+  var linkG = svgGroup.selectAll(".link")
+      .data(links.reverse())  // reverse to draw end markers over links
+      .enter().append("svg:g");
+  linkG
+      .insert("svg:path")
+        .attr("class", "link")
+        .attr("id", function(d,i) { return "linkId_" + i; })
+        .attr("marker-end", "url(#marker_arrow)")
+        // .attr("marker-end", function(d) {  // modify this for programmatic arrow points
+        //   return BridgesVisualizer.marker(vis, (BridgesVisualizer.getColor(d.color) || "black"), {});
+        // })
+        .style("stroke-width", function (d) {
+            return BridgesVisualizer.strokeWidthRange(d.thickness) || 1;
+        })
+        .style("stroke", function (d) {
+            return BridgesVisualizer.getColor(d.color) || "black";
+        })
+        .style("opacity", function(d) {
+            return d.opacity || 1;
+        })
+        .style("stroke-dasharray", function(d) {
+            return d.dasharray || "";
+        })
+        .style("fill", "none")
+        .on("mouseover", function(d) {
+          if(d.label) {
+            BridgesVisualizer.textMouseover(d.label);
+          }
+        })
+        .on("mouseout", BridgesVisualizer.textMouseout);
+
+  // append link labels
+  linkG.append("svg:text")
+    .append("textPath")
+      .classed("linkLabel", true)
+      .attr("xlink:href",function(d,i) { return "#linkId_" + i;})
+      .style("display", function() {
+        return !BridgesVisualizer.tooltipEnabled ? "block" : "none";
+      })
+      .text(function(d,i) { return d.label || ""; });
+
+    d3.selectAll(".linkLabel").each(BridgesVisualizer.insertLinkLinebreaks);
+
+    //outer node
+    var node = svgGroup.selectAll(".node")
+        .data(nodes)
+        .enter().append("g")
+        .on("mouseover", function(d) {BridgesVisualizer.textMouseover(d.name); } )
+        .on("mouseout", BridgesVisualizer.textMouseout)
+        .on("dblclick", dblclick)
+        .call(d3.drag()
+         .on("start", dragstart)
+         .on("drag", dragged)
+         .on("end", dragended))
+        .style("stroke", "black")
+        .style("stroke-width", "1")
+        .style("stroke-dasharray", function(d) {
+            return d.fixed ? BridgesVisualizer.treeDashArray : "0,0";
+        });
 
   //inner nodes
   node
@@ -153,50 +201,6 @@ d3.graph = function(svg, W, H, data) {
 
   d3.selectAll(".nodeLabel").each(BridgesVisualizer.insertLinebreaks);
 
-  var linkG = svgGroup.selectAll(".link")
-      .data(links.reverse())  // reverse to draw end markers over links
-      .enter().append("svg:g");
-  linkG
-      .insert("svg:path")
-        .attr("class", "link")
-        .attr("id", function(d,i) { return "linkId_" + i; })
-        .attr("marker-end", "url(#marker_arrow)")
-        // .attr("marker-end", function(d) {  // modify this for programmatic arrow points
-        //   return BridgesVisualizer.marker(vis, (BridgesVisualizer.getColor(d.color) || "black"), {});
-        // })
-        .style("stroke-width", function (d) {
-            return BridgesVisualizer.strokeWidthRange(d.thickness) || 1;
-        })
-        .style("stroke", function (d) {
-            return BridgesVisualizer.getColor(d.color) || "black";
-        })
-        .style("opacity", function(d) {
-            return d.opacity || 1;
-        })
-        .style("stroke-dasharray", function(d) {
-            return d.dasharray || "";
-        })
-        .style("fill", "none")
-        .on("mouseover", function(d) {
-          if(d.label) {
-            BridgesVisualizer.textMouseover(d.label);
-          }
-        })
-        .on("mouseout", BridgesVisualizer.textMouseout);
-
-  // append link labels
-  linkG.append("svg:text")
-    .append("textPath")
-      .classed("linkLabel", true)
-      .attr("xlink:href",function(d,i) { return "#linkId_" + i;})
-      .style("display", function() {
-        return !BridgesVisualizer.tooltipEnabled ? "block" : "none";
-      })
-      .text(function(d,i) { return d.label || ""; });
-
-    d3.selectAll(".linkLabel").each(BridgesVisualizer.insertLinkLinebreaks);
-
-
   function ticked() {
       node
         .attr("transform", function(d, i) {
@@ -204,20 +208,40 @@ d3.graph = function(svg, W, H, data) {
         });
 
       linkG.selectAll("path")
-          .each(function(d) {
-
-          })
           .attr("d", function(d) {
-              var dx = d.target.x - d.source.x,
-                  dy = d.target.y - d.source.y,
-                  dr = Math.sqrt(dx * dx + dy * dy);
+              var x1 = d.source.x,
+                  y1 = d.source.y,
+                  x2 = d.target.x,
+                  y2 = d.target.y,
+                  dx = x2 - x1,
+                  dy = y2 - y1,
+                  dr = Math.sqrt(dx * dx + dy * dy),
+                  arc = 0,
+                  rotation = 0,
+                  d2 = dr - (d.target.size / BridgesVisualizer.shapeEdge(d.target.size)),
+                  ratio = d2/dr;
 
+              // if(dr === 0) {  // self link?
+              //   dr = 10;
+              //   arc = 1;
+              //   rotation = -45;
+              //   x2 += 1;
+              //   y2 += 1;
+              //   r = d.target.size/1.5/dr;
+              // }
+
+              // return "M" +
+              //     (x1) + "," +
+              //     (y1) + "A" +
+              //     dr + "," + dr + " " + rotation + "," + arc + ",1 " +
+              //     (r*x1 + (1-r)*x2) + "," +
+              //     (r*y1 + (1-r)*y2);
               return "M" +
-                  d.source.x + "," +
-                  d.source.y + "A" +
-                  dr + "," + dr + " 0 0,1 " +
-                  d.target.x + "," +
-                  d.target.y;
+                  (x1) + "," +
+                  (y1) + "A" +
+                  dr + "," + dr + " " + rotation + "," + arc + ",1 " +
+                  (x1 + (dx * ratio)) + "," +
+                  (y1 + (dy * ratio));
           });
 
       // adjust the weight label positioning along links
