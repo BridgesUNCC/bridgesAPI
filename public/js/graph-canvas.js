@@ -162,8 +162,30 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
         };
     }
 
+    // draw a curved self link at the given node
+    function drawSelfLink(d) {
+      context.beginPath();
+
+      context.strokeStyle = BridgesVisualizer.getColor(d.color);
+      context.lineWidth = BridgesVisualizer.strokeWidthRange(d.thickness);
+      context.globalAlpha = d.opacity;
+
+      var ctrl1 = {x: d.source.x,
+                  y: d.source.y - 8*BridgesVisualizer.selfEdge(d.source.size)};
+      var ctrl2 = {x: d.source.x + 8*BridgesVisualizer.selfEdge(d.source.size),
+                  y: d.source.y};
+
+      context.moveTo(d.source.x, d.source.y);
+      context.bezierCurveTo(ctrl1.x, ctrl1.y, ctrl2.x, ctrl2.y, d.target.x,d.target.y);
+      context.stroke();
+
+      drawLinkText(d, getQuadraticCurvePoint(d.source.x, d.source.y, ctrl2.x, ctrl1.y, d.target.x, d.target.y, 0.5));
+    }
+
     // draw a curved line between source and target nodes
     function drawCurvedLink(d) {
+      if(d.source == d.target) return drawSelfLink(d);
+
       context.beginPath();
 
       context.strokeStyle = BridgesVisualizer.getColor(d.color);
