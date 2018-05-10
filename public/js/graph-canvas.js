@@ -383,7 +383,6 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
         }
         n.hovering = false;
       }
-      ticked();
     }
 
     // Redraw graph if labels are toggled
