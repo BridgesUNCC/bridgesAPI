@@ -48,11 +48,15 @@ div.title {
   font-size: 70%;
 }
 
+.affix {
+    top:150px;
+    position:fixed;
+}
+
 #gallery_fixed_tooltip {
   margin-left: 15px;
   float: left;
   line-height: 1.7;
-  min-height: 250px;
 }
 
 #welcome {

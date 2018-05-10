@@ -13,7 +13,7 @@ block content
         div.title
             h1(style="text-align: left") #{usernames}'s Gallery
 
-    div.col-lg-2.col-md-2.col-sm-12.col-xs-12#gallery_fixed_tooltip
+    div.col-lg-2.col-md-2.col-sm-12.col-xs-12.affix#gallery_fixed_tooltip
 
     -if(assignments.length == 0)
         .col-lg-6.text-center#welcome
@@ -24,7 +24,7 @@ block content
           p
             a(href='https://bridgesdata.herokuapp.com' target='_blank') Bridges Datasources
 
-    .container.col-lg-8.col-md-8.col-sm-12.col-xs-12
+    .container.col-lg-8.col-lg-offset-2.col-md-8.col-md-offset-2.col-sm-12.col-xs-12
       - for (var x = 0; x < assignments.length; x++)
           .col-md-2.col-sm-4.col-xs-4.gallery_assignment_container
             a(href='/assignments/'+assignments[x].assignmentNumber+'/'+usernames)
