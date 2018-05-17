@@ -2,12 +2,11 @@
 var express = require('express'),
     fs = require('fs'),
     passport = require('passport'),
-    config = require('./config/config'),
-    thumb = require('./config/thumb.js');
+    config = require('./config/config');
 
 //Set up database
 var mongoose = require('mongoose');
-mongoose.connect(config.db, { useMongoClient: true });
+mongoose.connect(config.db);
 mongoose.Promise = global.Promise;
 
 var db = mongoose.connection;

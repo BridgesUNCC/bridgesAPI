@@ -35,11 +35,12 @@ var initGallery = function(data) {
       .classed("assignment-image", true)
     .append('img')
       .attr('class', 'picture')
+      .classed("visimg", true)
       .attr('src', function(d) {
-        if(d.vistype == "nodelink")
-            return '/img/graph.png';
-        else if(d.vistype == "Alist")
+        if(d.vistype == "Alist")
             return '/img/array.png';
+        else if(d.data[0] && d.data[0].visual.indexOf("Graph") >= 0)
+            return '/img/graph.png';
         else
             return '/img/'+d.vistype.toLowerCase()+'.png';
 

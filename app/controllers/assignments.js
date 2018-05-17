@@ -51,8 +51,7 @@ exports.saveSnapshot = function(req, res, next) {
 //API route for uploading assignment data. If the
 //assignment already exists it will be replaced.
 exports.upload = function (req, res, next) {
-
-    // C++ version posts JSON as object, JAVA posts as plain string
+    // C++ version posts JSON as object, JAVA and Python post as plain string
     if(typeof req.body != "object") {
         try { rawBody = JSON.parse(req.body); } // try parsing to object
         catch (e) {
@@ -65,7 +64,6 @@ exports.upload = function (req, res, next) {
     } else {  // object already
         rawBody = req.body;
     }
-
 
     // Handle assignment number
     var assignmentID = req.params.assignmentID;
@@ -120,6 +118,7 @@ exports.upload = function (req, res, next) {
         assignment.description = description;
       }
 
+      assignment.username = user.username;
       assignment.email = user.email;
       assignment.vistype = visualizationType;
       assignment.data = rawBody;
@@ -146,6 +145,54 @@ exports.upload = function (req, res, next) {
 };
 
 exports.next = null;
+
+/*
+  Get the raw JSON for an assignment
+*/
+exports.getJSON = function (req, res, next) {
+    this.next = next;
+    var assignmentRaw = req.params.assignmentNumber.split('.'),
+        username = req.params.username,
+        sessionUser = null,
+        assignmentNumber = assignmentRaw[0],
+        subAssignmentNumber = "00";
+
+    // if subassignment specified
+    if(assignmentRaw.length > 1) {
+      subAssignmentNumber = assignmentRaw[1];
+      if (subAssignmentNumber == "0") subAssignmentNumber = "00";
+    }
+    
+    if (typeof req.user != "undefined") sessionUser = req.user;
+
+    User
+        .findOne( { username: username } )
+        .exec( function( err, usr ){
+            if (err) return next(err);
+            if (!usr)
+                return next("couldn't find the username \'" + username + "\'");
+
+            Assignment.findOne({
+                email: usr.email,
+                assignmentNumber: assignmentNumber,
+                subAssignment: subAssignmentNumber
+            }, {
+              "__v": 0,
+              "_id": 0
+            })
+            .exec( function( err, assignment){
+              if (err) return next(err);
+              if (!assignment)
+                  return next("can not find assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'");
+
+              // return the found assignment if it's public or owned by the request
+              if(assignment.shared || (sessionUser && (assignment.email == sessionUser.email)))
+                return res.json( 200, { "assignmentJSON": assignment } );
+
+              return next("can not find public assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'");
+            });
+        });
+};
 
 exports.show = function (req, res, next) {
     this.next = next;
@@ -255,6 +302,7 @@ exports.show = function (req, res, next) {
 
     function renderMultiVis (res, assignments) {
         var owner=false,
+            map=false,
             allAssigns = {},
             assignmentTypes = {},
             linkResources = {"script":[], "css":[]};
@@ -281,7 +329,17 @@ exports.show = function (req, res, next) {
 
         /* parse and store all subassignments */
         for(var i = 0; i < assignments.length; i++) {
+          try{
             data = assignments[i].data.toObject()[0];
+          } catch(err) {
+            console.log("Error getting data object");
+            return next(err);
+          }
+
+          if(data === null) {
+            console.log("Erroneous data");
+            return next("Erroneous data");
+          }
 
             // Client should send trees as hierarchical representation now..
             // This captures the data from the OLD flat tree representation
@@ -293,10 +351,15 @@ exports.show = function (req, res, next) {
             if("nodes" in data && "children" in data.nodes) {
               var tempVisual = data.visual;
               data = data.nodes;
-              data['visual'] = tempVisual;
+              data.visual = tempVisual;
             }
 
-            data['visType'] = visTypes.getVisType(data.visual);
+            data.visType = visTypes.getVisType(data.visual);
+
+            if(data.visType == "nodelink" && data.nodes.length > 100) {
+              data.visType = "nodelink-canvas";
+              linkResources.script.push('/js/graph-canvas.js');
+            }
 
             // add new resource info
             if(!assignmentTypes[data['visType']]){
@@ -309,25 +372,27 @@ exports.show = function (req, res, next) {
                 }
             }
 
+            if(data.map_overlay) {
+              map = true;
+              linkResources.script.push('/js/map.js');
+              linkResources.script.push('https://d3js.org/topojson.v1.min.js');
+              linkResources.css.push('/css/map.css');
+            }
 
             allAssigns[i] = data;
-
         }
 
-        // console.log(Array.isArray(toInclude));
-
-        // console.log(finalVistype);
+        sessionUser = sessionUser ? {"username": sessionUser.username, "email": sessionUser.email} : null;
 
         return res.render ('assignments/assignmentMulti', {
             "title":"Assignment " + assignmentNumber,
             "assignmentTitle": assignments[0].title,
             "assignmentDescription": assignments[0].description.replace("\"", ""),
-            "user":sessionUser,
-            "data":allAssigns,
+            "user": sessionUser,
+            "data": allAssigns,
+            "map": map,
             "extent":Object.keys(allAssigns).length,
             "assignmentNumber":assignmentNumber,
-            "schoolID":assignments[0].schoolID,
-            "classID":assignments[0].classID,
             "linkResources":linkResources,
             "shared":assignments[0].shared,
             "owner":owner
@@ -376,16 +441,16 @@ exports.savePositions = function(req, res) {
                 n = +j.slice(1);
                 // set the relevant nodes to be fixed
                 assign[i].data[0].nodes[n].fixed = true;
-                assign[i].data[0].nodes[n].x = +req.body[i].fixedNodes[j].x;
-                assign[i].data[0].nodes[n].y = +req.body[i].fixedNodes[j].y;
+                assign[i].data[0].nodes[n].fx = +req.body[i].fixedNodes[j].x;
+                assign[i].data[0].nodes[n].fy = +req.body[i].fixedNodes[j].y;
                 delete assign[i].data[0].nodes[n].location;
               }
               // update all unfixed nodes
               for(var j in req.body[i].unfixedNodes) {
                 n = +j.slice(1);
                 delete assign[i].data[0].nodes[n].fixed;
-                delete assign[i].data[0].nodes[n].x;
-                delete assign[i].data[0].nodes[n].y;
+                delete assign[i].data[0].nodes[n].fx;
+                delete assign[i].data[0].nodes[n].fy;
                 delete assign[i].data[0].nodes[n].location;
               }
               // save the updated data

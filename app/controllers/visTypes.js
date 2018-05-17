@@ -10,12 +10,12 @@ exports.getVisType = function(toCheck) {
     "LinkedListStack": 						"nodelink",
     "LinkedListQueue": 						"nodelink",
 
-    "SinglyLinkedList":						"llist",
-    "llist":           						"llist",
-    "DoublyLinkedList":						"dllist",
-    "dllist":          						"dllist",
-    "CircularSinglyLinkedList": 	"cllist",
-    "CircularDoublyLinkedList": 	"cdllist",
+    "SinglyLinkedList":						"nodelink",//"llist",
+    "llist":           						"nodelink",//"llist",
+    "DoublyLinkedList":						"nodelink",//"dllist",
+    "dllist":          						"nodelink",//"dllist",
+    "CircularSinglyLinkedList": 	"nodelink",//"cllist",
+    "CircularDoublyLinkedList": 	"nodelink",//"cdllist",
 
     "tree":            						"tree",
     "Tree":            						"tree",
@@ -24,7 +24,9 @@ exports.getVisType = function(toCheck) {
     "AVLTree":         						"tree",
 
     "GraphAdjacencyList":  				"nodelink",
-    "GraphAdjacencyMatrix":				"nodelink"
+    "GraphAdjacencyMatrix":				"nodelink",
+
+    "ColorGrid":                  "grid"
   };
     if( toCheck && validTypes[toCheck] )
       return validTypes[toCheck];
@@ -49,20 +51,81 @@ var checkIfHasDims = function (data){
 
 exports.getVisTypeObject = function(data) {
   var validTypes = {
-      "nodelink":   {"vistype":"nodelink",   "script":"/js/graph.js",          "link":""                  	},
-          "tree":   {"vistype":"tree",       "script":"/js/tree/lib/bst.js",   "link":"/css/vis/tree.css" 	},
-         "queue":   {"vistype":"queue",      "script":"/js/queue.js",          "link":""                  	},
-         "Alist":   {"vistype":"Alist",      "script":"/js/array/array.js",    "link":""						        },
-       "Array2D":   {"vistype":"Array2D",    "script":"/js/array/array2d.js",  "link":""					         	},
-       "Array3D":   {"vistype":"Array3D",    "script":"/js/array/array3d.js",  "link":""					         	},
-      //    "llist":   {"vistype":"llist",      "script":"/js/list/llist.js",     "link":""				        		},
-      //   "dllist":   {"vistype":"dllist",     "script":"/js/list/dllist.js",    "link":""				        		},
-      //   "cllist":   {"vistype":"cllist",     "script":"/js/list/cllist.js",    "link":""				        		},
-      //  "cdllist":   {"vistype":"cdllist",    "script":"/js/list/cdllist.js",   "link":""				        		}
-        "llist":   {"vistype":"llist",      "script":"/js/graph.js",          "link":""				        		},
-       "dllist":   {"vistype":"dllist",     "script":"/js/graph.js",          "link":""				        		},
-       "cllist":   {"vistype":"cllist",     "script":"/js/graph.js",          "link":""				        		},
-      "cdllist":   {"vistype":"cdllist",    "script":"/js/graph.js",          "link":""				        		},
+      "nodelink": {
+        "vistype":"nodelink",
+        "script":"/js/graph.js",
+        "link":""
+      },
+      "grid": {
+        "vistype":"grid",
+        "script":"/js/grid.js",
+        "link":""
+      },
+      "tree": {
+        "vistype":"tree",
+        "script":"/js/tree/lib/bst.js",
+        "link":"/css/vis/tree.css"
+      },
+      "queue": {
+        "vistype":"queue",
+        "script":"/js/queue.js",
+        "link":""
+      },
+      "Alist": {
+        "vistype":"Alist",
+        "script":"/js/array/array.js",
+        "link":""
+      },
+      "Array2D": {
+        "vistype":"Array2D",
+        "script":"/js/array/array2d.js",
+        "link":""
+      },
+      "Array3D": {
+        "vistype":"Array3D",
+        "script":"/js/array/array3d.js",
+        "link":""
+      },
+      // "llist": {
+      //   "vistype":"llist",
+      //   "script":"/js/list/llist.js",
+      //   "link":""
+      // },
+      // "dllist": {
+      //   "vistype":"dllist",
+      //   "script":"/js/list/dllist.js",
+      //   "link":""
+      // },
+      // "cllist": {
+      //   "vistype":"cllist",
+      //   "script":"/js/list/cllist.js",
+      //   "link":""
+      // },
+      // "cdllist": {
+      //   "vistype":"cdllist",
+      //   "script":"/js/list/cdllist.js",
+      //   "link":""
+      // },
+      "llist": {
+        "vistype":"nodelink",
+        "script":"/js/graph.js",
+        "link":""
+      },
+      "dllist": {
+        "vistype":"nodelink",
+        "script":"/js/graph.js",
+        "link":""
+      },
+      "cllist": {
+        "vistype":"nodelink",
+        "script":"/js/graph.js",
+        "link":""
+      },
+      "cdllist": {
+        "vistype":"nodelink",
+        "script":"/js/graph.js",
+        "link":""
+      }
     };
 
     if(data.visType == "Alist")

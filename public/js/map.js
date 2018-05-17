@@ -1,5 +1,4 @@
-var map = function(svg, overlay) {
-  svg = d3.select("#" + svg);
+BridgesVisualizer.map = function(svg, overlay) {
 
   /*
     D3's albersUsa overlay and projection - USA with Alaska and Hawaii to the south west
@@ -7,21 +6,21 @@ var map = function(svg, overlay) {
   var albersUsa = function() {
     d3.json("/geoJSON/us-10m.v1.json", function(error, us) {
       if (error) throw error;
-      var states = svg.select("g")
+      path = d3.geoPath();
+
+      var projection = d3.geoAlbersUsa();
+
+      var path = d3.geoPath()
+          .projection(projection);
+
+      states = svg.select("g")
         .append("g")
-          .attr("id","map_overlay")
-        .selectAll("states")
-        .data(topojson.feature(us, us.objects.states).features)
-        .enter().insert("path", ".graticule")
-                  .attr("class", "states")
-                  .attr("d", d3.geo.path())
-                  .on('mouseover', function(d) {
-                    d3.select(this).style('opacity', 0.3);
-                    console.log(d);
-                  })
-                  .on('mouseout', function(d) {
-                    d3.select(this).style('opacity', 1);
-                  });
+          .attr("id","map_overlay");
+
+      states.insert("path", ".graticule")
+          .datum(topojson.feature(us, us.objects.states))
+          .attr("class", "land")
+          .attr("d", path);
 
       // Send the overlay to the back to catch mouse events
       svg.select("g").selectAll("#map_overlay").moveToBack();
@@ -35,9 +34,9 @@ var map = function(svg, overlay) {
     d3.json("/geoJSON/world-50m.json", function(error, world) {
       if (error) throw error;
 
-      var projection = d3.geo.equirectangular();
+      var projection = d3.geoEquirectangular();
 
-      var path = d3.geo.path()
+      var path = d3.geoPath()
           .projection(projection);
 
       countries = svg.select("g")

@@ -1,53 +1,5 @@
 module.exports = function(app, passport, streamable) {
 
-    /**
-     *  isPublic - allows public access to public assignments
-     *  @req - requests
-     *  @res - response
-     *  @next - passing controller to the next handler
-     */
-    var isPublic = function(req, res, next){
-        var mongoose = require('mongoose'),
-        Assignment = mongoose.model('Assignment'),
-        User = mongoose.model('User');
-        var a_user = false;
-
-        User
-            .findOne({
-                     username: req.params.username
-                     })
-            .exec(function(err, user_local) {
-                    if (err)
-                        return next();
-                    if (!user_local)
-                        return next("there is no user with the username: " + req.params.username);
-                  //authenticated
-                    if (req.isAuthenticated()) {
-                        a_user = true;
-                    }
-                  });
-
-
-
-        Assignment
-            .findOne({
-                     assignmentID: req.params.assignmentID
-                     })
-            .exec(function(err, assig){
-                  //return res.send(a_user)
-                  if (!assig)
-                      return next("there is no assignment with this id");
-                  else if (assig & a_user)
-                    return next();
-                  else if (assig.shared)
-                      return next();
-                  else if (!assig.shared & !a_user)
-                        return next("the assignment is private");
-                  else return next();
-                //res.send(assig.shared)
-                  });
-    };
-
     //Allows users to by pass authentication to api requests
     //if they have a valid api key.
     var hasAccess = function(req, res, next) {
@@ -77,10 +29,7 @@ module.exports = function(app, passport, streamable) {
 
     //authentication
     var isLoggedIn = function(req, res, next) {
-
         if (req.isAuthenticated()){
-            //res.redirect("/username/"+req.user.username)
-            //res.redirect("/home/")
             return next();
         }
         res.redirect("/login");
@@ -89,18 +38,17 @@ module.exports = function(app, passport, streamable) {
     var isLoggedInGallery = function(req, res, next) {
         if (req.isAuthenticated()){
             return res.redirect("/username/"+req.user.username);
-            //res.redirect("/home/")
-            //return next()
         }
         res.redirect("/login");
     };
 
     var handleError = function(err, req, res, next) {
+
         //if provided an object
         if (err.err) return errObj(err);
 
         //else provided a string
-        return res.json(503, {
+        return res.json(500, {
             "error": err
         });
 
@@ -110,7 +58,7 @@ module.exports = function(app, passport, streamable) {
             if (err.tip) msg.tip = err.tip;
             if (err.err) msg.error = err.err;
 
-            return res.json(503, msg);
+            return res.json(500, msg);
         }
     };
 
@@ -121,10 +69,16 @@ module.exports = function(app, passport, streamable) {
     // -------------------------------------------------------
     var users = require('../app/controllers/users');
 
+    /* Render the BRIDGES homepage, checking for user session */
     app.get('/', users.index);
 
+    /* Send the signup page */
     app.get('/signup', users.signup, handleError);
+
+    /* Creating a new user */
     app.post('/users', users.create, handleError);
+
+    /* Render the login page */
     app.get('/login', users.login, handleError);
 
     // allow user to request a password reset email
@@ -139,16 +93,23 @@ module.exports = function(app, passport, streamable) {
     // reset a user's password
     app.post('/reset/:token', users.resetPassword, handleError);
 
-    app.get('/home', isLoggedIn, users.display, handleError);
+    /* User's personal profile */
     app.get('/profile', isLoggedIn, users.profile, handleError);
-    app.get('/username', isLoggedInGallery, users.display, handleError);  //Login
-    app.get('/home/:username', isLoggedIn, users.display, handleError);
+
+    /* User's personal gallery; requires log in */
+    app.get('/username', isLoggedInGallery, users.profile, handleError);
 
     app.delete('/users/:id', isLoggedIn, users.deletePerson);
     app.get('/users/apikey', users.getkey, handleError);
     app.get('/logout', users.logout);
 
-
+    /* Set up a user session on login */
+    app.post('/users/session',
+        passport.authenticate('local-log', {
+            successRedirect: '/username/',
+            failureRedirect: '/login',
+            failureFlash: true
+        }));
 
     // -------------------------------------------------------
     //
@@ -171,22 +132,27 @@ module.exports = function(app, passport, streamable) {
     // -------------------------------------------------------
     var assignments = require('../app/controllers/assignments.js');
 
+    /* Upload an assignment */
     app.post('/assignments/:assignmentID',
         hasAccess, assignments.upload, handleError);
+
+    /* Toggle assignment publicity */
     app.post('/assignments/:assignmentNumber/share/:value',
         hasAccess, assignments.updateVisibility, handleError);
-
 
     //app.get('/assignments/:assignmentID/:username',
     //         isPublic, assignments.show, handleError)
 
-    app.post('assignments/:assignmentNumber/saveSnapshot/', //allows user to save a snapshot of the positions of a graph.
+    /* Allow user to save a snapshot of the positions of a graph */
+    app.post('assignments/:assignmentNumber/saveSnapshot/',
               hasAccess, assignments.saveSnapshot, handleError);
 
     app.get('/assignments/:assignmentNumber/:username',
               assignments.show, handleError);
     app.get('/assignmentByEmail/:assignmentID/:email',
               assignments.assignmentByEmail, handleError);
+    app.get('/assignmentJSON/:assignmentNumber/:username',
+              assignments.getJSON, handleError);
 
     // update the assignment specified for the current user
     //  save the positions of any fixed nodes
@@ -209,17 +175,12 @@ module.exports = function(app, passport, streamable) {
     var userGallery = require('../app/controllers/userGallery.js');  // Private user gallery
 
     app.get('/assignments/:assignmentNumber', gallery.view, handleError);
-    app.get('/username/:userNameRes', isLoggedIn, userGallery.view, handleError);
+
+    /* User's gallery; does not require log in */
+    app.get('/username/:userNameRes', userGallery.view, handleError);
 
     // get the k most recent assignments
     app.get('/index/recentUploads', gallery.recentUploads, handleError);
-
-    app.post('/users/session',
-        passport.authenticate('local-log', {
-            successRedirect: '/username/',
-            failureRedirect: '/login',
-            failureFlash: true
-        }));
 
     // -------------------------------------------------------
     //

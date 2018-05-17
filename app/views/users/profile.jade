@@ -3,7 +3,6 @@ extends layout
 block css
     link(rel="stylesheet", href="/css/webicons/webicons.css")
     link(rel="stylesheet", href="/css/inactive.css")
-    link(rel='stylesheet', href='/css/header.css')
 
  block js
     script(src="components/modernizr/modernizr.js")
@@ -12,7 +11,7 @@ block css
     script.
         name="#{user.username}";
         function checkUser(value) {
-            var btn = document.getElementById("submit")
+            var btn = document.getElementById("submitDelete")
             if (value==name)
                 btn.classList.remove('disabled')
             else {
@@ -94,7 +93,7 @@ block css
                             name="_method",
                             value="DELETE")
 
-                    input#submit.btn.btn-primary.disabled(
+                    input#submitDelete.btn.btn-primary.disabled(
                             type='submit',
                             value="Delete Account")
   else

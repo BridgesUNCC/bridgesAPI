@@ -1,4 +1,3 @@
-
 var express = require('express'),
   mongoStore = require('connect-mongo')(express),
   pkg = require('../package.json'),
@@ -71,7 +70,7 @@ module.exports = function (app, config, passport) {
     app.use(flash());
 
 
-//http://stackoverflow.com/questions/13516898/disable-csrf-validation-for-some-requests-on-express
+    //http://stackoverflow.com/questions/13516898/disable-csrf-validation-for-some-requests-on-express
     app.use(function (req, res, next) {
 
         needCSRF = false;
