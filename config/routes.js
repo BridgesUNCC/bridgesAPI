@@ -151,6 +151,8 @@ module.exports = function(app, passport, streamable) {
               assignments.show, handleError);
     app.get('/assignmentByEmail/:assignmentID/:email',
               assignments.assignmentByEmail, handleError);
+    app.get('/assignmentJSON/:assignmentNumber/:username',
+              assignments.getJSON, handleError);
 
     // update the assignment specified for the current user
     //  save the positions of any fixed nodes

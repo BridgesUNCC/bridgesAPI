@@ -118,6 +118,7 @@ exports.upload = function (req, res, next) {
         assignment.description = description;
       }
 
+      assignment.username = user.username;
       assignment.email = user.email;
       assignment.vistype = visualizationType;
       assignment.data = rawBody;
@@ -144,6 +145,54 @@ exports.upload = function (req, res, next) {
 };
 
 exports.next = null;
+
+/*
+  Get the raw JSON for an assignment
+*/
+exports.getJSON = function (req, res, next) {
+    this.next = next;
+    var assignmentRaw = req.params.assignmentNumber.split('.'),
+        username = req.params.username,
+        sessionUser = null,
+        assignmentNumber = assignmentRaw[0],
+        subAssignmentNumber = "00";
+
+    // if subassignment specified
+    if(assignmentRaw.length > 1) {
+      subAssignmentNumber = assignmentRaw[1];
+      if (subAssignmentNumber == "0") subAssignmentNumber = "00";
+    }
+    
+    if (typeof req.user != "undefined") sessionUser = req.user;
+
+    User
+        .findOne( { username: username } )
+        .exec( function( err, usr ){
+            if (err) return next(err);
+            if (!usr)
+                return next("couldn't find the username \'" + username + "\'");
+
+            Assignment.findOne({
+                email: usr.email,
+                assignmentNumber: assignmentNumber,
+                subAssignment: subAssignmentNumber
+            }, {
+              "__v": 0,
+              "_id": 0
+            })
+            .exec( function( err, assignment){
+              if (err) return next(err);
+              if (!assignment)
+                  return next("can not find assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'");
+
+              // return the found assignment if it's public or owned by the request
+              if(assignment.shared || (sessionUser && (assignment.email == sessionUser.email)))
+                return res.json( 200, { "assignmentJSON": assignment } );
+
+              return next("can not find public assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'");
+            });
+        });
+};
 
 exports.show = function (req, res, next) {
     this.next = next;
