@@ -287,7 +287,7 @@
   };
 
   BridgesVisualizer.displayNodeLabels = function() {
-    d3.event.preventDefault();
+    if(d3.event) d3.event.preventDefault();
     if(!BridgesVisualizer.showingNodeLabels) {
         d3.selectAll(".nodeLabel").style("display","block").style("opacity","1");
         BridgesVisualizer.showingNodeLabels = true;
@@ -299,7 +299,7 @@
   };
 
   BridgesVisualizer.displayLinkLabels = function() {
-    d3.event.preventDefault();
+    if(d3.event) d3.event.preventDefault();
     if(!BridgesVisualizer.showingLinkLabels) {
         d3.selectAll(".linkLabel").style("display", "block");
         d3.selectAll(".selfLinkLabel").style("display", "block");
