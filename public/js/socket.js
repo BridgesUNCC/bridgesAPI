@@ -25,21 +25,32 @@ socket.on('dataframe', function (dataframe) {
 
 });
 
+socket.on('grid:send', function(gridData) {
+  // find grid among visualizations?
+  var grid = BridgesVisualizer.visualizations[0];
+
+  var gridObj = JSON.parse(gridData.gridData);
+
+  grid.setupNodes(gridObj);
+  grid.draw();
+});
+
 $(document).keydown(function(e) {
-    switch(e.which) {
-        case 37: // left
+  console.log(e);
+    switch(e.key) {
+        case "ArrowLeft":        //case 37: // left
           socket.emit('keydown', {key: "left"});
           break;
 
-        case 38: // up
+        case "ArrowUp":           //case 38: // up
           socket.emit('keydown', {key: "up"});
           break;
 
-        case 39: // right
+        case "ArrowRight":        //case 39: // right
           socket.emit('keydown', {key: "right"});
           break;
 
-        case 40: // down
+        case "ArrowDown":         //case 40: // down
           socket.emit('keydown', {key: "down"});
           break;
 

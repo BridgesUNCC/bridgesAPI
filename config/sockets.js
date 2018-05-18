@@ -24,6 +24,12 @@ module.exports.listen = function(app) {
         socket.broadcast.to('user1_assignment1').emit('dataframe', { dataframe: dataframe });
     });
 
+    /* Receives grid events from client-based sockets */
+    socket.on('grid:recv', function (gridData) {
+        console.log('grid', {data: gridData, sock: socket.id });
+        socket.broadcast.to('user1_assignment1').emit('grid:send', { gridData: gridData });
+    });
+
     socket.on('disconnect', function() {
       if(socket && socket.id) {
         console.log(socket.id, 'logged off');

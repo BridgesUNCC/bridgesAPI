@@ -69,7 +69,8 @@ for (var key in data) {
     else if (data[key]['visType'] == "grid" && d3.grid) {
         vis = d3.select("#vis" + key).append("canvas")
           .attr("id", "canvas" + key);
-        d3.grid(vis, width, height, data[key], d3.select("#vis" + key));
+        grid = d3.grid(vis, width, height, data[key], d3.select("#vis" + key));
+        BridgesVisualizer.visualizations.push(grid);
     }
     else if (data[key]['visType'] == "nodelink" && d3.graph) {
         vis = d3.select("#vis" + key).append("svg")

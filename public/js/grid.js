@@ -7,39 +7,45 @@ d3.grid = function(canvas, W, H, data, parent) {
     var context = canvas.node().getContext("2d");
 
     //defaults
-    var grid = [],
+    var grid = {},
         w = W || 1280,
         h = H || 800,
-        nodes = [];
+        nodes = [],
+        dims = [];
 
-    // set up data dimensions
-    var dims = data.dimensions;
+    function setupDimensions() {
+      // set up data dimensions
+      dims = data.dimensions;
 
-    // if more rows than cols
-    if(dims[0] > dims[1]) {
-      nodeSize = parseInt((h)/dims[0]);
-    } else {
-      nodeSize = Math.min(parseInt((w)/dims[1]), parseInt((h)/dims[1]));
+      // if more rows than cols
+      if(dims[0] > dims[1]) {
+        nodeSize = parseInt((h)/dims[0]);
+      } else {
+        nodeSize = Math.min(parseInt((w)/dims[1]), parseInt((h)/dims[1]));
+      }
+      nodeSize = Math.max(nodeSize, 1);
+
+      w = dims[1]*nodeSize;
+      h = dims[0]*nodeSize;
+
+      // // set canvas attrs
+      canvas.attr("width", w + 'px').attr("height", h + 'px');
+      parent.style("width", w + 'px').style("height", h + 'px').style("font-size", '0px');
     }
-    nodeSize = Math.max(nodeSize, 1);
 
-    w = dims[1]*nodeSize;
-    h = dims[0]*nodeSize;
+    grid.setupNodes = function(theData) {
+      nodes = [];
+      rgbaArray = Uint8Array.from(atob(theData.nodes), function(c) { return c.charCodeAt(0); });
+      for(var i = 0; i < rgbaArray.length; i+=4) {
+        nodes.push(rgbaArray.slice(i, i+4));
+      }
+    };
 
-    // // set canvas attrs
-    canvas.attr("width", w + 'px').attr("height", h + 'px');
-    parent.style("width", w + 'px').style("height", h + 'px').style("font-size", '0px');
-
-    // set up nodes
-    rgbaArray = Uint8Array.from(atob(data.nodes), function(c) { return c.charCodeAt(0); });
-    for(var i = 0; i < rgbaArray.length; i+=4) {
-      nodes.push(rgbaArray.slice(i, i+4));
-    }
 
     // set up draw method from requestAnimationFrame
-    function draw() {
+    grid.draw = function() {
       nodes.forEach(drawNode);
-    }
+    };
 
     // draw a node of the grid
     function drawNode(d, i) {
@@ -57,5 +63,9 @@ d3.grid = function(canvas, W, H, data, parent) {
         return bytes.buffer;
     }
 
-    draw();
+    setupDimensions();
+    grid.setupNodes(data);
+    grid.draw();
+
+    return grid;
 };
