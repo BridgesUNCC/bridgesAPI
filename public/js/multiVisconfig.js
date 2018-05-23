@@ -474,6 +474,16 @@ $(window).resize(function() {
     window.resizedFinished = setTimeout(function(){
         BridgesVisualizer.defaultTransforms.graph.translate = BridgesVisualizer.visCenter();
         BridgesVisualizer.defaultTransforms.nodelink.translate = BridgesVisualizer.visCenter();
+
+        // resize svg-based assignments
+        d3.selectAll("svg")
+          .style("width", d3.select(".assignmentContainer").style("width"))
+          .style("height", d3.select(".assignmentContainer").style("height"));
+
+        // resize canavs-based assignments or assignments with specific resize methods
+        BridgesVisualizer.visualizations.forEach(function(d) {
+          if(d.resize) d.resize();
+        });
     }, 250);
 });
 

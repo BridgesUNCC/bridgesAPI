@@ -10,6 +10,9 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
         edgeLength = d3.scaleLinear().domain([1,1000]).range([100,250]);
 
     canvas.attr("width", w).attr("height", h);
+    context.canvas.width = w;
+    context.canvas.height = h;
+
 
     var finalTranslate = BridgesVisualizer.defaultTransforms.graph.translate;
     var finalScale = BridgesVisualizer.defaultTransforms.graph.scale;
@@ -25,6 +28,17 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
         transform = d3.zoomIdentity.translate(finalTranslate[0], finalTranslate[1]).scale(finalScale);
 
         canvas.call(zoom.transform, transform);
+    };
+
+    graph.resize = function() {
+      var width = d3.select(".assignmentContainer").style("width"),
+          height = d3.select(".assignmentContainer").style("height");
+      width = width.substr(0, width.indexOf("px"));
+      height = height.substr(0, height.indexOf("px"));
+
+      canvas.attr("width", width).attr("height", height);
+      context.canvas.width = width;
+      context.canvas.height = height;
     };
 
     BridgesVisualizer.tooltipEnabled = false;
