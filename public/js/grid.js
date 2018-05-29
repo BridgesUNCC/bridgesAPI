@@ -28,7 +28,12 @@ d3.grid = function(canvas, W, H, data, parent) {
 
     // // set canvas attrs
     canvas.attr("width", w + 'px').attr("height", h + 'px');
-    parent.style("width", w + 'px').style("height", h + 'px').style("font-size", '0px');
+    parent
+      .style("width", w + 'px')
+      .style("height", h + 'px')
+      .style("font-size", '0px')
+      .style("margin", "auto")
+      .style("margin-bottom", "30px");
 
     // set up nodes
     rgbaArray = Uint8Array.from(atob(data.nodes), function(c) { return c.charCodeAt(0); });

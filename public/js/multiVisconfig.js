@@ -130,10 +130,14 @@ function savePositions () {
 
   // store indices for all fixed nodes
   for (var key in data) {
-    updateTheseNodes[key] = {
-      'fixedNodes': {},
-      'unfixedNodes': {}
-    };
+
+    if (data.hasOwnProperty(key) && (data[key].visType == "nodelink" || data[key].visType == "nodelink-canvas")) {
+      updateTheseNodes[key] = {
+        'fixedNodes': {},
+        'unfixedNodes': {}
+      };
+    }
+
     if (data.hasOwnProperty(key) && data[key].visType == "nodelink") {
       d3.select("#vis" + key).selectAll(".node").each(function(d, i) {
         // we need to name the nodes so we can identify them on the server; indices don't suffice
