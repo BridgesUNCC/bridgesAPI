@@ -162,7 +162,7 @@ exports.getJSON = function (req, res, next) {
       subAssignmentNumber = assignmentRaw[1];
       if (subAssignmentNumber == "0") subAssignmentNumber = "00";
     }
-    
+
     if (typeof req.user != "undefined") sessionUser = req.user;
 
     User
@@ -305,7 +305,8 @@ exports.show = function (req, res, next) {
             map=false,
             allAssigns = {},
             assignmentTypes = {},
-            linkResources = {"script":[], "css":[]};
+            linkResources = {"script":[], "css":[]},
+            navItems = {}; // optional nav buttons: labels, save positions
 
         if (sessionUser) {
             if (sessionUser.email==assignments[0].email) owner = true;
@@ -341,45 +342,58 @@ exports.show = function (req, res, next) {
             return next("Erroneous data");
           }
 
-            // Client should send trees as hierarchical representation now..
-            // This captures the data from the OLD flat tree representation
-            if((data.visual == "tree") && !("nodes" in data && "children" in data.nodes)) {
-              data = unflatten(data);
-              data['visual'] = "tree";
-            }
-            // This captures the data from the NEW hierarchical tree representation
-            if("nodes" in data && "children" in data.nodes) {
-              var tempVisual = data.visual;
-              data = data.nodes;
-              data.visual = tempVisual;
-            }
+          // Client should send trees as hierarchical representation now..
+          // This captures the data from the OLD flat tree representation
+          if((data.visual == "tree") && !("nodes" in data && "children" in data.nodes)) {
+            data = unflatten(data);
+            data['visual'] = "tree";
+            if(!navItems.labels) navItems.labels = true;
+          }
+          // This captures the data from the NEW hierarchical tree representation
+          if("nodes" in data && "children" in data.nodes) {
+            var tempVisual = data.visual;
+            data = data.nodes;
+            data.visual = tempVisual;
+            if(!navItems.labels) navItems.labels = true;
+          }
 
-            data.visType = visTypes.getVisType(data.visual);
+          data.visType = visTypes.getVisType(data.visual);
 
-            if(data.visType == "nodelink" && data.nodes.length > 100) {
-              data.visType = "nodelink-canvas";
-              linkResources.script.push('/js/graph-canvas.js');
-            }
+          // add optional nav buttons where appropriate
+          if(data.visType == "nodelink") {
+            if(!navItems.save) navItems.save = true;
+            if(!navItems.labels) navItems.labels = true;
+          } else if(data.visType == "tree") {
+            if(!navItems.labels) navItems.labels = true;
+          }
 
-            // add new resource info
-            if(!assignmentTypes[data['visType']]){
-                assignmentTypes[data['visType']] = 1;
+          // Use SVG for < 100 nodes, Canvas for > 100
+          if(data.visType == "nodelink" && data.nodes.length > 100) {
+            data.visType = "nodelink-canvas";
+            linkResources.script.push('/js/graph-canvas.js');
+          }
 
-                var vistypeObjectTemp = visTypes.getVisTypeObject(data);
-                linkResources.script.push(vistypeObjectTemp.script);
-                if(vistypeObjectTemp.link != ""){
-                  linkResources.css.push(vistypeObjectTemp.link);
-                }
-            }
+          // add new resource info
+          if(!assignmentTypes[data['visType']]){
+              assignmentTypes[data['visType']] = 1;
 
-            if(data.map_overlay) {
-              map = true;
-              linkResources.script.push('/js/map.js');
-              linkResources.script.push('https://d3js.org/topojson.v1.min.js');
-              linkResources.css.push('/css/map.css');
-            }
+              var vistypeObjectTemp = visTypes.getVisTypeObject(data);
+              linkResources.script.push(vistypeObjectTemp.script);
+              if(vistypeObjectTemp.link != ""){
+                linkResources.css.push(vistypeObjectTemp.link);
+              }
+          }
 
-            allAssigns[i] = data;
+          // add map resources if appropriate
+          if(data.map_overlay) {
+            map = true;
+            linkResources.script.push('/js/map.js');
+            linkResources.script.push('https://d3js.org/topojson.v1.min.js');
+            linkResources.css.push('/css/map.css');
+          }
+
+          // finally, store the subassignment
+          allAssigns[i] = data;
         }
 
         sessionUser = sessionUser ? {"username": sessionUser.username, "email": sessionUser.email} : null;
@@ -395,7 +409,8 @@ exports.show = function (req, res, next) {
             "assignmentNumber":assignmentNumber,
             "linkResources":linkResources,
             "shared":assignments[0].shared,
-            "owner":owner
+            "owner":owner,
+            "navItems": navItems
         });
       }
   };
