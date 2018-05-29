@@ -250,14 +250,13 @@
         return d3.symbolSquare;
       case 'diamond':
         return d3.symbolDiamond;
-      case 'triangle-down':
-      case 'triangle-up':
+      case 'triangle':
         return d3.symbolTriangle;
       case 'cross':
         return d3.symbolCross;
-      case '':
+      case 'star':
         return d3.symbolStar;
-      case '':
+      case 'wye':
         return d3.symbolWye;
       default:
         return d3.symbolCircle;
@@ -268,19 +267,6 @@
     switch(proj) {
       case 'equirectangular':
         return d3.geoEquirectangular();
-      // case 'square':
-      //   return d3.symbolSquare;
-      // case 'diamond':
-      //   return d3.symbolDiamond;
-      // case 'triangle-down':
-      // case 'triangle-up':
-      //   return d3.symbolTriangle;
-      // case 'cross':
-      //   return d3.symbolCross;
-      // case '':
-      //   return d3.symbolStar;
-      // case '':
-      //   return d3.symbolWye;
       default:
         return d3.geoEquirectangular();
     }
