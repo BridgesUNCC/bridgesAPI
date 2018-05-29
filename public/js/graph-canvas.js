@@ -13,7 +13,6 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
     context.canvas.width = w;
     context.canvas.height = h;
 
-
     var finalTranslate = BridgesVisualizer.defaultTransforms.graph.translate;
     var finalScale = BridgesVisualizer.defaultTransforms.graph.scale;
     var transform = d3.zoomIdentity.translate(finalTranslate[0], finalTranslate[1]).scale(finalScale);
@@ -41,8 +40,6 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
       context.canvas.height = height;
       ticked();
     };
-
-    BridgesVisualizer.tooltipEnabled = false;
 
     var nodes = data.nodes;
     var links = data.links;
