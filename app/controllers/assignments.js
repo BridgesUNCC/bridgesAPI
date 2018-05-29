@@ -388,7 +388,7 @@ exports.show = function (req, res, next) {
           if(data.map_overlay) {
             map = true;
             linkResources.script.push('/js/map.js');
-            linkResources.script.push('https://d3js.org/topojson.v1.min.js');
+            linkResources.script.push('/js/lib/topojson.v1.min.js');
             linkResources.css.push('/css/map.css');
           }
 
