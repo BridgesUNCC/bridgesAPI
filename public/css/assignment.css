@@ -16,6 +16,7 @@ html, body {
     max-width: 90%;
     resize: both;
     overflow: hidden;
+    position: relative;
 }
 .svg {
   width: 100%;
@@ -90,7 +91,6 @@ div.tooltip {
 .clickthrough {
   pointer-events: none;
 }
-
 
 .assignmentTitle {
     padding: 20px;

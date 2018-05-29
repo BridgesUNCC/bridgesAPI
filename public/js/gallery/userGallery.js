@@ -1,7 +1,7 @@
 /* Scripts related to the Bridges user gallery */
 
 var galleryImages = d3.selectAll('.gallery_assignment_container');
-
+var galleryTooltip = d3.select('#gallery_fixed_tooltip');
 // on mouseover of an assignment, display a tooltip
 galleryImages.on('mouseover', function(d, i) {
   galleryImages
@@ -13,7 +13,8 @@ galleryImages.on('mouseover', function(d, i) {
 });
 
 galleryImages.on('mouseout', function(d, i) {
-  galleryImages.transition().duration(150).style("opacity", 1);
+  galleryImages.transition().duration(250).style("opacity", 1);
+  galleryTooltip.transition().duration(250).style("opacity", 0);
 });
 
 function displayDetails(assignment) {
@@ -26,9 +27,10 @@ function displayDetails(assignment) {
   text+= "<b>Data Structure:</b> " + assignment.data[0].visual  + "<br/>";
   text+= "<b>Date Created:</b> " + assignment.dateCreated  + "<br/>";
 
-  d3.select('#gallery_fixed_tooltip')
+  galleryTooltip
       .transition().duration(150)
-      .style("opacity", 1)
+      .style("opacity", 0.9)
       .style('border-left', 'solid 2px steelblue');
-  d3.select('#gallery_fixed_tooltip').html(text);
+
+  galleryTooltip.html(text);
 }

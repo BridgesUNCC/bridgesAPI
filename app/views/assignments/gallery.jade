@@ -1,4 +1,6 @@
 extends ../includes/boilerplate.jade
+include galleryItem.jade
+
 block css
     link(rel='stylesheet',
          href='/css/gallery.css')
@@ -16,31 +18,14 @@ block content
                     - else
                             h1(style="text-align: left") Public Gallery for assignments with number '#{assignmentNumber}'
 
-    div.gallery_row
+    div.col-lg-2.col-md-2.col-sm-12.col-xs-12.affix#gallery_fixed_tooltip
+
+    div.container.col-lg-8.col-lg-offset-2.col-md-8.col-md-offset-2.col-sm-12.col-xs-12(style="margin-top: 20px")
         - for (var x = 0; x < assignments.length; x++)
-              - console.log(assignments[x])
-              div.gallery_assignment_container
-                  a(href='/assignments/'+assignments[x].assignmentNumber+'/'+usernames)
-                    div.gallery_assignment_div.public
-                        a(href="/assignments/"+assignmentNumber+"/"+assignments[x].username)
-                            if(assignments[x].vistype == "nodelink")
-                                img.visimg(src='/img/graph.png' title=assignments[x].vistype)
-                            else if(assignments[x].vistype == "Alist")
-                                img.visimg(src='/img/array.png' title=assignments[x].vistype)
-                            else
-                                img.visimg(src='/img/'+assignments[x].vistype+'.png' title=assignments[x].vistype)
+            +galleryItem(assignments[x])
 
-                  a(style='text-decoration: none;' href='/assignments/'+assignments[x].assignmentNumber+'/'+assignments[x].username)
-                      div(class='gallery_links')
-                        - if (assignments[x].username)
-                            div.gallery_link_title #{assignments[x].username}
-                        - else
-                            div.gallery_link_title Assignment#{assignments[x].email}
 
-                  div.user-gallery-menu
-                    div.gallery_link_small #{assignments[x].username} #{assignments[x].email}
-                    div.gallery_link_small Assignment #{assignments[x].assignmentNumber}
-                    div.gallery_link_small Data Structure: #{assignments[x].data[0].visual}
-                    div.gallery_link_small Date Created: #{assignments[x].dateCreated}
+    script.
+      var assignments = !{JSON.stringify(assignments).replace(/<\//g, '<\\/')};
 
-      script( src = '/js/gallery/userGallery.js' )
+    script( src = '/js/gallery/userGallery.js' )

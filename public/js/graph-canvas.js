@@ -39,6 +39,7 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
       canvas.attr("width", width).attr("height", height);
       context.canvas.width = width;
       context.canvas.height = height;
+      ticked();
     };
 
     BridgesVisualizer.tooltipEnabled = false;
