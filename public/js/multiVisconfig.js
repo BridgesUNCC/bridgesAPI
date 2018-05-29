@@ -481,8 +481,8 @@ $(window).resize(function() {
 
         // resize svg-based assignments
         d3.selectAll("svg")
-          .style("width", d3.select(".assignmentContainer").style("width"))
-          .style("height", d3.select(".assignmentContainer").style("height"));
+          .style("width", ele.clientWidth)
+          .style("height", ele.clientHeight);
 
         // resize canavs-based assignments or assignments with specific resize methods
         BridgesVisualizer.visualizations.forEach(function(d) {
