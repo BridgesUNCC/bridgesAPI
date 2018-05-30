@@ -79,7 +79,7 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
           return;
         }
 
-        point = proj([d.location[1], d.location[0]]);
+        point = proj([d.location[0], d.location[1]]);
 
         // make sure the transformed location exists
         if(point) {

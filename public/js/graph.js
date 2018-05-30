@@ -205,7 +205,7 @@ d3.graph = function(svg, W, H, data) {
             return;
           }
 
-          point = proj([d.location[1], d.location[0]]);
+          point = proj([d.location[0], d.location[1]]);
 
           // make sure the transformed location exists
           if(point) {
