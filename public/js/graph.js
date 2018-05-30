@@ -230,12 +230,8 @@ d3.graph = function(svg, W, H, data) {
   node
       .append("text")
       .attr("class","nodeLabel")
-      .attr("x", BridgesVisualizer.textOffsets.graph.x + 2)
-      .attr("y",  BridgesVisualizer.textOffsets.graph.y + 14)
-      .style("color",'black')
-      .style("pointer-events", "none")
-      .style("stroke-dasharray", "0,0")
-      .style("opacity", 0.0)
+      .attr("x", BridgesVisualizer.textOffsets.graph.x)
+      .attr("y",  BridgesVisualizer.textOffsets.graph.y)
       .text(function(d) {
           return d.name;
       });

@@ -31,7 +31,7 @@
 
   // Offsets for text labels for visualization types
   BridgesVisualizer.textOffsets = {
-    "graph": { "x": 22, "y": -10 },
+    "graph": { "x": 10, "y": -5 },
     "tree": { "x": 200, "y": -15 },
     "default": { "x": 0, "y": 0}
   };
