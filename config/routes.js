@@ -11,21 +11,28 @@ module.exports = function(app, passport, streamable) {
         var mongoose = require('mongoose'),
             User = mongoose.model('User');
             var found = req.query.apikey;
-            if (!found) return next(
-                "Not logged in: you must provide" +
-               " an apikey as a query variable");
+            if (!found) {
+              return res.json(401, {
+                  "error": "Not logged in: you must provide an apikey as a query variable"
+              });
+            }
             var username = req.query.username;
-            if (!username) return next(
-                "Not logged in: you must provide" +
-               " a username as a query variable");
+            if (!username) {
+              return res.json(401, {
+                  "error": "Not logged in: you must provide a username as a query variable"
+              });
+            }
             User
                 .findOne({
                     apikey: found,
                     username: username
                 })
                 .exec(function(err, user) {
-                    if (!user)
-                        return next("your api key or username is invalid");
+                    if (!user) {
+                      return res.json(401, {
+                          "error": "your api key or username is invalid"
+                      });
+                    }
                     req.user = user;
                     return next();
                 });
