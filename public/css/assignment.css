@@ -10,10 +10,26 @@ html, body {
 
 .nodeLabel {
   color: black;
-  font-size: 12px;  
+  font-size: 12px;
   stroke-width: 0px;
   stroke-dasharray: 0,0;
   opacity: 0.0;
+  pointer-events: none;
+}
+
+.linkLabel {
+  color: black;
+  font-size: 10px;
+  stroke-width: 0px;
+  stroke-dasharray: 0,0;
+  pointer-events: none;
+}
+
+.selfLinkLabel {
+  color: black;
+  font-size: 10px;
+  stroke-width: 0px;
+  stroke-dasharray: 0,0;
   pointer-events: none;
 }
 

@@ -107,8 +107,10 @@
 
       for (var j = 0; j < words.length; j++) {
           var tspan = el.append('tspan').text(words[j]);
-          if (j > 0)
-              tspan.attr('x', 0).attr('dy', '15');
+          tspan.attr('x', BridgesVisualizer.textOffsets.graph.x);
+          if (j > 0) {
+              tspan.attr('dy', '15');
+          }
       }
   };
 
@@ -120,9 +122,9 @@
 
       for (var j = 0; j < words.length; j++) {
           var tspan = el.append('tspan').text(words[j]);
-
+          tspan.attr('x', 0);
           if(j>0) {
-            tspan.attr('dy', '15');
+            tspan.attr('dy', '10');
           }
       }
   };
