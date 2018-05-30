@@ -201,9 +201,9 @@ d3.graph = function(svg, W, H, data) {
 
           if(data.coord_system_type == "equirectangular") {
             proj = d3.geoEquirectangular();
-          } else if(data.coord_system_type == "albersUsa") {
+          } else if(data.coord_system_type == "albersusa") {
             proj = d3.geoAlbersUsa();
-          } else if(data.coord_system_type == "Cartesian"){
+          } else if(data.coord_system_type == "cartesian"){
             d.fx = d.location[0];
             d.fy = d.location[1];
             return;
