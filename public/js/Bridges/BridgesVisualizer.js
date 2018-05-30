@@ -56,7 +56,7 @@
     "cdllist": { "scale": 0.3, "translate": [50, -5]},
     "cllist": { "scale": 0.3, "translate": [50, -5]},
     "equirectangular": { "scale": 1, "translate": [BridgesVisualizer.visCenter()[0]/3, BridgesVisualizer.visCenter()[1]/4]},
-    "albersUsa": { "scale": 1, "translate": [BridgesVisualizer.visCenter()[0]/3, BridgesVisualizer.visCenter()[1]/4]},
+    "albersusa": { "scale": 1, "translate": [BridgesVisualizer.visCenter()[0]/3, BridgesVisualizer.visCenter()[1]/4]},
     "nodelink": { "scale": 0.5, "translate": BridgesVisualizer.visCenter()},
     "graph": { "scale": 0.5, "translate": [BridgesVisualizer.visCenter()[0]/2, BridgesVisualizer.visCenter()[1]/2] },
     // "tree": { "scale": 0.9, "translate": [document.getElementById("vis0").clientWidth/2, 50]}
@@ -158,7 +158,7 @@
        .attr('viewBox', function(d){ return d.viewbox; })
        .append('svg:path')
          .attr('d', function(d){ return d.path; })
-         .attr('fill', function(d,i) { return "#ccc"; });
+         .attr('fill', function(d,i) { return "darkgrey"; });
   };
 
 
