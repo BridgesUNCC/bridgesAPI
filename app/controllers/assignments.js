@@ -390,6 +390,7 @@ exports.show = function (req, res, next) {
             linkResources.script.push('/js/map.js');
             linkResources.script.push('/js/lib/topojson.v1.min.js');
             linkResources.css.push('/css/map.css');
+            data.coord_system_type = data.coord_system_type.toLowerCase() || "cartesian";
           }
 
           // finally, store the subassignment
