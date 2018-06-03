@@ -40,4 +40,5 @@
 script.
   $('.btn-expand-collapse').click(function(e) {
       $('.navbar-assignment').toggleClass('collapsed');
+      $(this).children('span').toggleClass('glyphicon-menu-right').toggleClass('glyphicon-menu-left');
   });
