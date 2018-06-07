@@ -115,6 +115,10 @@ module.exports = function(app, passport, streamable) {
     app.get('/users/apikey', users.getkey, handleError);
     app.get('/logout', users.logout);
 
+    /* User may add institution and course names */
+    app.post('/users/setInstitution', users.setInstitution, handleError);
+    app.post('/users/setCourse', users.setCourse, handleError);
+
     /* Set up a user session on login */
     app.post('/users/session',
         passport.authenticate('local-log', {

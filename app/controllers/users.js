@@ -25,7 +25,7 @@ exports.session = login;
 */
 exports.index = function (req, res) {
   var user = req.user || "";
-  
+
   res.render('home/index', {
       title: 'Index',
       user: user,
@@ -234,7 +234,6 @@ exports.signup = function (req, res) {
 
 /* Create a new user account from the signup form page */
 exports.create = function (req, res) {
-    console.log("Creating user: "+ req.body.email);
     var user = new User(req.body);
     user.provider = 'local';
     user.generateKey();
@@ -247,10 +246,32 @@ exports.create = function (req, res) {
           });
         }
 
+        console.log("Creating user: "+ req.body.email);
+
         // manually login the user once successfully signed up
         req.logIn(user, function(err) {
           if (err) return next(err);
           return res.redirect('/username');
         });
     });
+};
+
+/* Set the institution_name for the current user */
+exports.setInstitution = function (req, res) {
+  // TODO: clean insitution_name
+  req.user.institution_name = req.body.institution;
+  req.user.save(function(err, user) {
+    if(err) return res.send(501);
+    return res.send(200);
+  });
+};
+
+/* Set the course_name for the current user */
+exports.setCourse = function (req, res) {
+  // TODO: clean course_name
+  req.user.course_name = req.body.course;
+  req.user.save(function(err, user) {
+    if(err) return res.send(501);
+    return res.send(200);
+  });
 };
