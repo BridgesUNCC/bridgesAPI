@@ -98,11 +98,13 @@ block js
    script(src="js/main.js")
    script.
        name="#{user.username}";
+       $("#submitDelete").prop("disabled", true);
        function checkUser(value) {
            var btn = document.getElementById("submitDelete")
-           if (value==name)
+           if (value==name) {
                btn.classList.remove('disabled')
-           else {
+               $("#submitDelete").prop("disabled", false);
+           } else {
                if (!(btn.classList.contains("disabled")))
                    btn.classList.add("disabled")
            }
