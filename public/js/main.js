@@ -8,7 +8,7 @@ $(function() {
     // keypress timers
     var courseTimer;
     var institutionTimer;
-    var doneTypingInterval = 3000;
+    var doneTypingInterval = 2000;
 
     // POST the institution name
     $('#setInstitution').unbind('keyup');
@@ -21,8 +21,16 @@ $(function() {
           function(status) {
             if(status == 'OK') {
               // change border color to green to indicate success
+              $("#setInstitution").css("border", "3px solid green");
+              setTimeout(function() {
+                $("#setInstitution").css("border", "1px solid rgb(102, 175, 233)");
+              }, 3000);
             } else {
               // change border color to red to indicate failure
+              $("#setInstitution").css("border", "3px solid red");
+              setTimeout(function() {
+                $("#setInstitution").css("border", "1px solid rgb(102, 175, 233)");
+              }, 3000);
             }
         });
     }
@@ -38,8 +46,16 @@ $(function() {
           function(status) {
             if(status == 'OK') {
               // change border color to green to indicate success
+              $("#setCourse").css("border", "3px solid green");
+              setTimeout(function() {
+                $("#setCourse").css("border", "1px solid rgb(102, 175, 233)");
+              }, 4000);
             } else {
               // change border color to red to indicate failure
+              $("#setCourse").css("border", "3px solid red");
+              setTimeout(function() {
+                $("#setCourse").css("border", "1px solid rgb(102, 175, 233)");
+              }, 4000);
             }
         });
     }
