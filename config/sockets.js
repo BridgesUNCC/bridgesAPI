@@ -3,40 +3,55 @@ var socketio = require('socket.io');
 module.exports.listen = function(app) {
   var io = socketio.listen(app);
   var socks = {};
-
+  var verbose = true;
 
   io.sockets.on('connection', function (socket) {
-    console.log('adding new socket', socket.id);
-    socks[socket.id] = "user";
 
-    socket.join('user1_assignment1');
-    socket.broadcast.to('user1_assignment1').emit('announcement', {message: "User " + socket.id + " connected"});
+    if(verbose) console.log('I see a new socket:', socket.id);
+
+
+    /* Receive credentials from socket */
+    socket.on('credentials', function(data) {
+      var credentials = JSON.parse(data);
+
+      /* Identify sockets with unique user_assignment pairs */
+      var channel = credentials.user + "_" + credentials.assignment;
+
+      /* Associate socket id with channel */
+      socks[socket.id] = channel;
+
+      /* Join unique channel */
+      socket.join(channel);
+      if(verbose) console.log("User " + socket.id + " connected to channel " + channel);
+      socket.broadcast.to(channel).emit('announcement', {message: "User " + socket.id + " connected to channel " + channel});
+    });
+
 
     /* Receives keydown events from web-based application sockets */
     socket.on('keydown', function (data) {
-      console.log('keydown', { pressed: 'key ' + data.key, sock: socket.id });
-      socket.broadcast.to('user1_assignment1').emit('keydown', { pressed: 'key ' + data.key });
+      if(verbose) console.log('keydown', { pressed: 'key ' + data.key, sock: socket.id, channel: socks[socket.id] });
+      socket.broadcast.to(socks[socket.id]).emit('keydown', { pressed: 'key ' + data.key });
     });
 
     /* Receives dataframe events from client-based sockets */
     socket.on('dataframe', function (dataframe) {
-        console.log('dataframe', {data: dataframe, sock: socket.id });
-        socket.broadcast.to('user1_assignment1').emit('dataframe', { dataframe: dataframe });
+        if(verbose) console.log('dataframe', {data: dataframe, sock: socket.id, channel: socks[socket.id] });
+        socket.broadcast.to(socks[socket.id]).emit('dataframe', { dataframe: dataframe });
     });
 
     /* Receives grid events from client-based sockets */
     socket.on('grid:recv', function (gridData) {
-        console.log('grid', {data: gridData, sock: socket.id });
-        socket.broadcast.to('user1_assignment1').emit('grid:send', { gridData: gridData });
+        if(verbose) console.log('grid', {data: gridData, sock: socket.id, channel: socks[socket.id] });
+        socket.broadcast.to(socks[socket.id]).emit('grid:send', { gridData: gridData });
     });
 
     socket.on('disconnect', function() {
       if(socket && socket.id) {
-        console.log(socket.id, 'logged off');
-        socket.broadcast.to('user1_assignment1').emit('announcement', {message: "User " + socket.id + " disconnected"});
+        if(verbose) console.log(socket.id, 'logged off');
+        socket.broadcast.to(socks[socket.id]).emit('announcement', {message: "User " + socket.id + " disconnected"});
         delete socks[socket.id];
       } else {
-        console.log('okbye');
+        if(verbose) console.log('okbye');
       }
     });
 
