@@ -1,6 +1,6 @@
 // var socketio = require('socket.io');
 
-module.exports.listen = function(socketio) {
+module.exports = function(socketio) {
 
   // var io = socketio.listen(app);
   var socks = {};
@@ -62,5 +62,5 @@ module.exports.listen = function(socketio) {
 
   });
 
-  return socketio;
+  // return socketio;
 };
