@@ -32,8 +32,9 @@ require('./config/express')(app, config, passport);
 //compatible with heroku
 var port = process.env.PORT || config.port;
 
-var server = app.listen(port);
+var server = require('http').createServer(app);
 var io = require('./config/sockets').listen(server);
+server.listen(port);
 
 var streamable = require('streamable').streamable(io);
 
