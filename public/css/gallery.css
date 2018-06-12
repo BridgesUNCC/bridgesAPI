@@ -1,62 +1,11 @@
-div.title {
-  margin-bottom: 50px;
-}
-
-/* Area around each assignment */
-.gallery_assignment_container {
-  height: 220px;
-  max-width: 220px;
-}
-
-/* */
-.gallery_assignment_div {
-  border-style: solid;
-  border-width:4px;
-  border-radius:20px;
-  background: -webkit-linear-gradient(white, #FFFAFA);
-  background: -o-linear-gradient(white, #FFFAFA);
-  background: -moz-linear-gradient(white, #FFFAFA);
-  background: linear-gradient(white, #FFFAFA);
-  box-shadow: 2px 2px 8px #888888;
-}
-
-.gallery_assignment_div.private{
-    border-color:red;
-}
-
-.gallery_assignment_div.public{
-    border-color:steelblue;
-}
-
-.gallery_links{
-    padding-top: 10px;
-    text-align: center;
-    color: #262626;
-    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-}
-
-.gallery_links:hover{
-    text-shadow: none;
-    color:#888888;
-}
-
-.gallery_link_title {
-  font-size: 90%;
-}
-
-.gallery_link_small {
-  font-size: 70%;
-}
-
-.affix {
-    top:150px;
-    position:fixed;
-}
-
 #gallery_fixed_tooltip {
   margin-left: 15px;
+  padding: 10px;
   float: left;
   line-height: 1.7;
+  pointer-events: none;
+  opacity: 0;
+  max-width: 300px;
 }
 
 #welcome {
@@ -70,9 +19,76 @@ div.title {
   box-shadow: 2px 2px 8px #888888;
 }
 
+div.title {
+  margin-bottom: 50px;
+}
+
+/* Area around each assignment */
+.gallery_assignment_container {
+  height: 220px;
+  max-width: 200px;
+}
+
+/* */
+.gallery_assignment_div {
+  pointer-events: none;
+  border-style: solid;
+  max-width: 140px;
+  border-width:4px;
+  border-radius:20px;
+  background: -webkit-linear-gradient(white, #FFFAFA);
+  background: -o-linear-gradient(white, #FFFAFA);
+  background: -moz-linear-gradient(white, #FFFAFA);
+  background: linear-gradient(white, #FFFAFA);
+  box-shadow: 2px 2px 8px #888888;
+  margin: auto;
+}
+.gallery_assignment_div.private{
+    border-color:red;
+}
+.gallery_assignment_div.public{
+    border-color:steelblue;
+}
+
+.gallery_links{
+    pointer-events: none;
+    padding: 10px;
+    color: #262626;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    max-width: 160px;
+    text-align: center;
+}
+
+.gallery_links:hover{
+    text-shadow: none;
+    color:#888888;
+}
+
+.gallery_link_title {
+  font-size: 1.5rem;
+}
+
+.gallery_link_small {
+  font-size: 70%;
+}
+
+.affix {
+    top:150px;
+    position:fixed;
+}
+
+@media (max-width: 990px) {
+    .affix {
+        background-color: white;
+        z-index: 10;
+    }
+}
+
 img.visimg {
   display:block;
   margin:auto;
   padding: 5px;
-  max-width: 100%;
+  width: 90%;
+  height: auto;
+  pointer-events: none;
 }

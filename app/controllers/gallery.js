@@ -58,7 +58,8 @@ exports.view = function(req, res) {
               "data.dims": 1,
               vistype: 1,
               shared: 1,
-              dateCreated: 1
+              dateCreated: 1,
+              _id: 0
           })
           .exec(function(err, assignmentResult) {
 

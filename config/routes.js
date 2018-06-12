@@ -1,3 +1,6 @@
+var mongoose = require('mongoose'),
+    User = mongoose.model('User');
+
 module.exports = function(app, passport, streamable) {
 
     //Allows users to by pass authentication to api requests
@@ -8,23 +11,32 @@ module.exports = function(app, passport, streamable) {
             return next();
         }
 
-        var mongoose = require('mongoose'),
-            User = mongoose.model('User');
-            var found = req.query.apikey;
-            if (!found) return next(
-                "Not logged in: you must provide" +
-               " an apikey as a query variable");
-
-            User
-                .findOne({
-                    apikey: found
-                })
-                .exec(function(err, user) {
-                    if (!user)
-                        return next("your api key is invalid");
-                    req.user = user;
-                    return next();
+        var apikey = req.query.apikey;
+        if (!apikey) {
+          return res.json(401, {
+              "error": "Not logged in: you must provide an apikey as a query variable"
+          });
+        }
+        var username = req.query.username;
+        if (!username) {
+          return res.json(401, {
+              "error": "Not logged in: you must provide a username as a query variable"
+          });
+        }
+        User
+          .findOne({
+              apikey: apikey,
+              username: username
+          })
+          .exec(function(err, user) {
+              if (!user) {
+                return res.json(401, {
+                    "error": "your api key or username is invalid"
                 });
+              }
+              req.user = user;
+              return next();
+          });
     };
 
     //authentication
@@ -102,6 +114,10 @@ module.exports = function(app, passport, streamable) {
     app.delete('/users/:id', isLoggedIn, users.deletePerson);
     app.get('/users/apikey', users.getkey, handleError);
     app.get('/logout', users.logout);
+
+    /* User may add institution and course names */
+    app.post('/users/setInstitution', users.setInstitution, handleError);
+    app.post('/users/setCourse', users.setCourse, handleError);
 
     /* Set up a user session on login */
     app.post('/users/session',

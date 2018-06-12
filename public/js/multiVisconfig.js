@@ -131,10 +131,14 @@ function savePositions () {
 
   // store indices for all fixed nodes
   for (var key in data) {
-    updateTheseNodes[key] = {
-      'fixedNodes': {},
-      'unfixedNodes': {}
-    };
+
+    if (data.hasOwnProperty(key) && (data[key].visType == "nodelink" || data[key].visType == "nodelink-canvas")) {
+      updateTheseNodes[key] = {
+        'fixedNodes': {},
+        'unfixedNodes': {}
+      };
+    }
+
     if (data.hasOwnProperty(key) && data[key].visType == "nodelink") {
       d3.select("#vis" + key).selectAll(".node").each(function(d, i) {
         // we need to name the nodes so we can identify them on the server; indices don't suffice
@@ -475,6 +479,16 @@ $(window).resize(function() {
     window.resizedFinished = setTimeout(function(){
         BridgesVisualizer.defaultTransforms.graph.translate = BridgesVisualizer.visCenter();
         BridgesVisualizer.defaultTransforms.nodelink.translate = BridgesVisualizer.visCenter();
+
+        // resize svg-based assignments
+        d3.selectAll("svg")
+          .style("width", ele.clientWidth)
+          .style("height", ele.clientHeight);
+
+        // resize canavs-based assignments or assignments with specific resize methods
+        BridgesVisualizer.visualizations.forEach(function(d) {
+          if(d.resize) d.resize();
+        });
     }, 250);
 });
 

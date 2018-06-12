@@ -16,7 +16,7 @@
 
   BridgesVisualizer.defaultColors = d3.scaleOrdinal(d3.schemeCategory20);
 
-  BridgesVisualizer.strokeWidthRange = d3.scaleLinear().domain([1,50]).range([1,15]).clamp(true);
+  BridgesVisualizer.strokeWidthRange = d3.scaleLinear().domain([1,10]).range([1,15]).clamp(true);
   //scale values between 1 and 100 to a reasonable range
   BridgesVisualizer.scaleSize = d3.scaleLinear().domain([1,50]).range([10,500]);
   BridgesVisualizer.shapeEdge = d3.scaleLinear().domain([1,50]).range([0.5,3.3]);
@@ -31,7 +31,7 @@
 
   // Offsets for text labels for visualization types
   BridgesVisualizer.textOffsets = {
-    "graph": { "x": 22, "y": -10 },
+    "graph": { "x": 10, "y": -5 },
     "tree": { "x": 200, "y": -15 },
     "default": { "x": 0, "y": 0}
   };
@@ -56,7 +56,7 @@
     "cdllist": { "scale": 0.3, "translate": [50, -5]},
     "cllist": { "scale": 0.3, "translate": [50, -5]},
     "equirectangular": { "scale": 1, "translate": [BridgesVisualizer.visCenter()[0]/3, BridgesVisualizer.visCenter()[1]/4]},
-    "albersUsa": { "scale": 1, "translate": [BridgesVisualizer.visCenter()[0]/3, BridgesVisualizer.visCenter()[1]/4]},
+    "albersusa": { "scale": 1, "translate": [BridgesVisualizer.visCenter()[0]/3, BridgesVisualizer.visCenter()[1]/4]},
     "nodelink": { "scale": 0.5, "translate": BridgesVisualizer.visCenter()},
     "graph": { "scale": 0.5, "translate": [BridgesVisualizer.visCenter()[0]/2, BridgesVisualizer.visCenter()[1]/2] },
     // "tree": { "scale": 0.9, "translate": [document.getElementById("vis0").clientWidth/2, 50]}
@@ -107,8 +107,10 @@
 
       for (var j = 0; j < words.length; j++) {
           var tspan = el.append('tspan').text(words[j]);
-          if (j > 0)
-              tspan.attr('x', 0).attr('dy', '15');
+          tspan.attr('x', BridgesVisualizer.textOffsets.graph.x);
+          if (j > 0) {
+              tspan.attr('dy', '15');
+          }
       }
   };
 
@@ -120,9 +122,9 @@
 
       for (var j = 0; j < words.length; j++) {
           var tspan = el.append('tspan').text(words[j]);
-
+          tspan.attr('x', 0);
           if(j>0) {
-            tspan.attr('dy', '15');
+            tspan.attr('dy', '10');
           }
       }
   };
@@ -148,10 +150,9 @@
      .enter()
      .append('svg:marker')
        .attr('id', function(d){ return 'marker_' + d.name; })
-       .attr("markerUnits", "userSpaceOnUse")
-      //  .attr("markerUnits", "strokeWidth")
-       .attr('markerHeight', 5)
-       .attr('markerWidth', 5)
+       .attr("markerUnits", "strokeWidth")
+       .attr('markerHeight', 3)
+       .attr('markerWidth', 2)
        .style("pointer-events", "none")
        .attr('orient', 'auto')
        .attr('refX', 0)
@@ -159,7 +160,7 @@
        .attr('viewBox', function(d){ return d.viewbox; })
        .append('svg:path')
          .attr('d', function(d){ return d.path; })
-         .attr('fill', function(d,i) { return "#ccc"; });
+         .attr('fill', function(d,i) { return "darkgrey"; });
   };
 
 
@@ -250,14 +251,13 @@
         return d3.symbolSquare;
       case 'diamond':
         return d3.symbolDiamond;
-      case 'triangle-down':
-      case 'triangle-up':
+      case 'triangle':
         return d3.symbolTriangle;
       case 'cross':
         return d3.symbolCross;
-      case '':
+      case 'star':
         return d3.symbolStar;
-      case '':
+      case 'wye':
         return d3.symbolWye;
       default:
         return d3.symbolCircle;
@@ -268,19 +268,6 @@
     switch(proj) {
       case 'equirectangular':
         return d3.geoEquirectangular();
-      // case 'square':
-      //   return d3.symbolSquare;
-      // case 'diamond':
-      //   return d3.symbolDiamond;
-      // case 'triangle-down':
-      // case 'triangle-up':
-      //   return d3.symbolTriangle;
-      // case 'cross':
-      //   return d3.symbolCross;
-      // case '':
-      //   return d3.symbolStar;
-      // case '':
-      //   return d3.symbolWye;
       default:
         return d3.geoEquirectangular();
     }

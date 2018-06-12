@@ -1,6 +1,8 @@
 extends layout
 
 block form
+  br
+  .col-lg-6.col-lg-offset-6.col-md-6.col-md-offset-6.col-sm-8.col-sm-offset-2.col-xs-10
     .well
         form(action='/users/session', method='post').form-horizontal
           .fieldset
@@ -30,6 +32,7 @@ block form
                     p Don't have an account?
                         a(href="/signup")  Sign up!
 block validate
-    - if (message != ''){
-        p.alert.alert-danger=message
-    - }
+  - if (message != ''){
+      br
+      p.alert.alert-danger=message
+  - }

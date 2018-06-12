@@ -2,49 +2,16 @@ extends layout
 
 block css
     link(rel="stylesheet", href="/css/webicons/webicons.css")
-    link(rel="stylesheet", href="/css/inactive.css")
-
- block js
-    script(src="components/modernizr/modernizr.js")
-
-    script(src="js/main.js")
-    script.
-        name="#{user.username}";
-        function checkUser(value) {
-            var btn = document.getElementById("submitDelete")
-            if (value==name)
-                btn.classList.remove('disabled')
-            else {
-                if (!(btn.classList.contains("disabled")))
-                    btn.classList.add("disabled")
-            }
-        }
+    link(rel="stylesheet", href="/css/profile.css")
 
  block info
-    h1 #{user.username}'s Profile
-
-
- block datasources
-
-    if (false)
-        legend Add additional datasources
-        -if (!(acct.domainProvider=="twitter.com"))
-            a(href="/connect/twitter").webicon.twitter.large
-        div.webicon.facebook.large.inactive
-        div.webicon.foursquare.large.inactive
-        div.webicon.yelp.large.inactive
-        div.webicon.linkedin.large.inactive
-        div.webicon.flickr.large.inactive
-        div.webicon.google.large.inactive
-
-        -if (acct.domainProvider)
-            legend Remove authenticated datasources
-            -if (acct.domainProvider=="twitter.com")
-                a(href="/disconnect/twitter").webicon.twitter.large
+    div.col-lg-12(style="margin: 20px")
+      h1 #{user.username}'s Profile
 
  block form
   if (user)
-    .panel.panel-info
+    div.col-lg-6
+      .panel.panel-info
         .panel-heading
             h3.panel-title User information
         .panel-body
@@ -56,19 +23,43 @@ block css
                 div#email #{user.email}
             div
                 Strong.col-lg-4 API Sha1 Key:
-                div#api #{user.apikey}
+                span#api #{user.apikey}
             br
-            input#getKey.btn.btn-block.btn-info(
-                    value="Generate new API key")
+            input#getKey.btn.btn-block.btn-info(value="Generate new API key")
+
             hr
             if (acct.domainProvider)
                 div
                     Strong.col-lg-4 Authenticated: #{acct.domainProvider}
             else
                 div
-                    Strong.col-lg-6 Not authenticated
+                    Strong.col-lg-6 No external authentication
 
-    .panel.panel-info
+    div.col-lg-6
+      .panel.panel-info
+        .panel-heading
+            h3.panel-title Institution and Course
+        .panel-body
+          div
+            Strong.col-lg-4 Institution Name:
+            div.col-lg-8
+              input.form-control#setInstitution(
+                type="text",
+                placeholder="My institution",
+                value=(user.institution_name ? user.institution_name : ''))
+          br
+          br
+          div
+            Strong.col-lg-4 Course Descriptor:
+            div.col-lg-8
+              input.form-control#setCourse(
+                type="text",
+                placeholder="CS 101"
+                value=(user.course_name ? user.course_name : ''))
+
+
+    div.col-lg-6
+      .panel.panel-info
         .panel-heading
             h3.panel-title Profile Options
         .panel-body
@@ -100,3 +91,21 @@ block css
       .well
         h1 You are not logged in!
         a(href="/login").btn.btn-primary Log me in
+
+block js
+   script(src="components/modernizr/modernizr.js")
+
+   script(src="js/main.js")
+   script.
+       name="#{user.username}";
+       $("#submitDelete").prop("disabled", true);
+       function checkUser(value) {
+           var btn = document.getElementById("submitDelete")
+           if (value==name) {
+               btn.classList.remove('disabled')
+               $("#submitDelete").prop("disabled", false);
+           } else {
+               if (!(btn.classList.contains("disabled")))
+                   btn.classList.add("disabled")
+           }
+       }

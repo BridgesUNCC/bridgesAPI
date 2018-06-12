@@ -10,6 +10,8 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
         edgeLength = d3.scaleLinear().domain([1,1000]).range([100,250]);
 
     canvas.attr("width", w).attr("height", h);
+    context.canvas.width = w;
+    context.canvas.height = h;
 
     var finalTranslate = BridgesVisualizer.defaultTransforms.graph.translate;
     var finalScale = BridgesVisualizer.defaultTransforms.graph.scale;
@@ -27,15 +29,33 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
         canvas.call(zoom.transform, transform);
     };
 
-    BridgesVisualizer.tooltipEnabled = false;
+    graph.resize = function() {
+      var width = d3.select(".assignmentContainer").style("width"),
+          height = d3.select(".assignmentContainer").style("height");
+      width = width.substr(0, width.indexOf("px"));
+      height = height.substr(0, height.indexOf("px"));
+
+      canvas.attr("width", width).attr("height", height);
+      context.canvas.width = width;
+      context.canvas.height = height;
+      ticked();
+    };
 
     var nodes = data.nodes;
     var links = data.links;
 
+    //   pre-split link labels with newlines
+    links.forEach(function(d) {
+      if(d.label && d.label.length > 0)
+        d.lines = d.label.split("\n");
+    });
+
     // set fixed locations or projections where appropriate,
     //   set up symbol function
+    //   pre-split labels with newlines
     nodes.forEach(function(d) {
       d.degree = 0;
+      d.lines = d.name.split("\n");
 
       d.symbol = d3.symbol()
           .type(BridgesVisualizer.shapeLookup(d.shape))
@@ -47,9 +67,9 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
 
         if(data.coord_system_type == "equirectangular") {
           proj = d3.geoEquirectangular();
-        } else if(data.coord_system_type == "albersUsa") {
+        } else if(data.coord_system_type == "albersusa") {
           proj = d3.geoAlbersUsa();
-        } else if(data.coord_system_type == "Cartesian"){
+        } else if(data.coord_system_type == "cartesian"){
           d.fx = d.location[0];
           d.fy = d.location[1];
           return;
@@ -59,7 +79,7 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
           return;
         }
 
-        point = proj([d.location[1], d.location[0]]);
+        point = proj([d.location[0], d.location[1]]);
 
         // make sure the transformed location exists
         if(point) {
@@ -229,26 +249,24 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
       context.stroke();
       context.translate(-d.x, -d.y);
 
+      context.font = '12px Helvetica Neue';
       drawText(d);
     }
 
     // draw text labels with line breaks
     function drawText(d) {
       if(BridgesVisualizer.showingNodeLabels || d.hovering) {
-        lines = d.name.split("\n");
-        lines.forEach(function(line, i) {
-          context.fillStyle = "black";
+        context.fillStyle = "black";
+        d.lines.forEach(function(line, i) {
           context.fillText(line, d.x+10, d.y+(i*10)+3);
-          context.fillStyle = BridgesVisualizer.getColor(d.color);
         });
       }
     }
 
     // draw text labels with line breaks
     function drawLinkText(d, anchor) {
-      if((BridgesVisualizer.showingLinkLabels || d.hovering) && d.label && d.label.length > 0 ) {
-        lines = d.label.split("\n");
-        lines.forEach(function(line, i) {
+      if((BridgesVisualizer.showingLinkLabels || d.hovering) && d.lines && d.lines.length > 0 ) {
+        d.lines.forEach(function(line, i) {
           context.fillStyle = "black";
           context.fillText(line, anchor.x, anchor.y+(i*10));
           context.fillStyle = BridgesVisualizer.getColor(d.color);

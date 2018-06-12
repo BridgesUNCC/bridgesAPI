@@ -64,7 +64,7 @@ BridgesVisualizer.map = function(svg, overlay) {
     Call the appropriate projection and overlay functions
   */
   switch(overlay) {
-    case "albersUsa":
+    case "albersusa":
       albersUsa();
       break;
     case "equirectangular":

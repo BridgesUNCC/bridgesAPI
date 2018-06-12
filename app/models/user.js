@@ -17,7 +17,9 @@ var UserSchema = new Schema({
     password_reset: {
       reset_token: {type: String},
       reset_timeout: {type: Date}
-    }
+    },
+    institution_name: {type: String, default: ''},
+    course_name: {type: String, default: ''}
 });
 
 // Virtuals

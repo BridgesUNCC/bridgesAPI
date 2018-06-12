@@ -28,6 +28,7 @@ exports.view = function(req, res, next) {
 
       Assignment
           .find(findConditions, {
+              _id: 0,
               assignmentID: 1,
               title: 1,
               description: 1,
@@ -36,7 +37,8 @@ exports.view = function(req, res, next) {
               "data.dims": 1,
               vistype: 1,
               shared: 1,
-              dateCreated: 1
+              dateCreated: 1,
+              username: 1
           })
           //Do we want to load every single whole number assignment, or just some? Query might be time intensive.
           // .limit( 25 )
@@ -58,6 +60,7 @@ exports.view = function(req, res, next) {
                       var thisVistype = visTypes.getVisType(assignmentResult[assignmentResultItem]['data'][0]['visual']);
                       if(thisVistype == "Alist") thisVistype = visTypes.checkIfHasDims(assignmentResult[assignmentResultItem]['data'][0]);
                       assignmentResult[assignmentResultItem]['vistype'] = thisVistype;
+                      assignmentResult[assignmentResultItem].username = user.username;
                 }
               } catch (error) {
                   console.log("Error processing assignments. Data may be corrupted. ", error);

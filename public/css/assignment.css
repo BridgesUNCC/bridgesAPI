@@ -8,6 +8,31 @@ html, body {
   position:relative;
 }
 
+.nodeLabel {
+  color: black;
+  font-size: 12px;
+  stroke-width: 0px;
+  stroke-dasharray: 0,0;
+  opacity: 0.0;
+  pointer-events: none;
+}
+
+.linkLabel {
+  color: black;
+  font-size: 10px;
+  stroke-width: 0px;
+  stroke-dasharray: 0,0;
+  pointer-events: none;
+}
+
+.selfLinkLabel {
+  color: black;
+  font-size: 10px;
+  stroke-width: 0px;
+  stroke-dasharray: 0,0;
+  pointer-events: none;
+}
+
 .assignmentContainer{
     box-shadow: 0px 3px 5px 5px #888888;
     margin-left:15px;
@@ -16,6 +41,7 @@ html, body {
     max-width: 90%;
     resize: both;
     overflow: hidden;
+    position: relative;
 }
 .svg {
   width: 100%;
@@ -65,6 +91,7 @@ html, body {
     position: fixed;
     width: 20%;
     left: 40%;
+    z-index: 100;
 }
 
 svg{
@@ -90,7 +117,6 @@ div.tooltip {
 .clickthrough {
   pointer-events: none;
 }
-
 
 .assignmentTitle {
     padding: 20px;

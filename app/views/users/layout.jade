@@ -6,14 +6,7 @@ block css
 block content
     include ../includes/header.jade
     .container
-
-      .col-lg-6(style = "float:right; margin-top: 25px;")
-          block js
-      .col-lg-6(style = "position:absolute;max-height:450px;")
-              block info
-      .col-lg-6(style = "float:left; position:relative; margin-top:200px")
-              block datasources
-      .col-lg-6(style = "float:left")
-          block validate
-      .col-lg-6(style = "float:right")
-          block form
+      block validate
+      block info
+      block form
+      block js

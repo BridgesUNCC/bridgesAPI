@@ -21,7 +21,7 @@ d3.graph = function(svg, W, H, data) {
 
     graph.reset = function() {
 
-      if(!data.coord_system_type || data.coord_system_type == "Cartesian") {
+      if(!data.coord_system_type || data.coord_system_type == "cartesian") {
         finalTranslate = BridgesVisualizer.defaultTransforms.graph.translate;
         finalScale = BridgesVisualizer.defaultTransforms.graph.scale;
         transform = d3.zoomIdentity.translate(finalTranslate[0], finalTranslate[1]).scale(finalScale);
@@ -102,13 +102,10 @@ d3.graph = function(svg, W, H, data) {
 
       // append link labels
       selfLinkG.append("svg:text")
-        .append("textPath")
           .classed("selfLinkLabel", true)
-          .attr("xlink:href",function(d,i) { return "#selflinkId_" + i;})
           .style("display", function() {
             return !BridgesVisualizer.tooltipEnabled ? "block" : "none";
           })
-          .attr("startOffset", "20%")
           .text(function(d,i) { return d.label || ""; });
 
         d3.selectAll(".selfLinkLabel").each(BridgesVisualizer.insertLinkLinebreaks);
@@ -122,9 +119,6 @@ d3.graph = function(svg, W, H, data) {
         .attr("class", "link")
         .attr("id", function(d,i) { return "linkId_" + i; })
         .attr("marker-end", "url(#marker_arrow)")
-        // .attr("marker-end", function(d) {  // modify this for programmatic arrow points
-        //   return BridgesVisualizer.marker(vis, (BridgesVisualizer.getColor(d.color) || "black"), {});
-        // })
         .style("stroke-width", function (d) {
             return BridgesVisualizer.strokeWidthRange(d.thickness) || 1;
         })
@@ -147,9 +141,7 @@ d3.graph = function(svg, W, H, data) {
 
   // append link labels
   linkG.append("svg:text")
-    .append("textPath")
       .classed("linkLabel", true)
-      .attr("xlink:href",function(d,i) { return "#linkId_" + i;})
       .style("display", function() {
         return !BridgesVisualizer.tooltipEnabled ? "block" : "none";
       })
@@ -201,9 +193,9 @@ d3.graph = function(svg, W, H, data) {
 
           if(data.coord_system_type == "equirectangular") {
             proj = d3.geoEquirectangular();
-          } else if(data.coord_system_type == "albersUsa") {
+          } else if(data.coord_system_type == "albersusa") {
             proj = d3.geoAlbersUsa();
-          } else if(data.coord_system_type == "Cartesian"){
+          } else if(data.coord_system_type == "cartesian"){
             d.fx = d.location[0];
             d.fy = d.location[1];
             return;
@@ -213,7 +205,7 @@ d3.graph = function(svg, W, H, data) {
             return;
           }
 
-          point = proj([d.location[1], d.location[0]]);
+          point = proj([d.location[0], d.location[1]]);
 
           // make sure the transformed location exists
           if(point) {
@@ -230,17 +222,27 @@ d3.graph = function(svg, W, H, data) {
   node
       .append("text")
       .attr("class","nodeLabel")
-      .attr("x", BridgesVisualizer.textOffsets.graph.x + 2)
-      .attr("y",  BridgesVisualizer.textOffsets.graph.y + 14)
-      .style("color",'black')
-      .style("pointer-events", "none")
-      .style("stroke-dasharray", "0,0")
-      .style("opacity", 0.0)
+      .attr("x", BridgesVisualizer.textOffsets.graph.x)
+      .attr("y",  BridgesVisualizer.textOffsets.graph.y)
       .text(function(d) {
           return d.name;
       });
 
   d3.selectAll(".nodeLabel").each(BridgesVisualizer.insertLinebreaks);
+
+  // get control point for quadratic curve link
+  function getControlPoint(from, to) {
+    var p1 = from,
+        p2 = to,
+        midpoint = [(p1.x + p2.x)/2, (p1.y + p2.y)/2],
+        p3 = {},
+        length = 0.15;
+
+    p3.x = midpoint[0] + ((length) * (p1.y - p2.y));
+    p3.y = midpoint[1] - ((length) * (p1.x - p2.x));
+
+    return p3;
+  }
 
   function ticked() {
       node
@@ -267,6 +269,12 @@ d3.graph = function(svg, W, H, data) {
                   (x2) + "," +
                   (y2);
             });
+
+       selfLinkG.selectAll("text")
+         .attr("transform", function(d , i) {
+           var myNode = nodes[d.source];
+           return "translate(" + (myNode.x + 10) + "," + (myNode.y - 10) + ")";
+         });
       }
 
       linkG.selectAll("path")
@@ -291,12 +299,10 @@ d3.graph = function(svg, W, H, data) {
                   (y1 + (dy * ratio));
           });
 
-      // adjust the weight label positioning along links
       linkG.selectAll("text")
-        .attr("dx", function(d) {
-          var xdiff = Math.abs((d.source.x - d.target.x)/2);
-          var ydiff = Math.abs((d.source.y - d.target.y)/2);
-          return (xdiff>ydiff) ? xdiff : ydiff;
+        .attr("transform", function(d , i) {
+          var ctrl = getControlPoint(d.target, d.source);
+          return "translate(" + ctrl.x + "," + ctrl.y + ")";
         });
   }
 
