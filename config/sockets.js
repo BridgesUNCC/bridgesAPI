@@ -1,12 +1,12 @@
-// var socketio = require('socket.io');
+var socketio = require('socket.io');
 
-module.exports = function(socketio) {
+module.exports = function(server) {
 
-  // var io = socketio.listen(app);
+  var io = socketio.listen(server);
   var socks = {};
   var verbose = true;
 
-  socketio.on('connection', function (socket) {
+  io.on('connection', function (socket) {
 
     if(verbose) console.log('I see a new socket:', socket.id);
 
