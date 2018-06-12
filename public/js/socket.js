@@ -6,7 +6,7 @@
     return;
   }
 
-  var socket = io.connect('http://localhost:3000');
+  var socket = io.connect('http://bridges-sockets.herokuapp.com');
 
   socket.on('connect', function (data) {
     socket.emit('credentials', JSON.stringify({user: user.username, assignment: assignmentNumber}));
