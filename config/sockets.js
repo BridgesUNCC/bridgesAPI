@@ -62,5 +62,5 @@ module.exports = function(server) {
 
   });
 
-  // return socketio;
+  return io;
 };

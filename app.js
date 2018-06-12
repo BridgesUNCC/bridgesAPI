@@ -38,7 +38,7 @@ var server = require('http').createServer(app);
 //   path: '/socket.io'
 // });
 server.listen(port);
-require('./config/sockets')(server);
+var socketio = require('./config/sockets')(server);
 
 var streamable = require('streamable').streamable(socketio);
 
