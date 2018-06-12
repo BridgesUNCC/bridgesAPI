@@ -6,10 +6,16 @@
     return;
   }
 
-  var socket = io.connect('https://bridges-sockets.herokuapp.com');
+  // var socket = window.io.connect('https://bridges-sockets.herokuapp.com', {transports:['websocket']});
+
+  var socket = window.io.connect('localhost:3000', {transports:['websocket']});
 
   socket.on('connect', function (data) {
     socket.emit('credentials', JSON.stringify({user: user.username, assignment: assignmentNumber}));
+  });
+
+  socket.on("disconnect", function (data) {
+    console.log('disconnecting...', data);
   });
 
   socket.on('dataframe', function (dataframe) {

@@ -1,11 +1,12 @@
-var socketio = require('socket.io');
+// var socketio = require('socket.io');
 
-module.exports.listen = function(app) {
-  var io = socketio.listen(app);
+module.exports.listen = function(socketio) {
+
+  // var io = socketio.listen(app);
   var socks = {};
   var verbose = true;
 
-  io.sockets.on('connection', function (socket) {
+  socketio.on('connection', function (socket) {
 
     if(verbose) console.log('I see a new socket:', socket.id);
 
@@ -22,7 +23,10 @@ module.exports.listen = function(app) {
 
       /* Join unique channel */
       socket.join(channel);
-      if(verbose) console.log("User " + socket.id + " connected to channel " + channel);
+      if(verbose) {
+        console.log("User " + socket.id + " connected to channel " + channel);
+        console.log('All sockets: ', socks);
+      }
       socket.broadcast.to(channel).emit('announcement', {message: "User " + socket.id + " connected to channel " + channel});
     });
 
@@ -58,5 +62,5 @@ module.exports.listen = function(app) {
 
   });
 
-  return io;
+  return socketio;
 };
