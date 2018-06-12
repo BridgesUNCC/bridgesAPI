@@ -33,7 +33,6 @@ require('./config/express')(app, config, passport);
 var port = process.env.PORT || config.port;
 
 var server = require('http').createServer(app);
-console.log('>>NODE_ENV: ', process.env.NODE_ENV);
 var socketio = require('socket.io')(server, {
   serveClient: (process.env.NODE_ENV === 'production') ? false : true
 });

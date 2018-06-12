@@ -6,7 +6,7 @@
     return;
   }
 
-  var socket = io.connect('https://bridges-sockets.herokuapp.com', {transports:['websocket']});
+  var socket = io.connect('https://bridges-sockets.herokuapp.com');
 
   // var socket = io.connect('localhost:3000', {transports:['websocket']});
 
