@@ -36,6 +36,8 @@ var server = require('http').createServer(app);
 var io = require('./config/sockets').listen(server);
 server.listen(port);
 
+console.log('A change was made');
+
 var streamable = require('streamable').streamable(io);
 
 console.log("Server listening on port " + port);
