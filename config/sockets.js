@@ -33,8 +33,14 @@ module.exports = function(server) {
 
     /* Receives keydown events from web-based application sockets */
     socket.on('keydown', function (data) {
-      if(verbose) console.log('keydown', { pressed: 'key ' + data.key, sock: socket.id, channel: socks[socket.id] });
-      socket.broadcast.to(socks[socket.id]).emit('keydown', { pressed: 'key ' + data.key });
+      if(verbose) console.log('keydown', { key: data.key, sock: socket.id, channel: socks[socket.id] });
+      socket.broadcast.to(socks[socket.id]).emit('keydown', { key: data.key, type: 'keydown' });
+    });
+
+    /* Receives keyup events from web-based application sockets */
+    socket.on('keyup', function (data) {
+      if(verbose) console.log('keyup', { key: data.key, sock: socket.id, channel: socks[socket.id] });
+      socket.broadcast.to(socks[socket.id]).emit('keyup', { key: data.key, type: 'keyup' });
     });
 
     /* Receives dataframe events from client-based sockets */

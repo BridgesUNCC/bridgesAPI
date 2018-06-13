@@ -49,27 +49,26 @@
     grid.draw();
   });
 
+// use hashmap to keep track of what is currently down
+// remove from hashmap once keyup happens -
+// send keydown and keyup events
+  var keys = {};
+
+  $(document).keyup(function(e) {
+    e.preventDefault();
+    if(keys[e.keyCode]) {
+      delete keys[e.keyCode];
+      socket.emit('keyup', {key: e.key});
+      console.log("sending keyup: ", e.key);
+    }
+  });
+
   $(document).keydown(function(e) {
-    console.log(e);
-      switch(e.key) {
-          case "ArrowLeft":        //case 37: // left
-            socket.emit('keydown', {key: "left"});
-            break;
-
-          case "ArrowUp":           //case 38: // up
-            socket.emit('keydown', {key: "up"});
-            break;
-
-          case "ArrowRight":        //case 39: // right
-            socket.emit('keydown', {key: "right"});
-            break;
-
-          case "ArrowDown":         //case 40: // down
-            socket.emit('keydown', {key: "down"});
-            break;
-
-          default: return;
-      }
-      e.preventDefault();
+    e.preventDefault();
+    if(!keys[e.keyCode]) {
+      keys[e.keyCode] = true;
+      socket.emit('keydown', {key: e.key});
+      console.log('sending keydown: ', e.key);
+    }
   });
 })();
