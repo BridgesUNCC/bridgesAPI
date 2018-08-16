@@ -359,6 +359,11 @@ exports.show = function (req, res, next) {
 
           data.visType = visTypes.getVisType(data.visual);
 
+          // Make sure multiple arrays are visualized
+          if(data.visType == "Alist") {
+            visTypes.checkIfHasDims(data);
+          }
+
           // add optional nav buttons where appropriate
           if(data.visType == "nodelink") {
             if(!navItems.save) navItems.save = true;
