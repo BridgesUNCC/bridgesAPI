@@ -30,7 +30,7 @@ block content
 block footerjs
     script.
         var owner = '#{owner}'
-        if ( owner=="false" && "#{assignmentDescription}".length <= 0 ) {
+        if ( owner=="false" && !{JSON.stringify(assignmentDescription)}.length <= 0 ) {
              $('.vis').css('width','99%') // adjust assignment width for public assignments
         }
 
