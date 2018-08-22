@@ -26,7 +26,9 @@ exports.getVisType = function(toCheck) {
     "GraphAdjacencyList":  				"nodelink",
     "GraphAdjacencyMatrix":				"nodelink",
 
-    "ColorGrid":                  "grid"
+    "ColorGrid":                  "grid",
+
+    "SymbolCollection":           "collection"
   };
     if( toCheck && validTypes[toCheck] )
       return validTypes[toCheck];
@@ -59,6 +61,11 @@ exports.getVisTypeObject = function(data) {
       "grid": {
         "vistype":"grid",
         "script":"/js/grid.js",
+        "link":""
+      },
+      "collection": {
+        "vistype":"collection",
+        "script":"/js/collection.js",
         "link":""
       },
       "tree": {

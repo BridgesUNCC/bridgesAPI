@@ -88,7 +88,14 @@ for (var key in data) {
         graph = d3.graph_canvas(vis, width, height, data[key]);
         BridgesVisualizer.visualizations.push(graph);
     }
+    else if (data[key].visType == "collection" && d3.collection) {
+        vis = d3.select("#vis" + key).append("svg")
+          .attr("id", "vis" + key);
+        collection = d3.collection(vis, width, height, data[key]);
+        BridgesVisualizer.visualizations.push(collection);
+    }
     else {
+      console.log(data[key]);
         // console.log("unknown data type");
         graph = d3.graph(d3, "#vis" + key, width, height, data[key]);
         BridgesVisualizer.visualizations.push(graph);

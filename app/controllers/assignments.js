@@ -72,6 +72,8 @@ exports.upload = function (req, res, next) {
     var subAssignment = assignmentRaw[1];
     if (subAssignment == "0") subAssignment = "00";
 
+    console.log(rawBody);
+
     // validate attributes
     var visualizationType = visTypes.getVisType(rawBody.visual);
     var title = rawBody.title || "";
@@ -373,7 +375,7 @@ exports.show = function (req, res, next) {
           }
 
           // Use SVG for < 100 nodes, Canvas for > 100
-          if(data.visType == "nodelink" && data.nodes.length > 100) {
+          if(data.visType == "nodelink" && data.nodes && data.nodes.length > 100) {
             data.visType = "nodelink-canvas";
             linkResources.script.push('/js/graph-canvas.js');
           }
