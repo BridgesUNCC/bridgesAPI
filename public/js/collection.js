@@ -53,19 +53,16 @@ d3.collection = function(svg, W, H, data) {
                     "text": [],
                     "circles": [],
                     "rectangles": [],
-                    "polygons": []
+                    "polygons": [],
+                    "shapes": []
                   };
 
     // separate shapes from text labels
     symbolData.forEach(function(symbol) {
       if(symbol.shape == "text") {
         symbols.text.push(symbol);
-      } else if(symbol.shape == "circle") {
-        symbols.circles.push(symbol);
-      } else if(symbol.shape == "rect") {
-        symbols.rectangles.push(symbol);
-      } else if(symbol.shape == "polygon") {
-        symbols.polygons.push(symbol);
+      } else {
+        symbols.shapes.push(symbol);
       }
     });
 
@@ -134,67 +131,73 @@ d3.collection = function(svg, W, H, data) {
         .style("fill", "none");
 
 
-    /*
-     *    S H A P E S
-     */
-
-    circles = svgGroup.selectAll(".circle")
-      .data(symbols.circles)
-      .enter().append("g")
+    // draw and style all shapes
+    shapes = svgGroup.selectAll(".shape")
+      .data(symbols.shapes).enter().append("g")
         .attr("class", "shape")
-        .append("svg:circle")
-          .attr("r", function(d) {
-            return d.r || 15;
-          })
-          .attr("cx", function(d) {
-            if(d.location)
-              return d.location.x;
-            return 0;
-          })
-          .attr("cy", function(d) {
-            if(d.location)
-              return d.location.y;
-            return 0;
-          });
+      .each(function(d) {
+        var me = d3.select(this);
+        switch(d.shape) {
+          /*
+           * C I R C L E
+           */
+          case "circle":
+            me
+            .append("svg:circle")
+            .attr("r", function(d) {
+              return d.r || 15;
+            })
+            .attr("cx", function(d) {
+              if(d.location)
+                return d.location.x;
+              return 0;
+            })
+            .attr("cy", function(d) {
+              if(d.location)
+                return d.location.y;
+              return 0;
+            });
+            break;
+          /*
+           * R E C T A N G L E
+           */
+          case "rect":
+            me
+            .append("svg:rect")
+              .attr("x", function(d) {
+                if(d.location)
+                  return d.location.x;
+                return 0;
+              })
+              .attr("y", function(d) {
+                if(d.location)
+                  return d.location.y;
+                return 0;
+              })
+              .attr("width", function(d) {
+                return d.width || 10;
+              })
+              .attr("height", function(d) {
+                return d.height || 10;
+              });
+              break;
+          /*
+           * P O L Y G O N
+           */
+           case "polygon":
+             me
+             .append("svg:polygon")
+               .attr("points", function(d) {
+                 return d.points;
+               })
+               .attr("transform", function(d) {
+                 if(d.location)
+                   return "translate(" + d.location.x +  "," + d.location.y + ")";
+                 return "translate(0,0)";
+               });
+        }
+      });
 
-    rectangles = svgGroup.selectAll(".rectangle")
-      .data(symbols.rectangles)
-      .enter().append("g")
-        .attr("class", "shape")
-        .append("svg:rect")
-          .attr("x", function(d) {
-            if(d.location)
-              return d.location.x;
-            return 0;
-          })
-          .attr("y", function(d) {
-            if(d.location)
-              return d.location.y;
-            return 0;
-          })
-          .attr("width", function(d) {
-            return d.width || 10;
-          })
-          .attr("height", function(d) {
-            return d.height || 10;
-          });
-
-    polygons = svgGroup.selectAll(".polygon")
-      .data(symbols.polygons)
-      .enter().append("g")
-        .attr("class", "shape")
-        .append("svg:polygon")
-          .attr("points", function(d) {
-            return d.points;
-          })
-          .attr("transform", function(d) {
-            if(d.location)
-              return "translate(" + d.location.x +  "," + d.location.y + ")";
-            return "translate(0,0)";
-          });
-
-    // apply style properties to all shapes
-    shapes = d3.selectAll(".shape");
     shapes
       .style('opacity', function(d) {
         if(d.opacity) return d.opacity;
@@ -210,19 +213,17 @@ d3.collection = function(svg, W, H, data) {
           return d['stroke-dasharray'] || 0;
       })
       .style("fill", function(d) {
-          return BridgesVisualizer.getColor(d.fill) || "black";
+          return BridgesVisualizer.getColor(d.fill) || "blue";
       })
       .on("mouseover", function(d) {
           BridgesVisualizer.textMouseover(d.name);
       })
       .on("mouseout", BridgesVisualizer.textMouseout);
 
-    //inner nodes
+    // shape labels
     shapes
         .append("text")
         .attr("class","nodeLabel")
-        // .attr("x", BridgesVisualizer.textOffsets.graph.x)
-        // .attr("y",  BridgesVisualizer.textOffsets.graph.y)
         .text(function(d) {
             return d.name;
         });
