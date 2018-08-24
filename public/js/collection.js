@@ -1,7 +1,7 @@
 //based loosely on bostock's example and
 //http://bl.ocks.org/d3noob/5141278
 d3.collection = function(svg, W, H, data) {
-
+    
      //defaults
     var graph = {},
         w = W || 1280,
@@ -13,10 +13,16 @@ d3.collection = function(svg, W, H, data) {
         finalTranslate,
         finalScale,
         transform;
-    //
-    // var zoom = d3.zoom()
-    //     .scaleExtent([0.1,10])
-    //     .on("zoom", zoomed);
+
+    // pad domains
+    data.domainX[0] = data.domainX[0] + (data.domainX[0] * 0.1);
+    data.domainX[1] = data.domainX[1] + (data.domainX[1] * 0.1);
+    data.domainY[0] = data.domainY[0] + (data.domainY[0] * 0.1);
+    data.domainY[1] = data.domainY[1] + (data.domainY[1] * 0.1);
+
+    var xScale = d3.scaleLinear().domain(data.domainX).range([-w/2,w/2]);
+    var yScale = d3.scaleLinear().domain(data.domainY).range([h/2,-h/2]); // negatives invert to cartesian space
+
 
     graph.reset = function() {
 
@@ -41,6 +47,7 @@ d3.collection = function(svg, W, H, data) {
             // .call(zoom)
             // .call(zoom.transform, transform);
 
+
     // translate origin to center of screen
     transform = "translate(" + w/2 +  "," + h/2 + ")";
 
@@ -59,6 +66,17 @@ d3.collection = function(svg, W, H, data) {
 
     // separate shapes from text labels
     symbolData.forEach(function(symbol) {
+      if(!symbol.location) {
+          symbol.location = {};
+          symbol.location.x = xScale(0);
+          symbol.location.y = yScale(0);
+      } else {
+        // console.log('starting with', symbol.location.x, symbol.location.y);
+        symbol.location.x = xScale(symbol.location.x);
+        symbol.location.y = yScale(symbol.location.y);
+        // console.log('becomes', symbol.location.x, symbol.location.y);
+      }
+
       if(symbol.shape == "text") {
         symbols.text.push(symbol);
       } else {
@@ -88,7 +106,8 @@ d3.collection = function(svg, W, H, data) {
           if(d.location) return d.location.y;
           return 0;
         })
-        .attr("text-anchor", "middle")
+        .attr("text-anchor", "middle")          //  Draw centered on given location
+        .attr("alignment-baseline", "middle")   //  (or 0,0)
         .style('fill', function(d) {
           if(d.fill) return BridgesVisualizer.getColor(d.fill);
           return 'black';
@@ -166,13 +185,13 @@ d3.collection = function(svg, W, H, data) {
             .append("svg:rect")
               .attr("x", function(d) {
                 if(d.location)
-                  return d.location.x;
-                return 0;
+                  return d.location.x - (d.width / 2);
+                return 0 - (d.width / 2);
               })
               .attr("y", function(d) {
                 if(d.location)
-                  return d.location.y;
-                return 0;
+                  return d.location.y - (d.height / 2);
+                return 0 - (d.height / 2);
               })
               .attr("width", function(d) {
                 return d.width || 10;
