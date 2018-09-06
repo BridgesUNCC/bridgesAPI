@@ -1,7 +1,7 @@
 //based loosely on bostock's example and
 //http://bl.ocks.org/d3noob/5141278
 d3.collection = function(svg, W, H, data) {
-    
+
      //defaults
     var graph = {},
         w = W || 1280,
@@ -22,6 +22,13 @@ d3.collection = function(svg, W, H, data) {
 
     var xScale = d3.scaleLinear().domain(data.domainX).range([-w/2,w/2]);
     var yScale = d3.scaleLinear().domain(data.domainY).range([h/2,-h/2]); // negatives invert to cartesian space
+
+    // determine how to scale the symbols as a function of the current scales and default scales
+    // var symbolScale =
+
+    console.log('domains', xScale.domain(), yScale.domain());
+    console.log('ranges', xScale.range(), yScale.range());
+
 
 
     graph.reset = function() {
@@ -75,6 +82,17 @@ d3.collection = function(svg, W, H, data) {
         symbol.location.x = xScale(symbol.location.x);
         symbol.location.y = yScale(symbol.location.y);
         // console.log('becomes', symbol.location.x, symbol.location.y);
+      }
+
+      // for polygons, scale the points accordingly
+      if(symbol.shape == "polygon") {
+        for(var i = 0; i < symbol.points.length; i++) {
+          if(i % 2 === 0) {// x
+            symbol.points[i] = xScale(symbol.points[i]);
+          } else {
+            symbol.points[i] = yScale(symbol.points[i]);
+          }
+        }
       }
 
       if(symbol.shape == "text") {
