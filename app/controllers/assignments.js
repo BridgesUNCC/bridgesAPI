@@ -372,8 +372,8 @@ exports.show = function (req, res, next) {
             if(!navItems.labels) navItems.labels = true;
           }
 
-          // Use SVG for < 100 nodes, Canvas for > 100
-          if(data.visType == "nodelink" && data.nodes.length > 100) {
+          // Are there nodes in the data? Use SVG for < 100 nodes, Canvas for > 100
+          if(data.visType == "nodelink" && data.nodes && data.nodes.length > 100) {
             data.visType = "nodelink-canvas";
             linkResources.script.push('/js/graph-canvas.js');
           }

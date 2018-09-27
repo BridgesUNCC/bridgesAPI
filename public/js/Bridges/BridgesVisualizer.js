@@ -78,6 +78,335 @@
     return color;
   };
 
+  var namedColors = ["aliceblue",
+    "antiquewhite",
+    "aqua",
+    "aquamarine",
+    "azure",
+    "beige",
+    "bisque",
+    "black",
+    "blanchedalmond",
+    "blue",
+    "blueviolet",
+    "brown",
+    "burlywood",
+    "cadetblue",
+    "chartreuse",
+    "chocolate",
+    "coral",
+    "cornflowerblue",
+    "cornsilk",
+    "crimson",
+    "cyan",
+    "darkblue",
+    "darkcyan",
+    "darkgoldenrod",
+    "darkgray",
+    "darkgreen",
+    "darkgrey",
+    "darkkhaki",
+    "darkmagenta",
+    "darkolivegreen",
+    "darkorange",
+    "darkorchid",
+    "darkred",
+    "darksalmon",
+    "darkseagreen",
+    "darkslateblue",
+    "darkslategray",
+    "darkslategrey",
+    "darkturquoise",
+    "darkviolet",
+    "deeppink",
+    "deepskyblue",
+    "dimgray",
+    "dimgrey",
+    "dodgerblue",
+    "firebrick",
+    "floralwhite",
+    "forestgreen",
+    "fuchsia",
+    "gainsboro",
+    "ghostwhite",
+    "gold",
+    "goldenrod",
+    "gray",
+    "grey",
+    "green",
+    "greenyellow",
+    "honeydew",
+    "hotpink",
+    "indianred",
+    "indigo",
+    "ivory",
+    "khaki",
+    "lavender",
+    "lavenderblush",
+    "lawngreen",
+    "lemonchiffon",
+    "lightblue",
+    "lightcoral",
+    "lightcyan",
+    "lightgoldenrodyellow",
+    "lightgray",
+    "lightgreen",
+    "lightgrey",
+    "lightpink",
+    "lightsalmon",
+    "lightseagreen",
+    "lightskyblue",
+    "lightslategray",
+    "lightslategrey",
+    "lightsteelblue",
+    "lightyellow",
+    "lime",
+    "limegreen",
+    "linen",
+    "magenta",
+    "maroon",
+    "mediumaquamarine",
+    "mediumblue",
+    "mediumorchid",
+    "mediumpurple",
+    "mediumseagreen",
+    "mediumslateblue",
+    "mediumspringgreen",
+    "mediumturquoise",
+    "mediumvioletred",
+    "midnightblue",
+    "mintcream",
+    "mistyrose",
+    "moccasin",
+    "navajowhite",
+    "navy",
+    "oldlace",
+    "olive",
+    "olivedrab",
+    "orange",
+    "orangered",
+    "orchid",
+    "palegoldenrod",
+    "palegreen",
+    "paleturquoise",
+    "palevioletred",
+    "papayawhip",
+    "peachpuff",
+    "peru",
+    "pink",
+    "plum",
+    "powderblue",
+    "purple",
+    "red",
+    "rosybrown",
+    "royalblue",
+    "saddlebrown",
+    "salmon",
+    "sandybrown",
+    "seagreen",
+    "seashell",
+    "sienna",
+    "silver",
+    "skyblue",
+    "slateblue",
+    "slategray",
+    "slategrey",
+    "snow",
+    "springgreen",
+    "steelblue",
+    "tan",
+    "teal",
+    "thistle",
+    "tomato",
+    "turquoise",
+    "violet",
+    "wheat",
+    "white",
+    "whitesmoke",
+    "yellow",
+    "yellowgreen"];
+  BridgesVisualizer.getNamedColor = function(index) {
+    return namedColors[index] || "black";
+  };
+
+
+  var symbols = [];
+  BridgesVisualizer.setupSymbols = function(d) {
+    symbols = [
+      new Path2D(),
+      (function() { // big circle
+        var shape = new Path2D();
+        shape.arc(d/2, d/2, d*0.3, 0, 2 * Math.PI);
+        return shape;
+      })(),
+      (function() { // medium circle
+        var shape = new Path2D();
+        shape.arc(d/2, d/2, d*0.2, 0, 2 * Math.PI);
+        return shape;
+      })(),
+      (function() { // small circle
+        var shape = new Path2D();
+        shape.arc(d/2, d/2, d*0.1, 0, 2 * Math.PI);
+        return shape;
+      })(),
+      (function() { // big sq
+        var shape = new Path2D();
+        shape.rect(d*0.2, d*0.2, d*0.6, d*0.6);
+        return shape;
+      })(),
+      (function() { // medium sq
+        var shape = new Path2D();
+        shape.rect(d*0.3, d*0.3, d*0.4, d*0.4);
+        return shape;
+      })(),
+      (function() { // small sq
+        var shape = new Path2D();
+        shape.rect(d*0.4, d*0.4, d*0.2, d*0.2);
+        return shape;
+      })(),
+      (function() { // big diamond
+        var shape = new Path2D();
+        shape.moveTo(d*0.5,d*0.1);
+        shape.lineTo(d*0.9, d*0.5);
+        shape.lineTo(d*0.5, d*0.9);
+        shape.lineTo(d*0.1,d*0.5);
+        shape.lineTo(d*0.5,d*0.1);
+        return shape;
+      })(),
+      (function() { // medium diamond
+        var shape = new Path2D();
+        shape.moveTo(d*0.5,d*0.2);
+        shape.lineTo(d*0.8, d*0.5);
+        shape.lineTo(d*0.5, d*0.8);
+        shape.lineTo(d*0.2,d*0.5);
+        shape.lineTo(d*0.5,d*0.2);
+        return shape;
+      })(),
+      (function() { // small sq
+        var shape = new Path2D();
+        shape.moveTo(d*0.5,d*0.3);
+        shape.lineTo(d*0.7, d*0.5);
+        shape.lineTo(d*0.5, d*0.7);
+        shape.lineTo(d*0.3,d*0.5);
+        shape.lineTo(d*0.5,d*0.3);
+        return shape;
+      })(),
+      (function() { // big triangle down
+        var shape = new Path2D();
+        shape.moveTo(d*0.15,d*0.15);
+        shape.lineTo(d/2, d*0.8);
+        shape.lineTo(d*0.85, d*0.15);
+        shape.lineTo(d*0.15,d*0.15);
+        return shape;
+      })(),
+      (function() { // medium triangle down
+        var shape = new Path2D();
+        shape.moveTo(d*0.2,d*0.2);
+        shape.lineTo(d/2, d*0.7);
+        shape.lineTo(d*0.8, d*0.2);
+        shape.lineTo(d*0.2,d*0.2);
+        return shape;
+      })(),
+      // new Path2D(),
+      (function() { // small triangle down
+        var shape = new Path2D();
+        shape.moveTo(d*0.3,d*0.3);
+        shape.lineTo(d/2, d*0.6);
+        shape.lineTo(d*0.7, d*0.3);
+        shape.lineTo(d*0.3,d*0.3);
+        return shape;
+      })(),
+      (function() { // big triangle
+        var shape = new Path2D();
+        shape.moveTo(d*0.15,d*0.85);
+        shape.lineTo(d/2, d*0.2);
+        shape.lineTo(d*0.85, d*0.85);
+        shape.lineTo(d*0.15,d*0.85);
+        return shape;
+      })(),
+      (function() { // medium triangle down
+        var shape = new Path2D();
+        shape.moveTo(d*0.2,d*0.8);
+        shape.lineTo(d/2, d*0.3);
+        shape.lineTo(d*0.8, d*0.8);
+        shape.lineTo(d*0.2,d*0.8);
+        return shape;
+      })(),
+      (function() { // small triangle down
+        var shape = new Path2D();
+        shape.moveTo(d*0.3,d*0.7);
+        shape.lineTo(d/2, d*0.4);
+        shape.lineTo(d*0.7, d*0.7);
+        shape.lineTo(d*0.3,d*0.7);
+        return shape;
+      })(),
+      (function() { // arc top left
+        var shape = new Path2D();
+        shape.moveTo(0,d*0.5);
+        shape.quadraticCurveTo(d*0.5,d*0.5,d*0.5,0);
+        shape.lineTo(0,0);
+        return shape;
+      })(),
+      (function() { // arc top right
+        var shape = new Path2D();
+        shape.moveTo(d*0.5,0);
+        shape.quadraticCurveTo(d*0.5,d*0.5,d,d*0.5);
+        shape.lineTo(d,0);
+        return shape;
+      })(),
+      (function() { // arc bottom left
+        var shape = new Path2D();
+        shape.moveTo(0,d*0.5);
+        shape.quadraticCurveTo(d*0.5,d*0.5,d*0.5,d);
+        shape.lineTo(0,d);
+        return shape;
+      })(),
+      (function() { // arc bottom right
+        var shape = new Path2D();
+        shape.moveTo(d,d*0.5);
+        shape.quadraticCurveTo(d*0.5,d*0.5,d*0.5,d);
+        shape.lineTo(d,d);
+        return shape;
+      })(),
+      (function() { // A
+        var shape = new Path2D();
+        shape.moveTo(d*0.45, d*0.2);
+        shape.lineTo(d*0.55, d*0.2);
+        shape.lineTo(d*0.8, d*0.9);
+        shape.lineTo(d*0.75, d*0.9);
+        shape.lineTo(d*0.5, d*0.25);
+        shape.lineTo(d*0.25, d*0.9);
+        shape.lineTo(d*0.20, d*0.9);
+        shape.moveTo(d*0.34, d*0.65);
+        shape.lineTo(d*0.66, d*0.65);
+        shape.lineTo(d*0.63, d*0.6);
+        shape.lineTo(d*0.37, d*0.6);
+        return shape;
+      })(),
+      (function() { // A
+        var shape = new Path2D();
+        shape.moveTo(d*0.45, d*0.2);
+        shape.lineTo(d*0.55, d*0.2);
+        shape.lineTo(d*0.8, d*0.9);
+        shape.lineTo(d*0.75, d*0.9);
+        shape.lineTo(d*0.5, d*0.25);
+        shape.lineTo(d*0.25, d*0.9);
+        shape.lineTo(d*0.20, d*0.9);
+        shape.moveTo(d*0.34, d*0.65);
+        shape.lineTo(d*0.66, d*0.65);
+        shape.lineTo(d*0.63, d*0.6);
+        shape.lineTo(d*0.37, d*0.6);
+        return shape;
+      })(),
+      new Path2D()
+    ];
+  };
+
+
+  BridgesVisualizer.getSymbol = function(index) {
+    return symbols[index] || new Path2D();
+  };
+
   //this array holds the assignments types; it's used to handle the mixed assignements
   BridgesVisualizer.assignmentTypes = [];
 

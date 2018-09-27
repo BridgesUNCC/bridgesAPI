@@ -72,6 +72,11 @@ for (var key in data) {
         grid = d3.grid(vis, width, height, data[key], d3.select("#vis" + key));
         BridgesVisualizer.visualizations.push(grid);
     }
+    else if (data[key]['visType'] == "gamegrid" && d3.gamegrid) {
+        vis = d3.select("#vis" + key).append("canvas")
+          .attr("id", "canvas" + key);
+        d3.gamegrid(vis, width, height, data[key], d3.select("#vis" + key));
+    }
     else if (data[key]['visType'] == "nodelink" && d3.graph) {
         vis = d3.select("#vis" + key).append("svg")
           .attr("id", "vis" + key);
