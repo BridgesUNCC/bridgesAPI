@@ -6,6 +6,31 @@ Game Grid visualization abstraction for Bridges
 d3.gamegrid = function(canvas, W, H, data, parent) {
     var context = canvas.node().getContext("2d", { alpha: false });
 
+    // a canvas to draw each particular symbol (to facilitate color compositing)
+    var symbolCanvas = document.createElement("canvas");
+    symbolCanvas.id = "symbolCanvas";
+    // document.body.appendChild(symbolCanvas);
+    var symbolContext = symbolCanvas.getContext("2d");
+
+    // a canvas to draw the entire symbolImage png file (for debug purposes)
+    var symbolImageCanvas = document.createElement("canvas");
+    symbolImageCanvas.id = "symbolImageCanvas";
+    // document.body.appendChild(symbolImageCanvas);
+
+    // symbolImage - contains all symbols from which to select in the game grid
+    var symbolImage = new Image();
+    symbolImage.onload = function() {
+      var ctx = symbolImageCanvas.getContext("2d");
+      // use the intrinsic size of image in CSS pixels for the canvas element
+      symbolImageCanvas.width = this.naturalWidth;
+      symbolImageCanvas.height = this.naturalHeight;
+
+      // draw the symbol image to a canvas
+      ctx.drawImage(this, 0, 0, this.width, this.height);
+      draw();
+    };
+    symbolImage.src = '/img/symbols.png';
+
     //defaults
     var grid = [],
         w = W || 1280,
@@ -24,12 +49,8 @@ d3.gamegrid = function(canvas, W, H, data, parent) {
     }
     cellSize = Math.max(cellSize, 1);
 
-
-
     w = dims[1]*cellSize;
     h = dims[0]*cellSize;
-
-    BridgesVisualizer.setupSymbols(cellSize);
 
     parent
       .style("width", w + 'px')
@@ -37,15 +58,6 @@ d3.gamegrid = function(canvas, W, H, data, parent) {
       .style("font-size", '0px')
       .style("margin", "auto")
       .style("margin-bottom", "30px");
-
-    // Set actual size in memory (scaled to account for extra pixel density).
-    // var scale = window.devicePixelRatio; // <--- Change to 1 on retina screens to see blurry canvas.
-    // w = w * scale;
-    // h = h * scale;
-
-    // Normalize coordinate system to use css pixels.
-    // context.scale(scale, scale);
-    // console.log(w, h);
 
     // set canvas attributes
     canvas.attr("width", w + 'px').attr("height", h + 'px');
@@ -61,42 +73,43 @@ d3.gamegrid = function(canvas, W, H, data, parent) {
     // }
 
     function draw() {
+      // clear the main grid
       context.clearRect(0, 0, w, h);
-      context.lineWidth = 2;
 
+      // clear the symbol canvas
+      symbolCanvas.width = cellSize;
+      symbolCanvas.height = cellSize;
+
+      // loop through all cells
       for(var i = 0; i < numCells; i++) {
-        // get coordinates for cell
+        // x and y coordinates of each cell in the drawn game grid
         let x = parseInt(i%dims[1])*cellSize;
         let y = parseInt(i/dims[1])*cellSize;
 
-        // draw bg
-          // get color
-          context.fillStyle = BridgesVisualizer.getNamedColor(bg[i]);
-          // draw rect
-          context.fillRect(x, y, cellSize, cellSize);
+        // draw bg color
+        context.fillStyle = BridgesVisualizer.getNamedColor(bg[i]);
+        context.fillRect(x, y, cellSize, cellSize);
 
-        // draw fg/symbol
-          // get color
-          // context.strokeStyle = BridgesVisualizer.getNamedColor(fg[i]);
-          context.fillStyle = BridgesVisualizer.getNamedColor(fg[i]);
+        // draw colored symbol
 
-          // get symbol
-          symbol = BridgesVisualizer.getSymbol(symbols[i]);
-          // draw symbol in correct location
-          context.translate(x, y);
-          // // context.translate(0.5, 0.5);
-          context.fill(symbol);
-          // // context.translate(-0.5, -0.5);
-          context.translate(-x, -y);
+        // x position of symbol in symbolImage
+        let sx = symbols[i] * 100;
+
+        // draw the symbol into the intermediate canvas to color it appropriately
+        symbolContext.clearRect(0, 0, cellSize, cellSize);
+        symbolContext.fillStyle = BridgesVisualizer.getNamedColor(fg[i]);
+        symbolContext.fillRect(0, 0, cellSize, cellSize);
+        symbolContext.globalCompositeOperation = "destination-in";
+        symbolContext.drawImage(symbolImage, sx, 0, 100, 100, 0, 0, cellSize, cellSize);
+        symbolContext.globalCompositeOperation = "source-over";
+
+        // now draw the colored symbol image into the main grid
+        // console.log(sx, 0, 100, 100, x, y, cellSize, cellSize);
+        context.drawImage(symbolCanvas, x, y, cellSize, cellSize);
       }
       window.requestAnimationFrame(draw);
     }
 
-    // draw a node of the grid
-    function drawNode(d, i) {
-      context.fillStyle = "rgba(" + d[0] + "," + d[1] + "," + d[2] + "," + (d[3]/255) + ")";
-      context.fillRect(parseInt(i%dims[1])*cellSize, parseInt(i/dims[1])*cellSize, cellSize, cellSize);
-    }
     //
     // function _base64ToArrayBuffer(base64) {
     //     var binary_string =  window.atob(base64);
@@ -108,8 +121,6 @@ d3.gamegrid = function(canvas, W, H, data, parent) {
     //     return bytes.buffer;
     // }
     //
-    draw();
-
 
     function expandRLE(arr) {
       out = [];
