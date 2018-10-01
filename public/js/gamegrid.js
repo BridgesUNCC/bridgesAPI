@@ -4,33 +4,6 @@ Game Grid visualization abstraction for Bridges
 
 */
 d3.gamegrid = function(canvas, W, H, data, parent) {
-    var context = canvas.node().getContext("2d", { alpha: false });
-
-    // a canvas to draw each particular symbol (to facilitate color compositing)
-    var symbolCanvas = document.createElement("canvas");
-    symbolCanvas.id = "symbolCanvas";
-    // document.body.appendChild(symbolCanvas);
-    var symbolContext = symbolCanvas.getContext("2d");
-
-    // a canvas to draw the entire symbolImage png file (for debug purposes)
-    var symbolImageCanvas = document.createElement("canvas");
-    symbolImageCanvas.id = "symbolImageCanvas";
-    // document.body.appendChild(symbolImageCanvas);
-
-    // symbolImage - contains all symbols from which to select in the game grid
-    var symbolImage = new Image();
-    symbolImage.onload = function() {
-      var ctx = symbolImageCanvas.getContext("2d");
-      // use the intrinsic size of image in CSS pixels for the canvas element
-      symbolImageCanvas.width = this.naturalWidth;
-      symbolImageCanvas.height = this.naturalHeight;
-
-      // draw the symbol image to a canvas
-      ctx.drawImage(this, 0, 0, this.width, this.height);
-      draw();
-    };
-    symbolImage.src = '/img/symbols.png';
-
     //defaults
     var grid = [],
         w = W || 1280,
@@ -51,6 +24,41 @@ d3.gamegrid = function(canvas, W, H, data, parent) {
 
     w = dims[1]*cellSize;
     h = dims[0]*cellSize;
+
+
+    var context = canvas.node().getContext("2d", { alpha: false });
+
+    // a canvas to draw each particular symbol (to facilitate color compositing)
+    var symbolCanvas = document.createElement("canvas");
+    symbolCanvas.id = "symbolCanvas";
+    symbolCanvas.width = cellSize;
+    symbolCanvas.height = cellSize;
+    // document.body.appendChild(symbolCanvas);
+    var symbolContext = symbolCanvas.getContext("2d");
+
+    // a canvas to draw the entire symbolImage png file (for debug purposes)
+    var symbolImageCanvas = document.createElement("canvas");
+    symbolImageCanvas.id = "symbolImageCanvas";
+    // document.body.appendChild(symbolImageCanvas);
+
+    // symbolImage - contains all symbols from which to select in the game grid
+    var symbolImage = new Image();
+    symbolImage.onload = function() {
+      var ctx = symbolImageCanvas.getContext("2d");
+      // use the intrinsic size of image in CSS pixels for the canvas element
+      // symbolImageCanvas.width = this.naturalWidth;
+      // symbolImageCanvas.height = this.naturalHeight;
+
+      // scale symbol image canvas based on the cellsize
+      symbolImageCanvas.width = 16 * cellSize;
+      symbolImageCanvas.height = 16 * cellSize;
+
+      // draw the symbol image to the canvas
+      ctx.drawImage(this, 0, 0, 16 * cellSize, 16 * cellSize);
+      draw();
+    };
+    symbolImage.src = '/img/symbols.png';
+
 
     parent
       .style("width", w + 'px')
@@ -77,8 +85,8 @@ d3.gamegrid = function(canvas, W, H, data, parent) {
       context.clearRect(0, 0, w, h);
 
       // clear the symbol canvas
-      symbolCanvas.width = cellSize;
-      symbolCanvas.height = cellSize;
+      // symbolCanvas.width = cellSize;
+      // symbolCanvas.height = cellSize;
 
       // loop through all cells
       for(var i = 0; i < numCells; i++) {
@@ -90,17 +98,25 @@ d3.gamegrid = function(canvas, W, H, data, parent) {
         context.fillStyle = BridgesVisualizer.getNamedColor(bg[i]);
         context.fillRect(x, y, cellSize, cellSize);
 
-        // draw colored symbol
+        /*
+          draw colored symbol
+        */
 
-        // x position of symbol in symbolImage
-        let sx = symbols[i] * 100;
+        // If no symbol, do nothing
+        if(symbols[i] == 0) continue;
+
+        // position of symbol in symbolImage
+        let sx = parseInt(symbols[i] % 16) * cellSize;
+        let sy = parseInt(symbols[i] / 16) * cellSize;
 
         // draw the symbol into the intermediate canvas to color it appropriately
-        symbolContext.clearRect(0, 0, cellSize, cellSize);
+        // symbolContext.clearRect(0, 0, cellSize, cellSize);
+
+        // symbolContext.fillStyle = BridgesVisualizer.getNamedColor(parseInt(Math.random()*100));
         symbolContext.fillStyle = BridgesVisualizer.getNamedColor(fg[i]);
         symbolContext.fillRect(0, 0, cellSize, cellSize);
         symbolContext.globalCompositeOperation = "destination-in";
-        symbolContext.drawImage(symbolImage, sx, 0, 100, 100, 0, 0, cellSize, cellSize);
+        symbolContext.drawImage(symbolImageCanvas, sx, sy, cellSize, cellSize, 0, 0, cellSize, cellSize);
         symbolContext.globalCompositeOperation = "source-over";
 
         // now draw the colored symbol image into the main grid
