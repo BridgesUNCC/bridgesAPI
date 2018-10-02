@@ -49,6 +49,13 @@
     grid.draw();
   });
 
+  socket.on('gamegrid:send', function(gamegridData) {
+    // find gamegrid among visualizations?
+    var gamegrid = BridgesVisualizer.visualizations[0];
+    var gamegridObj = JSON.parse(gamegridData.gridData);
+    gamegrid.setupNodes(gamegridObj);
+  });
+
 // use hashmap to keep track of what is currently down
 // remove from hashmap once keyup happens -
 // send keydown and keyup events

@@ -5,82 +5,90 @@ Game Grid visualization abstraction for Bridges
 */
 d3.gamegrid = function(canvas, W, H, data, parent) {
     //defaults
-    var grid = [],
+    var gamegrid = {},
         w = W || 1280,
         h = H || 800,
         dims = data.dimensions,
         numCells = dims[0] * dims[1],
         fg = [],
         bg = [],
-        symbols = [];
+        symbols = [],
+        context,
+        symbolcontext,
+        symbolCanvas,
+        symbolImage,
+        symbolImageCanvas;
 
-    // if more rows than cols
-    if(dims[0] > dims[1]) {
-      cellSize = parseInt((h)/dims[0]);
-    } else {
-      cellSize = Math.min(parseInt((w)/dims[1]), parseInt((h)/dims[1]));
+    function setupDimensions() {
+      // if more rows than cols
+      if(dims[0] > dims[1]) {
+        cellSize = parseInt((h)/dims[0]);
+      } else {
+        cellSize = Math.min(parseInt((w)/dims[1]), parseInt((h)/dims[1]));
+      }
+      cellSize = Math.max(cellSize, 1);
+
+      w = dims[1]*cellSize;
+      h = dims[0]*cellSize;
+
+      context = canvas.node().getContext("2d", { alpha: false });
+
+      // a canvas to draw each particular symbol (to facilitate color compositing)
+      symbolCanvas = document.createElement("canvas");
+      symbolCanvas.id = "symbolCanvas";
+      symbolCanvas.width = cellSize;
+      symbolCanvas.height = cellSize;
+      // document.body.appendChild(symbolCanvas);
+      symbolContext = symbolCanvas.getContext("2d");
+
+      // a canvas to draw the entire symbolImage png file (for debug purposes)
+      symbolImageCanvas = document.createElement("canvas");
+      symbolImageCanvas.id = "symbolImageCanvas";
+      // document.body.appendChild(symbolImageCanvas);
+
+      // symbolImage - contains all symbols from which to select in the game grid
+      symbolImage = new Image();
+      symbolImage.onload = function() {
+        var ctx = symbolImageCanvas.getContext("2d");
+        // use the intrinsic size of image in CSS pixels for the canvas element
+        // symbolImageCanvas.width = this.naturalWidth;
+        // symbolImageCanvas.height = this.naturalHeight;
+
+        // scale symbol image canvas based on the cellsize
+        symbolImageCanvas.width = 16 * cellSize;
+        symbolImageCanvas.height = 16 * cellSize;
+
+        // draw the symbol image to the canvas
+        ctx.drawImage(this, 0, 0, 16 * cellSize, 16 * cellSize);
+        gamegrid.draw();
+      };
+      symbolImage.src = '/img/symbols.png';
+
+
+      parent
+        .style("width", w + 'px')
+        .style("height", h + 'px')
+        .style("font-size", '0px')
+        .style("margin", "auto")
+        .style("margin-bottom", "30px");
+
+      // set canvas attributes
+      canvas.attr("width", w + 'px').attr("height", h + 'px');
     }
-    cellSize = Math.max(cellSize, 1);
 
-    w = dims[1]*cellSize;
-    h = dims[0]*cellSize;
-
-
-    var context = canvas.node().getContext("2d", { alpha: false });
-
-    // a canvas to draw each particular symbol (to facilitate color compositing)
-    var symbolCanvas = document.createElement("canvas");
-    symbolCanvas.id = "symbolCanvas";
-    symbolCanvas.width = cellSize;
-    symbolCanvas.height = cellSize;
-    // document.body.appendChild(symbolCanvas);
-    var symbolContext = symbolCanvas.getContext("2d");
-
-    // a canvas to draw the entire symbolImage png file (for debug purposes)
-    var symbolImageCanvas = document.createElement("canvas");
-    symbolImageCanvas.id = "symbolImageCanvas";
-    // document.body.appendChild(symbolImageCanvas);
-
-    // symbolImage - contains all symbols from which to select in the game grid
-    var symbolImage = new Image();
-    symbolImage.onload = function() {
-      var ctx = symbolImageCanvas.getContext("2d");
-      // use the intrinsic size of image in CSS pixels for the canvas element
-      // symbolImageCanvas.width = this.naturalWidth;
-      // symbolImageCanvas.height = this.naturalHeight;
-
-      // scale symbol image canvas based on the cellsize
-      symbolImageCanvas.width = 16 * cellSize;
-      symbolImageCanvas.height = 16 * cellSize;
-
-      // draw the symbol image to the canvas
-      ctx.drawImage(this, 0, 0, 16 * cellSize, 16 * cellSize);
-      draw();
+    gamegrid.setupNodes = function(theData) {
+      // set up nodes
+      bg = expandRLE(theData.bg);
+      fg = expandRLE(theData.fg);
+      symbols = expandRLE(theData.symbols);
     };
-    symbolImage.src = '/img/symbols.png';
-
-
-    parent
-      .style("width", w + 'px')
-      .style("height", h + 'px')
-      .style("font-size", '0px')
-      .style("margin", "auto")
-      .style("margin-bottom", "30px");
-
-    // set canvas attributes
-    canvas.attr("width", w + 'px').attr("height", h + 'px');
-
-    // set up nodes
-    bg = expandRLE(data.bg);
-    fg = expandRLE(data.fg);
-    symbols = expandRLE(data.symbols);
 
     // rgbaArray = Uint8Array.from(atob(data.nodes), function(c) { return c.charCodeAt(0); });
     // for(var i = 0; i < rgbaArray.length; i+=4) {
     //   nodes.push(rgbaArray.slice(i, i+4));
     // }
 
-    function draw() {
+    gamegrid.draw = function() {
       // clear the main grid
       context.clearRect(0, 0, w, h);
 
@@ -123,8 +131,8 @@ d3.gamegrid = function(canvas, W, H, data, parent) {
         // console.log(sx, 0, 100, 100, x, y, cellSize, cellSize);
         context.drawImage(symbolCanvas, x, y, cellSize, cellSize);
       }
-      window.requestAnimationFrame(draw);
-    }
+      window.requestAnimationFrame(gamegrid.draw);
+    };
 
     //
     // function _base64ToArrayBuffer(base64) {
@@ -150,4 +158,10 @@ d3.gamegrid = function(canvas, W, H, data, parent) {
       }
       return out;
     }
+
+    setupDimensions();
+    gamegrid.setupNodes(data);
+    gamegrid.draw();
+
+    return gamegrid;
 };

@@ -55,6 +55,12 @@ module.exports = function(server) {
         socket.broadcast.to(socks[socket.id]).emit('grid:send', { gridData: gridData });
     });
 
+    /* Receives grid events from client-based sockets */
+    socket.on('gamegrid:recv', function (gridData) {
+        if(verbose) console.log('gamegrid', {data: gridData, sock: socket.id, channel: socks[socket.id] });
+        socket.broadcast.to(socks[socket.id]).emit('gamegrid:send', { gridData: gridData });
+    });
+
     socket.on('disconnect', function() {
       if(socket && socket.id) {
         if(verbose) console.log(socket.id, 'logged off');
