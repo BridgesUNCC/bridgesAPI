@@ -49,7 +49,15 @@
     grid.draw();
   });
 
+  var prevTime = Date.now();
+
   socket.on('gamegrid:send', function(gamegridData) {
+    var currTime = Date.now();
+    if(currTime-prevTime > 60) {
+      console.log("LOST, MY PRECIOUS IS LOST", currTime - prevTime);
+    }
+    prevTime = currTime;
+
     // find gamegrid among visualizations?
     var gamegrid = BridgesVisualizer.visualizations[0];
     var gamegridObj = JSON.parse(gamegridData.gridData);
@@ -67,7 +75,7 @@
     if(keys[e.keyCode]) {
       delete keys[e.keyCode];
       socket.emit('keyup', {key: e.key});
-      console.log("sending keyup: ", e.key);
+      // console.log("sending keyup: ", e.key);
     }
   });
 
@@ -76,7 +84,7 @@
     if(!keys[e.keyCode]) {
       keys[e.keyCode] = true;
       socket.emit('keydown', {key: e.key});
-      console.log('sending keydown: ', e.key);
+      // console.log('sending keydown: ', e.key);
     }
   });
 })();
