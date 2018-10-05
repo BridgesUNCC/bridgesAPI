@@ -19,6 +19,11 @@ d3.gamegrid = function(canvas, W, H, data, parent) {
         symbolImage,
         symbolImageCanvas;
 
+    for(let i = 0; i < 900; i++) {
+      fg[i] = 0;
+      symbols[i] = 0;
+    }
+
     function setupDimensions() {
       // if more rows than cols
       if(dims[0] > dims[1]) {
@@ -84,8 +89,9 @@ d3.gamegrid = function(canvas, W, H, data, parent) {
 
 
       bg = Uint8Array.from(atob(theData.bg), function(c) { return c.charCodeAt(0); });
-      fg = Uint8Array.from(atob(theData.fg), function(c) { return c.charCodeAt(0); });
-      symbols = Uint8Array.from(atob(theData.symbols), function(c) { return c.charCodeAt(0); });
+      // fg = Uint8Array.from(atob(theData.fg), function(c) { return c.charCodeAt(0); });
+      // symbols = Uint8Array.from(atob(theData.symbols), function(c) { return c.charCodeAt(0); });
+
     };
 
     // rgbaArray = Uint8Array.from(atob(data.nodes), function(c) { return c.charCodeAt(0); });
