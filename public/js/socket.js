@@ -54,6 +54,7 @@
     var gamegrid = BridgesVisualizer.visualizations[0];
     var gamegridObj = JSON.parse(gamegridData.gridData);
     gamegrid.setupNodes(gamegridObj);
+    gamegrid.draw();
   });
 
 // use hashmap to keep track of what is currently down

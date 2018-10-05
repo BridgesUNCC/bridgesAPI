@@ -82,7 +82,7 @@ d3.gamegrid = function(canvas, W, H, data, parent) {
       // fg = expandRLE(theData.fg);
       // symbols = expandRLE(theData.symbols);
 
-    
+
       bg = Uint8Array.from(atob(theData.bg), function(c) { return c.charCodeAt(0); });
       fg = Uint8Array.from(atob(theData.fg), function(c) { return c.charCodeAt(0); });
       symbols = Uint8Array.from(atob(theData.symbols), function(c) { return c.charCodeAt(0); });
@@ -136,7 +136,7 @@ d3.gamegrid = function(canvas, W, H, data, parent) {
         // console.log(sx, 0, 100, 100, x, y, cellSize, cellSize);
         context.drawImage(symbolCanvas, x, y, cellSize, cellSize);
       }
-      window.requestAnimationFrame(gamegrid.draw);
+      // window.requestAnimationFrame(gamegrid.draw);
     };
 
     //
