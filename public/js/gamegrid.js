@@ -78,9 +78,12 @@ d3.gamegrid = function(canvas, W, H, data, parent) {
 
     gamegrid.setupNodes = function(theData) {
       // set up nodes
-      bg = expandRLE(theData.bg);
-      fg = expandRLE(theData.fg);
-      symbols = expandRLE(theData.symbols);
+      // bg = expandRLE(theData.bg);
+      // fg = expandRLE(theData.fg);
+      // symbols = expandRLE(theData.symbols);
+      bg = theData.bg;
+      fg = theData.fg;
+      symbols = theData.symbols;
     };
 
     // rgbaArray = Uint8Array.from(atob(data.nodes), function(c) { return c.charCodeAt(0); });
