@@ -4,7 +4,7 @@ module.exports = function(server) {
 
   var io = socketio.listen(server);
   var socks = {};
-  var verbose = false;
+  var verbose = true;
 
   io.on('connection', function (socket) {
 

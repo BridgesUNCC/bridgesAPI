@@ -54,7 +54,7 @@
   socket.on('gamegrid:send', function(gamegridData) {
     var currTime = Date.now();
     if(currTime-prevTime > 60) {
-      console.log("LOST, MY PRECIOUS IS LOST", currTime - prevTime);
+      console.log("Long time between gamegrid:send events:", currTime - prevTime);
     }
     prevTime = currTime;
 

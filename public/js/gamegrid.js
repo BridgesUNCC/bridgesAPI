@@ -76,23 +76,19 @@ d3.gamegrid = function(canvas, W, H, data, parent) {
       canvas.attr("width", w + 'px').attr("height", h + 'px');
     }
 
+    /* Populate the color and symbol arrays from the current data state */
     gamegrid.setupNodes = function(theData) {
-      // set up nodes
-      // bg = expandRLE(theData.bg);
-      // fg = expandRLE(theData.fg);
-      // symbols = expandRLE(theData.symbols);
-
-
-      bg = Uint8Array.from(atob(theData.bg), function(c) { return c.charCodeAt(0); });
-      fg = Uint8Array.from(atob(theData.fg), function(c) { return c.charCodeAt(0); });
-      symbols = Uint8Array.from(atob(theData.symbols), function(c) { return c.charCodeAt(0); });
-
+      if(theData.encoding && theData.encoding == "rle") {
+        bg = expandRLE(theData.bg);
+        fg = expandRLE(theData.fg);
+        symbols = expandRLE(theData.symbols);
+      } else {
+        bg = Uint8Array.from(atob(theData.bg), function(c) { return c.charCodeAt(0); });
+        fg = Uint8Array.from(atob(theData.fg), function(c) { return c.charCodeAt(0); });
+        symbols = Uint8Array.from(atob(theData.symbols), function(c) { return c.charCodeAt(0); });
+      }
     };
 
-    // rgbaArray = Uint8Array.from(atob(data.nodes), function(c) { return c.charCodeAt(0); });
-    // for(var i = 0; i < rgbaArray.length; i+=4) {
-    //   nodes.push(rgbaArray.slice(i, i+4));
-    // }
 
     gamegrid.draw = function() {
       // clear the main grid
