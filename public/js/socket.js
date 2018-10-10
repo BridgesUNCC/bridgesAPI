@@ -6,9 +6,13 @@
     return;
   }
 
-  var socket = io.connect('https://bridges-sockets.herokuapp.com');
+  var socket = io.connect('https://bridges-sockets.herokuapp.com', {
+    transports: ['websocket']
+  });
 
-  // var socket = io.connect('localhost:3000');
+  // var socket = io.connect('localhost:3000',{
+  //   transports: ['websocket']
+  // });
 
   socket.on('connect', function (data) {
     socket.emit('credentials', JSON.stringify({user: user.username, assignment: assignmentNumber}));
