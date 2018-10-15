@@ -372,6 +372,15 @@ exports.show = function (req, res, next) {
             if(!navItems.labels) navItems.labels = true;
           }
 
+          // handle nav buttons for gamegrid (TODO refactor)
+          // gamegrids do not need a reset button
+          // gamegrids need a socket connection button
+          if(data.visType != "gamegrid") {
+            if(!navItems.reset) navItems.reset = true;
+          } else {
+            if(!navItems.socketConnect) navItems.socketConnect = true;
+          }
+
           // Are there nodes in the data? Use SVG for < 100 nodes, Canvas for > 100
           if(data.visType == "nodelink" && data.nodes && data.nodes.length > 100) {
             data.visType = "nodelink-canvas";

@@ -1,41 +1,47 @@
-.navbar.navbar-assignment
-  a#collapse.btn-expand-collapse(href="#")
-    span.glyphicon.glyphicon-menu-right
-  ul.navbar-assignment-menu
-    li
-      if (owner)
-          span.switch-toggle
-              input#public(type='radio', name='view',
-                  onclick='toggleShare(true)')
-              label(for='public') Public
-              input#private(type='radio', name='view',
-                  onclick='toggleShare(false)')
-              label(for='private') Private
-              a#toggle.btn.btn-primary
+if(Object.keys(navItems).length > 0)
+  .navbar.navbar-assignment
+    a#collapse.btn-expand-collapse(href="#")
+      span.glyphicon.glyphicon-menu-right
+    ul.navbar-assignment-menu
+      li
+        if (owner)
+            span.switch-toggle
+                input#public(type='radio', name='view',
+                    onclick='toggleShare(true)')
+                label(for='public') Public
+                input#private(type='radio', name='view',
+                    onclick='toggleShare(false)')
+                label(for='private') Private
+                a#toggle.btn.btn-primary
 
+            if (navItems.save)
+              a#save(href="#")
+                span.glyphicon.glyphicon-save
+                span.nav-label  Save Node Positions
 
-          if (navItems.save)
-            a#save(href="#")
-              span.glyphicon.glyphicon-save
-              span.nav-label  Save Node Positions
+            if (navItems.socketConnect)
+              a#socketConnect(href="#")
+                span.glyphicon.glyphicon-eye-open
+                span.nav-label Connect to Game
 
-      if (navItems.labels)
-        a#nodelabels(href="#")
-          span.glyphicon.glyphicon-tag
-          span.nav-label Node Labels
+        if (navItems.labels)
+          a#nodelabels(href="#")
+            span.glyphicon.glyphicon-tag
+            span.nav-label Node Labels
 
-        a#linklabels(href="#")
-          span.glyphicon.glyphicon-tags
-          span.nav-label Link Labels
+          a#linklabels(href="#")
+            span.glyphicon.glyphicon-tags
+            span.nav-label Link Labels
 
-      a#reset(href="#")
-        span.glyphicon.glyphicon-resize-full
-        span.nav-label Reset View
+        if (navItems.reset)
+          a#reset(href="#")
+            span.glyphicon.glyphicon-resize-full
+            span.nav-label Reset View
 
-      if (owner)
-        a#delete(href="#")
-          span.glyphicon.glyphicon-trash
-          span.nav-label Delete Assignment
+        if (owner)
+          a#delete(href="#")
+            span.glyphicon.glyphicon-trash
+            span.nav-label Delete Assignment
 
 script.
   $('.btn-expand-collapse').click(function(e) {

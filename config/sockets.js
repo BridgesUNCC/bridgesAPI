@@ -28,7 +28,12 @@ module.exports = function(server) {
         console.log("User " + socket.id + " connected to channel " + channel);
         console.log('All sockets: ', socks);
       }
-      socket.broadcast.to(channel).emit('announcement', {message: "User " + socket.id + " connected to channel " + channel});
+
+      /* Count users in current channel */
+      var usersInChannel = io.sockets.adapter.rooms[channel].length;
+
+      /* Emit announcement to everyone in channel to validate connection */
+      io.sockets.in(channel).emit('announcement', {message: "User " + socket.id + " connected to channel " + channel, userCount: usersInChannel});
     });
 
 
@@ -65,14 +70,22 @@ module.exports = function(server) {
     socket.on('disconnect', function() {
       if(socket && socket.id) {
         if(verbose) console.log(socket.id, 'logged off');
-        socket.broadcast.to(socks[socket.id]).emit('announcement', {message: "User " + socket.id + " disconnected"});
+
+        var channel = socks[socket.id];
+
+        /* If the channel has users in it, inform them that someone disconnected */
+        if(io.sockets.adapter.rooms[channel]) {
+          var usersInChannel = io.sockets.adapter.rooms[channel].length;
+
+          io.sockets.in(channel).emit('announcement', {message: "User " + socket.id + " disconnected", userCount: usersInChannel});
+        }
+
         delete socks[socket.id];
       } else {
         if(verbose) console.log('okbye');
       }
     });
-
-
+    
   });
 
   return io;

@@ -10,13 +10,17 @@ block content
       include ../includes/header.jade
       include ../includes/assignment-nav.jade
 
-      if (assignmentTitle && assignmentTitle.length > 0)
-        h1.assignmentTitle #{assignmentTitle}
-      else
-        h1.assignmentTitle Assignment #{assignmentNumber}
+      .row(style="margin:auto")
+        if (assignmentTitle && assignmentTitle.length > 0)
+          h1.col-md-offset-1.col-md-8.assignmentTitle #{assignmentTitle}
+        else
+          h1.col-md-offset-1.col-md-6.assignmentTitle Assignment #{assignmentNumber}
 
-      if (assignmentDescription.length > 0)
-        div.assignmentDescription #{assignmentDescription}
+        if (assignmentDescription.length > 0)
+          div.col-md-offset-1.col-md-6.assignmentDescription #{assignmentDescription}
+
+        if (navItems && navItems.socketConnect)
+          div.col-md-2#socketStatus not connected...
 
       div#updateStatus
       div#assignmentCanvas(overflow='auto')
