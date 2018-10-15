@@ -38,7 +38,7 @@
     d3.select("#socketConnect").on('click', socketDisconnect);
 
     /* Live socket server */
-    var socket = io.connect('https://bridges-games.herokuapp.com', {
+    socket = io.connect('https://bridges-games.herokuapp.com', {
       transports: ['websocket']
     });
 
