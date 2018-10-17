@@ -16,7 +16,7 @@
     "jade": "latest",
     "jquery": "latest",
     "mongoose": "latest",
-    "newrelic": "latest",
+    "newrelic": "^4.9.0",
     "nodemailer": "^4.1.0",
     "npm": "latest",
     "passport": "latest",

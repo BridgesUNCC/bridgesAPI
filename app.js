@@ -1,3 +1,4 @@
+require('newrelic');
 //Modules used.
 var express = require('express'),
     fs = require('fs'),
