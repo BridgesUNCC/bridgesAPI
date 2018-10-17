@@ -24,14 +24,20 @@
     d3.select("#socketConnect").select(".nav-label").text("Connect to Game");
     d3.select("#socketConnect").on('click', socketConnect);
 
-    d3.select("#socketStatus").text("Disconnected.");
+    d3.select("#socketStatus")
+      .text("Disconnected.")
+      .classed("alert alert-info", true)
+      .classed("alert-danger alert-warning alert-success", false);
   }
 
   /* Connect the client socket to the server */
   function socketConnect() {
 
     // modify socket nav and status items
-    d3.select("#socketStatus").text("Connecting ... ");
+    d3.select("#socketStatus")
+      .classed("alert alert-warning", true)
+      .classed("alert-danger alert-success alert-info", false)
+      .text("Connecting ... ");
 
     d3.select("#socketConnect").on('click', null);
     d3.select("#socketConnect").select(".nav-label").text("Disconnect");
@@ -54,15 +60,23 @@
 
     /* Handle connection announcements (update status to alert user) */
     socket.on('announcement', function (data) {
+      d3.select("#socketStatus")
+        .classed("alert alert-warning", true)
+        .classed("alert-danger alert-success alert-info", false);
+
       var status = "Connected! ";
       if(data.userCount) {
         // the current browser tab is the only socket connection
         if(data.userCount == 1) {
           status += "(make sure you run your program too!)";
-        }
+        } else
         // there are multiple tabs and/or multiple client programs running
         if(data.userCount > 2) {
           status += "(make sure you only have one browser tab and one program running!)";
+        } else {
+          d3.select("#socketStatus")
+            .classed("alert alert-success", true)
+            .classed("alert-danger alert-warning alert-info", false);
         }
       }
       d3.select("#socketStatus").text(status);
