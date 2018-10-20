@@ -15,7 +15,7 @@
     "express": "3.5.0",
     "jade": "latest",
     "jquery": "latest",
-    "mongoose": "latest",
+    "mongoose": "^5.3.4",
     "nodemailer": "^4.1.0",
     "npm": "latest",
     "passport": "latest",
