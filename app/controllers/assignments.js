@@ -72,6 +72,8 @@ exports.upload = function (req, res, next) {
     var subAssignment = assignmentRaw[1];
     if (subAssignment == "0") subAssignment = "00";
 
+    console.log(rawBody);
+
     // validate attributes
     var visualizationType = visTypes.getVisType(rawBody.visual);
     var title = rawBody.title || "";

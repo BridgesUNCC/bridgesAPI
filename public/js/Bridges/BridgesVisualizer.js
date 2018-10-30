@@ -227,7 +227,6 @@
         str = str.join("<br>");
         return str;
       }
-
       if(!BridgesVisualizer.tooltipEnabled || label === "") return;
       BridgesVisualizer.tooltip.transition()
           .duration(200)
