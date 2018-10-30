@@ -55,23 +55,15 @@ module.exports = function(app, passport, streamable) {
     };
 
     var handleError = function(err, req, res, next) {
+        var msg = {};
 
         //if provided an object
-        if (err.err) return errObj(err);
+        if (err.tip) msg.tip = err.tip;
+        else if (err.err) msg.error = err.err;
+        else if(err.message) msg.error = err.message;
+        else msg.error = err;
 
-        //else provided a string
-        return res.json(500, {
-            "error": err
-        });
-
-        function errObj(err) {
-            var msg = {};
-
-            if (err.tip) msg.tip = err.tip;
-            if (err.err) msg.error = err.err;
-
-            return res.json(500, msg);
-        }
+        return res.json(500, msg);
     };
 
     // -------------------------------------------------------

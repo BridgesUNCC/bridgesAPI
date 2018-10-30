@@ -77,6 +77,14 @@ exports.upload = function (req, res, next) {
     var title = rawBody.title || "";
     var description = rawBody.description || "";
 
+    // make sure grid-based assignments do not exceed hard dimension limits
+    if(rawBody.dimensions) {
+      if((rawBody.dimensions[0] && rawBody.dimensions[0] > 1080) ||
+         (rawBody.dimensions[1] && rawBody.dimensions[1] > 1920)) {
+           return next("Illegal Grid Dimensions");
+      }
+    }
+
     //get username from apikey
     User.findOne({
         apikey:req.query.apikey
@@ -131,15 +139,14 @@ exports.upload = function (req, res, next) {
           // trap errors saving the assignment to the DB
           console.log(err);
           next(err);
+        } else {
+          User.findOne({
+              email: user.email
+          }).exec(function (err, resp) {
+              res.json( 200, { "msg":assignmentID + "/" + resp.username } );
+          });
+          console.log( "subassignment added" );
         }
-
-        User.findOne({
-            email: user.email
-        }).exec(function (err, resp) {
-            res.json( 200, { "msg":assignmentID + "/" + resp.username } );
-        });
-
-        console.log( "subassignment added" );
       });
     }
 };
