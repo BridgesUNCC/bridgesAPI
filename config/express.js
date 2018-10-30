@@ -1,7 +1,8 @@
 var express = require('express'),
   mongoStore = require('connect-mongo')(express),
   pkg = require('../package.json'),
-  flash = require('connect-flash');
+  flash = require('connect-flash'),
+  methodOverride = require('method-override');
 
 module.exports = function (app, config, passport) {
 
@@ -53,7 +54,7 @@ module.exports = function (app, config, passport) {
     // bodyParser should be above methodOverride
     app.use(express.urlencoded({limit: '12mb'}));
     app.use(express.json({limit: '12mb'}));
-    app.use(express.methodOverride());
+    app.use(methodOverride());
 
     // express/mongo session storage
     app.use(express.session({
