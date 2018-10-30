@@ -380,7 +380,7 @@ exports.show = function (req, res, next) {
           }
 
           // Use SVG for < 100 nodes, Canvas for > 100
-          if(data.visType == "nodelink" && data.nodes.length > 100) {
+          if(data.visType == "nodelink" && data.nodes && data.nodes.length > 100) {
             data.visType = "nodelink-canvas";
             linkResources.script.push('/js/graph-canvas.js');
           }
