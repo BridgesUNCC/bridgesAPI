@@ -19,12 +19,11 @@ block content
 
       div#updateStatus
       div#assignmentCanvas(overflow='auto')
-        -for (var i = 0; i < extent; i++) {
-          div(id="vis" + i, display="block").assignmentContainer
-            //button(class='vis-menu-button', id='vis-menu-'+i)
-            //div(id="menu"+i, class="vis-menu", display="block")
-              //button(class='vis-menu-button', name='fullscreen')
-        -}
+          div(id="vis0", display="block").assignmentContainer
+      div#assignmentSlide
+        div#assignmentSlideButtons1.btn.btn-default <
+        div#assignmentSlideButtons2.btn.btn-default >
+
 
 block footerjs
     script.
@@ -45,7 +44,7 @@ block footerjs
         var user = !{JSON.stringify(user)};
         var assignmentNumber = !{JSON.stringify(assignmentNumber)};
         var BridgesVisualizer = {};
-        
+        var numAssignments = !{JSON.stringify(extent)};
 
     each script in linkResources.script
         script(src = script)

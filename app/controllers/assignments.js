@@ -190,9 +190,13 @@ exports.getJSON = function (req, res, next) {
               "_id": 0
             })
             .exec( function( err, assignment){
-              if (err) return next(err);
-              if (!assignment)
-                  return next("can not find assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'");
+              if (err) {
+                return next(err);
+              }
+              if (!assignment) {
+                return res.json(404, {"message": "can not find assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'"});
+              }
+
 
               // return the found assignment if it's public or owned by the request
               if(assignment.shared || (sessionUser && (assignment.email == sessionUser.email)))
@@ -366,30 +370,30 @@ exports.show = function (req, res, next) {
             if(!navItems.labels) navItems.labels = true;
           }
 
-          data.visType = visTypes.getVisType(data.visual);
+          data.vistype = visTypes.getVisType(data.visual);
 
           // Make sure multiple arrays are visualized
-          if(data.visType == "Alist") {
+          if(data.vistype == "Alist") {
             visTypes.checkIfHasDims(data);
           }
 
           // add optional nav buttons where appropriate
-          if(data.visType == "nodelink") {
+          if(data.vistype == "nodelink") {
             if(!navItems.save) navItems.save = true;
             if(!navItems.labels) navItems.labels = true;
-          } else if(data.visType == "tree") {
+          } else if(data.vistype == "tree") {
             if(!navItems.labels) navItems.labels = true;
           }
 
           // Use SVG for < 100 nodes, Canvas for > 100
-          if(data.visType == "nodelink" && data.nodes && data.nodes.length > 100) {
-            data.visType = "nodelink-canvas";
+          if(data.vistype == "nodelink" && data.nodes && data.nodes.length > 100) {
+            data.vistype = "nodelink-canvas";
             linkResources.script.push('/js/graph-canvas.js');
           }
 
           // add new resource info
-          if(!assignmentTypes[data['visType']]){
-              assignmentTypes[data['visType']] = 1;
+          if(!assignmentTypes[data['vistype']]){
+              assignmentTypes[data['vistype']] = 1;
 
               var vistypeObjectTemp = visTypes.getVisTypeObject(data);
               linkResources.script.push(vistypeObjectTemp.script);
@@ -408,12 +412,13 @@ exports.show = function (req, res, next) {
           }
 
           // finally, store the subassignment
-          allAssigns[i] = data;
+          assignments[i].data = data;
+          allAssigns[i] = assignments[i];
         }
 
         sessionUser = sessionUser ? {"username": sessionUser.username, "email": sessionUser.email} : null;
 
-        return res.render ('assignments/assignmentMulti', {
+        return res.render ('assignments/assignmentSlide', {
             "title":"Assignment " + assignmentNumber,
             "assignmentTitle": assignments[0].title,
             "assignmentDescription": assignments[0].description.replace("\"", ""),

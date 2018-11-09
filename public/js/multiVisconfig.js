@@ -7,101 +7,104 @@ d3.select("#save").on("click", savePositions);
 d3.select("#delete").on("click", deleteAssignment);
 d3.select("#nodelabels").on("click", BridgesVisualizer.displayNodeLabels);
 d3.select("#linklabels").on("click", BridgesVisualizer.displayLinkLabels);
+d3.select("#assignmentSlideButtons1").on("click", prevVis);
+d3.select("#assignmentSlideButtons2").on("click", nextVis);
 
-
+var key = 0;
 
 BridgesVisualizer.visualizations = [];
 
 /* create new assignments  */
-for (var key in data) {
-  if (data.hasOwnProperty(key)) {
-    var ele = document.getElementById("vis" + key),
+// for (var key in data) {
+  // if (data.hasOwnProperty(key)) {
+    var ele = document.getElementById("vis0"),
         width = ele.clientWidth,
         height = ele.clientHeight,
         transform = data[key].transform,
-        vis;
+        vis = d3.select("#vis0").append("svg")
+          .attr("id", "svg0");
 
-
+visualizeAssignment(data[0])
     //saving a copy of every assignment: type and key of the assignment. Useful when trying to reset them.
-    // BridgesVisualizer.assignmentTypes.push(data[key]['visType']);
+    // BridgesVisualizer.assignmentTypes.push(data[key]['vistype']);
 
-    if (data[key]['visType'] == "tree" && d3.bst) {
-        vis = d3.select("#vis" + key).append("svg")
-          .attr("id", "vis" + key);
-        bst = d3.bst(vis, width, height);
-        bst.make(data[key]);
-        BridgesVisualizer.visualizations.push(bst);
-    }
-    // else if(data[key]['visType'] == "dllist" && d3.dllist){
+    // if (data[key]['vistype'] == "tree" && d3.bst) {
+    //     vis = d3.select("#vis" + key).append("svg")
+    //       .attr("id", "vis" + key);
+    //     bst = d3.bst(vis, width, height);
+    //     bst.make(data[key]);
+    //     BridgesVisualizer.visualizations.push(bst);
+    // }
+    // else if(data[key]['vistype'] == "dllist" && d3.dllist){
     //     d3.dllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key]), transform);
     // }
-    // else if(data[key]['visType'] == "cdllist" && d3.cdllist){
+    // else if(data[key]['vistype'] == "cdllist" && d3.cdllist){
     //     d3.cdllist(d3, "#vis" + key, width, height, sortCircularDoublyListByLinks(data[key]));
     // }
-    // else if(data[key]['visType'] == "llist" && d3.sllist){
+    // else if(data[key]['vistype'] == "llist" && d3.sllist){
     //     // d3.sllist(d3, "#vis" + key, width, height, sortNonCircularListByLinks(data[key]), transform);
     //     d3.sllist(d3, "#vis" + key, width, height, sortSLLists(data[key]), transform);
     // }
-    // else if(data[key]['visType'] == "cllist" && d3.csllist){
+    // else if(data[key]['vistype'] == "cllist" && d3.csllist){
     //     d3.csllist(d3, "#vis" + key, width, height, sortCircularSinglyListByLinks(data[key]), transform);
     // }
-    // else if (data[key]['visType'] == "queue" && d3.queue) {
+    // else if (data[key]['vistype'] == "queue" && d3.queue) {
     //     d3.queue(d3, "#vis" + key, width, height, data[key].nodes, transform);
     // }
-    else if (data[key]['visType'] == "Alist" && d3.array) {
-          vis = d3.select("#vis" + key).append("svg")
-            .attr("id", "vis" + key);
-          array = d3.array(vis, width, height, data[key].nodes);
-          BridgesVisualizer.visualizations.push(array);
-    }
-    else if (data[key]['visType'] == "Array2D" && d3.array2d) {
-          vis = d3.select("#vis" + key).append("svg")
-            .attr("id", "vis" + key);
-          array2d = d3.array2d(vis, width, height, data[key].nodes, data[key].dims);
-          BridgesVisualizer.visualizations.push(array2d);
-    }
-    else if (data[key]['visType'] == "Array3D" && d3.array3d) {
-          vis = d3.select("#vis" + key).append("svg")
-            .attr("id", "vis" + key);
-          array3d = d3.array3d(vis, width, height, data[key].nodes, data[key].dims);
-          BridgesVisualizer.visualizations.push(array3d);
-    }
-    else if (data[key]['visType'] == "grid" && d3.grid) {
-        vis = d3.select("#vis" + key).append("canvas")
-          .attr("id", "canvas" + key);
-        d3.grid(vis, width, height, data[key], d3.select("#vis" + key));
-    }
-    else if (data[key]['visType'] == "nodelink" && d3.graph) {
-        vis = d3.select("#vis" + key).append("svg")
-          .attr("id", "vis" + key);
-        graph = d3.graph(vis, width, height, data[key]);
-        BridgesVisualizer.visualizations.push(graph);
-
-        // handle map overlay for subassignment if appropriate
-        if(data[key].map_overlay) {
-          BridgesVisualizer.map(vis, data[key].coord_system_type);
-        }
-    }
-    else if (data[key].visType == "nodelink-canvas" && d3.graph_canvas) {
-        vis = d3.select("#vis" + key).append("canvas")
-          .attr("id", "vis" + key);
-        graph = d3.graph_canvas(vis, width, height, data[key]);
-        BridgesVisualizer.visualizations.push(graph);
-    }
-    else if (data[key].visType == "collection" && d3.collection) {
-        vis = d3.select("#vis" + key).append("svg")
-          .attr("id", "vis" + key);
-        collection = d3.collection(vis, width, height, data[key]);
-        BridgesVisualizer.visualizations.push(collection);
-    }
-    else {
-      console.log(data[key]);
-        // console.log("unknown data type");
-        graph = d3.graph(d3, "#vis" + key, width, height, data[key]);
-        BridgesVisualizer.visualizations.push(graph);
-    }
-  }
-}
+    // else if (data[key]['vistype'] == "Alist" && d3.array) {
+    //       vis = d3.select("#vis" + key).append("svg")
+    //         .attr("id", "vis" + key);
+    //       array = d3.array(vis, width, height, data[key].nodes);
+    //       BridgesVisualizer.visualizations.push(array);
+    // }
+    // else if (data[key]['vistype'] == "Array2D" && d3.array2d) {
+    //       vis = d3.select("#vis" + key).append("svg")
+    //         .attr("id", "vis" + key);
+    //       array2d = d3.array2d(vis, width, height, data[key].nodes, data[key].dims);
+    //       BridgesVisualizer.visualizations.push(array2d);
+    // }
+    // else if (data[key]['vistype'] == "Array3D" && d3.array3d) {
+    //       vis = d3.select("#vis" + key).append("svg")
+    //         .attr("id", "vis" + key);
+    //       array3d = d3.array3d(vis, width, height, data[key].nodes, data[key].dims);
+    //       BridgesVisualizer.visualizations.push(array3d);
+    // }
+    // else if (data[key]['vistype'] == "grid" && d3.grid) {
+    //     vis = d3.select("#vis" + key).append("canvas")
+    //       .attr("id", "canvas" + key);
+    //     d3.grid(vis, width, height, data[key], d3.select("#vis" + key));
+    // }
+    // else if (data[key]['vistype'] == "nodelink" && d3.graph) {
+    //     vis = d3.select("#vis0").append("svg")
+    //       .attr("id", "vis0");
+    //     graph = d3.graph(vis, width, height, data[key]);
+    //     BridgesVisualizer.visualizations.push(graph);
+    //
+    //     // handle map overlay for subassignment if appropriate
+    //     if(data[key].map_overlay) {
+    //       BridgesVisualizer.map(vis, data[key].coord_system_type);
+    //     }
+    // }
+    // else if (data[key].vistype == "nodelink-canvas" && d3.graph_canvas) {
+    //     vis = d3.select("#vis" + key).append("canvas")
+    //       .attr("id", "vis" + key);
+    //     graph = d3.graph_canvas(vis, width, height, data[key]);
+    //     BridgesVisualizer.visualizations.push(graph);
+    // }
+    // else if (data[key].vistype == "collection" && d3.collection) {
+    //     vis = d3.select("#vis" + key).append("svg")
+    //       .attr("id", "vis" + key);
+    //     collection = d3.collection(vis, width, height, data[key]);
+    //     BridgesVisualizer.visualizations.push(collection);
+    // }
+    // else {
+    //   console.log(data[key]);
+    //     // console.log("unknown data type");
+    //     graph = d3.graph(d3, "#vis" + key, width, height, data[key]);
+    //     BridgesVisualizer.visualizations.push(graph);
+    // }
+//   }
+// }
 
 function collapse() {
   d3.event.preventDefault();
@@ -138,14 +141,14 @@ function savePositions () {
   // store indices for all fixed nodes
   for (var key in data) {
 
-    if (data.hasOwnProperty(key) && (data[key].visType == "nodelink" || data[key].visType == "nodelink-canvas")) {
+    if (data.hasOwnProperty(key) && (data[key].vistype == "nodelink" || data[key].vistype == "nodelink-canvas")) {
       updateTheseNodes[key] = {
         'fixedNodes': {},
         'unfixedNodes': {}
       };
     }
 
-    if (data.hasOwnProperty(key) && data[key].visType == "nodelink") {
+    if (data.hasOwnProperty(key) && data[key].vistype == "nodelink") {
       d3.select("#vis" + key).selectAll(".node").each(function(d, i) {
         // we need to name the nodes so we can identify them on the server; indices don't suffice
         if(d.fx && d.fy) {
@@ -153,7 +156,7 @@ function savePositions () {
         }
         else updateTheseNodes[key].unfixedNodes["n" + i] = true;
       });
-    } else if(data.hasOwnProperty(key) && data[key].visType == "nodelink-canvas") {
+    } else if(data.hasOwnProperty(key) && data[key].vistype == "nodelink-canvas") {
       BridgesVisualizer.visualizations[key].nodes.forEach(function(d, i) {
         if(d.fx && d.fy) {
           updateTheseNodes[key].fixedNodes["n" + i] = {"x": d.fx, "y": d.fy};
@@ -497,5 +500,93 @@ $(window).resize(function() {
         });
     }, 250);
 });
+
+
+var currentVisNum = 0;
+var assignNum = 100;
+function prevVis(){
+  if(currentVisNum == 0){
+  }else{
+    currentVisNum -= 1;
+    updateVis(currentVisNum);
+  }
+}
+
+function nextVis(){
+  if(currentVisNum == assignNum){
+  }else{
+    currentVisNum += 1;
+    updateVis(currentVisNum);
+  }
+}
+
+function updateVis(currentNum){
+  var username = user.username;
+    $.ajax({
+        url: "/assignmentjson/" + assignmentNumber + ".0" + currentNum + "/" + username,
+        type: "get"
+      }).fail(function(err) {
+        assignNum = currentNum-1;
+        currentVisNum -= 1;
+        return;
+      }).done(function(assignment) {
+        visualizeAssignment(assignment.assignmentJSON)
+      });
+}
+
+function visualizeAssignment(assignmentData){
+  d3.select("#svg0").selectAll("*").remove();
+  vis = d3.select("#svg0");
+
+  if (assignmentData['vistype'] == "tree" && d3.bst) {
+      bst = d3.bst(vis, width, height);
+      bst.make(assignmentData);
+      BridgesVisualizer.visualizations.push(bst);
+  }
+  else if (assignmentData['vistype'] == "Alist" && d3.array) {
+        array = d3.array(vis, width, height, assignmentData.nodes);
+        BridgesVisualizer.visualizations.push(array);
+  }
+  else if (assignmentData['vistype'] == "Array2D" && d3.array2d) {
+        array2d = d3.array2d(vis, width, height, assignmentData.nodes, assignmentData.dims);
+        BridgesVisualizer.visualizations.push(array2d);
+  }
+  else if (assignmentData['vistype'] == "Array3D" && d3.array3d) {
+        array3d = d3.array3d(vis, width, height, assignmentData.nodes, assignmentData.dims);
+        BridgesVisualizer.visualizations.push(array3d);
+  }
+  else if (assignmentData['vistype'] == "grid" && d3.grid) {
+      vis = d3.select("#vis" + key).append("canvas")
+        .attr("id", "vis0");
+      d3.grid(vis, width, height, assignmentData, d3.select("#vis0"));
+  }
+  else if (assignmentData['vistype'] == "nodelink" && d3.graph) {
+    console.log('!', vis);
+      graph = d3.graph(vis, width, height, assignmentData.data[0]);
+      BridgesVisualizer.visualizations.push(graph);
+
+      // // handle map overlay for subassignment if appropriate
+      // if(assignmentData.map_overlay) {
+      //   BridgesVisualizer.map(vis, assignmentData.coord_system_type);
+      // }
+  }
+  else if (assignmentData.vistype == "nodelink-canvas" && d3.graph_canvas) {
+      vis = d3.select("#vis" + key).append("canvas")
+        .attr("id", "vis0");
+      graph = d3.graph_canvas(vis, width, height, assignmentData);
+      BridgesVisualizer.visualizations.push(graph);
+  }
+  else if (assignmentData.vistype == "collection" && d3.collection) {
+      collection = d3.collection(vis, width, height, assignmentData);
+      BridgesVisualizer.visualizations.push(collection);
+  }
+  else {
+    console.log(assignmentData);
+      // console.log("unknown data type");
+      graph = d3.graph(d3, "#vis" + key, width, height, assignmentData);
+      BridgesVisualizer.visualizations.push(graph);
+  }
+}
+
 
 })();
