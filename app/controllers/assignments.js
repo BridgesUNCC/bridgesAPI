@@ -207,6 +207,172 @@ exports.getJSON = function (req, res, next) {
         });
 };
 
+exports.get = function (req, res, next) {
+    this.next = next;
+    var assignmentNumber = req.params.assignmentNumber.split('.')[0],
+        username = req.params.username,
+        sessionUser = null;
+
+    if (typeof req.user != "undefined") sessionUser = req.user;
+
+    var apikey = (sessionUser) ? req.query.apikey : null;
+
+    User
+        .findOne( { username: username } )
+        .exec( function( err, usr ){
+            if (err) return next(err);
+            if (!usr)
+                return next("couldn't find the username " + username);
+
+            Assignment.findOne({
+                email: usr.email,
+                assignmentNumber: assignmentNumber,
+                subAssignment: "00"
+            }, {
+              "__v": 0,
+              "_id": 0
+            })
+            .lean()
+            .exec(function(err, assignment) {
+                if (err) return next(err);
+
+                if (!assignment || assignment.length === 0) {
+                    return next ("assignment " + assignmentNumber + " was not found");
+                }
+
+                // render the assignment if it's public or owned by the request
+                if(assignment.shared || (sessionUser && (assignment.email == sessionUser.email))) {
+                  // get the count of total subassignments
+                  Assignment.countDocuments({
+                    email: usr.email,
+                    assignmentNumber: assignmentNumber
+                  }).exec(function(err, num) {
+                    if(err) return next(err);
+                    assignment.numSubassignments = num;
+                    return renderVis(res, assignment);
+                  });
+                } else {
+                  return next("can not find public assignment " + assignmentNumber + " for user \'" + username + "\'");
+                }
+            });
+        });
+
+    function renderVis (res, assignment) {
+        var owner=false,
+            map=false,
+            assignmentType = {},
+            linkResources = {"script":[], "css":[]},
+            navItems = {}; // optional nav buttons: labels, save positions
+
+        if (sessionUser) {
+            if (sessionUser.email==assignment.email) owner = true;
+        }
+
+        var unflatten = function (data) {
+            //check whether the data is already hierachical
+            if ("children" in data) return data;
+            tm = treemill();
+            tree = tm.unflatten(data);
+            return tree;
+        };
+
+        var flatten = function (data) {
+            //check whether the data is already flat
+            if ("nodes" in data) return data;
+            tm = treemill();
+            tree = tm.flatten(data);
+            return tree;
+        };
+
+        /* parse and store assignment */
+        try{
+          data = assignment.data[0];
+        } catch(err) {
+          console.log("Error getting data object");
+          return next(err);
+        }
+
+        if(data === null) {
+          console.log("Erroneous data");
+          return next("Erroneous data");
+        }
+
+        // Client should send trees as hierarchical representation now..
+        // This captures the data from the OLD flat tree representation
+        if((data.visual == "tree") && !("nodes" in data && "children" in data.nodes)) {
+          data = unflatten(data);
+          data['visual'] = "tree";
+          if(!navItems.labels) navItems.labels = true;
+        }
+        // This captures the data from the NEW hierarchical tree representation
+        if("nodes" in data && "children" in data.nodes) {
+          var tempVisual = data.visual;
+          data = data.nodes;
+          data.visual = tempVisual;
+          if(!navItems.labels) navItems.labels = true;
+        }
+
+        data.vistype = visTypes.getVisType(data.visual);
+
+        // Make sure multiple arrays are visualized
+        if(data.vistype == "Alist") {
+          visTypes.checkIfHasDims(data);
+        }
+
+        // add optional nav buttons where appropriate
+        if(data.vistype == "nodelink") {
+          if(!navItems.save) navItems.save = true;
+          if(!navItems.labels) navItems.labels = true;
+        } else if(data.vistype == "tree") {
+          if(!navItems.labels) navItems.labels = true;
+        }
+
+        // Use SVG for < 100 nodes, Canvas for > 100
+        if(data.vistype == "nodelink" && data.nodes && data.nodes.length > 100) {
+          data.vistype = "nodelink-canvas";
+          linkResources.script.push('/js/graph-canvas.js');
+        }
+
+        // add new resource info
+        if(!assignmentType[data.vistype]){
+            assignmentType[data.vistype] = 1;
+
+            var vistypeObjectTemp = visTypes.getVisTypeObject(data);
+            linkResources.script.push(vistypeObjectTemp.script);
+            if(vistypeObjectTemp.link != ""){
+              linkResources.css.push(vistypeObjectTemp.link);
+            }
+        }
+
+        data.coord_system_type = data.coord_system_type.toLowerCase() || "cartesian";
+
+        // add map resources if appropriate
+        if(data.map_overlay) {
+          map = true;
+          linkResources.script.push('/js/map.js');
+          linkResources.script.push('/js/lib/topojson.v1.min.js');
+          linkResources.css.push('/css/map.css');  
+        }
+
+        sessionUser = sessionUser ? {"username": sessionUser.username, "email": sessionUser.email} : null;
+
+        return res.render ('assignments/assignmentSlide', {
+            "title":"Assignment " + assignmentNumber,
+            "assignmentTitle": assignment.title,
+            "assignmentDescription": assignment.description.replace("\"", ""),
+            "user": sessionUser,
+            "data": assignment,
+            "map": map,
+            "assignmentNumber":assignmentNumber,
+            "linkResources":linkResources,
+            "shared":assignment.shared,
+            "owner":owner,
+            "navItems": navItems
+        });
+      }
+  };
+
+
 exports.show = function (req, res, next) {
     this.next = next;
     var assignmentNumber = req.params.assignmentNumber.split('.')[0],
@@ -418,7 +584,7 @@ exports.show = function (req, res, next) {
 
         sessionUser = sessionUser ? {"username": sessionUser.username, "email": sessionUser.email} : null;
 
-        return res.render ('assignments/assignmentSlide', {
+        return res.render ('assignments/assignmentMulti', {
             "title":"Assignment " + assignmentNumber,
             "assignmentTitle": assignments[0].title,
             "assignmentDescription": assignments[0].description.replace("\"", ""),

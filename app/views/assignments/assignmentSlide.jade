@@ -20,9 +20,12 @@ block content
       div#updateStatus
       div#assignmentCanvas(overflow='auto')
           div(id="vis0", display="block").assignmentContainer
-      div#assignmentSlide
-        div#assignmentSlideButtons1.btn.btn-default <
-        div#assignmentSlideButtons2.btn.btn-default >
+          
+      if (data.numSubassignments > 1)
+        div#assignmentSlide
+          div#assignmentSlideButtons1.btn.btn-default <
+          div#assignmentSlideButtons2.btn.btn-default >
+
 
 
 block footerjs
@@ -44,7 +47,7 @@ block footerjs
         var user = !{JSON.stringify(user)};
         var assignmentNumber = !{JSON.stringify(assignmentNumber)};
         var BridgesVisualizer = {};
-        var numAssignments = !{JSON.stringify(extent)};
+        var numAssignments = data.numSubassignments;
 
     each script in linkResources.script
         script(src = script)

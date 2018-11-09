@@ -156,7 +156,7 @@ module.exports = function(app, passport, streamable) {
               hasAccess, assignments.saveSnapshot, handleError);
 
     app.get('/assignments/:assignmentNumber/:username',
-              assignments.show, handleError);
+              assignments.get, handleError);
     app.get('/assignmentByEmail/:assignmentID/:email',
               assignments.assignmentByEmail, handleError);
     app.get('/assignmentJSON/:assignmentNumber/:username',

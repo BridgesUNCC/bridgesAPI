@@ -12,6 +12,7 @@ d3.select("#assignmentSlideButtons2").on("click", nextVis);
 
 var key = 0;
 
+
 BridgesVisualizer.visualizations = [];
 
 /* create new assignments  */
@@ -20,11 +21,11 @@ BridgesVisualizer.visualizations = [];
     var ele = document.getElementById("vis0"),
         width = ele.clientWidth,
         height = ele.clientHeight,
-        transform = data[key].transform,
+        transform = data.transform,
         vis = d3.select("#vis0").append("svg")
           .attr("id", "svg0");
 
-visualizeAssignment(data[0])
+visualizeAssignment(data.data[0])
     //saving a copy of every assignment: type and key of the assignment. Useful when trying to reset them.
     // BridgesVisualizer.assignmentTypes.push(data[key]['vistype']);
 
@@ -561,8 +562,7 @@ function visualizeAssignment(assignmentData){
       d3.grid(vis, width, height, assignmentData, d3.select("#vis0"));
   }
   else if (assignmentData['vistype'] == "nodelink" && d3.graph) {
-    console.log('!', vis);
-      graph = d3.graph(vis, width, height, assignmentData.data[0]);
+      graph = d3.graph(vis, width, height, assignmentData);
       BridgesVisualizer.visualizations.push(graph);
 
       // // handle map overlay for subassignment if appropriate
