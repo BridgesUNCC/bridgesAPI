@@ -41,4 +41,23 @@ script.
   $('.btn-expand-collapse').click(function(e) {
       $('.navbar-assignment').toggleClass('collapsed');
       $(this).children('span').toggleClass('glyphicon-menu-right').toggleClass('glyphicon-menu-left');
+      if(localStorage.currentNav){
+        if(localStorage.currentNav == 0){
+          localStorage.currentNav = 1;
+        }else{
+          localStorage.currentNav = 0;
+        }
+      }
   });
+
+  if(localStorage.currentNav){
+    if(localStorage.currentNav == 1){
+      $('.navbar-assignment').addClass('collapsed');
+      $('#collapse').children('span').removeClass('glyphicon-menu-right').addClass('glyphicon-menu-left');
+    }else{
+      $('.navbar-assignment').removeClass('collapsed');
+      $('#collapse').children('span').addClass('glyphicon-menu-right').removeClass('glyphicon-menu-left');
+    }
+  }else{
+    localStorage.currentNav = 0;
+  }
