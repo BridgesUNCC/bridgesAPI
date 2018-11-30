@@ -100,7 +100,7 @@ module.exports = function (app, config, passport) {
       // send emails if you want
       console.error(err.stack);
       // error page
-      res.status(500).render('500', { error: err.stack });
+      res.status(404).render('404', { error: err.stack });
     });
 
     // assume 404 since no middleware responded
