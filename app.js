@@ -33,12 +33,13 @@ require('./config/express')(app, config, passport);
 var port = process.env.PORT || config.port;
 
 var server = app.listen(port);
-var io = require('socket.io').listen(server);
-var streamable = require('streamable').streamable(io);
+
+// var io = require('socket.io').listen(server);
+// var streamable = require('streamable').streamable(io);
+
+// //Bootstrap routes.
+// require('./config/routes')(app, passport, streamable);
 
 console.log("Server listening on port " + port);
-
-//Bootstrap routes.
-require('./config/routes')(app, passport, streamable);
 
 exports = module.exports = app;
