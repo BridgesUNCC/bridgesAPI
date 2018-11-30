@@ -1,8 +1,7 @@
 var mongoose = require('mongoose'),
     User = mongoose.model('User');
 
-module.exports = function(app, passport) {
-// module.exports = function(app, passport, streamable) {
+module.exports = function(app, passport, streamable) {
 
     //Allows users to by pass authentication to api requests
     //if they have a valid api key.
