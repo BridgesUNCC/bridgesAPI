@@ -179,7 +179,7 @@ exports.getJSON = function (req, res, next) {
         .exec( function( err, usr ){
             if (err) return next(err);
             if (!usr)
-                return next("couldn't find the username \'" + username + "\'");
+                return res.status(404).render("404", {"message": "couldn't find the username \'" + username + "\'"});
 
             Assignment.findOne({
                 email: usr.email,
@@ -190,19 +190,15 @@ exports.getJSON = function (req, res, next) {
               "_id": 0
             })
             .exec( function( err, assignment){
-              if (err) {
-                return next(err);
-              }
-              if (!assignment) {
-                return res.json(404, {"message": "can not find assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'"});
-              }
-
+              if (err) return next(err);
+              if (!assignment)
+                  return res.status(404).render("404", {"message": "can not find assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'"});
 
               // return the found assignment if it's public or owned by the request
               if(assignment.shared || (sessionUser && (assignment.email == sessionUser.email)))
                 return res.json( 200, { "assignmentJSON": assignment } );
 
-              return next("can not find public assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'");
+              return res.status(404).render("404", {"message": "can not find public assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'"});
             });
         });
 };
@@ -351,7 +347,7 @@ exports.get = function (req, res, next) {
           map = true;
           linkResources.script.push('/js/map.js');
           linkResources.script.push('/js/lib/topojson.v1.min.js');
-          linkResources.css.push('/css/map.css');  
+          linkResources.css.push('/css/map.css');
         }
 
         sessionUser = sessionUser ? {"username": sessionUser.username, "email": sessionUser.email} : null;

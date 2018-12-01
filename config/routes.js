@@ -124,12 +124,12 @@ module.exports = function(app, passport, streamable) {
     //  Stream Routes
     //
     // -------------------------------------------------------
-    var streams = require('../app/controllers/streams.js');
-
-    app.get('/streams/:domain/*',
-        hasAccess, streamable, streams.getSource, handleError);
-    app.get('/streams/:domain',
-        hasAccess, streamable, streams.getSource, handleError);
+    // var streams = require('../app/controllers/streams.js');
+    //
+    // app.get('/streams/:domain/*',
+    //     hasAccess, streamable, streams.getSource, handleError);
+    // app.get('/streams/:domain',
+    //     hasAccess, streamable, streams.getSource, handleError);
 
 
 

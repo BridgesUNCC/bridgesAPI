@@ -1,6 +1,9 @@
 {
   "version": "0.2.0",
   "private": true,
+  "engines": {
+    "node": "6.6.0"
+  },
   "scripts": {
     "start": "app.js",
     "test": "grunt test",
