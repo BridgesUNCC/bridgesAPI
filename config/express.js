@@ -88,9 +88,7 @@ module.exports = function (app, config, passport) {
     });
 
     // routes should be at the last
-    // app.use(app.router);
-    //Bootstrap routes.
-    require('./routes')(app, passport);
+    app.use(app.router);
 
     app.use(function(err, req, res, next){
       // treat as 404
