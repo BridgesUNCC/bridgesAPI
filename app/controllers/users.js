@@ -155,9 +155,17 @@ exports.sendResetEmail = function (req, res) {
 };
 
 exports.logout = function (req, res) {
-    req.logout();
     user="";
-    res.redirect("login");
+
+    if (req.session) {
+      // delete session object
+      req.session.destroy(function(err) {
+        if(err) {
+          return next(err);
+        }
+      });
+    }
+    res.redirect("/");
 };
 
 /* Load profile view for a User */
