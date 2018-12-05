@@ -8,6 +8,11 @@ module.exports = function (app, config, passport) {
 
     app.set('showStackError', true);
 
+    app.use(function(req, res, next) {
+      res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+      next();
+    });
+
     // should be placed before express.static
     app.use(express.compress({
         filter: function (req, res) {

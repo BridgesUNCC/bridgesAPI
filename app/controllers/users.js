@@ -247,8 +247,9 @@ exports.create = function (req, res) {
     user.generateKey();
     user.save(function (err) {
         if (err) {
+          err = err.errors ? err.errors : err;
           return res.render('users/signup', {
-            errors: (err.errors),
+            errors: (err),
             user: user,
             title: 'Sign up'
           });

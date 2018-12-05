@@ -103,7 +103,7 @@ module.exports = function(app, passport, streamable) {
     /* User's personal gallery; requires log in */
     app.get('/username', isLoggedInGallery, users.profile, handleError);
 
-    app.delete('/users/:id', isLoggedIn, users.deletePerson);
+    app.post('/users/delete/:id', isLoggedIn, users.deletePerson);
     app.get('/users/apikey', users.getkey, handleError);
     app.get('/logout', users.logout);
 
