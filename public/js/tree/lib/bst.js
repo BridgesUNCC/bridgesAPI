@@ -141,6 +141,8 @@ d3.bst = function (vis, W, H) {
           })
           .text( function( d ) { if( (d && d.data.name &&d.data.name != "NULL") ) { return d.data.name; } else return ""; });
 
+        d3.selectAll(".nodeLabel").each(BridgesVisualizer.insertLinebreaks);
+
         // apply dash array if node has collapsed non-null children
         node.selectAll(".node")
           .style("stroke", "black")

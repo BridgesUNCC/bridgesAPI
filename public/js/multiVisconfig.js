@@ -9,11 +9,9 @@ d3.select("#nodelabels").on("click", BridgesVisualizer.displayNodeLabels);
 d3.select("#linklabels").on("click", BridgesVisualizer.displayLinkLabels);
 d3.select("#toggleDisplay").on("click",
 toggleDisplay);
-d3.select("#assignmentSlideButton1").on("click", prevVis);
-d3.select("#assignmentSlideButton2").on("click", nextVis);
 
 var key = 0;
-
+var subAssignmentNumber = 0; // subassignment number
 
 BridgesVisualizer.visualizations = [];
 
@@ -21,6 +19,7 @@ var ele = document.getElementById("vis0"),
     width = ele.clientWidth,
     height = ele.clientHeight,
     transform = assignment.transform;
+
 
 
 visualizeAssignment(assignment);
@@ -57,6 +56,7 @@ function toggleDisplay() {
   var newMode = (displayMode == "slide") ? "stack" : "slide";
   window.location = "/assignments/"+assignment.assignmentNumber+"/"+assignment.username+"?displayMode="+newMode;
 }
+
 
 // Asynchronously update the node positions
 // function savePositions () {
@@ -194,14 +194,14 @@ function isOnScreen(elem) {
 }
 
 // on scroll, load the currently visible visualization
-jQuery( document ).ready( function() {
-	window.addEventListener('scroll', function(e) {
+$( document ).ready( function() {
+	window.addEventListener('scroll', throttled(250, function(e) {
     for(var i = 0; i < assignment.numSubassignments; i++) {
     	if( isOnScreen(jQuery('#vis'+i)) && unloaded(i) ) {
         updateVis(i, i);
       }
     }
-	});
+	}));
 });
 
 // return true if the (i)th assignment is not loaded yet
@@ -229,32 +229,73 @@ $(window).resize(function() {
 });
 
 
-var currentVisNum = 0;
-var assignNum = 100;
+window.onkeydown = function(e) {
+    e = e || window.event;
+    if (e.keyCode == '37') {
+       // left arrow
+       prevVis();
+    }
+    else if (e.keyCode == '39') {
+       // right arrow
+       nextVis();
+    }
+};
+
 function prevVis(){
-  if(currentVisNum == 0){
-  }else{
-    currentVisNum -= 1;
-    updateVis(currentVisNum);
+  if(subAssignmentNumber > 0) {
+    updateVis(--subAssignmentNumber);
   }
 }
 
 function nextVis(){
-  if(currentVisNum == assignNum){
-  }else{
-    currentVisNum += 1;
-    updateVis(currentVisNum);
+  if(subAssignmentNumber < assignment.numSubassignments-1) {
+    updateVis(++subAssignmentNumber);
   }
+}
+
+// bind assignment slide buttons if appropriate
+(function() {
+  d3.selectAll(".slideButton").on("click", slideButtonClick);
+  d3.selectAll(".slideButton").on("mouseover", slideButtonHover);
+  d3.selectAll(".slideButton").on("mouseout", slideButtonOut);
+
+  positionSlideLabel(0);
+})();
+
+
+function slideButtonClick(d, i) {
+  updateVis(i);
+}
+function slideButtonHover(d, i) {
+  positionSlideLabel(i);
+}
+function slideButtonOut(d, i) {
+  positionSlideLabel(subAssignmentNumber);
+}
+function positionSlideLabel(i) {
+  i = +i;
+  d3.select("#currentSubassignment")
+    .text(assignment.assignmentNumber + "." + ((i < 10) ? "0"+i : i))
+    .style("left", function() {
+      var b = d3.select("#slideButton"+i);
+      // return b.node().offsetLeft + (b.node().clientWidth / 3) + "px";
+      return b.node().offsetLeft + "px";
+    })
+    .style("top", function() {
+      var b = d3.select("#slideButton"+i);
+      return b.node().offsetTop - 25 + "px";
+    });
 }
 
 function updateVis(currentNum, index){
   var username = assignment.username;
   var number = assignmentNumber;
-
   if(currentNum < 10)
     number += ".0" + currentNum;
   else
     number += "." + currentNum;
+
+  subAssignmentNumber = currentNum;
 
   $.ajax({
       url: "/assignmentjson/" + number + "/" + username,
@@ -264,7 +305,7 @@ function updateVis(currentNum, index){
       currentVisNum -= 1;
     }).done(function(assignment) {
       // update the subassignment navigation display
-      d3.select("#currentSubassignment").text(assignment.assignmentNumber + "." + assignment.subAssignment);
+      positionSlideLabel(assignment.subAssignment);
 
       // if necessary, import the relevant script
       if(assignment.resources && assignment.resources.script && !isLoaded(assignment.resources.script)) {
@@ -287,7 +328,7 @@ function updateVis(currentNum, index){
 function addScript(attribute, text, callback) {
     var s = document.createElement('script');
     for (var attr in attribute) {
-        s.setAttribute(attr, attribute[attr] ? attribute[attr] : null)
+        s.setAttribute(attr, attribute[attr] ? attribute[attr] : null);
     }
     s.innerHTML = text;
     s.onload = callback;
@@ -379,5 +420,16 @@ function visualizeAssignment(assignment, index){
   }
 }
 
+function throttled(delay, fn) {
+  let lastCall = 0;
+  return function (...args) {
+    const now = (new Date).getTime();
+    if (now - lastCall < delay) {
+      return;
+    }
+    lastCall = now;
+    return fn(...args);
+  }
+}
 
 })();

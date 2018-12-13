@@ -27,7 +27,8 @@
       .attr("class", "tooltip")
       .classed("shown", false)
       .style("pointer-events", "none")
-      .style("opacity", 0);
+      .style("opacity", 0)
+      .style("display", "none");
 
   // Offsets for text labels for visualization types
   BridgesVisualizer.textOffsets = {
@@ -230,6 +231,7 @@
       if(!BridgesVisualizer.tooltipEnabled || label === "") return;
       BridgesVisualizer.tooltip.transition()
           .duration(200)
+          .style("display", "block")
           .style("opacity", 0.9);
       BridgesVisualizer.tooltip.html(addLineBreaks(label))
           .style("left", (d3.event.pageX) + "px")

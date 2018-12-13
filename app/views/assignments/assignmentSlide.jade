@@ -17,16 +17,16 @@ block content
       if (assignment && assignment.description  && assignment.description.length > 0)
         div#description0.assignmentDescription #{assignment.description}
 
-      if (assignment.numSubassignments > 1)
-        div#assignmentSlide
-          div Subassignments:
-          div#assignmentSlideButton1.btn.btn-default <
-          span#currentSubassignment #{assignmentNumber}.#{assignment.subAssignment}
-          div#assignmentSlideButton2.btn.btn-default >
-
       div#updateStatus
       div#assignmentCanvas(overflow='auto')
-          div(id="vis0", display="block").assignmentContainer
+        div#assignmentSlide
+          if (assignment.numSubassignments > 1)
+            div#currentSubassignment #{assignmentNumber}.#{assignment.subAssignment}
+            - for(var i = 0; i < assignment.numSubassignments; i++) {
+              div.btn.btn-secondary.slideButton(id="slideButton"+i)
+            - }
+
+        div(id="vis0", display="block").assignmentContainer
 
 
 
