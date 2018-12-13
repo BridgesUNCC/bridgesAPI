@@ -24,7 +24,7 @@ function displayDetails(assignment) {
   if(assignment.title) { text+= "<h3>" + assignment.title + "</h3><br/>"; }
   if(assignment.description) { text+= "<i>\"" + assignment.description + "\"</i><br/><br/>"; }
   text+= "<b>Assignment:</b> " + assignment.assignmentNumber + "<br/>";
-  text+= "<b>Data Structure:</b> " + assignment.data[0].visual  + "<br/>";
+  text+= "<b>Data Structure:</b> " + assignment.assignment_type  + "<br/>";
   text+= "<b>Date Created:</b> " + assignment.dateCreated  + "<br/>";
 
   galleryTooltip
