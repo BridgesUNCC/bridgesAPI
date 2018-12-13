@@ -75,9 +75,15 @@ exports.upload = function (req, res, next) {
     console.log(rawBody);
 
     // validate attributes
-    var visualizationType = visTypes.getVisType(rawBody.visual);
     var title = rawBody.title || "";
     var description = rawBody.description || "";
+
+    // set correct vistype
+    var assignmentType = rawBody.visual;
+    var visualizationType = visTypes.getVisType(assignmentType);
+    if(visualizationType == "Alist") {
+      visualizationType = visTypes.checkIfHasDims(rawBody);
+    }
 
     // make sure grid-based assignments do not exceed hard dimension limits
     if(rawBody.dimensions) {
@@ -103,7 +109,7 @@ exports.upload = function (req, res, next) {
     function replaceAssignment (res, user, assignmentID) {
 
         if (subAssignment == '0' || subAssignment == '00') {
-             Assignment.remove({
+             Assignment.deleteMany({
                 assignmentNumber: assignmentNumber,
                 email: user.email
             })
@@ -123,18 +129,33 @@ exports.upload = function (req, res, next) {
 
       assignment = new Assignment();
 
-      if (subAssignment == '0' || subAssignment == '00') {
-        assignment.title = title;
-        assignment.description = description;
-      }
+      // set the title and description
+      assignment.title = title;
+      assignment.description = description;
 
+      // set the user credentials
       assignment.username = user.username;
       assignment.email = user.email;
+
+      // set visualization type
       assignment.vistype = visualizationType;
-      assignment.data = rawBody;
+
+      // set assignment type
+      assignment.assignment_type = assignmentType;
+
+      // set assignment identifiers
       assignment.assignmentID = assignmentID;
       assignment.assignmentNumber = assignmentNumber;
       assignment.subAssignment = subAssignment;
+
+      // remove attributes from data attribute
+      delete rawBody.title;
+      delete rawBody.description;
+      delete rawBody.visual;
+      delete rawBody.vistype;
+
+      // save assignment data
+      assignment.data = rawBody;
 
       assignment.save(function (err, product, numAffected) {
         if (err) {
@@ -156,8 +177,8 @@ exports.upload = function (req, res, next) {
 exports.next = null;
 
 /*
-  Get the raw JSON for an assignment
-*/
+ *  Get the raw JSON for an assignment
+ */
 exports.getJSON = function (req, res, next) {
     this.next = next;
     var assignmentRaw = req.params.assignmentNumber.split('.'),
@@ -189,20 +210,32 @@ exports.getJSON = function (req, res, next) {
               "__v": 0,
               "_id": 0
             })
-            .exec( function( err, assignment){
+            .lean()
+            .exec( function(err, assignment) {
               if (err) return next(err);
-              if (!assignment)
+              if (!assignment) {
                   return res.status(404).render("404", {"message": "can not find assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'"});
+                }
+
+              // add new resource info
+              var resources = visTypes.getVisTypeObject(assignment);
+              if((resources.script && resources.script.length > 0) || (resources.link && resources.link.length > 0)) {
+                assignment.resources = visTypes.getVisTypeObject(assignment);
+              }
 
               // return the found assignment if it's public or owned by the request
               if(assignment.shared || (sessionUser && (assignment.email == sessionUser.email)))
-                return res.json( 200, { "assignmentJSON": assignment } );
+                return res.json( 200, assignment );
 
               return res.status(404).render("404", {"message": "can not find public assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'"});
             });
         });
 };
 
+/*
+ *  Get and render an assignment
+ *    Assignments can be displayed in slide or stack mode
+ */
 exports.get = function (req, res, next) {
     this.next = next;
     var assignmentNumber = req.params.assignmentNumber.split('.')[0],
@@ -280,7 +313,7 @@ exports.get = function (req, res, next) {
             return tree;
         };
 
-        /* parse and store assignment */
+        /* parse assignment data */
         try{
           data = assignment.data[0];
         } catch(err) {
@@ -295,52 +328,43 @@ exports.get = function (req, res, next) {
 
         // Client should send trees as hierarchical representation now..
         // This captures the data from the OLD flat tree representation
-        if((data.visual == "tree") && !("nodes" in data && "children" in data.nodes)) {
+        if((assignment.visual == "tree") && !("nodes" in data && "children" in data.nodes)) {
           data = unflatten(data);
-          data['visual'] = "tree";
           if(!navItems.labels) navItems.labels = true;
         }
         // This captures the data from the NEW hierarchical tree representation
         if("nodes" in data && "children" in data.nodes) {
-          var tempVisual = data.visual;
           data = data.nodes;
-          data.visual = tempVisual;
           if(!navItems.labels) navItems.labels = true;
-        }
-
-        data.vistype = visTypes.getVisType(data.visual);
-
-        // Make sure multiple arrays are visualized
-        if(data.vistype == "Alist") {
-          visTypes.checkIfHasDims(data);
         }
 
         // add optional nav buttons where appropriate
-        if(data.vistype == "nodelink") {
+        if(assignment.vistype == "nodelink") {
           if(!navItems.save) navItems.save = true;
           if(!navItems.labels) navItems.labels = true;
-        } else if(data.vistype == "tree") {
+        } else if(assignment.vistype == "tree") {
           if(!navItems.labels) navItems.labels = true;
         }
 
         // Use SVG for < 100 nodes, Canvas for > 100
-        if(data.vistype == "nodelink" && data.nodes && data.nodes.length > 100) {
-          data.vistype = "nodelink-canvas";
+        if(assignment.vistype == "nodelink" && data.nodes && data.nodes.length > 100) {
+          assignment.vistype = "nodelink-canvas";
           linkResources.script.push('/js/graph-canvas.js');
         }
 
         // add new resource info
-        if(!assignmentType[data.vistype]){
-            assignmentType[data.vistype] = 1;
+        if(!assignmentType[assignment.vistype]){
+            assignmentType[assignment.vistype] = 1;
 
-            var vistypeObjectTemp = visTypes.getVisTypeObject(data);
+            var vistypeObjectTemp = visTypes.getVisTypeObject(assignment);
             linkResources.script.push(vistypeObjectTemp.script);
             if(vistypeObjectTemp.link != ""){
               linkResources.css.push(vistypeObjectTemp.link);
             }
         }
 
-        data.coord_system_type = data.coord_system_type.toLowerCase() || "cartesian";
+        console.log(assignment);
+        data.coord_system_type = data.coord_system_type ? data.coord_system_type.toLowerCase() : "cartesian";
 
         // add map resources if appropriate
         if(data.map_overlay) {
@@ -352,247 +376,30 @@ exports.get = function (req, res, next) {
 
         sessionUser = sessionUser ? {"username": sessionUser.username, "email": sessionUser.email} : null;
 
-        return res.render ('assignments/assignmentSlide', {
-            "title":"Assignment " + assignmentNumber,
-            "assignmentTitle": assignment.title,
-            "assignmentDescription": assignment.description.replace("\"", ""),
+        // add display toggle if >1 assignment
+        navItems.toggleDisplay = (assignment.numSubassignments > 1);
+
+        // use display mode specified by query param or assignment
+        displayMode = "assignmentSlide"; // default
+        if(req.query.displayMode) {
+          if(req.query.displayMode == "stack")
+            displayMode = "assignmentMulti";
+          if(req.query.displayMode == "slide")
+            displayMode = "assignmentSlide";
+        } else {
+          displayMode = (assignment.default_display == "stack") ? "assignmentMulti" : "assignmentSlide";
+        }
+
+        return res.render ('assignments/' + displayMode, {
             "user": sessionUser,
-            "data": assignment,
+            "assignment": assignment,
             "map": map,
             "assignmentNumber":assignmentNumber,
             "linkResources":linkResources,
             "shared":assignment.shared,
             "owner":owner,
-            "navItems": navItems
-        });
-      }
-  };
-
-
-exports.show = function (req, res, next) {
-    this.next = next;
-    var assignmentNumber = req.params.assignmentNumber.split('.')[0],
-        username = req.params.username,
-        sessionUser = null;
-
-    if (typeof req.user != "undefined") sessionUser = req.user;
-
-    var apikey = (sessionUser) ? req.query.apikey : null;
-
-    User
-        .findOne( { username: username } )
-        .exec( function( err, usr ){
-            if (err) return next(err);
-            if (!usr)
-                return next("couldn't find the username " + username);
-
-            getAssignment(req, res, next, usr.email, function (assign) {
-                //Test whether user has permission to view vis
-                return testByUser(res, req, username, assign, function (){
-                    return testByKey(res, apikey, username, assign, null);
-                });
-            });
-        });
-
-    function getAssignment (req, res, next, email, cb) {
-        next = next;
-
-        Assignment.findOne({
-            email: email,
-            assignmentNumber: assignmentNumber
-        })
-        .exec(function(err, assignment) {
-            if (err) return next(err);
-
-            if (!assignment || assignment.length === 0) {
-                return next ("the assignment was not found");
-            }
-
-            // If the assignment is not public, see if user has access to private assignment
-            if(!assignment.shared) {
-                if(!cb(assignment))
-                  return next ("the assignment data you requested is not public");
-            }
-
-            Assignment
-            .find({
-                email: email,
-                assignmentNumber: assignmentNumber
-            })
-            .sort({
-                subAssignment: 1  // TODO: only sorts based on strings since we don't store numbers as integers...
-            })
-            .exec(function(err, assignments) {
-                if (err) return next(err);
-                if (!assignments || assignments.length === 0)
-                  return next("Could not find assignment " + assignmentNumber);
-                return renderMultiVis( res, assignments );
-            });
-        });
-    }
-
-    //find whether there is a session, then test
-    function testByUser (res, req, username, assign, nextTest) {
-        if (sessionUser) {
-            return testAndMoveOn(
-                res, sessionUser.username, username, assign, nextTest);
-        } else {
-            if (nextTest) return nextTest();
-            else
-                return testAndMoveOn(res, true, false, assign, null);
-        }
-    }
-
-    //find user by key, then test
-    function testByKey (res, apikey, username, assign, nextTest) {
-        if (apikey) {
-            User
-              .findOne({apikey:apikey})
-              .exec(function (err, n){
-                  if (err) return next (err);
-                  if (!n) return next ("Invalid apikey: "+apikey);
-                  return testAndMoveOn(
-                      res, n.username, username, assign, null);
-              });
-        } else {
-            if (nextTest) return nextTest();
-            else
-                return testAndMoveOn(res, true, false, assign, null);
-        }
-    }
-
-    //compare the usernames and move on
-    function testAndMoveOn (res, un1, un2, assign, nextTest) {
-        // console.log(un1 + " " + un2)
-        if (un1 === un2) {
-            // console.log(assign)
-            // return;
-        //  return renderVis (res, assign)
-          return true;
-        }
-        if (nextTest) return nextTest();
-        //else return next ("the assignment data you requested is not public")
-        else return false;
-    }
-
-    function renderMultiVis (res, assignments) {
-        var owner=false,
-            map=false,
-            allAssigns = {},
-            assignmentTypes = {},
-            linkResources = {"script":[], "css":[]},
-            navItems = {}; // optional nav buttons: labels, save positions
-
-        if (sessionUser) {
-            if (sessionUser.email==assignments[0].email) owner = true;
-        }
-
-        var unflatten = function (data) {
-            //check whether the data is already hierachical
-            if ("children" in data) return data;
-            tm = treemill();
-            tree = tm.unflatten(data);
-            return tree;
-        };
-
-        var flatten = function (data) {
-            //check whether the data is already flat
-            if ("nodes" in data) return data;
-            tm = treemill();
-            tree = tm.flatten(data);
-            return tree;
-        };
-
-        /* parse and store all subassignments */
-        for(var i = 0; i < assignments.length; i++) {
-          try{
-            data = assignments[i].data.toObject()[0];
-          } catch(err) {
-            console.log("Error getting data object");
-            return next(err);
-          }
-
-          if(data === null) {
-            console.log("Erroneous data");
-            return next("Erroneous data");
-          }
-
-          // Client should send trees as hierarchical representation now..
-          // This captures the data from the OLD flat tree representation
-          if((data.visual == "tree") && !("nodes" in data && "children" in data.nodes)) {
-            data = unflatten(data);
-            data['visual'] = "tree";
-            if(!navItems.labels) navItems.labels = true;
-          }
-          // This captures the data from the NEW hierarchical tree representation
-          if("nodes" in data && "children" in data.nodes) {
-            var tempVisual = data.visual;
-            data = data.nodes;
-            data.visual = tempVisual;
-            if(!navItems.labels) navItems.labels = true;
-          }
-
-          data.vistype = visTypes.getVisType(data.visual);
-
-          // Make sure multiple arrays are visualized
-          if(data.vistype == "Alist") {
-            visTypes.checkIfHasDims(data);
-          }
-
-          // add optional nav buttons where appropriate
-          if(data.vistype == "nodelink") {
-            if(!navItems.save) navItems.save = true;
-            if(!navItems.labels) navItems.labels = true;
-          } else if(data.vistype == "tree") {
-            if(!navItems.labels) navItems.labels = true;
-          }
-
-          // Use SVG for < 100 nodes, Canvas for > 100
-          if(data.vistype == "nodelink" && data.nodes && data.nodes.length > 100) {
-            data.vistype = "nodelink-canvas";
-            linkResources.script.push('/js/graph-canvas.js');
-          }
-
-          // add new resource info
-          if(!assignmentTypes[data['vistype']]){
-              assignmentTypes[data['vistype']] = 1;
-
-              var vistypeObjectTemp = visTypes.getVisTypeObject(data);
-              linkResources.script.push(vistypeObjectTemp.script);
-              if(vistypeObjectTemp.link != ""){
-                linkResources.css.push(vistypeObjectTemp.link);
-              }
-          }
-
-          // add map resources if appropriate
-          if(data.map_overlay) {
-            map = true;
-            linkResources.script.push('/js/map.js');
-            linkResources.script.push('/js/lib/topojson.v1.min.js');
-            linkResources.css.push('/css/map.css');
-            data.coord_system_type = data.coord_system_type.toLowerCase() || "cartesian";
-          }
-
-          // finally, store the subassignment
-          assignments[i].data = data;
-          allAssigns[i] = assignments[i];
-        }
-
-        sessionUser = sessionUser ? {"username": sessionUser.username, "email": sessionUser.email} : null;
-
-        return res.render ('assignments/assignmentMulti', {
-            "title":"Assignment " + assignmentNumber,
-            "assignmentTitle": assignments[0].title,
-            "assignmentDescription": assignments[0].description.replace("\"", ""),
-            "user": sessionUser,
-            "data": allAssigns,
-            "map": map,
-            "extent":Object.keys(allAssigns).length,
-            "assignmentNumber":assignmentNumber,
-            "linkResources":linkResources,
-            "shared":assignments[0].shared,
-            "owner":owner,
-            "navItems": navItems
+            "navItems": navItems,
+            "displayMode": (displayMode == "assignmentMulti") ? "stack" : "slide"
         });
       }
   };

@@ -33,9 +33,8 @@ exports.view = function(req, res, next) {
               title: 1,
               description: 1,
               assignmentNumber: 1,
-              "data.visual": 1,
-              "data.dims": 1,
               vistype: 1,
+              assignment_type: 1,
               shared: 1,
               dateCreated: 1,
               username: 1
@@ -54,18 +53,6 @@ exports.view = function(req, res, next) {
               // assignmentResult.sort(function(a, b) {
               //     return Date.parse(b.dateCreated) - Date.parse(a.dateCreated);
               // });
-
-              try{
-                for(var assignmentResultItem in assignmentResult){
-                      var thisVistype = visTypes.getVisType(assignmentResult[assignmentResultItem]['data'][0]['visual']);
-                      if(thisVistype == "Alist") thisVistype = visTypes.checkIfHasDims(assignmentResult[assignmentResultItem]['data'][0]);
-                      assignmentResult[assignmentResultItem]['vistype'] = thisVistype;
-                      assignmentResult[assignmentResultItem].username = user.username;
-                }
-              } catch (error) {
-                  console.log("Error processing assignments. Data may be corrupted. ", error);
-                  assignmentResult = [];
-              }
 
               return res.render('assignments/userGallery', {
                 "title": "Assignment gallery",

@@ -134,20 +134,11 @@ div.tooltip {
     overflow: scroll;
 }
 div#assignmentSlide{
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     margin-top: 15px;
     margin-left: 15px;
     margin-bottom: 15px;
-    width: 90%;
-    height: 100px;
 }
-div#assignmentSlideButons1 {
-    display: inline;
-    margin-left 15px;
-    width: 50px;
-    height: 20px;
-
-}
-div#assignmentSlideButons2{
-  margin-left: 55px;
-  height: 20px;
+span#currentSubassignment {
+  padding: 10px;
 }

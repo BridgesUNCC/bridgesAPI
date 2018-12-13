@@ -127,8 +127,7 @@ exports.recentUploads = function(req, res) {
           title: 1,
           description: 1,
           assignmentNumber: 1,
-          "data.visual": 1,
-          "data.dims": 1,
+          assignment_type: 1,
           vistype: 1,
           shared: 1,
           dateCreated: 1

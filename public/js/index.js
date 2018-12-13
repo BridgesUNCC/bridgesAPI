@@ -8,11 +8,11 @@ var getContent = function(d) {
   content += "Type: " + d.vistype + linebreak + linebreak;
   content += d.description + linebreak + linebreak;
 
-
   return content;
 };
 
 var initGallery = function(data) {
+  console.log(data);
   var assignmentWindow = d3.select("#recentAssigns").selectAll(".assignment-preview")
         .data(data)
     .enter()
@@ -39,11 +39,12 @@ var initGallery = function(data) {
       .attr('src', function(d) {
         if(d.vistype == "Alist")
             return '/img/array.png';
-        else if(d.data[0] && d.data[0].visual.indexOf("Graph") >= 0)
+        else if(d.assignment_type && d.assignment_type.indexOf("Graph") >= 0)
             return '/img/graph.png';
-        else
+        else if(d.vistype)
             return '/img/'+d.vistype.toLowerCase()+'.png';
-
+        else
+            return '/img/nodelink.png';
       });
 };
 

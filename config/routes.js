@@ -148,19 +148,20 @@ module.exports = function(app, passport, streamable) {
     app.post('/assignments/:assignmentNumber/share/:value',
         hasAccess, assignments.updateVisibility, handleError);
 
-    //app.get('/assignments/:assignmentID/:username',
-    //         isPublic, assignments.show, handleError)
-
     /* Allow user to save a snapshot of the positions of a graph */
     app.post('assignments/:assignmentNumber/saveSnapshot/',
               hasAccess, assignments.saveSnapshot, handleError);
 
+    /* Get and visualize a user's assignment */
     app.get('/assignments/:assignmentNumber/:username',
               assignments.get, handleError);
-    app.get('/assignmentByEmail/:assignmentID/:email',
-              assignments.assignmentByEmail, handleError);
+
+    /* Get the raw JSON for a user's assignment */
     app.get('/assignmentJSON/:assignmentNumber/:username',
               assignments.getJSON, handleError);
+
+    app.get('/assignmentByEmail/:assignmentID/:email',
+              assignments.assignmentByEmail, handleError);
 
     // update the assignment specified for the current user
     //  save the positions of any fixed nodes
