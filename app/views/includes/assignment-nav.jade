@@ -28,6 +28,11 @@
           span.glyphicon.glyphicon-tags
           span.nav-label Link Labels
 
+      if (navItems.toggleDisplay)
+        a#toggleDisplay(href="#")
+          span.glyphicon.glyphicon-align-justify
+          span.nav-label Toggle Display
+
       a#reset(href="#")
         span.glyphicon.glyphicon-resize-full
         span.nav-label Reset View
@@ -38,6 +43,8 @@
           span.nav-label Delete Assignment
 
 script.
+  var displayMode = '#{displayMode}'
+
   $('.btn-expand-collapse').click(function(e) {
       $('.navbar-assignment').toggleClass('collapsed');
       $(this).children('span').toggleClass('glyphicon-menu-right').toggleClass('glyphicon-menu-left');
