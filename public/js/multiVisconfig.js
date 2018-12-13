@@ -206,7 +206,7 @@ $( document ).ready( function() {
 
 // return true if the (i)th assignment is not loaded yet
 function unloaded(i) {
-  return (d3.select("#svg"+i).node() == null);
+  return (d3.select("#svg"+i).node() == null) && (d3.select("canvas#vis"+i).node() == null);
 }
 
 // Update default transforms that rely on window sizes
