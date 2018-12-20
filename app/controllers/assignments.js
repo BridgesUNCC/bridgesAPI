@@ -77,6 +77,7 @@ exports.upload = function (req, res, next) {
     // validate attributes
     var title = rawBody.title || "";
     var description = rawBody.description || "";
+    var display_mode = rawBody.display_mode || "slide";
 
     // set correct vistype
     var assignmentType = rawBody.visual;
@@ -142,6 +143,7 @@ exports.upload = function (req, res, next) {
 
       // set assignment type
       assignment.assignment_type = assignmentType;
+      assignment.display_mode = display_mode;
 
       // set assignment identifiers
       assignment.assignmentID = assignmentID;
@@ -217,10 +219,23 @@ exports.getJSON = function (req, res, next) {
                   return res.status(404).render("404", {"message": "can not find assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'"});
                 }
 
-              // add new resource info
+              // add new resource info to assignment json
+              assignment.resources = {'script': [], 'css': []};
+
+              // add visualization resources if appropriate
               var resources = visTypes.getVisTypeObject(assignment);
-              if((resources.script && resources.script.length > 0) || (resources.link && resources.link.length > 0)) {
-                assignment.resources = visTypes.getVisTypeObject(assignment);
+              if(resources.script) {
+                assignment.resources.script.push(resources.script);
+              }
+              if(resources.link) {
+                assignment.resources.css.push(resources.link);
+              }
+
+              // add map resources if appropriate
+              if(assignment.data[0] && assignment.data[0].map_overlay) {
+                assignment.resources.script.push('/js/map.js');
+                assignment.resources.script.push('/js/lib/topojson.v1.min.js');
+                assignment.resources.css.push('/css/map.css');
               }
 
               // return the found assignment if it's public or owned by the request
@@ -363,11 +378,10 @@ exports.get = function (req, res, next) {
             }
         }
 
-        console.log(assignment);
         data.coord_system_type = data.coord_system_type ? data.coord_system_type.toLowerCase() : "cartesian";
 
         // add map resources if appropriate
-        if(data.map_overlay) {
+        if(assignment.data[0] && assignment.data[0].map_overlay) {
           map = true;
           linkResources.script.push('/js/map.js');
           linkResources.script.push('/js/lib/topojson.v1.min.js');
@@ -387,8 +401,10 @@ exports.get = function (req, res, next) {
           if(req.query.displayMode == "slide")
             displayMode = "assignmentSlide";
         } else {
-          displayMode = (assignment.default_display == "stack") ? "assignmentMulti" : "assignmentSlide";
+          displayMode = (assignment.display_mode == "stack") ? "assignmentMulti" : "assignmentSlide";
         }
+
+        console.log(assignment, assignment.map_overlay);
 
         return res.render ('assignments/' + displayMode, {
             "user": sessionUser,

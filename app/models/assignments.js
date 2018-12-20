@@ -34,7 +34,7 @@ var Assignment = new Schema ({
     //what assignment type is this
     assignment_type:    {type: String, default:'nodelink'},
     //visualize as slide or stack of assignments
-    default_display:    {type: String, default:'slide'},
+    display_mode:    {type: String, default:'slide'},
 
     //Assignment data (nodes, links, attributes)
     data: [Schema.Types.Mixed]

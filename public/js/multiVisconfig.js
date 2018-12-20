@@ -206,6 +206,7 @@ $( document ).ready( function() {
 
 // return true if the (i)th assignment is not loaded yet
 function unloaded(i) {
+  console.log(i, d3.select("#svg"+i).node());
   return (d3.select("#svg"+i).node() == null) && (d3.select("canvas#vis"+i).node() == null);
 }
 
@@ -307,33 +308,50 @@ function updateVis(currentNum, index){
       // update the subassignment navigation display
       positionSlideLabel(assignment.subAssignment);
 
-      // if necessary, import the relevant script
-      if(assignment.resources && assignment.resources.script && !isLoaded(assignment.resources.script)) {
-        addScript({
-            src: assignment.resources.script,
-            type: 'text/javascript',
-            async: null
-        }, "", function(){
-          // then visualize the assignment
-          visualizeAssignment(assignment, index);
-        });
-      } else {
-        // otherwise, just visualize the assignment
-        visualizeAssignment(assignment, index);
+      // if necessary, import the relevant scripts
+      if(assignment.resources && assignment.resources.script) {
+        for(var s in assignment.resources.script) {
+          var script = assignment.resources.script[s];
+          if (!isLoaded(script)) {
+            addScript({
+                src: script,
+                type: 'text/javascript',
+                async: null
+            }).then(function(dat) {
+              console.log(dat);
+            });
+          }
+        }
       }
+
+      // visualize the assignment
+      visualizeAssignment(assignment, index);
     });
 }
 
-// load visualization scripts
-function addScript(attribute, text, callback) {
-    var s = document.createElement('script');
-    for (var attr in attribute) {
-        s.setAttribute(attr, attribute[attr] ? attribute[attr] : null);
-    }
-    s.innerHTML = text;
-    s.onload = callback;
-    document.body.appendChild(s);
+function addScript(src) {
+    return new Promise(function (resolve, reject) {
+        var s;
+        s = document.createElement('script');
+        for (var attr in src) {
+            s.setAttribute(attr, src[attr] ? src[attr] : null);
+        }
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+    });
 }
+
+// // load visualization scripts
+// function addScript(attribute, text, callback) {
+//     var s = document.createElement('script');
+//     for (var attr in attribute) {
+//         s.setAttribute(attr, attribute[attr] ? attribute[attr] : null);
+//     }
+//     s.innerHTML = text;
+//     s.onload = callback;
+//     document.body.appendChild(s);
+// }
 
 function isLoaded(script) {
   return document.querySelectorAll("script[src='" + script + "']").length > 0;
@@ -341,6 +359,7 @@ function isLoaded(script) {
 
 function visualizeAssignment(assignment, index){
   console.log(index, assignment);
+
   // if no index provided, assume assignmentSlide view
   if(!index) {
     index = 0;
@@ -393,11 +412,6 @@ function visualizeAssignment(assignment, index){
   else if (assignment.vistype == "nodelink" && d3.graph) {
       graph = d3.graph(vis, width, height, assignmentData);
       BridgesVisualizer.visualizations.push(graph);
-
-      // // handle map overlay for subassignment if appropriate
-      // if(assignmentData.map_overlay) {
-      //   BridgesVisualizer.map(vis, assignmentData.coord_system_type);
-      // }
   }
   else if (assignment.vistype == "nodelink-canvas" && d3.graph_canvas) {
       d3.select("#vis0").select("#svg0").remove("*");
@@ -417,6 +431,27 @@ function visualizeAssignment(assignment, index){
       // console.log("unknown data type");
       graph = d3.graph(d3, "#vis" + key, width, height, assignmentData);
       BridgesVisualizer.visualizations.push(graph);
+  }
+
+  // handle map overlay for subassignment if appropriate
+  if(assignment.data[0] && assignment.data[0].map_overlay) {
+    console.log('map', vis);
+
+    // if map is required but map scripts are not present
+    if(!BridgesVisualizer.map) {
+      console.log(assignment.resources.script);
+      addScript({
+          src: assignment.resources.script[0],
+          type: 'text/javascript',
+          async: null
+      }).then(function(){
+        console.log('oknow');
+        // then visualize the assignment
+        BridgesVisualizer.map(vis, assignmentData.coord_system_type);
+      });
+    } else {
+      BridgesVisualizer.map(vis, assignmentData.coord_system_type);
+    }
   }
 }
 

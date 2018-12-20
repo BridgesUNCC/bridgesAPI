@@ -160,12 +160,12 @@ div.slideButton {
   padding-top: 10px;
   flex: 1;
   display: block;
-  background-color: steelblue;
+  background-color: #F0F5FF;
   border: solid 1px #3D5C96;
   border-top-color: #F0F5FF;
 }
 
 div.slideButton:hover {
   display: inline;
-  background-color: #3D5C96;
+  background-color: steelblue;
 }
