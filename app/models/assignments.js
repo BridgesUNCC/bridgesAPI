@@ -21,7 +21,7 @@ var Assignment = new Schema ({
     // schoolID:           {type: String, default: ''},
     title:              {type: String, default: ''},
     description:        {type: String, default: ''},
-    dateCreated:        {type: Date, default: Date.now()},
+    dateCreated:        {type: Date, default: Date.now},
     shared:             {type: Boolean, default: 'true'}, //public or private
     vistype:            {type: String, default:'nodelink'},
     thumbnail:          {type: String, default:'nodelink'},
