@@ -548,6 +548,42 @@ exports.deleteAssignment = function (req, res) {
     res.send("OK");
 };
 
+/* Delete the given assignment for the user with the given key */
+exports.deleteAssignmentByKey = function (req, res) {
+    var assignmentNumber;
+
+    // ensure api keys match
+    if(req.query.apikey != req.user.apikey) {
+      return res.status(401).json({"error": "api key does not match"});
+    }
+
+    function isAssignmentNumber(n) {
+        return n === +n && n === (n|0) && n >= 0;
+    }
+
+    // check validity of assignment number
+    if(isAssignmentNumber(+req.params.assignmentNumber)) {
+      assignmentNumber = req.params.assignmentNumber;
+    } else {
+      return res.status(401).json({"error": "assignment number is invalid"});
+    }
+
+    // delete all subassignments with the major assignment number for this user
+    Assignment
+        .find({
+          "assignmentNumber": assignmentNumber,
+          "email": req.user.email
+        })
+        .exec(function(err, assign) {
+            if (err) return next(err);
+            for (var i in assign) {
+                assign[i].remove();
+            }
+            console.log("Deleted assignment: " + req.params.assignmentNumber, "for user", req.user.email);
+        });
+    res.status(200).json({"message": "Deleted assignment " + req.params.assignmentNumber + " for user " + req.user.email});
+};
+
 exports.assignmentByEmail = function (req, res) {
   var email = req.params.email,
       assignment = req.params.assignmentID;

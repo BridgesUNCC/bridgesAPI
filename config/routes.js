@@ -174,6 +174,8 @@ module.exports = function(app, passport, streamable) {
     // delete the assignment specified for the current user
     app.delete('/assignments/:assignmentNumber', isLoggedIn, assignments.deleteAssignment);
 
+    // delete the assignment specified for the user with the given api key
+    app.delete('/clearAssignment/:assignmentNumber', hasAccess, assignments.deleteAssignmentByKey);
 
     // -------------------------------------------------------
     //
