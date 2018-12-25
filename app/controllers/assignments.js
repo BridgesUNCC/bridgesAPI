@@ -72,8 +72,6 @@ exports.upload = function (req, res, next) {
     var subAssignment = assignmentRaw[1];
     if (subAssignment == "0") subAssignment = "00";
 
-    console.log(rawBody);
-
     // validate attributes
     var title = rawBody.title || "";
     var description = rawBody.description || "";
@@ -84,6 +82,11 @@ exports.upload = function (req, res, next) {
     var visualizationType = visTypes.getVisType(assignmentType);
     if(visualizationType == "Alist") {
       visualizationType = visTypes.checkIfHasDims(rawBody);
+    }
+
+    // Use SVG for < 100 nodes, Canvas for > 100
+    if(visualizationType == "nodelink" && rawBody.nodes && rawBody.nodes.length > 100) {
+      visualizationType = "nodelink-canvas";
     }
 
     // make sure grid-based assignments do not exceed hard dimension limits
@@ -231,13 +234,6 @@ exports.getJSON = function (req, res, next) {
                 assignment.resources.css.push(resources.link);
               }
 
-              // add map resources if appropriate
-              if(assignment.data[0] && assignment.data[0].map_overlay) {
-                assignment.resources.script.push('/js/map.js');
-                assignment.resources.script.push('/js/lib/topojson.v1.min.js');
-                assignment.resources.css.push('/css/map.css');
-              }
-
               // return the found assignment if it's public or owned by the request
               if(assignment.shared || (sessionUser && (assignment.email == sessionUser.email)))
                 return res.json( 200, assignment );
@@ -359,12 +355,6 @@ exports.get = function (req, res, next) {
           if(!navItems.labels) navItems.labels = true;
         } else if(assignment.vistype == "tree") {
           if(!navItems.labels) navItems.labels = true;
-        }
-
-        // Use SVG for < 100 nodes, Canvas for > 100
-        if(assignment.vistype == "nodelink" && data.nodes && data.nodes.length > 100) {
-          assignment.vistype = "nodelink-canvas";
-          linkResources.script.push('/js/graph-canvas.js');
         }
 
         // add new resource info

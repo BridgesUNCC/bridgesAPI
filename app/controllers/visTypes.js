@@ -58,6 +58,11 @@ exports.getVisTypeObject = function(data) {
         "script":"/js/graph.js",
         "link":""
       },
+      "nodelink-canvas": {
+        "vistype":"nodelink-canvas",
+        "script":"/js/graph-canvas.js",
+        "link":""
+      },
       "grid": {
         "vistype":"grid",
         "script":"/js/grid.js",

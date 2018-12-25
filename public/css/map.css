@@ -1,6 +1,12 @@
 
+.map_overlay_svg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: -2;
+}
 
-#map_overlay path {
+.map_overlay path {
   fill: #ccc;
   stroke: #fff;
   stroke-linejoin: round;
