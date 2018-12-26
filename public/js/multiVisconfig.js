@@ -341,13 +341,7 @@ function updateVis(currentNum, index){
       }
 
       // visualize the assignment
-      //  if necessary, give time to load script
-      if(wait) {
-        setTimeout(function() {
-          visualizeAssignment(assignment, index);}, 100);
-      } else {
-        visualizeAssignment(assignment, index);
-      }
+      setTimeout(function() { visualizeAssignment(assignment, index); }, 250);
     });
 }
 
@@ -469,6 +463,12 @@ function importMapResources() {
     }).then(function() {
       return addScript({
           src: "/js/map-canvas.js",
+          type: 'text/javascript',
+          async: null
+        });
+    }).then(function() {
+      return addScript({
+          src: "/js/lib/topojson.v1.min.js",
           type: 'text/javascript',
           async: null
         });
