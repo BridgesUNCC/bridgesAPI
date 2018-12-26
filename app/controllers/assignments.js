@@ -436,54 +436,53 @@ exports.testJSON = function (req, res, next) {
 
 /* Update the node positions of the given assignment and its subassignments */
 exports.savePositions = function(req, res) {
+    var subassigns = Object.keys(req.body);
+
     Assignment
         .find({
           "assignmentNumber": req.params.assignmentNumber,
-          "email": req.user.email,
-          "vistype": "nodelink"
-        })
+          "email": req.user.email
+        },
+        "data subAssignment vistype"
+        )
+        .or([{"vistype": "nodelink"}, {"vistype": "nodelink-canvas"} ])
+        .where('subAssignment')
+        .in(subassigns)
         .exec(function(err, assign) {
+          console.log(assign);
             if (err) return next(err);
-            var subassigns = Object.keys(req.body);
-            var thisAssign;
 
             try {
               // handle each sub assignment with nodes
-              for(var i in subassigns) {
-                i = subassigns[i]; // this is the subassignment number
+              for(var i in assign) {
+                var sub = assign[i].subAssignment;
 
-                // find the right subAssignment index to update
-                for(var a in assign) {
-                  if(i < 10) thisAssign = "0" + i;
-                  else thisAssign = "" + i;
-                  if(thisAssign == assign[a].subAssignment) thisAssign = a;
-                }
-
-                if(req.body[i].fixedNodes) {
+                if(req.body[sub].fixedNodes) {
                   // update all fixed nodes
-                  for(var j in req.body[i].fixedNodes) {
+                  for(var j in req.body[sub].fixedNodes) {
                     n = +j.slice(1);
                     // set the relevant nodes to be fixed
-                    assign[thisAssign].data[0].nodes[n].fixed = true;
-                    assign[thisAssign].data[0].nodes[n].fx = +req.body[i].fixedNodes[j].x;
-                    assign[thisAssign].data[0].nodes[n].fy = +req.body[i].fixedNodes[j].y;
-                    delete assign[thisAssign].data[0].nodes[n].location;
+                    assign[i].data[0].nodes[n].fixed = true;
+                    assign[i].data[0].nodes[n].fx = +req.body[sub].fixedNodes[j].x;
+                    assign[i].data[0].nodes[n].fy = +req.body[sub].fixedNodes[j].y;
+                    delete assign[i].data[0].nodes[n].location;
                   }
                 }
-                if(req.body[i].unfixedNodes) {
+                if(req.body[sub].unfixedNodes) {
                   // update all unfixed nodes
-                  for(var j in req.body[i].unfixedNodes) {
+                  for(var j in req.body[sub].unfixedNodes) {
                     n = +j.slice(1);
-                    delete assign[thisAssign].data[0].nodes[n].fixed;
-                    delete assign[thisAssign].data[0].nodes[n].fx;
-                    delete assign[thisAssign].data[0].nodes[n].fy;
-                    delete assign[thisAssign].data[0].nodes[n].location;
+                    delete assign[i].data[0].nodes[n].fixed;
+                    delete assign[i].data[0].nodes[n].fx;
+                    delete assign[i].data[0].nodes[n].fy;
+                    delete assign[i].data[0].nodes[n].location;
                   }
                 }
                 // save the updated data
-                assign[thisAssign].markModified('data'); //http://mongoosejs.com/docs/faq.html
-                assign[thisAssign].save();
+                assign[i].markModified('data'); //http://mongoosejs.com/docs/faq.html
+                assign[i].save();
               }
+
             } catch (error) {
               console.log(error);
             }

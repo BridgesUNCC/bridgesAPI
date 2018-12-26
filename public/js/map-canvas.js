@@ -7,7 +7,7 @@ BridgesVisualizer.map_canvas = function(canvas, overlay) {
   height = canvas.attr("height");
 
   // get id of canvas
-  var id = +canvas.attr("id").substr(3);
+  var id = +canvas.attr("id").substr(6);
   if(!id || isNaN(id)) id = 0;
 
   vis = d3.select(assignmentContainer)

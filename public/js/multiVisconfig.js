@@ -3,7 +3,7 @@
 // bind event handlers for ui
 d3.selectAll("#collapse").on("click", collapse);
 d3.select("#reset").on("click", reset);
-// d3.select("#save").on("click", savePositions);
+d3.select("#save").on("click", savePositions);
 d3.select("#delete").on("click", deleteAssignment);
 d3.select("#nodelabels").on("click", BridgesVisualizer.displayNodeLabels);
 d3.select("#linklabels").on("click", BridgesVisualizer.displayLinkLabels);
@@ -31,9 +31,9 @@ function collapse() {
 // Reset positions and scales for all visualization divs
 function reset() {
   d3.event.preventDefault();
-  BridgesVisualizer.visualizations.forEach(function(d) {
-    d.reset();
-  });
+  for(var subassign in BridgesVisualizer.visualizations) {
+    BridgesVisualizer.visualizations[subassign].reset();
+  }
 }
 
 function deleteAssignment() {
@@ -58,53 +58,59 @@ function toggleDisplay() {
 }
 
 
-// Asynchronously update the node positions
-// function savePositions () {
-//   d3.event.preventDefault();
-//   return;
-//
-//   var updateTheseNodes = {};
-//
-//
-//
-//   // store indices for all fixed nodes
-//   if (assignment && (assignment.vistype == "nodelink" || assignment.vistype == "nodelink-canvas")) {
-//     updateTheseNodes[key] = {
-//       'fixedNodes': {},
-//       'unfixedNodes': {}
-//     };
-//   }
-//
-//   if (data.hasOwnProperty(key) && data[key].vistype == "nodelink") {
-//     d3.select("#vis" + key).selectAll(".node").each(function(d, i) {
-//       // we need to name the nodes so we can identify them on the server; indices don't suffice
-//       if(d.fx && d.fy) {
-//         updateTheseNodes[key].fixedNodes["n" + i] = {"x": d.fx, "y": d.fy};
-//       }
-//       else updateTheseNodes[key].unfixedNodes["n" + i] = true;
-//     });
-//   } else if(data.hasOwnProperty(key) && data[key].vistype == "nodelink-canvas") {
-//     BridgesVisualizer.visualizations[key].nodes.forEach(function(d, i) {
-//       if(d.fx && d.fy) {
-//         updateTheseNodes[key].fixedNodes["n" + i] = {"x": d.fx, "y": d.fy};
-//       }
-//       else updateTheseNodes[key].unfixedNodes["n" + i] = true;
-//     });
-//   }
-//
-//   // send fixed node indices to the server to save
-//   $.ajax({
-//       url: "/assignments/updatePositions/"+assignmentNumber,
-//       type: "post",
-//       data: updateTheseNodes
-//   }).done(function(status) {
-//       if(status == 'OK'){
-//           alertMessage("Node positions saved!", "success");
-//       } else {
-//           alertMessage("Unsuccessful. Try logging in!", "danger");
-//       }
-//   });
-// }
+// Asynchronously update all node positions
+function savePositions () {
+  d3.event.preventDefault();
+
+  var thisVis;
+  var updateTheseNodes = {};
+
+  for(var index in BridgesVisualizer.visualizations) {
+    // store indices for all fixed nodes
+    updateTheseNodes[index] = {
+      'fixedNodes': {},
+      'unfixedNodes': {}
+    };
+
+    // get appropriate assignment container based on subassignment
+    if(index.substr(0,1) == "0") {
+      thisVis = +index.substr(1);
+    } else {
+      thisVis = +index;
+    }
+
+    // svg case
+    if(d3.select("#vis" + thisVis).select("#canvas"+thisVis).empty() && !d3.select("#vis" + thisVis).select("#svg"+thisVis).empty()) {
+      d3.select("#svg" + thisVis).selectAll(".node").each(function(d, i) {
+        if(d.fx && d.fy) {
+          updateTheseNodes[index].fixedNodes["n" + i] = {"x": d.fx, "y": d.fy};
+        }
+        else updateTheseNodes[index].unfixedNodes["n" + i] = true;
+      });
+    } else if(!d3.select("#vis" + thisVis).select("#canvas"+thisVis).empty()) {
+      // canvas case
+      BridgesVisualizer.visualizations[index].nodes.forEach(function(d, i) {
+        if(d.fx && d.fy) {
+          updateTheseNodes[index].fixedNodes["n" + i] = {"x": d.fx, "y": d.fy};
+        }
+        else updateTheseNodes[index].unfixedNodes["n" + i] = true;
+      });
+    }
+  }
+
+  // send fixed node indices to the server to save
+  $.ajax({
+      url: "/assignments/updatePositions/"+assignmentNumber,
+      type: "post",
+      data: updateTheseNodes
+  }).done(function(status) {
+      if(status == 'OK'){
+          alertMessage("Node positions saved!", "success");
+      } else {
+          alertMessage("Unsuccessful. Try logging in!", "danger");
+      }
+  });
+}
 
 //Asynchronously update the vis transform values
 //this method is just for testing, if approved, it still needs the ajax call and routing set up as well as the dabatase.
@@ -207,7 +213,7 @@ $( document ).ready( function() {
 // return true if the (i)th assignment is not loaded yet
 function unloaded(i) {
   // console.log(i, d3.select("#svg"+i).node());
-  return (d3.select("#svg"+i).node() == null) && (d3.select("canvas#vis"+i).node() == null);
+  return (d3.select("#svg"+i).node() == null) && (d3.select("#canvas"+i).node() === null);
 }
 
 // Update default transforms that rely on window sizes
@@ -223,9 +229,10 @@ $(window).resize(function() {
           .style("height", ele.clientHeight);
 
         // resize canavs-based assignments or assignments with specific resize methods
-        BridgesVisualizer.visualizations.forEach(function(d) {
-          if(d.resize) d.resize();
-        });
+        for(var subassign in BridgesVisualizer.visualizations) {
+          if(BridgesVisualizer.visualizations[subassign].resize)
+            BridgesVisualizer.visualizations[subassign].resize();
+        }
     }, 250);
 });
 
@@ -363,7 +370,6 @@ function isLoaded(script) {
 }
 
 function visualizeAssignment(assignment, index){
-  // console.log(index, assignment);
 
   // if no index provided, assume assignmentSlide view
   if(!index) {
@@ -388,54 +394,54 @@ function visualizeAssignment(assignment, index){
 
   // get the data for the current assignment
   var assignmentData = assignment.data[0];
-  // console.log(assignment, assignmentData);
 
   // render the appropriate visualization
   if (assignment.vistype == "tree" && d3.bst) {
       bst = d3.bst(vis, width, height);
       bst.make(assignmentData.nodes);
-      BridgesVisualizer.visualizations.push(bst);
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (bst);
   }
   else if (assignment.vistype == "Alist" && d3.array) {
-        array = d3.array(vis, width, height, assignmentData.nodes);
-        BridgesVisualizer.visualizations.push(array);
+      array = d3.array(vis, width, height, assignmentData.nodes);
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (array);
   }
   else if (assignment.vistype == "Array2D" && d3.array2d) {
-        array2d = d3.array2d(vis, width, height, assignmentData.nodes, assignmentData.dims);
-        BridgesVisualizer.visualizations.push(array2d);
+      array2d = d3.array2d(vis, width, height, assignmentData.nodes, assignmentData.dims);
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (array2d);
   }
   else if (assignment.vistype == "Array3D" && d3.array3d) {
-        array3d = d3.array3d(vis, width, height, assignmentData.nodes, assignmentData.dims);
-        BridgesVisualizer.visualizations.push(array3d);
+      array3d = d3.array3d(vis, width, height, assignmentData.nodes, assignmentData.dims);
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (array3d);
   }
   else if (assignment.vistype == "grid" && d3.grid) {
-    d3.select("#vis"+index).select("#svg"+index).remove("*");
-    vis = d3.select("#vis" + index).append("canvas")
-      .attr("id", "vis"+index);
-      d3.grid(vis, width, height, assignmentData, d3.select("#vis"+index));
+      d3.select("#vis"+index).select("#svg"+index).remove("*");
+      vis = d3.select("#vis" + index).append("canvas")
+        .attr("id", "canvas"+index);
+        d3.grid(vis, width, height, assignmentData, d3.select("#canvas"+index));
   }
   else if (assignment.vistype == "nodelink" && d3.graph) {
       graph = d3.graph(vis, width, height, assignmentData);
-      BridgesVisualizer.visualizations.push(graph);
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (graph);
   }
   else if (assignment.vistype == "nodelink-canvas" && d3.graph_canvas) {
       d3.select("#vis"+index).select("#svg"+index).remove("*");
       vis = d3.select("#vis" + index).append("canvas")
-        .attr("id", "vis"+index);
+        .attr("id", "canvas"+index);
       graph = d3.graph_canvas(vis, width, height, assignmentData);
-      BridgesVisualizer.visualizations.push(graph);
+
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (graph);
+      console.log(graph);
   }
   else if (assignment.vistype == "collection" && d3.collection) {
-
       collection = d3.collection(vis, width, height, assignmentData);
-      BridgesVisualizer.visualizations.push(collection);
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (collection);
   }
   else {
     console.log('error..', assignment);
     return;
       // console.log("unknown data type");
-      graph = d3.graph(d3, "#vis" + key, width, height, assignmentData);
-      BridgesVisualizer.visualizations.push(graph);
+      graph = d3.graph(d3, "#vis" + index, width, height, assignmentData);
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (graph);
   }
 
   // handle map overlay for subassignment if appropriate
