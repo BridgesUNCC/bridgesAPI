@@ -199,13 +199,13 @@ function isOnScreen(elem) {
 
 // on scroll, load the currently visible visualization
 $( document ).ready( function() {
-	window.addEventListener('scroll', throttled(250, function(e) {
+	window.addEventListener('scroll', debounce(function(e) {
     for(var i = 0; i < assignment.numSubassignments; i++) {
     	if( isOnScreen(jQuery('#vis'+i)) && unloaded(i) ) {
         updateVis(i, i);
       }
     }
-	}));
+	}, 250));
 });
 
 // return true if the (i)th assignment is not loaded yet
@@ -362,6 +362,7 @@ function isLoaded(script) {
 }
 
 function visualizeAssignment(assignment, index){
+
   // if no index provided, assume assignmentSlide view
   if(!index) {
     index = 0;
