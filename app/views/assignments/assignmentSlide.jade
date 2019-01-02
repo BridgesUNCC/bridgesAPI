@@ -11,21 +11,24 @@ block content
 
       div#updateStatus
       div#assignmentCanvas(overflow='auto')
-        -for (var i = 0; i < assignment.numSubassignments; i++) {
+        if (assignment && assignment.title && assignment.title.length > 0)
+          h1#title0.assignmentTitle #{assignment.title}
+        else
+          h1#title0.assignmentTitle Assignment #{assignmentNumber}
 
-          if (assignment && assignment.title && assignment.title.length > 0)
-            h1(id="title" + i).assignmentTitle #{assignment.title}
-          else
-            h1(id="title" + i).assignmentTitle Assignment #{assignmentNumber}
+        if (assignment && assignment.description  && assignment.description.length > 0)
+          div#description0.assignmentDescription #{assignment.description}
+        div#assignmentSlide
+          if (assignment.numSubassignments > 1)
+            div#currentSubassignment #{assignmentNumber}.#{assignment.subAssignment}
+            - for(var i = 0; i < assignment.numSubassignments; i++) {
+              div.btn.btn-secondary.slideButton(id="slideButton"+i)
+            - }
 
-          if (assignment && assignment.description  && assignment.description.length > 0)
-            div(id="description" + i).assignmentDescription #{assignment.description}
+        div(id="vis0", display="block").assignmentContainer
 
-          div(id="vis" + i, display="block").assignmentContainer
-            //button(class='vis-menu-button', id='vis-menu-'+i)
-            //div(id="menu"+i, class="vis-menu", display="block")
-              //button(class='vis-menu-button', name='fullscreen')
-        -}
+
+
 
 block footerjs
     script.
@@ -44,7 +47,6 @@ block footerjs
         var BridgesVisualizer = {};
         var numAssignments = assignment.numSubassignments;
         var map_overlay = map_overlay;
-
 
     each script in linkResources.script
         script(src = script)

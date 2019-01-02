@@ -72,12 +72,22 @@ exports.upload = function (req, res, next) {
     var subAssignment = assignmentRaw[1];
     if (subAssignment == "0") subAssignment = "00";
 
-    console.log(rawBody);
-
     // validate attributes
-    var visualizationType = visTypes.getVisType(rawBody.visual);
     var title = rawBody.title || "";
     var description = rawBody.description || "";
+    var display_mode = rawBody.display_mode || "slide";
+
+    // set correct vistype
+    var assignmentType = rawBody.visual;
+    var visualizationType = visTypes.getVisType(assignmentType);
+    if(visualizationType == "Alist") {
+      visualizationType = visTypes.checkIfHasDims(rawBody);
+    }
+
+    // Use SVG for < 100 nodes, Canvas for > 100
+    if(visualizationType == "nodelink" && rawBody.nodes && rawBody.nodes.length > 100) {
+      visualizationType = "nodelink-canvas";
+    }
 
     // make sure grid-based assignments do not exceed hard dimension limits
     if(rawBody.dimensions) {
@@ -103,7 +113,7 @@ exports.upload = function (req, res, next) {
     function replaceAssignment (res, user, assignmentID) {
 
         if (subAssignment == '0' || subAssignment == '00') {
-             Assignment.remove({
+             Assignment.deleteMany({
                 assignmentNumber: assignmentNumber,
                 email: user.email
             })
@@ -123,18 +133,34 @@ exports.upload = function (req, res, next) {
 
       assignment = new Assignment();
 
-      if (subAssignment == '0' || subAssignment == '00') {
-        assignment.title = title;
-        assignment.description = description;
-      }
+      // set the title and description
+      assignment.title = title;
+      assignment.description = description;
 
+      // set the user credentials
       assignment.username = user.username;
       assignment.email = user.email;
+
+      // set visualization type
       assignment.vistype = visualizationType;
-      assignment.data = rawBody;
+
+      // set assignment type
+      assignment.assignment_type = assignmentType;
+      assignment.display_mode = display_mode;
+
+      // set assignment identifiers
       assignment.assignmentID = assignmentID;
       assignment.assignmentNumber = assignmentNumber;
       assignment.subAssignment = subAssignment;
+
+      // remove attributes from data attribute
+      delete rawBody.title;
+      delete rawBody.description;
+      delete rawBody.visual;
+      delete rawBody.vistype;
+
+      // save assignment data
+      assignment.data = rawBody;
 
       assignment.save(function (err, product, numAffected) {
         if (err) {
@@ -156,8 +182,8 @@ exports.upload = function (req, res, next) {
 exports.next = null;
 
 /*
-  Get the raw JSON for an assignment
-*/
+ *  Get the raw JSON for an assignment
+ */
 exports.getJSON = function (req, res, next) {
     this.next = next;
     var assignmentRaw = req.params.assignmentNumber.split('.'),
@@ -189,21 +215,39 @@ exports.getJSON = function (req, res, next) {
               "__v": 0,
               "_id": 0
             })
-            .exec( function( err, assignment){
+            .lean()
+            .exec( function(err, assignment) {
               if (err) return next(err);
-              if (!assignment)
+              if (!assignment) {
                   return res.status(404).render("404", {"message": "can not find assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'"});
+                }
+
+              // add new resource info to assignment json
+              assignment.resources = {'script': [], 'css': []};
+
+              // add visualization resources if appropriate
+              var resources = visTypes.getVisTypeObject(assignment);
+              if(resources.script) {
+                assignment.resources.script.push(resources.script);
+              }
+              if(resources.link) {
+                assignment.resources.css.push(resources.link);
+              }
 
               // return the found assignment if it's public or owned by the request
               if(assignment.shared || (sessionUser && (assignment.email == sessionUser.email)))
-                return res.json( 200, { "assignmentJSON": assignment } );
+                return res.json( 200, assignment );
 
               return res.status(404).render("404", {"message": "can not find public assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'"});
             });
         });
 };
 
-exports.show = function (req, res, next) {
+/*
+ *  Get and render an assignment
+ *    Assignments can be displayed in slide or stack mode
+ */
+exports.get = function (req, res, next) {
     this.next = next;
     var assignmentNumber = req.params.assignmentNumber.split('.')[0],
         username = req.params.username,
@@ -220,105 +264,48 @@ exports.show = function (req, res, next) {
             if (!usr)
                 return next("couldn't find the username " + username);
 
-            getAssignment(req, res, next, usr.email, function (assign) {
-                //Test whether user has permission to view vis
-                return testByUser(res, req, username, assign, function (){
-                    return testByKey(res, apikey, username, assign, null);
-                });
-            });
-        });
-
-    function getAssignment (req, res, next, email, cb) {
-        next = next;
-
-        Assignment.findOne({
-            email: email,
-            assignmentNumber: assignmentNumber
-        })
-        .exec(function(err, assignment) {
-            if (err) return next(err);
-
-            if (!assignment || assignment.length === 0) {
-                return next ("the assignment was not found");
-            }
-
-            // If the assignment is not public, see if user has access to private assignment
-            if(!assignment.shared) {
-                if(!cb(assignment))
-                  return next ("the assignment data you requested is not public");
-            }
-
-            Assignment
-            .find({
-                email: email,
-                assignmentNumber: assignmentNumber
+            Assignment.findOne({
+                email: usr.email,
+                assignmentNumber: assignmentNumber,
+                subAssignment: "00"
+            }, {
+              "__v": 0,
+              "_id": 0
             })
-            .sort({
-                subAssignment: 1  // TODO: only sorts based on strings since we don't store numbers as integers...
-            })
-            .exec(function(err, assignments) {
+            .lean()
+            .exec(function(err, assignment) {
                 if (err) return next(err);
-                if (!assignments || assignments.length === 0)
-                  return next("Could not find assignment " + assignmentNumber);
-                return renderMultiVis( res, assignments );
+
+                if (!assignment || assignment.length === 0) {
+                    return next ("assignment " + assignmentNumber + " was not found");
+                }
+
+                // render the assignment if it's public or owned by the request
+                if(assignment.shared || (sessionUser && (assignment.email == sessionUser.email))) {
+                  // get the count of total subassignments
+                  Assignment.countDocuments({
+                    email: usr.email,
+                    assignmentNumber: assignmentNumber
+                  }).exec(function(err, num) {
+                    if(err) return next(err);
+                    assignment.numSubassignments = num;
+                    return renderVis(res, assignment);
+                  });
+                } else {
+                  return next("can not find public assignment " + assignmentNumber + " for user \'" + username + "\'");
+                }
             });
         });
-    }
 
-    //find whether there is a session, then test
-    function testByUser (res, req, username, assign, nextTest) {
-        if (sessionUser) {
-            return testAndMoveOn(
-                res, sessionUser.username, username, assign, nextTest);
-        } else {
-            if (nextTest) return nextTest();
-            else
-                return testAndMoveOn(res, true, false, assign, null);
-        }
-    }
-
-    //find user by key, then test
-    function testByKey (res, apikey, username, assign, nextTest) {
-        if (apikey) {
-            User
-              .findOne({apikey:apikey})
-              .exec(function (err, n){
-                  if (err) return next (err);
-                  if (!n) return next ("Invalid apikey: "+apikey);
-                  return testAndMoveOn(
-                      res, n.username, username, assign, null);
-              });
-        } else {
-            if (nextTest) return nextTest();
-            else
-                return testAndMoveOn(res, true, false, assign, null);
-        }
-    }
-
-    //compare the usernames and move on
-    function testAndMoveOn (res, un1, un2, assign, nextTest) {
-        // console.log(un1 + " " + un2)
-        if (un1 === un2) {
-            // console.log(assign)
-            // return;
-        //  return renderVis (res, assign)
-          return true;
-        }
-        if (nextTest) return nextTest();
-        //else return next ("the assignment data you requested is not public")
-        else return false;
-    }
-
-    function renderMultiVis (res, assignments) {
+    function renderVis (res, assignment) {
         var owner=false,
             map=false,
-            allAssigns = {},
-            assignmentTypes = {},
+            assignmentType = {},
             linkResources = {"script":[], "css":[]},
             navItems = {}; // optional nav buttons: labels, save positions
 
         if (sessionUser) {
-            if (sessionUser.email==assignments[0].email) owner = true;
+            if (sessionUser.email==assignment.email) owner = true;
         }
 
         var unflatten = function (data) {
@@ -337,95 +324,88 @@ exports.show = function (req, res, next) {
             return tree;
         };
 
-        /* parse and store all subassignments */
-        for(var i = 0; i < assignments.length; i++) {
-          try{
-            data = assignments[i].data.toObject()[0];
-          } catch(err) {
-            console.log("Error getting data object");
-            return next(err);
-          }
+        /* parse assignment data */
+        try{
+          data = assignment.data[0];
+        } catch(err) {
+          console.log("Error getting data object");
+          return next(err);
+        }
 
-          if(data === null) {
-            console.log("Erroneous data");
-            return next("Erroneous data");
-          }
+        if(data === null) {
+          console.log("Erroneous data");
+          return next("Erroneous data");
+        }
 
-          // Client should send trees as hierarchical representation now..
-          // This captures the data from the OLD flat tree representation
-          if((data.visual == "tree") && !("nodes" in data && "children" in data.nodes)) {
-            data = unflatten(data);
-            data['visual'] = "tree";
-            if(!navItems.labels) navItems.labels = true;
-          }
-          // This captures the data from the NEW hierarchical tree representation
-          if("nodes" in data && "children" in data.nodes) {
-            var tempVisual = data.visual;
-            data = data.nodes;
-            data.visual = tempVisual;
-            if(!navItems.labels) navItems.labels = true;
-          }
+        // Client should send trees as hierarchical representation now..
+        // This captures the data from the OLD flat tree representation
+        if((assignment.visual == "tree") && !("nodes" in data && "children" in data.nodes)) {
+          data = unflatten(data);
+          if(!navItems.labels) navItems.labels = true;
+        }
+        // This captures the data from the NEW hierarchical tree representation
+        if("nodes" in data && "children" in data.nodes) {
+          data = data.nodes;
+          if(!navItems.labels) navItems.labels = true;
+        }
 
-          data.visType = visTypes.getVisType(data.visual);
+        // add optional nav buttons where appropriate
+        if(assignment.vistype == "nodelink") {
+          if(!navItems.save) navItems.save = true;
+          if(!navItems.labels) navItems.labels = true;
+        } else if(assignment.vistype == "tree") {
+          if(!navItems.labels) navItems.labels = true;
+        }
 
-          // Make sure multiple arrays are visualized
-          if(data.visType == "Alist") {
-            visTypes.checkIfHasDims(data);
-          }
+        // add new resource info
+        if(!assignmentType[assignment.vistype]){
+            assignmentType[assignment.vistype] = 1;
 
-          // add optional nav buttons where appropriate
-          if(data.visType == "nodelink") {
-            if(!navItems.save) navItems.save = true;
-            if(!navItems.labels) navItems.labels = true;
-          } else if(data.visType == "tree") {
-            if(!navItems.labels) navItems.labels = true;
-          }
+            var vistypeObjectTemp = visTypes.getVisTypeObject(assignment);
+            linkResources.script.push(vistypeObjectTemp.script);
+            if(vistypeObjectTemp.link != ""){
+              linkResources.css.push(vistypeObjectTemp.link);
+            }
+        }
 
-          // Use SVG for < 100 nodes, Canvas for > 100
-          if(data.visType == "nodelink" && data.nodes && data.nodes.length > 100) {
-            data.visType = "nodelink-canvas";
-            linkResources.script.push('/js/graph-canvas.js');
-          }
+        data.coord_system_type = data.coord_system_type ? data.coord_system_type.toLowerCase() : "cartesian";
 
-          // add new resource info
-          if(!assignmentTypes[data['visType']]){
-              assignmentTypes[data['visType']] = 1;
-
-              var vistypeObjectTemp = visTypes.getVisTypeObject(data);
-              linkResources.script.push(vistypeObjectTemp.script);
-              if(vistypeObjectTemp.link != ""){
-                linkResources.css.push(vistypeObjectTemp.link);
-              }
-          }
-
-          // add map resources if appropriate
-          if(data.map_overlay) {
-            map = true;
-            linkResources.script.push('/js/map.js');
-            linkResources.script.push('/js/lib/topojson.v1.min.js');
-            linkResources.css.push('/css/map.css');
-            data.coord_system_type = data.coord_system_type.toLowerCase() || "cartesian";
-          }
-
-          // finally, store the subassignment
-          allAssigns[i] = data;
+        // add map resources if appropriate
+        if(assignment.data[0] && assignment.data[0].map_overlay) {
+          map = true;
+          linkResources.script.push('/js/map.js');
+          linkResources.script.push('/js/lib/topojson.v1.min.js');
+          linkResources.css.push('/css/map.css');
         }
 
         sessionUser = sessionUser ? {"username": sessionUser.username, "email": sessionUser.email} : null;
 
-        return res.render ('assignments/assignmentMulti', {
-            "title":"Assignment " + assignmentNumber,
-            "assignmentTitle": assignments[0].title,
-            "assignmentDescription": assignments[0].description.replace("\"", ""),
+        // add display toggle if >1 assignment
+        navItems.toggleDisplay = (assignment.numSubassignments > 1);
+
+        // use display mode specified by query param or assignment
+        displayMode = "assignmentSlide"; // default
+        if(req.query.displayMode) {
+          if(req.query.displayMode == "stack")
+            displayMode = "assignmentMulti";
+          if(req.query.displayMode == "slide")
+            displayMode = "assignmentSlide";
+        } else {
+          displayMode = (assignment.display_mode == "stack") ? "assignmentMulti" : "assignmentSlide";
+        }
+
+        console.log(assignment, assignment.map_overlay);
+
+        return res.render ('assignments/' + displayMode, {
             "user": sessionUser,
-            "data": allAssigns,
+            "assignment": assignment,
             "map": map,
-            "extent":Object.keys(allAssigns).length,
             "assignmentNumber":assignmentNumber,
             "linkResources":linkResources,
-            "shared":assignments[0].shared,
+            "shared":assignment.shared,
             "owner":owner,
-            "navItems": navItems
+            "navItems": navItems,
+            "displayMode": (displayMode == "assignmentMulti") ? "stack" : "slide"
         });
       }
   };
@@ -456,54 +436,53 @@ exports.testJSON = function (req, res, next) {
 
 /* Update the node positions of the given assignment and its subassignments */
 exports.savePositions = function(req, res) {
+    var subassigns = Object.keys(req.body);
+
     Assignment
         .find({
           "assignmentNumber": req.params.assignmentNumber,
-          "email": req.user.email,
-          "vistype": "nodelink"
-        })
+          "email": req.user.email
+        },
+        "data subAssignment vistype"
+        )
+        .or([{"vistype": "nodelink"}, {"vistype": "nodelink-canvas"} ])
+        .where('subAssignment')
+        .in(subassigns)
         .exec(function(err, assign) {
+          console.log(assign);
             if (err) return next(err);
-            var subassigns = Object.keys(req.body);
-            var thisAssign;
 
             try {
               // handle each sub assignment with nodes
-              for(var i in subassigns) {
-                i = subassigns[i]; // this is the subassignment number
+              for(var i in assign) {
+                var sub = assign[i].subAssignment;
 
-                // find the right subAssignment index to update
-                for(var a in assign) {
-                  if(i < 10) thisAssign = "0" + i;
-                  else thisAssign = "" + i;
-                  if(thisAssign == assign[a].subAssignment) thisAssign = a;
-                }
-
-                if(req.body[i].fixedNodes) {
+                if(req.body[sub].fixedNodes) {
                   // update all fixed nodes
-                  for(var j in req.body[i].fixedNodes) {
+                  for(var j in req.body[sub].fixedNodes) {
                     n = +j.slice(1);
                     // set the relevant nodes to be fixed
-                    assign[thisAssign].data[0].nodes[n].fixed = true;
-                    assign[thisAssign].data[0].nodes[n].fx = +req.body[i].fixedNodes[j].x;
-                    assign[thisAssign].data[0].nodes[n].fy = +req.body[i].fixedNodes[j].y;
-                    delete assign[thisAssign].data[0].nodes[n].location;
+                    assign[i].data[0].nodes[n].fixed = true;
+                    assign[i].data[0].nodes[n].fx = +req.body[sub].fixedNodes[j].x;
+                    assign[i].data[0].nodes[n].fy = +req.body[sub].fixedNodes[j].y;
+                    delete assign[i].data[0].nodes[n].location;
                   }
                 }
-                if(req.body[i].unfixedNodes) {
+                if(req.body[sub].unfixedNodes) {
                   // update all unfixed nodes
-                  for(var j in req.body[i].unfixedNodes) {
+                  for(var j in req.body[sub].unfixedNodes) {
                     n = +j.slice(1);
-                    delete assign[thisAssign].data[0].nodes[n].fixed;
-                    delete assign[thisAssign].data[0].nodes[n].fx;
-                    delete assign[thisAssign].data[0].nodes[n].fy;
-                    delete assign[thisAssign].data[0].nodes[n].location;
+                    delete assign[i].data[0].nodes[n].fixed;
+                    delete assign[i].data[0].nodes[n].fx;
+                    delete assign[i].data[0].nodes[n].fy;
+                    delete assign[i].data[0].nodes[n].location;
                   }
                 }
                 // save the updated data
-                assign[thisAssign].markModified('data'); //http://mongoosejs.com/docs/faq.html
-                assign[thisAssign].save();
+                assign[i].markModified('data'); //http://mongoosejs.com/docs/faq.html
+                assign[i].save();
               }
+
             } catch (error) {
               console.log(error);
             }
@@ -556,6 +535,42 @@ exports.deleteAssignment = function (req, res) {
             console.log("Deleted assignment: " + req.params.assignmentNumber, "for user", req.user.email);
         });
     res.send("OK");
+};
+
+/* Delete the given assignment for the user with the given key */
+exports.deleteAssignmentByKey = function (req, res) {
+    var assignmentNumber;
+
+    // ensure api keys match
+    if(req.query.apikey != req.user.apikey) {
+      return res.status(401).json({"error": "api key does not match"});
+    }
+
+    function isAssignmentNumber(n) {
+        return n === +n && n === (n|0) && n >= 0;
+    }
+
+    // check validity of assignment number
+    if(isAssignmentNumber(+req.params.assignmentNumber)) {
+      assignmentNumber = req.params.assignmentNumber;
+    } else {
+      return res.status(401).json({"error": "assignment number is invalid"});
+    }
+
+    // delete all subassignments with the major assignment number for this user
+    Assignment
+        .find({
+          "assignmentNumber": assignmentNumber,
+          "email": req.user.email
+        })
+        .exec(function(err, assign) {
+            if (err) return next(err);
+            for (var i in assign) {
+                assign[i].remove();
+            }
+            console.log("Deleted assignment: " + req.params.assignmentNumber, "for user", req.user.email);
+        });
+    res.status(200).json({"message": "Deleted assignment " + req.params.assignmentNumber + " for user " + req.user.email});
 };
 
 exports.assignmentByEmail = function (req, res) {

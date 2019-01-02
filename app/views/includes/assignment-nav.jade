@@ -15,30 +15,56 @@
 
 
           if (navItems.save)
-            a#save(href="#")
+            a#save(href="#", title="Save Node Positions")
               span.glyphicon.glyphicon-save
               span.nav-label  Save Node Positions
 
       if (navItems.labels)
-        a#nodelabels(href="#")
+        a#nodelabels(href="#", title="Toggle Node Labels")
           span.glyphicon.glyphicon-tag
           span.nav-label Node Labels
 
-        a#linklabels(href="#")
+        a#linklabels(href="#", title="Toggle Link Labels")
           span.glyphicon.glyphicon-tags
           span.nav-label Link Labels
 
-      a#reset(href="#")
+      if (navItems.toggleDisplay)
+        a#toggleDisplay(href="#", title="Toggle Display Mode")
+          span.glyphicon.glyphicon-align-justify
+          span.nav-label Toggle Display
+
+      a#reset(href="#", title="Reset View")
         span.glyphicon.glyphicon-resize-full
         span.nav-label Reset View
 
       if (owner)
-        a#delete(href="#")
+        a#delete(href="#", title="Delete Assignment")
           span.glyphicon.glyphicon-trash
           span.nav-label Delete Assignment
 
 script.
+  var displayMode = '#{displayMode}'
+
   $('.btn-expand-collapse').click(function(e) {
       $('.navbar-assignment').toggleClass('collapsed');
       $(this).children('span').toggleClass('glyphicon-menu-right').toggleClass('glyphicon-menu-left');
+      if(localStorage.currentNav){
+        if(localStorage.currentNav == 0){
+          localStorage.currentNav = 1;
+        }else{
+          localStorage.currentNav = 0;
+        }
+      }
   });
+
+  if(localStorage.currentNav){
+    if(localStorage.currentNav == 1){
+      $('.navbar-assignment').addClass('collapsed');
+      $('#collapse').children('span').removeClass('glyphicon-menu-right').addClass('glyphicon-menu-left');
+    }else{
+      $('.navbar-assignment').removeClass('collapsed');
+      $('#collapse').children('span').addClass('glyphicon-menu-right').removeClass('glyphicon-menu-left');
+    }
+  }else{
+    localStorage.currentNav = 0;
+  }

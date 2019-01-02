@@ -44,9 +44,7 @@ d3.grid = function(canvas, W, H, data, parent) {
         nodes.push(rgbaArray.slice(i, i+4));
       }
     } else if(data.encoding == "RLE") {
-      console.log("RLE");
       byteArray = Uint8Array.from(atob(data.nodes), function(c) { return c.charCodeAt(0); });
-      console.log(byteArray);
       // iterate over each 5-tuple
       for(var i = 0; i < byteArray.length; i+=5) {
         console.log('adding ' + (+byteArray[i]+ 1) + ' node(s) of color ' + byteArray.slice(i+1, i+5));

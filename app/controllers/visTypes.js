@@ -1,6 +1,6 @@
 
-// This module accepts the vistype sent by the client
-//    and returns the appropriate visualization type to display
+// This module accepts the named assignment type sent by the client
+//    and returns the appropriate vistype to display
 exports.getVisType = function(toCheck) {
   var validTypes = {
     "ALIST":           						"Alist",
@@ -45,9 +45,9 @@ exports.getVisType = function(toCheck) {
 var checkIfHasDims = function (data){
     if(data.dims){
         if(parseInt(data.dims[1]) > 1 && parseInt(data.dims[2]) == 1){
-            return data.visType = "Array2D";
+            return data.vistype = "Array2D";
         }else if(parseInt(data.dims[1]) > 1 && parseInt(data.dims[2]) > 1){
-            return data.visType = "Array3D";
+            return data.vistype = "Array3D";
         }else{
             return "Alist";
         }
@@ -60,6 +60,11 @@ exports.getVisTypeObject = function(data) {
       "nodelink": {
         "vistype":"nodelink",
         "script":"/js/graph.js",
+        "link":""
+      },
+      "nodelink-canvas": {
+        "vistype":"nodelink-canvas",
+        "script":"/js/graph-canvas.js",
         "link":""
       },
       "grid": {
@@ -139,10 +144,10 @@ exports.getVisTypeObject = function(data) {
       }
     };
 
-    if(data.visType == "Alist")
+    if(data.vistype == "Alist")
         return validTypes[checkIfHasDims(data)];
-    else if( data.visType && validTypes[data.visType] )
-        return validTypes[data.visType];
+    else if( data.vistype && validTypes[data.vistype] )
+        return validTypes[data.vistype];
     else
         return {"vistype":"nodelink",   "script":"/js/graph.js",          "link":""                  	};
 

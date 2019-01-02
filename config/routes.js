@@ -103,7 +103,7 @@ module.exports = function(app, passport, streamable) {
     /* User's personal gallery; requires log in */
     app.get('/username', isLoggedInGallery, users.profile, handleError);
 
-    app.delete('/users/:id', isLoggedIn, users.deletePerson);
+    app.post('/users/delete/:id', isLoggedIn, users.deletePerson);
     app.get('/users/apikey', users.getkey, handleError);
     app.get('/logout', users.logout);
 
@@ -148,19 +148,20 @@ module.exports = function(app, passport, streamable) {
     app.post('/assignments/:assignmentNumber/share/:value',
         hasAccess, assignments.updateVisibility, handleError);
 
-    //app.get('/assignments/:assignmentID/:username',
-    //         isPublic, assignments.show, handleError)
-
     /* Allow user to save a snapshot of the positions of a graph */
     app.post('assignments/:assignmentNumber/saveSnapshot/',
               hasAccess, assignments.saveSnapshot, handleError);
 
+    /* Get and visualize a user's assignment */
     app.get('/assignments/:assignmentNumber/:username',
-              assignments.show, handleError);
-    app.get('/assignmentByEmail/:assignmentID/:email',
-              assignments.assignmentByEmail, handleError);
+              assignments.get, handleError);
+
+    /* Get the raw JSON for a user's assignment */
     app.get('/assignmentJSON/:assignmentNumber/:username',
               assignments.getJSON, handleError);
+
+    app.get('/assignmentByEmail/:assignmentID/:email',
+              assignments.assignmentByEmail, handleError);
 
     // update the assignment specified for the current user
     //  save the positions of any fixed nodes
@@ -173,6 +174,8 @@ module.exports = function(app, passport, streamable) {
     // delete the assignment specified for the current user
     app.delete('/assignments/:assignmentNumber', isLoggedIn, assignments.deleteAssignment);
 
+    // delete the assignment specified for the user with the given api key
+    app.delete('/clearAssignment/:assignmentNumber', hasAccess, assignments.deleteAssignmentByKey);
 
     // -------------------------------------------------------
     //

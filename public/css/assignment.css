@@ -34,9 +34,11 @@ html, body {
 }
 
 .assignmentContainer{
+    background-color: "#000111";
     box-shadow: 0px 3px 5px 5px #888888;
     margin-left:15px;
     margin-top:15px;
+    margin-bottom:15px;
     height: 600px;
     max-width: 90%;
     resize: both;
@@ -48,12 +50,13 @@ html, body {
   height: 100%;
 }
 
-.assignmenetContainer.responsive {
+.assignmentContainer.responsive {
     display: inline-block;
     position: absolute;
     top: 10px;
     left: 0;
     overflow:hidden;
+
 }
 
 #vis{
@@ -132,4 +135,37 @@ div.tooltip {
     max-height:200px;
     max-width: 60%;
     overflow: scroll;
+}
+div#assignmentSlide{
+    margin-left:15px;
+    margin-top:15px;
+    max-width: 90%;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    max-height: 25px;
+    display: flex;
+}
+div#currentSubassignment {
+  padding: 5px;
+  max-width: 40px;
+  position: absolute;
+  display: block;
+  color: #3D5C96;
+  pointer-events: none;
+}
+
+div.slideButton {
+  border-radius: 0;
+  /* min-height: 15px; */
+  padding: 4px;
+  padding-top: 10px;
+  flex: 1;
+  display: block;
+  background-color: #F0F5FF;
+  border: solid 1px #3D5C96;
+  border-top-color: #F0F5FF;
+}
+
+div.slideButton:hover {
+  display: inline;
+  background-color: steelblue;
 }

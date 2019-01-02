@@ -63,4 +63,9 @@ block validate
               strong Email:
               .err #{errors.email.message}
       - }
+      - if (typeof locals.errors.message != 'undefined'){
+        .alert.alert-danger
+            strong Error:
+            .err #{errors.message}
+      - }
     - }
