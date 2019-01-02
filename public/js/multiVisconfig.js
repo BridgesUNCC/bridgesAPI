@@ -1,13 +1,13 @@
 (function() {
 
 // bind event handlers for ui
-d3.selectAll("#collapse").on("click", debounce(collapse, 250));
-d3.select("#reset").on("click", debounce(reset, 250));
-d3.select("#save").on("click", debounce(savePositions, 250));
-d3.select("#delete").on("click", debounce(deleteAssignment, 250));
-d3.select("#nodelabels").on("click", debounce(BridgesVisualizer.displayNodeLabels, 250));
-d3.select("#linklabels").on("click", debounce(BridgesVisualizer.displayLinkLabels, 250));
-d3.select("#toggleDisplay").on("click", debounce(toggleDisplay, 250));
+d3.selectAll("#collapse").on("click", collapse);
+d3.select("#reset").on("click", reset);
+d3.select("#save").on("click", savePositions);
+d3.select("#delete").on("click", deleteAssignment);
+d3.select("#nodelabels").on("click", BridgesVisualizer.displayNodeLabels);
+d3.select("#linklabels").on("click", BridgesVisualizer.displayLinkLabels);
+d3.select("#toggleDisplay").on("click", toggleDisplay);
 
 var key = 0;
 var subAssignmentNumber = 0; // subassignment number
