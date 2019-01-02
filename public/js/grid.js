@@ -37,9 +37,7 @@ d3.grid = function(canvas, W, H, data, parent) {
 
     // set up nodes
     if(!data.encoding || data.encoding == "RAW") {
-      console.log("RAW");
       rgbaArray = Uint8Array.from(atob(data.nodes), function(c) { return c.charCodeAt(0); });
-      console.log(rgbaArray);
       for(var i = 0; i < rgbaArray.length; i+=4) {
         nodes.push(rgbaArray.slice(i, i+4));
       }
@@ -47,7 +45,6 @@ d3.grid = function(canvas, W, H, data, parent) {
       byteArray = Uint8Array.from(atob(data.nodes), function(c) { return c.charCodeAt(0); });
       // iterate over each 5-tuple
       for(var i = 0; i < byteArray.length; i+=5) {
-        console.log('adding ' + (+byteArray[i]+ 1) + ' node(s) of color ' + byteArray.slice(i+1, i+5));
         for(var j = 0; j <= byteArray[i]; j++) {
           nodes.push(byteArray.slice(i+1, i+5));
         }

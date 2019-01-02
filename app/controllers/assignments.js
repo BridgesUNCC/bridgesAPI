@@ -394,8 +394,6 @@ exports.get = function (req, res, next) {
           displayMode = (assignment.display_mode == "stack") ? "assignmentMulti" : "assignmentSlide";
         }
 
-        console.log(assignment, assignment.map_overlay);
-
         return res.render ('assignments/' + displayMode, {
             "user": sessionUser,
             "assignment": assignment,
@@ -449,7 +447,6 @@ exports.savePositions = function(req, res) {
         .where('subAssignment')
         .in(subassigns)
         .exec(function(err, assign) {
-          console.log(assign);
             if (err) return next(err);
 
             try {
