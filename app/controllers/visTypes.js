@@ -22,7 +22,7 @@ exports.getVisType = function(toCheck) {
     "BinaryTree":                 "tree",
     "BinarySearchTree":           "tree",
     "AVLTree":                    "tree",
-    "KDTree":                     "tree",
+    "KdTree":                     "tree",
     "QuadTree":                   "tree",
     "BTree":                      "tree",
     "B+Tree":                     "tree",
@@ -43,17 +43,19 @@ exports.getVisType = function(toCheck) {
 };
 
 var checkIfHasDims = function (data){
-    if(data.dims){
+    if(data.dims && Array.isArray(data.dims)){
         if(parseInt(data.dims[1]) > 1 && parseInt(data.dims[2]) == 1){
             return data.vistype = "Array2D";
-        }else if(parseInt(data.dims[1]) > 1 && parseInt(data.dims[2]) > 1){
+        } else if(parseInt(data.dims[1]) > 1 && parseInt(data.dims[2]) > 1){
             return data.vistype = "Array3D";
-        }else{
+        } else {
             return "Alist";
         }
     }
-    return "Alist"
-};exports.checkIfHasDims = checkIfHasDims;
+    return "Alist";
+};
+
+exports.checkIfHasDims = checkIfHasDims;
 
 exports.getVisTypeObject = function(data) {
   var validTypes = {
