@@ -262,7 +262,7 @@ exports.get = function (req, res, next) {
         .exec( function( err, usr ){
             if (err) return next(err);
             if (!usr)
-                return next("couldn't find the username " + username);
+                return res.status(404).render("404", {"message": "couldn't find the username " + username});
 
             Assignment.findOne({
                 email: usr.email,
@@ -277,7 +277,7 @@ exports.get = function (req, res, next) {
                 if (err) return next(err);
 
                 if (!assignment || assignment.length === 0) {
-                    return next ("assignment " + assignmentNumber + " was not found");
+                    return res.status(404).render("404", {"message": "assignment " + assignmentNumber + " was not found"});
                 }
 
                 // render the assignment if it's public or owned by the request
@@ -292,7 +292,7 @@ exports.get = function (req, res, next) {
                     return renderVis(res, assignment);
                   });
                 } else {
-                  return next("can not find public assignment " + assignmentNumber + " for user \'" + username + "\'");
+                  return res.status(404).render("404", {"message": "can not find public assignment " + assignmentNumber + " for user \'" + username + "\'"});
                 }
             });
         });
