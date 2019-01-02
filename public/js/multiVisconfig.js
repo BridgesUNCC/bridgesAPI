@@ -1,14 +1,13 @@
 (function() {
 
 // bind event handlers for ui
-d3.selectAll("#collapse").on("click", collapse);
-d3.select("#reset").on("click", reset);
-d3.select("#save").on("click", savePositions);
-d3.select("#delete").on("click", deleteAssignment);
-d3.select("#nodelabels").on("click", BridgesVisualizer.displayNodeLabels);
-d3.select("#linklabels").on("click", BridgesVisualizer.displayLinkLabels);
-d3.select("#toggleDisplay").on("click",
-toggleDisplay);
+d3.selectAll("#collapse").on("click", debounce(collapse, 250));
+d3.select("#reset").on("click", debounce(reset, 250));
+d3.select("#save").on("click", debounce(savePositions, 250));
+d3.select("#delete").on("click", debounce(deleteAssignment, 250));
+d3.select("#nodelabels").on("click", debounce(BridgesVisualizer.displayNodeLabels, 250));
+d3.select("#linklabels").on("click", debounce(BridgesVisualizer.displayLinkLabels, 250));
+d3.select("#toggleDisplay").on("click", debounce(toggleDisplay, 250));
 
 var key = 0;
 var subAssignmentNumber = 0; // subassignment number
@@ -19,7 +18,6 @@ var ele = document.getElementById("vis0"),
     width = ele.clientWidth,
     height = ele.clientHeight,
     transform = assignment.transform;
-
 
 
 visualizeAssignment(assignment);
@@ -263,7 +261,7 @@ function nextVis(){
 
 // bind assignment slide buttons if appropriate
 (function() {
-  d3.selectAll(".slideButton").on("click", slideButtonClick);
+  d3.selectAll(".slideButton").on("click", debounce(slideButtonClick, 250));
   d3.selectAll(".slideButton").on("mouseover", slideButtonHover);
   d3.selectAll(".slideButton").on("mouseout", slideButtonOut);
 
@@ -364,7 +362,6 @@ function isLoaded(script) {
 }
 
 function visualizeAssignment(assignment, index){
-
   // if no index provided, assume assignmentSlide view
   if(!index) {
     index = 0;
@@ -424,7 +421,6 @@ function visualizeAssignment(assignment, index){
       graph = d3.graph_canvas(vis, width, height, assignmentData);
 
       BridgesVisualizer.visualizations[assignment.subAssignment] = (graph);
-      console.log(graph);
   }
   else if (assignment.vistype == "collection" && d3.collection) {
       collection = d3.collection(vis, width, height, assignmentData);
@@ -505,6 +501,22 @@ function throttled(delay, fn) {
     lastCall = now;
     return fn(...args);
   }
+}
+
+// debounce an event (only trigger after a period of time)
+function debounce(func, wait, immediate) {
+    var timeout;
+    return function() {
+        var context = this, args = arguments;
+        var later = function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
 }
 
 })();
