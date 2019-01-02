@@ -408,7 +408,7 @@ function visualizeAssignment(assignment, index){
       d3.select("#vis"+index).select("#svg"+index).remove("*");
       vis = d3.select("#vis" + index).append("canvas")
         .attr("id", "canvas"+index);
-        d3.grid(vis, width, height, assignmentData, d3.select("#canvas"+index));
+        d3.grid(vis, width, height, assignmentData, d3.select("#vis"+index));
   }
   else if (assignment.vistype == "nodelink" && d3.graph) {
       graph = d3.graph(vis, width, height, assignmentData);
