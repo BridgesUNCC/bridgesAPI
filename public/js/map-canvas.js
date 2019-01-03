@@ -10,14 +10,6 @@ BridgesVisualizer.map_canvas = function(canvas, overlay) {
   var id = +canvas.attr("id").substr(6);
   if(!id || isNaN(id)) id = 0;
 
-  vis = d3.select(assignmentContainer)
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height);
-
-  vis
-    .attr("id", "map_overlay_svg_" + id)
-    .attr("class", "map_overlay_svg");
 
   /*
     D3's albersUsa overlay and projection - USA with Alaska and Hawaii to the south west
@@ -25,6 +17,17 @@ BridgesVisualizer.map_canvas = function(canvas, overlay) {
   var albersUsa = function() {
     d3.json("/geoJSON/us-10m.v1.json", function(error, us) {
       if (error) throw error;
+
+      d3.select(assignmentContainer).selectAll(".map_overlay").remove();
+      vis = d3.select(assignmentContainer)
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+      vis
+        .attr("id", "map_overlay_svg_" + id)
+        .attr("class", "map_overlay_svg");
+
       path = d3.geoPath();
 
       var projection = d3.geoAlbersUsa();
@@ -61,6 +64,16 @@ BridgesVisualizer.map_canvas = function(canvas, overlay) {
   var equirectangular = function() {
     d3.json("/geoJSON/world-50m.json", function(error, world) {
       if (error) throw error;
+
+      d3.select(assignmentContainer).selectAll(".map_overlay").remove();
+      vis = d3.select(assignmentContainer)
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+      vis
+        .attr("id", "map_overlay_svg_" + id)
+        .attr("class", "map_overlay_svg");
 
       var projection = d3.geoEquirectangular();
 
