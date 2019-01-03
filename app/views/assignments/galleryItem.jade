@@ -11,6 +11,6 @@ mixin galleryItem(item)
 
         div(class='gallery_links')
           - if (assignments[x].title)
-              div.gallery_link_title #{assignments[x].title}
+              div.gallery_link_title #{assignments[x].title.substr(0,50)}
           - else
               div.gallery_link_title Assignment#{assignments[x].assignmentNumber}
