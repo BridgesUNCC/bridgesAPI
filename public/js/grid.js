@@ -26,6 +26,12 @@ d3.grid = function(canvas, W, H, data, parent) {
     w = dims[1]*nodeSize;
     h = dims[0]*nodeSize;
 
+    // if necessary, modify assignmentSlide nav menu
+    d3.select("#assignmentSlide")
+      .style("width", w + 'px')
+      .style("padding-bottom", '5px')
+      .style("margin", "auto");
+
     // // set canvas attrs
     canvas.attr("width", w + 'px').attr("height", h + 'px');
     parent
