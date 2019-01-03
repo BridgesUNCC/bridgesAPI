@@ -29,7 +29,7 @@ d3.grid = function(canvas, W, H, data, parent) {
     // if necessary, modify assignmentSlide nav menu
     d3.select("#assignmentSlide")
       .style("width", w + 'px')
-      .style("padding-bottom", '5px')
+      .style("padding-bottom", '15px')
       .style("margin", "auto");
 
     // // set canvas attrs
@@ -37,9 +37,8 @@ d3.grid = function(canvas, W, H, data, parent) {
     parent
       .style("width", w + 'px')
       .style("height", h + 'px')
-      .style("font-size", '0px')
-      .style("margin", "auto")
-      .style("margin-bottom", "30px");
+      // .style("font-size", '0px');
+      .style("margin", "auto");
 
     // set up nodes
     if(!data.encoding || data.encoding == "RAW") {

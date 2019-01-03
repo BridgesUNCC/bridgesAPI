@@ -205,7 +205,7 @@ $( document ).ready( function() {
         updateVis(i, i);
       }
     }
-	}, 250));
+	}, 100));
 });
 
 // return true if the (i)th assignment is not loaded yet
@@ -284,7 +284,6 @@ function positionSlideLabel(i) {
     .text(assignment.assignmentNumber + "." + ((i < 10) ? "0"+i : i))
     .style("left", function() {
       var b = d3.select("#slideButton"+i);
-      // return b.node().offsetLeft + (b.node().clientWidth / 3) + "px";
       return b.node().offsetLeft + "px";
     })
     .style("top", function() {
@@ -311,9 +310,6 @@ function updateVis(currentNum, index){
       currentVisNum -= 1;
     }).done(function(assignment) {
       var wait = false;
-
-      // update the subassignment navigation display
-      positionSlideLabel(assignment.subAssignment);
 
       // add map resources if appropriate
       if(assignment.data && assignment.data[0] && assignment.data[0].map_overlay) {
@@ -373,6 +369,16 @@ function visualizeAssignment(assignment, index){
   vis = vis.append("svg")
     .attr("id", "svg"+index);
 
+  // modify vis dimensions
+  d3.select("#vis"+index)
+    .style("width", width + 'px')
+    .style("margin-left", "15px");
+
+  // modify assignmentSlide nav menu
+  d3.select("#assignmentSlide")
+    .style("width", width + 'px')
+    .style("margin-left", "15px");
+
   // update the title and description
   d3.select("#title"+index).text(function() {
     if(assignment.title && assignment.title.length > 0)
@@ -430,7 +436,6 @@ function visualizeAssignment(assignment, index){
   else {
     console.log('error..', assignment);
     return;
-      // console.log("unknown data type");
       graph = d3.graph(d3, "#vis" + index, width, height, assignmentData);
       BridgesVisualizer.visualizations[assignment.subAssignment] = (graph);
   }
@@ -439,6 +444,9 @@ function visualizeAssignment(assignment, index){
   if(assignment.data[0] && assignment.data[0].map_overlay) {
     addMapOverlay(assignmentData, vis);
   }
+
+  // update the subassignment navigation display
+  positionSlideLabel(assignment.subAssignment);
 }
 
 // import map-related scripts and styles
