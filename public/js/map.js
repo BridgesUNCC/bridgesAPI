@@ -11,7 +11,7 @@ BridgesVisualizer.map = function(vis, overlay) {
     d3.json("/geoJSON/us-10m.v1.json", function(error, us) {
       if (error) throw error;
 
-      vis.selectAll(".map_overlay").remove();
+      d3.select(vis.node().parentNode).selectAll(".map_overlay").remove();
 
       path = d3.geoPath();
 
@@ -42,7 +42,7 @@ BridgesVisualizer.map = function(vis, overlay) {
     d3.json("/geoJSON/world-50m.json", function(error, world) {
       if (error) throw error;
 
-      vis.selectAll(".map_overlay").remove();
+      d3.select(vis.node().parentNode).selectAll(".map_overlay").remove();
 
       var projection = d3.geoEquirectangular();
 
