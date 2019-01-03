@@ -22,13 +22,15 @@ d3.collection = function(svg, W, H, data) {
 
     var xScale = d3.scaleLinear().domain(data.domainX).range([-w/2,w/2]);
     var yScale = d3.scaleLinear().domain(data.domainY).range([h/2,-h/2]); // negatives invert to cartesian space
+    var scaleFactor =  xScale.range()[0] / data.domainX[0];
+    // console.log('scale factor', scaleFactor);
 
     // determine how to scale the symbols as a function of the current scales and default scales
     // var symbolScale =
-
-    console.log('domains', xScale.domain(), yScale.domain());
-    console.log('ranges', xScale.range(), yScale.range());
-
+    //
+    // console.log('domains', xScale.domain(), yScale.domain());
+    // console.log('ranges', xScale.range(), yScale.range());
+    //
 
 
     graph.reset = function() {
@@ -103,6 +105,103 @@ d3.collection = function(svg, W, H, data) {
     });
 
 
+    // draw and style all shapes
+    shapes = svgGroup.selectAll(".shape")
+      .data(symbols.shapes).enter().append("g")
+        .attr("class", "shape")
+      .each(function(d) {
+        var me = d3.select(this);
+        switch(d.shape) {
+          /*
+           * C I R C L E
+           */
+          case "circle":
+            me
+            .append("svg:circle")
+            .attr("r", function(d) {
+              return scaleFactor*d.r || 15;
+            })
+            .attr("cx", function(d) {
+              if(d.location)
+                return d.location.x;
+              return 0;
+            })
+            .attr("cy", function(d) {
+              if(d.location)
+                return d.location.y;
+              return 0;
+            });
+            break;
+          /*
+           * R E C T A N G L E
+           */
+          case "rect":
+            me
+            .append("svg:rect")
+              .attr("x", function(d) {
+                if(d.location)
+                  return d.location.x - (scaleFactor*d.width / 2);
+                return 0 - (scaleFactor*d.width / 2);
+              })
+              .attr("y", function(d) {
+                if(d.location)
+                  return d.location.y - (scaleFactor*d.height / 2);
+                return 0 - (scaleFactor*d.height / 2);
+              })
+              .attr("width", function(d) {
+                return scaleFactor*d.width || 10;
+              })
+              .attr("height", function(d) {
+                return scaleFactor*d.height || 10;
+              });
+              break;
+          /*
+           * P O L Y G O N
+           */
+           case "polygon":
+             me
+             .append("svg:polygon")
+               .attr("points", function(d) {
+                 return d.points;
+               })
+               .attr("transform", function(d) {
+                 if(d.location)
+                   return "translate(" + d.location.x +  "," + d.location.y + ")";
+                 return "translate(0,0)";
+               });
+        }
+      });
+
+    shapes
+      .style('opacity', function(d) {
+        if(d.opacity) return d.opacity;
+        return 1;
+      })
+      .style("stroke-width", function(d) {
+          return d['stroke-width'] || 1;
+      })
+      .style("stroke", function(d) {
+          return BridgesVisualizer.getColor(d.stroke) || "black";
+      })
+      .style("stroke-dasharray", function(d) {
+          return d['stroke-dasharray'] || 0;
+      })
+      .style("fill", function(d) {
+          return BridgesVisualizer.getColor(d.fill) || "none";
+      })
+      .on("mouseover", function(d) {
+          BridgesVisualizer.textMouseover(d.name);
+      })
+      .on("mouseout", BridgesVisualizer.textMouseout);
+
+    // shape labels
+    shapes
+        .append("text")
+        .attr("class","nodeLabel")
+        .text(function(d) {
+            return d.name;
+        });
+
 
     /*
      *    L A B E L S
@@ -167,103 +266,6 @@ d3.collection = function(svg, W, H, data) {
         })
         .style("fill", "none");
 
-
-    // draw and style all shapes
-    shapes = svgGroup.selectAll(".shape")
-      .data(symbols.shapes).enter().append("g")
-        .attr("class", "shape")
-      .each(function(d) {
-        var me = d3.select(this);
-        switch(d.shape) {
-          /*
-           * C I R C L E
-           */
-          case "circle":
-            me
-            .append("svg:circle")
-            .attr("r", function(d) {
-              return d.r || 15;
-            })
-            .attr("cx", function(d) {
-              if(d.location)
-                return d.location.x;
-              return 0;
-            })
-            .attr("cy", function(d) {
-              if(d.location)
-                return d.location.y;
-              return 0;
-            });
-            break;
-          /*
-           * R E C T A N G L E
-           */
-          case "rect":
-            me
-            .append("svg:rect")
-              .attr("x", function(d) {
-                if(d.location)
-                  return d.location.x - (d.width / 2);
-                return 0 - (d.width / 2);
-              })
-              .attr("y", function(d) {
-                if(d.location)
-                  return d.location.y - (d.height / 2);
-                return 0 - (d.height / 2);
-              })
-              .attr("width", function(d) {
-                return d.width || 10;
-              })
-              .attr("height", function(d) {
-                return d.height || 10;
-              });
-              break;
-          /*
-           * P O L Y G O N
-           */
-           case "polygon":
-             me
-             .append("svg:polygon")
-               .attr("points", function(d) {
-                 return d.points;
-               })
-               .attr("transform", function(d) {
-                 if(d.location)
-                   return "translate(" + d.location.x +  "," + d.location.y + ")";
-                 return "translate(0,0)";
-               });
-        }
-      });
-
-    shapes
-      .style('opacity', function(d) {
-        if(d.opacity) return d.opacity;
-        return 1;
-      })
-      .style("stroke-width", function(d) {
-          return d['stroke-width'] || 1;
-      })
-      .style("stroke", function(d) {
-          return BridgesVisualizer.getColor(d.stroke) || "white";
-      })
-      .style("stroke-dasharray", function(d) {
-          return d['stroke-dasharray'] || 0;
-      })
-      .style("fill", function(d) {
-          return BridgesVisualizer.getColor(d.fill) || "blue";
-      })
-      .on("mouseover", function(d) {
-          BridgesVisualizer.textMouseover(d.name);
-      })
-      .on("mouseout", BridgesVisualizer.textMouseout);
-
-    // shape labels
-    shapes
-        .append("text")
-        .attr("class","nodeLabel")
-        .text(function(d) {
-            return d.name;
-        });
 
 
     // d3.selectAll(".nodeLabel").each(BridgesVisualizer.insertLinebreaks);
