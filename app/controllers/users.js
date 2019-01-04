@@ -219,7 +219,7 @@ exports.deletePerson = function (req, res) {
             }
         });
 
-    return res.redirect("login");
+    return res.redirect("/login");
 };
 
 /* Generate a new API key for a user */
