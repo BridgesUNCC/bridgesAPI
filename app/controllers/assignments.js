@@ -171,7 +171,7 @@ exports.upload = function (req, res, next) {
           User.findOne({
               email: user.email
           }).exec(function (err, resp) {
-              res.json( 200, { "msg":assignmentID + "/" + resp.username } );
+              res.status(200).json({ "msg":assignmentID + "/" + resp.username });
           });
           console.log( "subassignment added" );
         }
@@ -236,7 +236,7 @@ exports.getJSON = function (req, res, next) {
 
               // return the found assignment if it's public or owned by the request
               if(assignment.shared || (sessionUser && (assignment.email == sessionUser.email)))
-                return res.json( 200, assignment );
+                return res.status(200).json( assignment );
 
               return res.status(401).render("404", {"message": "can not find public assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'"});
             });

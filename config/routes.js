@@ -13,13 +13,13 @@ module.exports = function(app, passport) {
 
         var apikey = req.query.apikey;
         if (!apikey) {
-          return res.json(401, {
+          return res.status(401).json({
               "error": "Not logged in: you must provide an apikey as a query variable"
           });
         }
         var username = req.query.username;
         if (!username) {
-          return res.json(401, {
+          return res.status(401).json({
               "error": "Not logged in: you must provide a username as a query variable"
           });
         }
@@ -30,7 +30,7 @@ module.exports = function(app, passport) {
           })
           .exec(function(err, user) {
               if (!user) {
-                return res.json(401, {
+                return res.status(401).json({
                     "error": "your api key or username is invalid"
                 });
               }
@@ -63,7 +63,7 @@ module.exports = function(app, passport) {
         else if(err.message) msg.error = err.message;
         else msg.error = err;
 
-        return res.json(500, msg);
+        return res.status(500).json(msg);
     };
 
     // -------------------------------------------------------
