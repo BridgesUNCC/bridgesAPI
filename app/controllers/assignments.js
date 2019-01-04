@@ -479,7 +479,6 @@ exports.savePositions = function(req, res) {
                 assign[i].markModified('data'); //http://mongoosejs.com/docs/faq.html
                 assign[i].save();
               }
-
             } catch (error) {
               console.log(error);
             }

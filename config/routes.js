@@ -1,7 +1,7 @@
 var mongoose = require('mongoose'),
     User = mongoose.model('User');
 
-module.exports = function(app, passport, streamable) {
+module.exports = function(app, passport) {
 
     //Allows users to by pass authentication to api requests
     //if they have a valid api key.
@@ -118,19 +118,6 @@ module.exports = function(app, passport, streamable) {
             failureRedirect: '/login',
             failureFlash: true
         }));
-
-    // -------------------------------------------------------
-    //
-    //  Stream Routes
-    //
-    // -------------------------------------------------------
-    // var streams = require('../app/controllers/streams.js');
-    //
-    // app.get('/streams/:domain/*',
-    //     hasAccess, streamable, streams.getSource, handleError);
-    // app.get('/streams/:domain',
-    //     hasAccess, streamable, streams.getSource, handleError);
-
 
 
     // -------------------------------------------------------
