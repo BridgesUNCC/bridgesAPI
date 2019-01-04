@@ -64,18 +64,24 @@ function savePositions () {
   var updateTheseNodes = {};
 
   for(var index in BridgesVisualizer.visualizations) {
+
+    // get appropriate assignment container based on subassignment and display mode
+    if(displayMode == "slide") {
+      if(index != subAssignmentNumber) continue; // only save current vis in slide mode
+      thisVis = 0;
+    } else if(displayMode == "stack") {
+      if(index.substr(0,1) == "0") {
+        thisVis = +index.substr(1);
+      } else {
+        thisVis = +index;
+      }
+    }
+
     // store indices for all fixed nodes
     updateTheseNodes[index] = {
       'fixedNodes': {},
       'unfixedNodes': {}
     };
-
-    // get appropriate assignment container based on subassignment
-    if(index.substr(0,1) == "0") {
-      thisVis = +index.substr(1);
-    } else {
-      thisVis = +index;
-    }
 
     // svg case
     if(d3.select("#vis" + thisVis).select("#canvas"+thisVis).empty() && !d3.select("#vis" + thisVis).select("#svg"+thisVis).empty()) {
@@ -425,9 +431,9 @@ function visualizeAssignment(assignment, index){
       d3.select("#vis"+index).select("#svg"+index).remove("*");
       vis = d3.select("#vis" + index).append("canvas")
         .attr("id", "canvas"+index);
-      graph = d3.graph_canvas(vis, width, height, assignmentData);
+      graph_canvas = d3.graph_canvas(vis, width, height, assignmentData);
 
-      BridgesVisualizer.visualizations[assignment.subAssignment] = (graph);
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (graph_canvas);
   }
   else if (assignment.vistype == "collection" && d3.collection) {
       collection = d3.collection(vis, width, height, assignmentData);
