@@ -56,7 +56,7 @@ exports.upload = function (req, res, next) {
         try { rawBody = JSON.parse(req.body); } // try parsing to object
         catch (e) {
             if(typeof req.body != 'object') {
-                return next(e + " invalid syntax for raw body of request");
+                return res.status(400).render("404", {"message": e + " Invalid JSON in request body."});
             } else {
                 rawBody = req.body;
             }
@@ -93,7 +93,7 @@ exports.upload = function (req, res, next) {
     if(rawBody.dimensions) {
       if((rawBody.dimensions[0] && rawBody.dimensions[0] > 1080) ||
          (rawBody.dimensions[1] && rawBody.dimensions[1] > 1920)) {
-           return next("Illegal Grid Dimensions");
+           return res.status(400).render("404", {"message": "Illegal Grid Dimensions: [" + rawBody.dimensions[0] + "," + rawBody.dimensions[1] + "]"});
       }
     }
 
@@ -103,7 +103,7 @@ exports.upload = function (req, res, next) {
     })
     .exec(function (err, user) {
         if (err) return next (err);
-        if (!user) return next ("could not find user by apikey: " + req.query.apikey);
+        if (!user) return res.status(401).render("404", {"message": "could not find user by apikey: " + req.query.apikey});
 
         //if username found, upload or replace
         replaceAssignment(res, user, assignmentID);
@@ -238,7 +238,7 @@ exports.getJSON = function (req, res, next) {
               if(assignment.shared || (sessionUser && (assignment.email == sessionUser.email)))
                 return res.json( 200, assignment );
 
-              return res.status(404).render("404", {"message": "can not find public assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'"});
+              return res.status(401).render("404", {"message": "can not find public assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'"});
             });
         });
 };
@@ -292,7 +292,7 @@ exports.get = function (req, res, next) {
                     return renderVis(res, assignment);
                   });
                 } else {
-                  return res.status(404).render("404", {"message": "can not find public assignment " + assignmentNumber + " for user \'" + username + "\'"});
+                  return res.status(401).render("404", {"message": "can not find public assignment " + assignmentNumber + " for user \'" + username + "\'"});
                 }
             });
         });
@@ -484,7 +484,7 @@ exports.savePositions = function(req, res) {
               console.log(error);
             }
         });
-    res.send("OK");
+    return res.status(202).json({"message": "success"});
 };
 
 /* Save the zoom and translation for the given assignment */
@@ -551,7 +551,7 @@ exports.deleteAssignmentByKey = function (req, res) {
     if(isAssignmentNumber(+req.params.assignmentNumber)) {
       assignmentNumber = req.params.assignmentNumber;
     } else {
-      return res.status(401).json({"error": "assignment number is invalid"});
+      return res.status(400).json({"error": "assignment number is invalid"});
     }
 
     // delete all subassignments with the major assignment number for this user

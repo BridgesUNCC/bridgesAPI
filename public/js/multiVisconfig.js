@@ -101,8 +101,8 @@ function savePositions () {
       url: "/assignments/updatePositions/"+assignmentNumber,
       type: "post",
       data: updateTheseNodes
-  }).done(function(status) {
-      if(status == 'OK'){
+  }).done(function(data, textStatus, xhr) {
+      if(xhr.status == '202'){
           alertMessage("Node positions saved!", "success");
       } else {
           alertMessage("Unsuccessful. Try logging in!", "danger");
