@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "private": true,
   "engines": {
-    "node": "6.6.0"
+    "node": "10.15.0"
   },
   "scripts": {
     "start": "app.js",
