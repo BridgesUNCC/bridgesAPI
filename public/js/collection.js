@@ -68,8 +68,10 @@ d3.collection = function(svg, W, H, data) {
         symbols = { // data binding
                     "text": [],
                     "circles": [],
+                    "ellipses": [],
                     "rectangles": [],
-                    "polygons": [],
+                    "polylines": [],
+                    "points": [],
                     "shapes": []
                   };
 
@@ -86,8 +88,8 @@ d3.collection = function(svg, W, H, data) {
         // console.log('becomes', symbol.location.x, symbol.location.y);
       }
 
-      // for polygons, scale the points accordingly
-      if(symbol.shape == "polygon") {
+      // for all lines, scale the points accordingly
+      if(symbol.shape == "polygon" || symbol.shape == "polyline" || symbol.shape == "line" || symbol.shape == "point") {
         for(var i = 0; i < symbol.points.length; i++) {
           if(i % 2 === 0) {// x
             symbol.points[i] = xScale(symbol.points[i]);
@@ -95,6 +97,12 @@ d3.collection = function(svg, W, H, data) {
             symbol.points[i] = yScale(symbol.points[i]);
           }
         }
+      }
+
+      // complete the polygon with the original point
+      if(symbol.shape == "polygon" && symbol.points && symbol.points.length >= 2) {
+        symbol.points.push(symbol.points[0]);
+        symbol.points.push(symbol.points[1]);
       }
 
       if(symbol.shape == "text") {
@@ -120,6 +128,48 @@ d3.collection = function(svg, W, H, data) {
             .append("svg:circle")
             .attr("r", function(d) {
               return scaleFactor*d.r || 15;
+            })
+            .attr("cx", function(d) {
+              if(d.location)
+                return d.location.x;
+              return 0;
+            })
+            .attr("cy", function(d) {
+              if(d.location)
+                return d.location.y;
+              return 0;
+            });
+            break;
+          /*
+           * P O I N T
+           */
+          case "point":
+            me
+            .append("svg:circle")
+            .classed("point", true)
+            .attr("r", 1)
+            .attr("cx", function(d) {
+              if(d.points)
+                return d.points[0];
+              return 0;
+            })
+            .attr("cy", function(d) {
+              if(d.points)
+                return d.points[1];
+              return 0;
+            });
+            break;
+          /*
+           * E L L I P S E
+           */
+          case "circle":
+            me
+            .append("svg:ellipse")
+            .attr("rx", function(d) {
+              return scaleFactor*d.rx || 15;
+            })
+            .attr("ry", function(d) {
+              return scaleFactor*d.ry || 15;
             })
             .attr("cx", function(d) {
               if(d.location)
@@ -159,8 +209,10 @@ d3.collection = function(svg, W, H, data) {
            * P O L Y G O N
            */
            case "polygon":
+           case "polyline":
+           case "line":
              me
-             .append("svg:polygon")
+             .append("svg:polyline")
                .attr("points", function(d) {
                  return d.points;
                })
