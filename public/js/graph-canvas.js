@@ -7,23 +7,36 @@ d3.graph_canvas = function(canvas, W, H, data) {
         w = W || 1280,
         h = H || 800,
         i = 0,
-        edgeLength = d3.scaleLinear().domain([1,1000]).range([100,250]);
+        edgeLength = d3.scaleLinear().domain([1,1000]).range([100,250]),
+        fixedNodeCount = 0;
 
     canvas.attr("width", w).attr("height", h);
     context.canvas.width = w;
     context.canvas.height = h;
 
-    var finalTranslate = BridgesVisualizer.defaultTransforms.graph.translate;
-    var finalScale = BridgesVisualizer.defaultTransforms.graph.scale;
+    if(data.coord_system_type) {
+      finalTranslate = BridgesVisualizer.defaultTransforms[data.coord_system_type].translate;
+      finalScale =  BridgesVisualizer.defaultTransforms[data.coord_system_type].scale;
+    } else {
+      finalTranslate = BridgesVisualizer.defaultTransforms.graph.translate;
+      finalScale =  BridgesVisualizer.defaultTransforms.graph.scale;
+    }
     var transform = d3.zoomIdentity.translate(finalTranslate[0], finalTranslate[1]).scale(finalScale);
+    var windowProjection;
 
     var zoom = d3.zoom()
         .scaleExtent([0.1,10])
         .on("zoom", zoomed);
 
     graph.reset = function() {
+      if(data.coord_system_type) {
+        finalTranslate = BridgesVisualizer.defaultTransforms[data.coord_system_type].translate;
+        finalScale =  BridgesVisualizer.defaultTransforms[data.coord_system_type].scale;
+      } else {
         finalTranslate = BridgesVisualizer.defaultTransforms.graph.translate;
         finalScale =  BridgesVisualizer.defaultTransforms.graph.scale;
+      }
+
         transform = d3.zoomIdentity.translate(finalTranslate[0], finalTranslate[1]).scale(finalScale);
 
         canvas.call(zoom.transform, transform);
@@ -50,6 +63,33 @@ d3.graph_canvas = function(canvas, W, H, data) {
         d.lines = d.label.split("\n");
     });
 
+    // if we want to do a window -> viewport transformation, set up the scales
+    if(data.coord_system_type == "window") {
+      var xExtent, yExtent, viewportX, viewportY;
+
+      // use specified window or compute the window
+      if(data.window) {
+          xExtent = [data.window[0], data.window[1]];
+          yExtent = [data.window[2], data.window[3]];
+      } else {
+        xExtent = d3.extent(nodes, function(d,i) { return d.location[0]; });
+        yExtent = d3.extent(nodes, function(d,i) { return d.location[1]; });
+      }
+
+      // set up x and y linear scales
+      viewportX = d3.scaleLinear()
+              .domain(xExtent)
+              .range([0, context.canvas.width]);
+      viewportY = d3.scaleLinear()
+              .domain(yExtent)
+              .range([0, context.canvas.height]);
+
+      // take a point ([x,y]) in window coords and project it into viewport coords
+      windowProjection = function(p) {
+        return [viewportX(p[0]), viewportY(p[1])];
+      };
+    }
+
     // set fixed locations or projections where appropriate,
     //   set up symbol function
     //   pre-split labels with newlines
@@ -65,10 +105,14 @@ d3.graph_canvas = function(canvas, W, H, data) {
       if(d.location) {
         var proj, point;
 
+        fixedNodeCount++;
+
         if(data.coord_system_type == "equirectangular") {
           proj = d3.geoEquirectangular();
         } else if(data.coord_system_type == "albersusa") {
           proj = d3.geoAlbersUsa();
+        } else if(data.coord_system_type == "window") {
+          proj = windowProjection;
         } else if(data.coord_system_type == "cartesian"){
           d.fx = d.location[0];
           d.fy = d.location[1];
@@ -95,6 +139,25 @@ d3.graph_canvas = function(canvas, W, H, data) {
     links.forEach(function(d) {
       nodes[d.target].degree++;
     });
+
+
+    function drawOnce() {
+      context.save();
+      context.clearRect(0, 0, canvas.attr("width"), canvas.attr("height"));
+      context.translate(transform.x, transform.y); //<-- this always applies a transform
+      context.scale(transform.k, transform.k);
+
+      // links
+      // links.forEach(drawLink);
+      links.forEach(drawCurvedLink);
+
+      // nodes
+      nodes.forEach(drawNode);
+
+      context.restore();
+      console.log('drawn');
+    }
+    drawOnce();
 
     var simulation = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links)
@@ -125,6 +188,7 @@ d3.graph_canvas = function(canvas, W, H, data) {
 
 
     function ticked() {
+      if(fixedNodeCount == nodes.length) simulation.alpha(0);
       context.save();
       context.clearRect(0, 0, canvas.attr("width"), canvas.attr("height"));
       context.translate(transform.x, transform.y); //<-- this always applies a transform
@@ -330,6 +394,7 @@ d3.graph_canvas = function(canvas, W, H, data) {
           n.y = n.fy;
           n.fy = null;
           n.fx = null;
+          fixedNodeCount--;
           ticked();
         }
       }
@@ -361,6 +426,7 @@ d3.graph_canvas = function(canvas, W, H, data) {
       if (!d3.event.active) simulation.alphaTarget(0.3).restart();
       d3.event.subject.fx = transform.invertX(d3.event.x);
       d3.event.subject.fy = transform.invertY(d3.event.y);
+      fixedNodeCount--;
     }
 
     function dragged() {
@@ -372,6 +438,7 @@ d3.graph_canvas = function(canvas, W, H, data) {
 
     function dragended() {
       if (!d3.event.active) simulation.alphaTarget(0);
+      fixedNodeCount++;
     }
 
     // track mousemove to trigger label hovering
