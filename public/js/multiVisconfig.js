@@ -427,11 +427,19 @@ function visualizeAssignment(assignment, index){
       graph = d3.graph(vis, width, height, assignmentData);
       BridgesVisualizer.visualizations[assignment.subAssignment] = (graph);
   }
-  else if (assignment.vistype == "nodelink-canvas" && d3.graph_canvas) {
+  else if (assignment.vistype == "nodelink-canvas" && d3.graph_webgl) {
       d3.select("#vis"+index).select("#svg"+index).remove("*");
       vis = d3.select("#vis" + index).append("canvas")
         .attr("id", "canvas"+index);
-      graph_canvas = d3.graph_canvas(vis, width, height, assignmentData);
+
+      graph_canvas = d3.graph_webgl(vis, width, height, assignmentData);
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (graph_canvas);
+  }
+  else if (assignment.vistype == "nodelink-webgl" && d3.graph_webgl) {
+      d3.select("#vis"+index).select("#svg"+index).remove("*");
+      vis = d3.select("#vis" + index).append("canvas")
+        .attr("id", "canvas_webgl"+index);
+      graph_webgl = d3.graph_webgl(vis, width, height, assignmentData);
 
       BridgesVisualizer.visualizations[assignment.subAssignment] = (graph_canvas);
   }
