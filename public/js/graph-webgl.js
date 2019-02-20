@@ -4,7 +4,15 @@ var gl,
     transl_y = 0.0,
     translXLoc,
     translYLoc,
-    indexBuffer;
+    indexBuffer,
+    edges,
+    vertices,
+    range,
+    vertex_colors,
+    edge_colors,
+    cBuffer,
+    ecBuffer,
+    edge_indices;
 
 d3.graph_webgl = function(canvas, W, H, data) {
 
@@ -51,10 +59,6 @@ d3.graph_webgl = function(canvas, W, H, data) {
         w = W || 1280,
         h = H || 800,
         i = 0;
-        // edgeLength = d3.scaleLinear().domain([1,1000]).range([100,250]),
-        // fixedNodeCount = 0,
-        // scale = [1.0,1.0,0.0,0.0],
-        // translate = [0.0, 0.0, -5.0];
 
     // Only continue if WebGL is available and working
     if (gl === null) {
@@ -62,6 +66,7 @@ d3.graph_webgl = function(canvas, W, H, data) {
       return;
     }
 
+    // set canvas width and height
     canvas.attr("width", w).attr("height", h);
 
     // set up zoom handler
@@ -97,44 +102,86 @@ d3.graph_webgl = function(canvas, W, H, data) {
     var program = initShaderProgram(gl, vsSource, fsSource);
   	gl.useProgram( program );
 
+    // evaluate vertices from JSON
+    vertices = data.nodes;
+
+    // evalute color for each vertex
+    vertex_colors = [];
+    for (i = 0; i < vertices.length; i++) {
+      vertex_colors.push(vertices[i].color);
+    }
+
+    // evaluate range from JSON
+    var xrange = d3.extent(vertices, function(d) { return d.location[0]; });
+    var yrange = d3.extent(vertices, function(d) { return d.location[1]; });
+    range = [
+        xrange[0], xrange[1],
+        yrange[0], yrange[1]
+    ];
+
   	// convert world coords to NDC
   	var vert_ndc = [];
   	var k = 0;
   	for (i = 0; i < vertices.length; i++) {
-  		vert_ndc[i] = worldToNDC(vertices[i], [range[0], range[2]], [range[1], range[3]]);
+  		vert_ndc[i] = worldToNDC(vertices[i].location, [range[0], range[2]], [range[1], range[3]]);
   	}
 
     // Load the data into the GPU
-    var vBuffer = gl.createBuffer();
+    vBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, flatten(vert_ndc), gl.STATIC_DRAW);
 
     // Associate our shader variables with our data buffer
-    var vPosition = gl.getAttribLocation( program, "vPosition");
+    vPosition = gl.getAttribLocation( program, "vPosition");
     gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
 
-    var cBuffer = gl.createBuffer();
+    cBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, flatten(vertex_colors), gl.STATIC_DRAW);
 
-  	edge_colors = new Float32Array(vertices.length);
-  	for (i = 0; i < edges.length; i +=4) {
-  		edge_colors[i] = 0.0; //255.0;
-  		edge_colors[i+1] = 255.0;
-  		edge_colors[i+2] = 0.0;
-  		edge_colors[i+3] = 1.0;
-  	}
+
+    // evaluate edges
+    edges = data.links;
+
+    // evaluate color for each edge
+    // edge_colors = [];
+  	// for (i = 0; i < edges.length; i++) {
+    //   edge_colors.push(edges[i].color);
+  	// }
+
+    // brute force color
+    // edge_colors = new Float32Array(vertices.length*4)
+    // for (var i = 0; i < edge_colors.length; i +=4) {
+    //   edge_colors[i] = 0.0;
+    //   edge_colors[i+1] = 0.0;
+    //   edge_colors[i+2] = 1.0;
+    //   edge_colors[i+3] = 1.0;
+    // }
+
+    // hacky hack the edge colors
+    edge_colors = hackyHackTheColors(vertices, edges);
 
     // Associate shader variables with our data buffer
-    var vColor = gl.getAttribLocation( program, "vColor");
+  	ecBuffer = gl.createBuffer();
+  	gl.bindBuffer(gl.ARRAY_BUFFER, ecBuffer);
+  	gl.bufferData(gl.ARRAY_BUFFER, flatten(edge_colors), gl.STATIC_DRAW);
+
+    vColor = gl.getAttribLocation( program, "vColor");
     gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vColor);
+
+    // evaluate the indices of the edges
+    edge_indices = [];
+    for(i = 0; i < edges.length; i++) {
+      edge_indices.push(+edges[i].source);
+      edge_indices.push(+edges[i].target);
+    }
 
   	// create the indices into the vertex buffer
   	indexBuffer = gl.createBuffer();
   	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-  	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(flatten(edges)), gl.STATIC_DRAW);
+  	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(edge_indices), gl.STATIC_DRAW);
 
   	gl.getExtension('OES_element_index_uint');
 
@@ -148,18 +195,30 @@ d3.graph_webgl = function(canvas, W, H, data) {
     return graph;
 };
 
-
+// draw loop
 function render() {
   gl.clear( gl.COLOR_BUFFER_BIT );
 
-	//  pass the zoom factor to the GPU
+	// pass the zoom factor to the GPU
 	gl.uniform1f(zoomFactorLoc, zoom_factor);
 	gl.uniform1f(translXLoc, transl_x);
 	gl.uniform1f(translYLoc, transl_y);
 
-	// draw the square
-	gl.drawElements(gl.LINES, edges.length*2, gl.UNSIGNED_INT, indexBuffer);
-	gl.drawArrays (gl.POINTS, 0, vertices.length);
+  // bind node colors
+  gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
+  gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(vColor);
+
+  // draw the nodes
+  gl.drawArrays (gl.POINTS, 0, vertices.length);
+
+  // bind edge colors
+  gl.bindBuffer(gl.ARRAY_BUFFER, ecBuffer);
+  gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(vColor);
+
+  // draw the edges
+  gl.drawElements(gl.LINES, edge_indices.length, gl.UNSIGNED_INT, indexBuffer);
 }
 
 function worldToNDC(wcoords, wc_min, wc_max) {
@@ -175,4 +234,29 @@ function deviceToNDC(dev_coords) {
 	var ndc_x = 2.0*dev_coords[0]/gl.canvas.width - 1.0;
 	var ndc_y = 2.0*(gl.canvas.height-dev_coords[1])/gl.canvas.height - 1.0;
 	return [ndc_x, ndc_y];
+}
+
+function hackyHackTheColors(nodes, edges) {
+  var edge,
+      // make an array of vertex colors
+      edge_colors = new Float32Array(nodes.length*4);
+
+  for(var e in edges) {
+    edge = edges[e];
+    s = +edge.source * 4;
+    t = +edge.target * 4;
+
+    // // replace color for source vertex
+    edge_colors[s] = edge.color[0]/256;
+    edge_colors[s+1] = edge.color[1]/256;
+    edge_colors[s+2] = edge.color[2]/256;
+    edge_colors[s+3] = edge.color[3];
+    // replace color for target vertex
+    edge_colors[t] = edge.color[0]/256;
+    edge_colors[t+1] = edge.color[1]/256;
+    edge_colors[t+2] = edge.color[2]/256;
+    edge_colors[t+3] = edge.color[3];
+  }
+
+  return edge_colors;
 }
