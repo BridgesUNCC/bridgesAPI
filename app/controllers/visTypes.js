@@ -70,8 +70,8 @@ exports.getVisTypeObject = function(data) {
         "script":"/js/graph-canvas.js",
         "link":""
       },
-      "largegraph": {
-          "vistype":"nodelink-webgl",
+      "graph-webgl": {
+          "vistype":"graph-webgl",
           "script":"/js/graph-webgl.js",
           "link":""
       },
