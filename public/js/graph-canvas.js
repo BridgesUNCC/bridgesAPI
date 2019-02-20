@@ -84,6 +84,13 @@ d3.graph_canvas = function(canvas, W, H, data) {
               .domain(yExtent)
               .range([0, context.canvas.height]);
 
+      // use the smaller of the two viewport scales 
+      if(context.canvas.width > context.canvas.height) {
+        viewportX  = viewportY;
+      } else {
+        viewportY = viewportX;
+      }
+
       // take a point ([x,y]) in window coords and project it into viewport coords
       windowProjection = function(p) {
         return [viewportX(p[0]), viewportY(p[1])];
@@ -155,7 +162,6 @@ d3.graph_canvas = function(canvas, W, H, data) {
       nodes.forEach(drawNode);
 
       context.restore();
-      console.log('drawn');
     }
     drawOnce();
 
