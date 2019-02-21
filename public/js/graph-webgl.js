@@ -147,22 +147,31 @@ d3.graph_webgl = function(canvas, W, H, data) {
     edge_colors = [];
     for(i = 0; i < edges.length; i++) {
       var edge = edges[i];
-      var s = vert_ndc[edge.source];
-      var t = vert_ndc[edge.target];
-      edge_ndc.push(s); // push x, y for source vertex
-      edge_ndc.push(t); // push x, y for target vertex
-
-      // add color for source vertex
-      edge_colors.push(edge.color[0]/256);
-      edge_colors.push(edge.color[1]/256);
-      edge_colors.push(edge.color[2]/256);
-      edge_colors.push(edge.color[3]);
-      // add color for target vertex
-      edge_colors.push(edge.color[0]/256);
-      edge_colors.push(edge.color[1]/256);
-      edge_colors.push(edge.color[2]/256);
-      edge_colors.push(edge.color[3]);
-
+      // var s = vert_ndc[edge.source];
+      // var t = vert_ndc[edge.target];
+      // edge_ndc.push(s); // push x, y for source vertex
+      // edge_ndc.push(t); // push x, y for target vertex
+      //
+      // // add color for source vertex
+      // edge_colors.push(edge.color[0]/256);
+      // edge_colors.push(edge.color[1]/256);
+      // edge_colors.push(edge.color[2]/256);
+      // edge_colors.push(edge.color[3]);
+      // // add color for target vertex
+      // edge_colors.push(edge.color[0]/256);
+      // edge_colors.push(edge.color[1]/256);
+      // edge_colors.push(edge.color[2]/256);
+      // edge_colors.push(edge.color[3]);
+      edge_ndc.push(vert_ndc[edge[0]]);
+      edge_ndc.push(vert_ndc[edge[1]]);
+      edge_colors.push(edge[2][0]/256);
+      edge_colors.push(edge[2][1]/256);
+      edge_colors.push(edge[2][2]/256);
+      edge_colors.push(edge[2][3]);
+      edge_colors.push(edge[2][0]/256);
+      edge_colors.push(edge[2][1]/256);
+      edge_colors.push(edge[2][2]/256);
+      edge_colors.push(edge[2][3]);
     }
 
     // Load the edge colors and locations into buffers
@@ -206,6 +215,22 @@ function render() {
 	gl.uniform1f(translYLoc, transl_y);
 
   /*
+      E D G E S
+  */
+  // bind vertex buffer
+  gl.bindBuffer(gl.ARRAY_BUFFER, eBuffer);
+  gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(vPosition);
+
+  // bind edge colors
+  gl.bindBuffer(gl.ARRAY_BUFFER, ecBuffer);
+  gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(vColor);
+
+  // draw the edges
+  gl.drawArrays(gl.LINES, 0, edges.length*2);
+
+  /*
       V E R T I C E S
   */
   // bind vertex buffer
@@ -218,25 +243,9 @@ function render() {
   gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(vColor);
 
-  // draw the nodes
+  // draw the vertices
   gl.drawArrays (gl.POINTS, 0, vertices.length);
 
-
-  /*
-      E D G E S
-  */
-  // bind vertex buffer
-  gl.bindBuffer(gl.ARRAY_BUFFER, eBuffer);
-  gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(vPosition);
-
-  // bind edge colors
-  gl.bindBuffer(gl.ARRAY_BUFFER, ecBuffer);
-  gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
-	gl.enableVertexAttribArray(vColor);
-
-  // draw the edges
-  gl.drawArrays(gl.LINES, 0, edges.length*2);
 }
 
 function worldToNDC(wcoords, wc_min, wc_max) {
