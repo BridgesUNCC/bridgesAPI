@@ -108,7 +108,10 @@ d3.graph_webgl = function(canvas, W, H, data) {
     // evalute color for each vertex
     vertex_colors = [];
     for (i = 0; i < vertices.length; i++) {
-      vertex_colors.push(vertices[i].color);
+      vertex_colors.push(vertices[i].color[0]/256);
+      vertex_colors.push(vertices[i].color[1]/256);
+      vertex_colors.push(vertices[i].color[2]/256);
+      vertex_colors.push(vertices[i].color[3]);
     }
 
     // evaluate range from JSON
