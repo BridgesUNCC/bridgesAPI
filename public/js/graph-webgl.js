@@ -105,18 +105,24 @@ d3.graph_webgl = function(canvas, W, H, data) {
     // evaluate vertices from JSON
     vertices = data.nodes;
 
-    // evalute color for each vertex
+    // evaluate color for each vertex
     vertex_colors = [];
     for (i = 0; i < vertices.length; i++) {
-      vertex_colors.push(vertices[i].color[0]/256);
-      vertex_colors.push(vertices[i].color[1]/256);
-      vertex_colors.push(vertices[i].color[2]/256);
-      vertex_colors.push(vertices[i].color[3]);
+      // vertex_colors.push(vertices[i].color[0]/256);
+      // vertex_colors.push(vertices[i].color[1]/256);
+      // vertex_colors.push(vertices[i].color[2]/256);
+      // vertex_colors.push(vertices[i].color[3]);
+      vertex_colors.push(vertices[i][1][0]/256);
+      vertex_colors.push(vertices[i][1][1]/256);
+      vertex_colors.push(vertices[i][1][2]/256);
+      vertex_colors.push(vertices[i][1][3]);
     }
 
     // evaluate range from JSON
-    var xrange = d3.extent(vertices, function(d) { return d.location[0]; });
-    var yrange = d3.extent(vertices, function(d) { return d.location[1]; });
+    // var xrange = d3.extent(vertices, function(d) { return d.location[0]; });
+    // var yrange = d3.extent(vertices, function(d) { return d.location[1]; });
+    var xrange = d3.extent(vertices, function(d) { return d[0][0]; });
+    var yrange = d3.extent(vertices, function(d) { return d[0][1]; });
     range = [
         xrange[0], xrange[1],
         yrange[0], yrange[1]
@@ -126,7 +132,8 @@ d3.graph_webgl = function(canvas, W, H, data) {
   	var vert_ndc = [];
   	var k = 0;
   	for (i = 0; i < vertices.length; i++) {
-  		vert_ndc[i] = worldToNDC(vertices[i].location, [range[0], range[2]], [range[1], range[3]]);
+  		// vert_ndc[i] = worldToNDC(vertices[i].location, [range[0], range[2]], [range[1], range[3]]);
+      vert_ndc[i] = worldToNDC(vertices[i][0], [range[0], range[2]], [range[1], range[3]]);
   	}
 
     // Load the vertex colors and locations into buffers
