@@ -155,9 +155,17 @@ exports.sendResetEmail = function (req, res) {
 };
 
 exports.logout = function (req, res) {
-    req.logout();
     user="";
-    res.redirect("login");
+
+    if (req.session) {
+      // delete session object
+      req.session.destroy(function(err) {
+        if(err) {
+          return next(err);
+        }
+      });
+    }
+    res.redirect("/");
 };
 
 /* Load profile view for a User */
@@ -211,7 +219,7 @@ exports.deletePerson = function (req, res) {
             }
         });
 
-    return res.redirect("login");
+    return res.redirect("/login");
 };
 
 /* Generate a new API key for a user */
@@ -239,8 +247,9 @@ exports.create = function (req, res) {
     user.generateKey();
     user.save(function (err) {
         if (err) {
+          err = err.errors ? err.errors : err;
           return res.render('users/signup', {
-            errors: (err.errors),
+            errors: (err),
             user: user,
             title: 'Sign up'
           });

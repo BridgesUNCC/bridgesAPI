@@ -19,6 +19,14 @@ d3.graph = function(svg, W, H, data) {
         .scaleExtent([0.1,10])
         .on("zoom", zoomed);
 
+    vis = svg.attr("width", w)
+            .attr("height", h)
+            .attr("preserveAspectRatio", "xMinYMin meet")
+            .attr("viewBox", "0 0 " + w + " " + h)
+            .classed("svg-content", true)
+            .call(zoom)
+            .call(zoom.transform, transform);
+
     graph.reset = function() {
 
       if(!data.coord_system_type || data.coord_system_type == "cartesian") {
@@ -33,14 +41,6 @@ d3.graph = function(svg, W, H, data) {
       svg.call(zoom.transform, transform);
     };
     graph.reset();
-
-    vis = svg.attr("width", w)
-            .attr("height", h)
-            .attr("preserveAspectRatio", "xMinYMin meet")
-            .attr("viewBox", "0 0 " + w + " " + h)
-            .classed("svg-content", true)
-            .call(zoom)
-            .call(zoom.transform, transform);
 
     svgGroup = vis.append("g").attr('transform', transform);
 

@@ -37,6 +37,10 @@ var validatePresenceOf = function (value) {
     return value && value.length;
 };
 
+var validatePasswordLength = function (password) {
+    return password.length > 5;
+};
+
 // Validate Email
 UserSchema.path('email').validate(function (email) {
     // if authenticating by an oauth strategies, don't validate
@@ -69,6 +73,10 @@ UserSchema.path('username').validate(function (username) {
     return username.length;
 }, 'Username cannot be blank');
 
+UserSchema.path('username').validate(function (username) {
+  return /^[a-zA-Z0-9]+[a-zA-Z0-9\-_]{3,20}$/.test(username);
+}, 'Usernames must contain alphanumeric characters a-z, A-Z, 0-9, underscores, and hyphens, and must be between 3 and 20 characters long.');
+
 UserSchema.path('username').validate({
   isAsync: true,
   validator: function (username, fn) {
@@ -93,12 +101,10 @@ UserSchema.path('hashed_password').validate(function (hashed_password) {
     return hashed_password.length;
 }, 'Password cannot be blank');
 
-
 //Pre-save hook
 UserSchema.pre('save', function(next) {
     if (!this.isNew) return next();
-
-    if (!validatePresenceOf(this.password) && authTypes.indexOf(this.provider) === -1)
+    if ((!validatePresenceOf(this.password) || !validatePasswordLength(this.password)) && authTypes.indexOf(this.provider) === -1)
         next(new Error('Invalid password'));
     else
         next();

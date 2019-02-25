@@ -25,6 +25,7 @@ d3.grid = function(canvas, W, H, data, parent) {
       }
       nodeSize = Math.max(nodeSize, 1);
 
+<<<<<<< HEAD
       w = dims[1]*nodeSize;
       h = dims[0]*nodeSize;
 
@@ -41,6 +42,38 @@ d3.grid = function(canvas, W, H, data, parent) {
       }
     };
 
+=======
+    // if necessary, modify assignmentSlide nav menu
+    d3.select("#assignmentSlide")
+      .style("width", w + 'px')
+      .style("padding-bottom", '15px')
+      .style("margin", "auto");
+
+    // // set canvas attrs
+    canvas.attr("width", w + 'px').attr("height", h + 'px');
+    parent
+      .style("width", w + 'px')
+      .style("height", h + 'px')
+      // .style("font-size", '0px');
+      .style("margin", "auto");
+
+    // set up nodes
+    if(!data.encoding || data.encoding == "RAW") {
+      rgbaArray = Uint8Array.from(atob(data.nodes), function(c) { return c.charCodeAt(0); });
+      for(var i = 0; i < rgbaArray.length; i+=4) {
+        nodes.push(rgbaArray.slice(i, i+4));
+      }
+    } else if(data.encoding == "RLE") {
+      byteArray = Uint8Array.from(atob(data.nodes), function(c) { return c.charCodeAt(0); });
+      // iterate over each 5-tuple
+      for(var i = 0; i < byteArray.length; i+=5) {
+        for(var j = 0; j <= byteArray[i]; j++) {
+          nodes.push(byteArray.slice(i+1, i+5));
+        }
+      }
+    }
+
+>>>>>>> master
 
     // set up draw method from requestAnimationFrame
     grid.draw = function() {

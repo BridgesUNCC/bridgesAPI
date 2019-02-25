@@ -6,7 +6,7 @@ var express = require('express'),
 
 //Set up database
 var mongoose = require('mongoose');
-mongoose.connect(config.db);
+mongoose.connect(config.db, { useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 
 var db = mongoose.connection;
@@ -40,7 +40,5 @@ var streamable = require('streamable').streamable(socketio);
 
 console.log("Server listening on port " + port);
 
-//Bootstrap routes.
-require('./config/routes')(app, passport, streamable);
 
 exports = module.exports = app;

@@ -6,6 +6,7 @@
   pointer-events: none;
   opacity: 0;
   max-width: 300px;
+  z-index: 10;
 }
 
 #welcome {

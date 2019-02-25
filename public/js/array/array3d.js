@@ -4,7 +4,6 @@
 
 */
 d3.array3d = function(svg, W, H, data, dimensions) {
-
     var array3d = {},
         svgGroup,
         w = W || 1280,
@@ -47,7 +46,7 @@ d3.array3d = function(svg, W, H, data, dimensions) {
     svgGroup = vis.append("g").attr('transform', transform);
 
     // Bind nodes to array elements
-    var nodes = svgGroup.selectAll("nodes")
+    var nodes = svgGroup.selectAll(".nodes")
         .data(data)
         .enter().append("g")
         .attr("xformx", function(d, i) { return (i % elementsPerRow) * (spacing + defaultSize); })
@@ -123,7 +122,7 @@ d3.array3d = function(svg, W, H, data, dimensions) {
         .attr("dy", ".35em");
 
     var my_translateX = parseFloat(d3.select("#g"+(elementsPerRow-1)).attr("xformx")) + spacingBetweenGrid;
-    d3.select("#g0").attr("class","first-2d");
+    svgGroup.select("#g0").attr("class","first-2d");
 
     var ii = 0;
     svgGroup.selectAll("g").each(function(d,i){
@@ -131,7 +130,7 @@ d3.array3d = function(svg, W, H, data, dimensions) {
         if(i >= dimOne*dimTwo){
             d3.select(this).attr("transform",function(){
                 if( i % (dimOne*dimTwo) === 0 ){
-                    d3.select("#g"+i).attr("class","first-2d");
+                    svgGroup.select("#g"+i).attr("class","first-2d");
                     ii++;
                 }
                 var tempI = i % (dimOne*dimTwo);
@@ -145,7 +144,7 @@ d3.array3d = function(svg, W, H, data, dimensions) {
     var half2d = ( ( (spacing + defaultSize) * elementsPerRow) / 2 );
 
     //first2Ditems is the collection of the first node of every grid
-    var first2Ditems = d3.selectAll(".first-2d");
+    var first2Ditems = svgGroup.selectAll(".first-2d");
     first2Ditems.each(function(d,i){
         svgGroup
             .append("line")

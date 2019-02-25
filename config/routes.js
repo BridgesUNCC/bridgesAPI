@@ -1,7 +1,7 @@
 var mongoose = require('mongoose'),
     User = mongoose.model('User');
 
-module.exports = function(app, passport, streamable) {
+module.exports = function(app, passport) {
 
     //Allows users to by pass authentication to api requests
     //if they have a valid api key.
@@ -13,13 +13,13 @@ module.exports = function(app, passport, streamable) {
 
         var apikey = req.query.apikey;
         if (!apikey) {
-          return res.json(401, {
+          return res.status(401).json({
               "error": "Not logged in: you must provide an apikey as a query variable"
           });
         }
         var username = req.query.username;
         if (!username) {
-          return res.json(401, {
+          return res.status(401).json({
               "error": "Not logged in: you must provide a username as a query variable"
           });
         }
@@ -30,7 +30,7 @@ module.exports = function(app, passport, streamable) {
           })
           .exec(function(err, user) {
               if (!user) {
-                return res.json(401, {
+                return res.status(401).json({
                     "error": "your api key or username is invalid"
                 });
               }
@@ -55,23 +55,15 @@ module.exports = function(app, passport, streamable) {
     };
 
     var handleError = function(err, req, res, next) {
+        var msg = {};
 
         //if provided an object
-        if (err.err) return errObj(err);
+        if (err.tip) msg.tip = err.tip;
+        else if (err.err) msg.error = err.err;
+        else if(err.message) msg.error = err.message;
+        else msg.error = err;
 
-        //else provided a string
-        return res.json(500, {
-            "error": err
-        });
-
-        function errObj(err) {
-            var msg = {};
-
-            if (err.tip) msg.tip = err.tip;
-            if (err.err) msg.error = err.err;
-
-            return res.json(500, msg);
-        }
+        return res.status(500).json(msg);
     };
 
     // -------------------------------------------------------
@@ -111,7 +103,7 @@ module.exports = function(app, passport, streamable) {
     /* User's personal gallery; requires log in */
     app.get('/username', isLoggedInGallery, users.profile, handleError);
 
-    app.delete('/users/:id', isLoggedIn, users.deletePerson);
+    app.post('/users/delete/:id', isLoggedIn, users.deletePerson);
     app.get('/users/apikey', users.getkey, handleError);
     app.get('/logout', users.logout);
 
@@ -126,19 +118,6 @@ module.exports = function(app, passport, streamable) {
             failureRedirect: '/login',
             failureFlash: true
         }));
-
-    // -------------------------------------------------------
-    //
-    //  Stream Routes
-    //
-    // -------------------------------------------------------
-    var streams = require('../app/controllers/streams.js');
-
-    app.get('/streams/:domain/*',
-        hasAccess, streamable, streams.getSource, handleError);
-    app.get('/streams/:domain',
-        hasAccess, streamable, streams.getSource, handleError);
-
 
 
     // -------------------------------------------------------
@@ -156,19 +135,20 @@ module.exports = function(app, passport, streamable) {
     app.post('/assignments/:assignmentNumber/share/:value',
         hasAccess, assignments.updateVisibility, handleError);
 
-    //app.get('/assignments/:assignmentID/:username',
-    //         isPublic, assignments.show, handleError)
-
     /* Allow user to save a snapshot of the positions of a graph */
     app.post('assignments/:assignmentNumber/saveSnapshot/',
               hasAccess, assignments.saveSnapshot, handleError);
 
+    /* Get and visualize a user's assignment */
     app.get('/assignments/:assignmentNumber/:username',
-              assignments.show, handleError);
-    app.get('/assignmentByEmail/:assignmentID/:email',
-              assignments.assignmentByEmail, handleError);
+              assignments.get, handleError);
+
+    /* Get the raw JSON for a user's assignment */
     app.get('/assignmentJSON/:assignmentNumber/:username',
               assignments.getJSON, handleError);
+
+    app.get('/assignmentByEmail/:assignmentID/:email',
+              assignments.assignmentByEmail, handleError);
 
     // update the assignment specified for the current user
     //  save the positions of any fixed nodes
@@ -181,6 +161,8 @@ module.exports = function(app, passport, streamable) {
     // delete the assignment specified for the current user
     app.delete('/assignments/:assignmentNumber', isLoggedIn, assignments.deleteAssignment);
 
+    // delete the assignment specified for the user with the given api key
+    app.delete('/clearAssignment/:assignmentNumber', hasAccess, assignments.deleteAssignmentByKey);
 
     // -------------------------------------------------------
     //

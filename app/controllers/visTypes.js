@@ -1,6 +1,6 @@
 
-// This module accepts the vistype sent by the client
-//    and returns the appropriate visualization type to display
+// This module accepts the named assignment type sent by the client
+//    and returns the appropriate vistype to display
 exports.getVisType = function(toCheck) {
   var validTypes = {
     "ALIST":           						"Alist",
@@ -17,17 +17,23 @@ exports.getVisType = function(toCheck) {
     "CircularSinglyLinkedList": 	"nodelink",//"cllist",
     "CircularDoublyLinkedList": 	"nodelink",//"cdllist",
 
-    "tree":            						"tree",
-    "Tree":            						"tree",
-    "BinaryTree":      						"tree",
-    "BinarySearchTree":						"tree",
-    "AVLTree":         						"tree",
+    "tree":                       "tree",
+    "Tree":                       "tree",
+    "BinaryTree":                 "tree",
+    "BinarySearchTree":           "tree",
+    "AVLTree":                    "tree",
+    "KdTree":                     "tree",
+    "QuadTree":                   "tree",
+    "BTree":                      "tree",
+    "B+Tree":                     "tree",
 
     "GraphAdjacencyList":  				"nodelink",
     "GraphAdjacencyMatrix":				"nodelink",
 
     "ColorGrid":                  "grid",
-    "GameGrid":                   "gamegrid"
+    "GameGrid":                   "gamegrid",
+
+    "SymbolCollection":           "collection"
   };
     if( toCheck && validTypes[toCheck] )
       return validTypes[toCheck];
@@ -38,23 +44,30 @@ exports.getVisType = function(toCheck) {
 };
 
 var checkIfHasDims = function (data){
-    if(data.dims){
+    if(data.dims && Array.isArray(data.dims)){
         if(parseInt(data.dims[1]) > 1 && parseInt(data.dims[2]) == 1){
-            return data.visType = "Array2D";
-        }else if(parseInt(data.dims[1]) > 1 && parseInt(data.dims[2]) > 1){
-            return data.visType = "Array3D";
-        }else{
+            return data.vistype = "Array2D";
+        } else if(parseInt(data.dims[1]) > 1 && parseInt(data.dims[2]) > 1){
+            return data.vistype = "Array3D";
+        } else {
             return "Alist";
         }
     }
-    return "Alist"
-};exports.checkIfHasDims = checkIfHasDims;
+    return "Alist";
+};
+
+exports.checkIfHasDims = checkIfHasDims;
 
 exports.getVisTypeObject = function(data) {
   var validTypes = {
       "nodelink": {
         "vistype":"nodelink",
         "script":"/js/graph.js",
+        "link":""
+      },
+      "nodelink-canvas": {
+        "vistype":"nodelink-canvas",
+        "script":"/js/graph-canvas.js",
         "link":""
       },
       "grid": {
@@ -65,6 +78,11 @@ exports.getVisTypeObject = function(data) {
       "gamegrid": {
         "vistype":"gamegrid",
         "script":"/js/gamegrid.js",
+        "link":""
+        },
+      "collection": {
+        "vistype":"collection",
+        "script":"/js/collection.js",
         "link":""
       },
       "tree": {
@@ -134,10 +152,10 @@ exports.getVisTypeObject = function(data) {
       }
     };
 
-    if(data.visType == "Alist")
+    if(data.vistype == "Alist")
         return validTypes[checkIfHasDims(data)];
-    else if( data.visType && validTypes[data.visType] )
-        return validTypes[data.visType];
+    else if( data.vistype && validTypes[data.vistype] )
+        return validTypes[data.vistype];
     else
         return {"vistype":"nodelink",   "script":"/js/graph.js",          "link":""                  	};
 

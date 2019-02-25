@@ -1,7 +1,7 @@
-d3.graph_canvas = function(canvas, W, H, data, map) {
+d3.graph_canvas = function(canvas, W, H, data) {
     var context = canvas.node().getContext("2d");
 
-     //defaults
+    //defaults
     var graph = {},
         mw = 0, mh = 0,
         w = W || 1280,
@@ -415,6 +415,11 @@ d3.graph_canvas = function(canvas, W, H, data, map) {
 
     // Expose tick method to allow redrawing in Bridges Visualizer
     graph.draw = ticked;
+
+    // attach a map overlay to the zoom handler
+    canvas.registerMapOverlay = function(map) {
+      zoom.on("zoom.map", map.zoom);
+    };
 
     return graph;
 };
