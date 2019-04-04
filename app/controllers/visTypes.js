@@ -32,7 +32,9 @@ exports.getVisType = function(toCheck) {
 
     "ColorGrid":                  "grid",
 
-    "SymbolCollection":           "collection"
+    "SymbolCollection":           "collection",
+
+    "Plot": "Plot"
   };
     if( toCheck && validTypes[toCheck] )
       return validTypes[toCheck];
@@ -142,6 +144,11 @@ exports.getVisTypeObject = function(data) {
       "cdllist": {
         "vistype":"nodelink",
         "script":"/js/graph.js",
+        "link":""
+      },
+      "Plot": {
+        "vistype": "Plot",
+        "script":"/js/plot/plot.js",
         "link":""
       }
     };
