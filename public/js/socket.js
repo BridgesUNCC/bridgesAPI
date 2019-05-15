@@ -44,14 +44,14 @@
     d3.select("#socketConnect").on('click', socketDisconnect);
 
     /* Live socket server */
-    // socket = io.connect('https://bridges-games.herokuapp.com', {
-    //   transports: ['websocket']
-    // });
-
-    /* Localhost testing server */
-    socket = io.connect('localhost:3000',{
+    socket = io.connect('https://bridges-games.herokuapp.com', {
       transports: ['websocket']
     });
+
+    /* Localhost testing server */
+//     socket = io.connect('localhost:3000',{
+//       transports: ['websocket']
+//     });
 
     /* Automatically register credentials to join the correct channel */
     socket.on('connect', function (data) {
