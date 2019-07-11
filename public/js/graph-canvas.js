@@ -84,14 +84,12 @@ d3.graph_canvas = function(canvas, W, H, data) {
               .domain(yExtent)
               .range([0, context.canvas.height]);
 
-      console.log(xExtent, viewportX.domain(), yExtent, viewportY.domain());
-
-      // use the smaller of the two viewport scales
-      if(context.canvas.width > context.canvas.height) {
-        viewportX  = viewportY;
-      } else {
-        viewportY = viewportX;
-      }
+      // // use the smaller of the two viewport scales
+      // if(context.canvas.width > context.canvas.height) {
+      //   viewportX  = viewportY;
+      // } else {
+      //   viewportY = viewportX;
+      // }
 
       // take a point ([x,y]) in window coords and project it into viewport coords
       windowProjection = function(p) {
@@ -102,7 +100,6 @@ d3.graph_canvas = function(canvas, W, H, data) {
     // set fixed locations or projections where appropriate,
     //   set up symbol function
     //   pre-split labels with newlines
-    var countThis = 0;
     nodes.forEach(function(d) {
       d.degree = 0;
       d.lines = d.name.split("\n");
@@ -134,8 +131,6 @@ d3.graph_canvas = function(canvas, W, H, data) {
         }
 
         point = proj([d.location[0], d.location[1]]);
-        if(countThis++ < 100)
-          console.log(d.location, point, proj);
 
         // make sure the transformed location exists
         if(point) {
