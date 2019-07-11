@@ -51,8 +51,8 @@ d3.graph = function(svg, W, H, data) {
           xExtent = [data.window[0], data.window[1]];
           yExtent = [data.window[2], data.window[3]];
       } else {
-        xExtent = d3.extent(nodes.filter(function(d) { return d.location; }), function(d,i) { return d.location[0]; });
-        yExtent = d3.extent(nodes.filter(function(d) { return d.location; }), function(d,i) { return d.location[1]; });
+        xExtent = d3.extent(data.nodes.filter(function(d) { return d.location; }), function(d,i) { return d.location[0]; });
+        yExtent = d3.extent(data.nodes.filter(function(d) { return d.location; }), function(d,i) { return d.location[1]; });
       }
 
       // set up x and y linear scales
