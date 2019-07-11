@@ -115,7 +115,7 @@ d3.graph_canvas = function(canvas, W, H, data) {
           proj = windowProjection;
         } else if(data.coord_system_type == "cartesian"){
           d.fx = d.location[0];
-          d.fy = d.location[1];
+          d.fy = -d.location[1];
           return;
         } else {
           d.fx = null;
