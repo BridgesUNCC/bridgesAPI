@@ -102,6 +102,7 @@ d3.graph_canvas = function(canvas, W, H, data) {
     // set fixed locations or projections where appropriate,
     //   set up symbol function
     //   pre-split labels with newlines
+    var countThis = 0;
     nodes.forEach(function(d) {
       d.degree = 0;
       d.lines = d.name.split("\n");
@@ -133,6 +134,8 @@ d3.graph_canvas = function(canvas, W, H, data) {
         }
 
         point = proj([d.location[0], d.location[1]]);
+        if(countThis++ < 100)
+          console.log(d.location, point, proj);
 
         // make sure the transformed location exists
         if(point) {
