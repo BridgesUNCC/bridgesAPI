@@ -84,7 +84,9 @@ d3.graph_canvas = function(canvas, W, H, data) {
               .domain(yExtent)
               .range([0, context.canvas.height]);
 
-      // use the smaller of the two viewport scales 
+      console.log(xExtent, viewportX.domain(), yExtent, viewportY.domain());
+
+      // use the smaller of the two viewport scales
       if(context.canvas.width > context.canvas.height) {
         viewportX  = viewportY;
       } else {
