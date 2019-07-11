@@ -58,10 +58,10 @@ d3.graph = function(svg, W, H, data) {
       // set up x and y linear scales
       viewportX = d3.scaleLinear()
               .domain(xExtent)
-              .range([0, context.canvas.width]);
+              .range([0, w]);
       viewportY = d3.scaleLinear()
               .domain(yExtent)
-              .range([context.canvas.height, 0]);
+              .range([h, 0]);
 
       // take a point ([x,y]) in window coords and project it into viewport coords
       windowProjection = function(p) {
