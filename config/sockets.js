@@ -1,4 +1,25 @@
 var socketio = require('socket.io');
+var mongoose = require('mongoose'),
+    User = mongoose.model('User');
+
+// check user credentials
+// if a user + apikey exists, facilitate channel creation/join
+// else, reject
+var valid = function(creds, cb) {
+  User
+    .findOne({
+        apikey: creds.apikey,
+        username: creds.user
+    })
+    .exec(function(err, user) {
+        if (err || !user) {
+          console.log(err, user);
+          cb(false);
+        }
+        console.log('returning true');
+        cb(true);
+    });
+};
 
 module.exports = function(server) {
 
@@ -16,24 +37,38 @@ module.exports = function(server) {
     socket.on('credentials', function(data) {
       var credentials = JSON.parse(data);
 
-      /* Identify sockets with unique user_assignment pairs */
-      var channel = credentials.user + "_" + credentials.assignment;
+      /* Validate Credentials */
+      valid(credentials, function(proceed){
 
-      /* Associate socket id with channel */
-      socks[socket.id] = channel;
+        // invalid credentials
+        if(!proceed) {
+          if(verbose) console.log('Invalid credentials', socket.id);
+          return;
+        }
 
-      /* Join unique channel */
-      socket.join(channel);
-      if(verbose) {
-        console.log("User " + socket.id + " connected to channel " + channel);
-        console.log('All sockets: ', socks);
-      }
+        // valid, proceed
+        if(verbose) console.log('Validated credentials, joining channel', socket.id);
 
-      /* Count users in current channel */
-      var usersInChannel = io.sockets.adapter.rooms[channel].length;
+        /* Identify sockets with unique user_assignment pairs */
+        var channel = credentials.user + "_" + credentials.assignment;
 
-      /* Emit announcement to everyone in channel to validate connection */
-      io.sockets.in(channel).emit('announcement', {message: "User " + socket.id + " connected to channel " + channel, userCount: usersInChannel});
+        /* Associate socket id with channel */
+        socks[socket.id] = channel;
+
+        /* Join unique channel */
+        socket.join(channel);
+        if(verbose) {
+          console.log("User " + socket.id + " connected to channel " + channel);
+          console.log('All sockets: ', socks);
+        }
+
+        /* Count users in current channel */
+        var usersInChannel = io.sockets.adapter.rooms[channel].length;
+
+        /* Emit announcement to everyone in channel to validate connection */
+        io.sockets.in(channel).emit('announcement', {message: "User " + socket.id + " connected to channel " + channel, userCount: usersInChannel});
+
+      });
     });
 
 
@@ -85,7 +120,7 @@ module.exports = function(server) {
         if(verbose) console.log('okbye');
       }
     });
-    
+
   });
 
   return io;

@@ -49,13 +49,13 @@
     });
 
     /* Localhost testing server */
-//     socket = io.connect('localhost:3000',{
-//       transports: ['websocket']
-//     });
+    // socket = io.connect('localhost:3000',{
+    //   transports: ['websocket']
+    // });
 
     /* Automatically register credentials to join the correct channel */
     socket.on('connect', function (data) {
-      socket.emit('credentials', JSON.stringify({user: user.username, assignment: assignmentNumber}));
+      socket.emit('credentials', JSON.stringify({user: user.username, assignment: assignmentNumber, apikey: user.apikey}));
     });
 
     /* Handle connection announcements (update status to alert user) */
