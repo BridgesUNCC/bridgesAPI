@@ -1,0 +1,16 @@
+mixin galleryItem(item)
+  a(style='text-decoration: none; ' href='/assignments/'+assignments[x].assignmentNumber+'/'+assignments[x].username)
+    .col-md-4.col-sm-4.col-xs-4.gallery_assignment_container
+      div.gallery_assignment_div(class=(assignments[x].shared == false) ? 'private' : 'public')
+          if(assignments[x].vistype == "Alist")
+              img.visimg(src='/img/array.png' title=assignments[x].vistype)
+          else if(assignments[x].assignment_type && assignments[x].assignment_type.indexOf("Graph") >= 0)
+              img.visimg(src='/img/graph.png' title='assignments[x].assignment_type')
+          else
+              img.visimg(src='/img/'+assignments[x].vistype+'.png' title=assignments[x].vistype)
+
+      div(class='gallery_links')
+        - if (assignments[x].title)
+            div.gallery_link_title #{assignments[x].title.substr(0,50)}
+        - else
+            div.gallery_link_title Assignment#{assignments[x].assignmentNumber}

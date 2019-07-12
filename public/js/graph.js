@@ -42,6 +42,33 @@ d3.graph = function(svg, W, H, data) {
     };
     graph.reset();
 
+    // if we want to do a window -> viewport transformation, set up the scales
+    if(data.coord_system_type == "window") {
+      var xExtent, yExtent, viewportX, viewportY;
+
+      // use specified window or compute the window
+      if(data.window) {
+          xExtent = [data.window[0], data.window[1]];
+          yExtent = [data.window[2], data.window[3]];
+      } else {
+        xExtent = d3.extent(data.nodes.filter(function(d) { return d.location; }), function(d,i) { return d.location[0]; });
+        yExtent = d3.extent(data.nodes.filter(function(d) { return d.location; }), function(d,i) { return d.location[1]; });
+      }
+
+      // set up x and y linear scales
+      viewportX = d3.scaleLinear()
+              .domain(xExtent)
+              .range([0, w]);
+      viewportY = d3.scaleLinear()
+              .domain(yExtent)
+              .range([h, 0]);
+
+      // take a point ([x,y]) in window coords and project it into viewport coords
+      windowProjection = function(p) {
+        return [viewportX(p[0]), viewportY(p[1])];
+      };
+    }
+
     svgGroup = vis.append("g").attr('transform', transform);
 
     var nodes = data.nodes;
@@ -195,9 +222,11 @@ d3.graph = function(svg, W, H, data) {
             proj = d3.geoEquirectangular();
           } else if(data.coord_system_type == "albersusa") {
             proj = d3.geoAlbersUsa();
+          } else if(data.coord_system_type == "window") {
+            proj = windowProjection;
           } else if(data.coord_system_type == "cartesian"){
             d.fx = d.location[0];
-            d.fy = d.location[1];
+            d.fy = -d.location[1];
             return;
           } else {
             d.fx = null;

@@ -116,6 +116,17 @@ exports.view = function(req, res) {
 };
 
 exports.recentUploads = function(req, res) {
+
+  var num = 5,
+      skip = 0;
+
+  if(req.query) {
+    if(req.query.num && +req.query.num > 0)
+      num = +req.query.num;
+    if(req.query.skip && +req.query.skip >= 0)
+      skip = +req.query.skip;
+  }
+
   Assignment
       .find({
         shared: true,
@@ -133,11 +144,57 @@ exports.recentUploads = function(req, res) {
           dateCreated: 1
       })
       .sort({"dateCreated": -1})
-      .limit(5)
+      .limit(num)
+      .skip(skip)
       .exec(function(err, recentAssigns) {
           if (err) return next(err);
-          if (!recentAssigns) return next("error obtaining recent assignment data");
+          if (!recentAssigns || recentAssigns.length === 0) {
+            return res.status(204).send("error obtaining recent assignment data");
+          }
           res.send(recentAssigns);
+      });
+
+};
+
+exports.pinnedUploads = function(req, res, next) {
+
+  var num = 5,
+      skip = 0;
+
+  if(req.query) {
+    if(req.query.num && +req.query.num > 0)
+      num = +req.query.num;
+    if(req.query.skip && +req.query.skip >= 0)
+      skip = +req.query.skip;
+  }
+
+  Assignment
+      .find({
+        username: "bridges_public",
+        // pinned: true,
+        shared: true,
+        subAssignment: "00"
+      }, {
+          _id: 0,
+          email: 1,
+          assignmentID: 1,
+          title: 1,
+          description: 1,
+          assignmentNumber: 1,
+          assignment_type: 1,
+          vistype: 1,
+          shared: 1,
+          dateCreated: 1
+      })
+      .limit(num)
+      .skip(skip)
+      .sort({"dateCreated": 1})
+      .exec(function(err, pinnedAssigns) {
+          if (err) return next(err);
+          if (!pinnedAssigns || pinnedAssigns.length === 0) {
+            return res.status(204).send("error obtaining pinned assignment data");
+          }
+          res.send(pinnedAssigns);
       });
 
 };

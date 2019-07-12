@@ -438,9 +438,18 @@ function visualizeAssignment(assignment, index){
       d3.select("#vis"+index).select("#svg"+index).remove("*");
       vis = d3.select("#vis" + index).append("canvas")
         .attr("id", "canvas"+index);
+
       graph_canvas = d3.graph_canvas(vis, width, height, assignmentData);
 
       BridgesVisualizer.visualizations[assignment.subAssignment] = (graph_canvas);
+  }
+  else if (assignment.vistype == "graph-webgl" && d3.graph_webgl) {
+      d3.select("#vis"+index).select("#svg"+index).remove("*");
+      vis = d3.select("#vis" + index).append("canvas")
+        .attr("id", "canvas_webgl"+index);
+      graph_webgl = d3.graph_webgl(vis, width, height, assignmentData);
+
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (graph_webgl);
   }
   else if (assignment.vistype == "collection" && d3.collection) {
       collection = d3.collection(vis, width, height, assignmentData);

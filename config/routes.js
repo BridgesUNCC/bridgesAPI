@@ -180,6 +180,9 @@ module.exports = function(app, passport) {
     // get the k most recent assignments
     app.get('/index/recentUploads', gallery.recentUploads, handleError);
 
+    // get k pinned assignments 
+    app.get('/index/pinnedUploads', gallery.pinnedUploads, handleError);
+
     // -------------------------------------------------------
     //
     //  Search Routes

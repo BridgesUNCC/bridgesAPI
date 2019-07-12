@@ -58,7 +58,9 @@
     "cllist": { "scale": 0.3, "translate": [50, -5]},
     "equirectangular": { "scale": 1, "translate": [BridgesVisualizer.visCenter()[0]/3, BridgesVisualizer.visCenter()[1]/4]},
     "albersusa": { "scale": 1, "translate": [BridgesVisualizer.visCenter()[0]/3, BridgesVisualizer.visCenter()[1]/4]},
+    "window": { "scale": 1, "translate": [0,0]},
     "nodelink": { "scale": 0.5, "translate": BridgesVisualizer.visCenter()},
+    "cartesian": { "scale": 0.5, "translate": [BridgesVisualizer.visCenter()[0]/2, BridgesVisualizer.visCenter()[1]/2] },
     "graph": { "scale": 0.5, "translate": [BridgesVisualizer.visCenter()[0]/2, BridgesVisualizer.visCenter()[1]/2] },
     // "tree": { "scale": 0.9, "translate": [document.getElementById("vis0").clientWidth/2, 50]}
     "tree": { "scale": 0.9, "translate": [BridgesVisualizer.visCenter()[0], BridgesVisualizer.visCenter()[1]/2] }

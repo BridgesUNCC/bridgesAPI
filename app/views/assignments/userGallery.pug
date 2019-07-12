@@ -1,0 +1,35 @@
+extends ../includes/boilerplate.pug
+include galleryItem.pug
+
+block css
+    link(rel='stylesheet',
+         href='/css/gallery.css')
+    link(rel='stylesheet',
+             href='/components/css-toggle-switch/dist/toggle-switch.css')
+
+block content
+    include ../includes/header.pug
+
+    div.container
+      div.col-lg-10.col-lg-offset-2
+          div.title
+              h1(style="text-align: left") #{usernames}'s Gallery
+
+      -if(assignments.length == 0)
+          .col-lg-6.text-center#welcome
+            p Welcome to BRIDGES!
+            p If you're ready to get started, check out the following links:
+            p
+              a(href='http://bridgesuncc.github.io/bridges_setup.html' target='_blank') Bridges Setup
+            p
+              a(href='https://bridgesdata.herokuapp.com' target='_blank') Bridges Datasources
+
+    div.col-lg-2.col-md-2.col-sm-12.col-xs-12.affix#gallery_fixed_tooltip
+
+    div.container.col-lg-10.col-lg-offset-2.col-md-10.col-md-offset-2.col-sm-12.col-xs-12
+      - for (var x = 0; x < assignments.length; x++)
+        +galleryItem(assignments[x])
+
+    script.
+      var assignments = !{JSON.stringify(assignments).replace(/<\//g, '<\\/')};
+    script( src = '/js/gallery/userGallery.js' )

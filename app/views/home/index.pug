@@ -1,0 +1,30 @@
+extends ../includes/boilerplate.pug
+
+block css
+    link(rel='stylesheet',
+         href='/css/index.css')
+    link(rel='stylesheet',
+         href='/css/gallery.css')
+
+block content
+    include ../includes/header.pug
+
+    .container
+        - if (message != ''){
+            p.alert.alert-danger=message
+        - }
+        .row.spacer
+            .col-lg-12
+                h1 Welcome to the BRIDGES Game App and API!
+
+        .row.spacer
+            include games.jade
+
+        //.row
+        //      div#recentAssigns
+        //        h3.spacer Recent Assignments
+
+
+
+
+    script( src = '/js/index.js' )
