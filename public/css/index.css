@@ -12,6 +12,20 @@ div#recentAssigns {
   display: inline-block;
 }
 
+div#pinnedAssigns {
+  border-left: solid 5px goldenrod;
+  padding: 10px;
+  display: inline-block;
+  margin-bottom: 49px;
+}
+
+button#morePinned {
+
+  display:block;
+  margin:auto;
+  margin-top:20px;
+}
+
 div.assignment-preview {
   vertical-align: top;
   border: solid 5px white;

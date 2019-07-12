@@ -1,0 +1,31 @@
+extends ../includes/boilerplate.pug
+include galleryItem.pug
+
+block css
+    link(rel='stylesheet',
+         href='/css/gallery.css')
+    link(rel='stylesheet',
+             href='/components/css-toggle-switch/dist/toggle-switch.css')
+
+block content
+    include ../includes/header.pug
+    .container
+        .row
+            .col-lg-12
+                div(style="float:left; margin-left:50px;width:100%;")
+                    - if (assignmentNumber < 0)
+                            h1(style="text-align: left") Looks like there aren't any assignments here...    :(
+                    - else
+                            h1(style="text-align: left") Public Gallery for assignments with number '#{assignmentNumber}'
+
+    div.col-lg-2.col-md-2.col-sm-12.col-xs-12.affix#gallery_fixed_tooltip
+
+    div.container.col-lg-8.col-lg-offset-2.col-md-8.col-md-offset-2.col-sm-12.col-xs-12(style="margin-top: 20px")
+        - for (var x = 0; x < assignments.length; x++)
+            +galleryItem(assignments[x])
+
+
+    script.
+      var assignments = !{JSON.stringify(assignments).replace(/<\//g, '<\\/')};
+
+    script( src = '/js/gallery/userGallery.js' )

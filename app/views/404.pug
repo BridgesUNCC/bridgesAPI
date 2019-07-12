@@ -1,0 +1,19 @@
+extends includes/boilerplate.pug
+
+block css
+    link(rel='stylesheet', href='/css/404.css')
+
+block content
+    include includes/header.pug
+    .row
+        .container
+            .jumbotron
+                -if(message)
+                  h3 Error: #{message}
+                -else
+                  h1 Looks like you burned bridges!!
+                  h3 Sorry we couldn't find the page you were looking for.
+
+            .jumbotron
+                a(href="/").btn.btn-danger.btn-lg Return to Homepage
+                img(src="/img/404.jpg")

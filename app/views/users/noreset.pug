@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  include ../includes/header.pug
+  div.center-block(style='width: 600px')
+    div.row
+      div.col-lg-10
+        div.center-block.well(style='margin-top: 50px; padding: 50px')
+          h2 Uh oh!
+          h3 Your password reset token is either invalid or it has expired.
+
+          p(style='margin-top: 50px')
+            a(href='/forgot') Try resetting your password again
+          p
+            a(href='/signup') Or sign up for an account

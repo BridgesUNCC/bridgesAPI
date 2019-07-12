@@ -431,9 +431,18 @@ function visualizeAssignment(assignment, index){
       d3.select("#vis"+index).select("#svg"+index).remove("*");
       vis = d3.select("#vis" + index).append("canvas")
         .attr("id", "canvas"+index);
+
       graph_canvas = d3.graph_canvas(vis, width, height, assignmentData);
 
       BridgesVisualizer.visualizations[assignment.subAssignment] = (graph_canvas);
+  }
+  else if (assignment.vistype == "graph-webgl" && d3.graph_webgl) {
+      d3.select("#vis"+index).select("#svg"+index).remove("*");
+      vis = d3.select("#vis" + index).append("canvas")
+        .attr("id", "canvas_webgl"+index);
+      graph_webgl = d3.graph_webgl(vis, width, height, assignmentData);
+
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (graph_webgl);
   }
   else if (assignment.vistype == "collection" && d3.collection) {
       collection = d3.collection(vis, width, height, assignmentData);
@@ -445,9 +454,15 @@ function visualizeAssignment(assignment, index){
   }
   else {
     console.log('error..', assignment);
+
+    var errorDiv = d3.select("#vis"+index).append("div").attr("id", "errorDiv");
+
+    if(assignment.vistype == "gamegrid") {
+      errorDiv.html("This assignment does not work with this version of Bridges. Perhaps try the <a href=\"https://bridges-games.herokuapp.com/assignments/" + assignment.assignmentNumber + "/" + assignment.username + "\"> games server? </a>");
+    } else {
+      errorDiv.text("This assignment does not seem to be working :(");
+    }
     return;
-      graph = d3.graph(d3, "#vis" + index, width, height, assignmentData);
-      BridgesVisualizer.visualizations[assignment.subAssignment] = (graph);
   }
 
   // handle map overlay for subassignment if appropriate
