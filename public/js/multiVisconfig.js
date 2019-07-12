@@ -450,9 +450,15 @@ function visualizeAssignment(assignment, index){
   }
   else {
     console.log('error..', assignment);
+
+    var errorDiv = d3.select("#vis"+index).append("div").attr("id", "errorDiv");
+
+    if(assignment.vistype == "gamegrid") {
+      errorDiv.html("This assignment does not work with this version of Bridges. Perhaps try the <a href=\"https://bridges-games.herokuapp.com/assignments/" + assignment.assignmentNumber + "/" + assignment.username + "\"> games server? </a>");
+    } else {
+      errorDiv.text("This assignment does not seem to be working :(");
+    }
     return;
-      graph = d3.graph(d3, "#vis" + index, width, height, assignmentData);
-      BridgesVisualizer.visualizations[assignment.subAssignment] = (graph);
   }
 
   // handle map overlay for subassignment if appropriate
