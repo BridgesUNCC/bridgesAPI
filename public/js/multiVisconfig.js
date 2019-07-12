@@ -217,7 +217,7 @@ $( document ).ready( function() {
 // return true if the (i)th assignment is not loaded yet
 function unloaded(i) {
   // console.log(i, d3.select("#svg"+i).node());
-  return (d3.select("#svg"+i).node() == null) && (d3.select("#canvas"+i).node() === null);
+  return (d3.select("#svg"+i).node() == null) && (d3.select("#canvas"+i).node() === null && d3.select("#vis"+i).select(".highcharts-container").empty());
 }
 
 // Update default transforms that rely on window sizes
