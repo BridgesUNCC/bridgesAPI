@@ -1,16 +1,31 @@
-function chart(vis, id, data){
-
-  var series = [];
-  for(let i = 0; i < data.plots.length; i++){
-    var yaxis = [];
-    for(let j = 0; j < data.plots[i].yaxis_data.length; j++){
-      yaxis.push(parseInt(data.plots[i].yaxis_data[j]));
-    }
-    series.push({name: data.plots[i].Plot_Name, data: yaxis});
+d3.lineChart = function(vis, id, data){
+  var xAxisData = data.xaxis_data
+  var yAxisData = data.yaxis_data
+  var myChart;
+  if(data.axisType == true){
+    var axisType = 'logorithmic';
+  }else{
+    var axisType = 'linear'
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
-      var myChart = Highcharts.chart(id, {
+  var a = xAxisData[0].xaxis_data.concat(xAxisData[1].xaxis_data)
+  for(var i=0; i<a.length; ++i) {
+      for(var j=i+1; j<a.length; ++j) {
+          if(a[i] === a[j])
+              a.splice(j--, 1);
+      }
+  }
+
+  var series = [];
+  for(let i = 0; i < yAxisData.length; i++){
+    var yaxis = [];
+    for(let j = 0; j < yAxisData[i].yaxis_data.length; j++){
+      yaxis.push([parseInt(xAxisData[i].xaxis_data[j]), parseInt(yAxisData[i].yaxis_data[j])]);
+    }
+    series.push({name: yAxisData[i].Plot_Name, data: yaxis});
+  }
+  // document.addEventListener('DOMContentLoaded', function () {
+      myChart = Highcharts.chart(id, {
           chart: {
             type: 'line'
           },
@@ -18,26 +33,36 @@ function chart(vis, id, data){
             text: data.plot_title
           },
           subtitle: {
-            text: 'Test Visualization'
+            text: data.subtitle
           },
           xAxis: {
-            categories: data.xaxis_data
+            title: {
+              text: data.xLabel
+            },
+            minPadding: 0.05,
+            maxPadding: 0.05,
+            type: axisType
           },
           yAxis: {
             title: {
-              text: 'RunTime (Milliseconds)'
+              text: data.yLabel
             },
+            type: axisType,
             min: 0
+          },
+          tooltip: {
+            headerFormat: '<b>{series.name}</b><br>',
           },
           plotOptions: {
             line: {
               dataLabels: {
-                enabled: true
+                enabled: data.options.dataLabels
               },
-              enableMouseTracking: false
+              enableMouseTracking: data.options.mouseTracking
             }
           },
           series: series
       });
-  });
+      return myChart;
+  // });
 }
