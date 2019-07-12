@@ -378,6 +378,13 @@ exports.get = function (req, res, next) {
           linkResources.css.push('/css/map.css');
         }
 
+        // add webgl resources if appropriate
+        if(assignment.vistype == "graph-webgl") {
+          linkResources.script.push('/webgl/webgl-utils.js');
+          linkResources.script.push('/webgl/initShaders.js');
+          linkResources.script.push('/webgl/MV.js');
+        }
+
         sessionUser = sessionUser ? {"username": sessionUser.username, "email": sessionUser.email} : null;
 
         // add display toggle if >1 assignment

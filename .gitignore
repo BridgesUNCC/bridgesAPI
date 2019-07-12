@@ -48,3 +48,4 @@ Thumbs.db
 public/js/oldGraph.js
 public/js/rm
 app/views/assignments/rm
+build/

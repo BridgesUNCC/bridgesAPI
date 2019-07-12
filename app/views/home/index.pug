@@ -1,0 +1,33 @@
+extends ../includes/boilerplate.pug
+
+block css
+    link(rel='stylesheet',
+         href='/css/index.css')
+    link(rel='stylesheet',
+         href='/css/gallery.css')
+
+block content
+    include ../includes/header.pug
+
+    .container
+        - if (message != ''){
+            p.alert.alert-danger=message
+        - }
+        .row.spacer
+            .col-lg-6
+                h1 Welcome to Bridges!
+
+                p Create a bridge between your assignments and the world
+
+        .row
+              div#pinnedAssigns
+                h3.spacer Pinned Assignments
+
+        .row
+              div#recentAssigns
+                h3.spacer Recent Assignments
+
+
+
+
+    script( src = '/js/index.js' )

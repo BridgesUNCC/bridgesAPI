@@ -29,6 +29,7 @@ exports.getVisType = function(toCheck) {
 
     "GraphAdjacencyList":  				"nodelink",
     "GraphAdjacencyMatrix":				"nodelink",
+    "largegraph":                 "graph-webgl",
 
     "ColorGrid":                  "grid",
 
@@ -70,6 +71,11 @@ exports.getVisTypeObject = function(data) {
         "vistype":"nodelink-canvas",
         "script":"/js/graph-canvas.js",
         "link":""
+      },
+      "graph-webgl": {
+          "vistype":"graph-webgl",
+          "script":"/js/graph-webgl.js",
+          "link":""
       },
       "grid": {
         "vistype":"grid",
