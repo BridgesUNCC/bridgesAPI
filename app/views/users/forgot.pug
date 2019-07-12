@@ -1,10 +1,8 @@
 extends layout
 
-link(rel='stylesheet',
-     href='/css/forgot.css')
-
 block content
-  include ../includes/header.jade
+  link(rel='stylesheet', href='/css/forgot.css')
+  include ../includes/header.pug
   div.center-block(style='width: 600px')
     div.row
       div.col-lg-10

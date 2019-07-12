@@ -1,4 +1,4 @@
-extends ../includes/boilerplate.jade
+extends ../includes/boilerplate.pug
 block css
     link(rel='stylesheet', href='/css/assignment.css')
     link(rel='stylesheet', href='/css/assignment-nav.css')
@@ -6,20 +6,21 @@ block css
 
 block content
     div#fullContent
-      include ../includes/header.jade
-      include ../includes/assignment-nav.jade
-
-      if (assignmentTitle && assignmentTitle.length > 0)
-        h1.assignmentTitle #{assignmentTitle}
-      else
-        h1.assignmentTitle Assignment #{assignmentNumber}
-
-      if (assignmentDescription.length > 0)
-        div.assignmentDescription #{assignmentDescription}
+      include ../includes/header.pug
+      include ../includes/assignment-nav.pug
 
       div#updateStatus
       div#assignmentCanvas(overflow='auto')
-        -for (var i = 0; i < extent; i++) {
+        -for (var i = 0; i < assignment.numSubassignments; i++) {
+
+          if (assignment && assignment.title && assignment.title.length > 0)
+            h1(id="title" + i).assignmentTitle #{assignment.title}
+          else
+            h1(id="title" + i).assignmentTitle Assignment #{assignmentNumber}
+
+          if (assignment && assignment.description  && assignment.description.length > 0)
+            div(id="description" + i).assignmentDescription #{assignment.description}
+
           div(id="vis" + i, display="block").assignmentContainer
             //button(class='vis-menu-button', id='vis-menu-'+i)
             //div(id="menu"+i, class="vis-menu", display="block")
@@ -29,10 +30,6 @@ block content
 block footerjs
     script.
         var owner = '#{owner}'
-        if ( owner=="false" && !{JSON.stringify(assignmentDescription)}.length <= 0 ) {
-             $('.vis').css('width','99%') // adjust assignment width for public assignments
-        }
-
         var shared = '#{shared}'
         $('#private').prop('checked',false)
         $('#public').prop('checked',false)
@@ -41,10 +38,13 @@ block footerjs
         else
             $('#private').prop('checked',true)
 
-        var data = !{JSON.stringify(data)};
+        var assignment = !{JSON.stringify(assignment)};
         var user = !{JSON.stringify(user)};
         var assignmentNumber = !{JSON.stringify(assignmentNumber)};
         var BridgesVisualizer = {};
+        var numAssignments = assignment.numSubassignments;
+        var map_overlay = map_overlay;
+
 
     each script in linkResources.script
         script(src = script)
@@ -53,7 +53,6 @@ block footerjs
         link(rel='stylesheet', href=css)
 
     script(src = '/js/Bridges/BridgesVisualizer.js')
-
     script(src = '/js/multiVisconfig.js')
 
     script.

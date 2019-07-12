@@ -1,4 +1,4 @@
-extends ../includes/boilerplate.jade
+extends ../includes/boilerplate.pug
 
 block css
     link(rel='stylesheet',
@@ -7,7 +7,7 @@ block css
          href='/css/gallery.css')
 
 block content
-    include ../includes/header.jade
+    include ../includes/header.pug
 
     .container
         - if (message != ''){

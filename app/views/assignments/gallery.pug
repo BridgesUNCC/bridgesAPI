@@ -1,5 +1,5 @@
-extends ../includes/boilerplate.jade
-include galleryItem.jade
+extends ../includes/boilerplate.pug
+include galleryItem.pug
 
 block css
     link(rel='stylesheet',
@@ -8,7 +8,7 @@ block css
              href='/components/css-toggle-switch/dist/toggle-switch.css')
 
 block content
-    include ../includes/header.jade
+    include ../includes/header.pug
     .container
         .row
             .col-lg-12

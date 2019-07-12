@@ -1,4 +1,4 @@
-extends ../includes/boilerplate.jade
+extends ../includes/boilerplate.pug
 block css
     link(rel='stylesheet', href='/css/assignment.css')
     link(rel='stylesheet', href='/css/assignment-nav.css')
@@ -6,8 +6,8 @@ block css
 
 block content
     div#fullContent
-      include ../includes/header.jade
-      include ../includes/assignment-nav.jade
+      include ../includes/header.pug
+      include ../includes/assignment-nav.pug
 
       div#updateStatus
       div#assignmentCanvas(overflow='auto')
