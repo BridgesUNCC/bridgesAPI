@@ -1,5 +1,5 @@
 {
-  "version": "0.2.0",
+  "version": "0.4.0",
   "private": true,
   "engines": {
     "node": "10.15.0"
@@ -19,6 +19,7 @@
     "cookie-parser": "^1.4.3",
     "crypto": "latest",
     "d3": "3.5.17",
+    "deep-extend": "^0.6.0",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
     "pug": "latest",
