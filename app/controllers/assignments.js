@@ -478,7 +478,7 @@ exports.get = function (req, res, next) {
           linkResources.script.push('/webgl/MV.js');
         }
 
-        sessionUser = sessionUser ? {"username": sessionUser.username, "email": sessionUser.email} : null;
+        sessionUser = sessionUser ? {"username": sessionUser.username, "email": sessionUser.email, "apikey": sessionUser.apikey} : null;
 
         // add display toggle if >1 assignment
         navItems.toggleDisplay = (assignment.numSubassignments > 1);
