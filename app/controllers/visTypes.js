@@ -35,7 +35,7 @@ exports.getVisType = function(toCheck) {
 
     "SymbolCollection":           "collection",
 
-    "Plot": "Plot"
+    "Plot":                       "Plot"
   };
     if( toCheck && validTypes[toCheck] )
       return validTypes[toCheck];
