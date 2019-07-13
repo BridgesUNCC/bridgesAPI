@@ -7,7 +7,7 @@
   "scripts": {
     "start": "app.js",
     "test": "grunt test",
-    "postinstall": "bower install"
+    "postinstall": "bower cache clean && bower install"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
