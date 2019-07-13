@@ -9,7 +9,8 @@
     "d3": "4.12.2",
     "bootstrap": "3.3.5",
     "jquery": ">= 1.9.1",
-    "css-toggle-switch": "~2.1.5"
+    "css-toggle-switch": "~2.1.5",
+    "highcharts": "^7.1.2"
   },
   "devDependencies": {
     "d3": "4.12.2",
