@@ -8,9 +8,11 @@ d3.lineChart = function(vis, id, data){
     var xaxisType = 'linear'
   }
   if(data.yaxisType == true){
-    var yaxisType = 'logarithmic';
+      var yaxisType = 'logarithmic';
+            var ymin = null; //scale the axis automatically in logscale
   }else{
-    var yaxisType = 'linear'
+      var yaxisType = 'linear'
+      var ymin = 0;
   }
 
 
@@ -23,15 +25,18 @@ d3.lineChart = function(vis, id, data){
       }
   }
 
+    
   var series = [];
   for(let i = 0; i < yAxisData.length; i++){
     var yaxis = [];
     for(let j = 0; j < yAxisData[i].yaxis_data.length; j++){
 	yaxis.push([ xAxisData[i].xaxis_data[j], yAxisData[i].yaxis_data[j] ]);
-	//yaxis.push([parseInt(xAxisData[i].xaxis_data[j]), parseInt(yAxisData[i].yaxis_data[j])]);
     }
     series.push({name: yAxisData[i].Plot_Name, data: yaxis});
   }
+
+
+    
   // document.addEventListener('DOMContentLoaded', function () {
       myChart = Highcharts.chart(id, {
           chart: {
@@ -56,7 +61,7 @@ d3.lineChart = function(vis, id, data){
               text: data.yLabel
             },
             type: yaxisType,
-            min: 0
+            min: ymin
           },
           tooltip: {
             headerFormat: '<b>{series.name}</b><br>',
