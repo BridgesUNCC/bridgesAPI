@@ -17,13 +17,13 @@ d3.lineChart = function(vis, id, data){
 
 
     
-  var a = xAxisData[0].xaxis_data.concat(xAxisData[1].xaxis_data)
-  for(var i=0; i<a.length; ++i) {
-      for(var j=i+1; j<a.length; ++j) {
-          if(a[i] === a[j])
-              a.splice(j--, 1);
-      }
-  }
+  // var a = xAxisData[0].xaxis_data.concat(xAxisData[1].xaxis_data)
+  // for(var i=0; i<a.length; ++i) {
+  //     for(var j=i+1; j<a.length; ++j) {
+  //         if(a[i] === a[j])
+  //             a.splice(j--, 1);
+  //     }
+  // }
 
     
   var series = [];
