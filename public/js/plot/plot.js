@@ -12,20 +12,11 @@ d3.lineChart = function(vis, id, data){
             var ymin = null; //scale the axis automatically in logscale
   }else{
       var yaxisType = 'linear'
-      var ymin = 0;
+      var ymin = 0; //in linear scale start the y axis at 0
   }
 
 
-    
-  // var a = xAxisData[0].xaxis_data.concat(xAxisData[1].xaxis_data)
-  // for(var i=0; i<a.length; ++i) {
-  //     for(var j=i+1; j<a.length; ++j) {
-  //         if(a[i] === a[j])
-  //             a.splice(j--, 1);
-  //     }
-  // }
-
-    
+    //constructing the series to pass to hi charts from the content of the assignment.
   var series = [];
   for(let i = 0; i < yAxisData.length; i++){
     var yaxis = [];
