@@ -35,7 +35,7 @@ exports.getVisType = function(toCheck) {
 
     "SymbolCollection":           "collection",
 
-    "LineChart":                       "linechart"
+    "LineChart":                       "LineChart"
   };
     if( toCheck && validTypes[toCheck] )
       return validTypes[toCheck];
@@ -153,7 +153,7 @@ exports.getVisTypeObject = function(data) {
         "link":""
       },
       "LineChart": {
-        "vistype": "linechart",
+        "vistype": "LineChart",
         "script":"/js/plot/plot.js",
         "link":""
       }
