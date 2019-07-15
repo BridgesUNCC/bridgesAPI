@@ -27,7 +27,7 @@ d3.lineChart = function(vis, id, data){
   for(let i = 0; i < yAxisData.length; i++){
     var yaxis = [];
     for(let j = 0; j < yAxisData[i].yaxis_data.length; j++){
-      yaxis.push([decimal(xAxisData[i].xaxis_data[j]), decimal(yAxisData[i].yaxis_data[j])]);
+      yaxis.push(xAxisData[i].xaxis_data[j], yAxisData[i].yaxis_data[j]]);
     }
     series.push({name: yAxisData[i].Plot_Name, data: yaxis});
   }
