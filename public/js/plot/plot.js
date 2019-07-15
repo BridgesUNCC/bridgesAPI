@@ -2,12 +2,19 @@ d3.lineChart = function(vis, id, data){
   var xAxisData = data.xaxis_data
   var yAxisData = data.yaxis_data
   var myChart;
-  if(data.axisType == true){
-    var axisType = 'logorithmic';
+  if(data.xaxisType == true){
+    var xaxisType = 'logarithmic';
   }else{
-    var axisType = 'linear'
+    var xaxisType = 'linear'
+  }
+  if(data.yaxisType == true){
+    var yaxisType = 'logarithmic';
+  }else{
+    var yaxisType = 'linear'
   }
 
+
+    
   var a = xAxisData[0].xaxis_data.concat(xAxisData[1].xaxis_data)
   for(var i=0; i<a.length; ++i) {
       for(var j=i+1; j<a.length; ++j) {
@@ -41,13 +48,13 @@ d3.lineChart = function(vis, id, data){
             },
             minPadding: 0.05,
             maxPadding: 0.05,
-            type: axisType
+            type: xaxisType
           },
           yAxis: {
             title: {
               text: data.yLabel
             },
-            type: axisType,
+            type: yaxisType,
             min: 0
           },
           tooltip: {
