@@ -14,7 +14,16 @@ module.exports = function(server) {
 
     /* Receive credentials from socket */
     socket.on('credentials', function(data) {
-      var credentials = JSON.parse(data);
+	var credentials;
+	try {
+		credentials = JSON.parse(data);
+	} catch (err) {
+	    if (verbose)
+		console.log('Malformed JSON credentials: ', credentials);
+	    else
+		console.log('Malformed JSON credentials');
+	    return;
+	}
 
       /* Identify sockets with unique user_assignment pairs */
       var channel = credentials.user + "_" + credentials.assignment;
