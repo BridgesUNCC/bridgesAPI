@@ -35,16 +35,16 @@ module.exports = function(server) {
 
     /* Receive credentials from socket */
     socket.on('credentials', function(data) {
-	var credentials;
-	try {
-		credentials = JSON.parse(data);
-	} catch (err) {
-	    if (verbose)
-		console.log('Malformed JSON credentials: ', credentials);
-	    else
-		console.log('Malformed JSON credentials');
-	    return;
-	}
+    	var credentials;
+    	try {
+    		credentials = JSON.parse(data);
+    	} catch (err) {
+  	    if (verbose)
+  		    console.log('Malformed JSON credentials: ', credentials);
+  	    else
+  		    console.log('Malformed JSON credentials');
+  	    return;
+    	}
 
       /* Validate Credentials */
       valid(credentials, function(proceed){
