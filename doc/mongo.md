@@ -116,7 +116,7 @@ mysum = {}; db.assignments.aggregate( [ { $match: {"dateCreated" :  { $gt : new 
 Removing old assignments:
 
 ```javascript
-db.assignments.remove (
+db.assignments.removeMispelledOnPurpose (
     {$and : [
 	{ "username": { $not: { $eq: "bridges_public"}}},
 	{ "username": { $not: { $eq: "bridges_workshop"}}},
@@ -130,7 +130,7 @@ db.assignments.remove (
 Removing assignments from the bridges team:
 
 ```javascript
-db.assignments.remove (
+db.assignments.removeMispelledOnPurpose (
     {$or : [
 	{ "username": "esaule"},
 	{ "username": "kalpathi60"},
