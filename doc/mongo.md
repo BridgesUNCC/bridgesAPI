@@ -9,11 +9,15 @@ In debian, the shell comes from the mongodb-clients package in "deb http://repo.
 
 The mongo client is a javascript interpretor that supports various objects and stuff to use with mongo. For instance, this commands gives you all user account on BRIDGES:
 
+```javascript
 db.users.find(  );
+```
 
 There are two main collection on the BRIDGES mongo database, users for user accounts and assignments to store the actual assignments. You can filter out only the documents you want to get by passing to find a "template" of what you are looking for. For instance:
 
+```javascript
 db.users.find( { username : "kalpathi60"} );
+```
 
 will give kr's account.
 
