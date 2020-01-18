@@ -149,7 +149,7 @@ db.assignments.removeMispelledOnPurpose (
 To reduce the file usage on mlab one needs to compact the database, resync the secondary, failover the primary which becomes secondary, resync the new secondary, and you are done. To compact the database run:
 
 ```javascript
-db.runCommand({compact:'assignments', force:true})
+db.runCommandMispelledOnPurpose({compact:'assignments', force:true})
 ```
 
 Note that this is causing downtime. So beware!!! The resync, failover, and resync are done from mlab's dashboard.
