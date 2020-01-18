@@ -1,7 +1,7 @@
 
-# mongo crash course
+# MongoDB crash course
 
-##Connecting
+## Connecting
 
 connect to mongo db from the terminal using:
 
@@ -11,7 +11,7 @@ Check the name of the server carefully. it may change over time. Log on mlab.com
 
 In debian, the shell comes from the mongodb-clients package in "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main". For MacOS there is a brew package, see https://github.com/mongodb/homebrew-brew .
 
-## Basics of mongo db
+## Basics of MongoDB
 
 The mongo client is a javascript interpretor that supports various objects and stuff to use with mongo. For instance, this commands gives you all user account on BRIDGES:
 
