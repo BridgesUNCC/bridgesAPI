@@ -49,7 +49,7 @@ WriteResult({
         }
 })
 
-You cna check the permission for your user with:
+You can check the permission for your user with:
 
 db.getUser("esaule");
 
@@ -67,6 +67,8 @@ See what I get, I only have read permissions:
         ]
 }
 
+You can change the permission on mlab.com. by clicking on database and then on users.
+
 Here is a command that gives you an idea of which user account uses the most data. It is just an idea because this uses the size of the assignments when JSON represented, but mongo keeps BSON formats plus indexing and stuff.
 
 mysum = {}; db.assignments.aggregate( []).forEach( function(foo){ lsize = JSON.stringify(foo).length; if (foo.email in mysum  ) {mysum[foo.email] += lsize} else { mysum[foo.email]=lsize;; } }  ); mysum;
@@ -74,4 +76,39 @@ mysum = {}; db.assignments.aggregate( []).forEach( function(foo){ lsize = JSON.s
 aggregate works with a slightly different syntax, here is how to filter assignment based on date and compute their sum size:
 
 mysum = {}; db.assignments.aggregate( [ { $match: {"dateCreated" :  { $gt : new Date('2020-01-15')}  }} ]).forEach( function(foo){ lsize = JSON.stringify(foo).length; if (foo.email in mysum  ) {mysum[foo.email] += lsize} else { mysum[foo.email]=lsize;; } }  ); mysum;
+
+
+Removing old assignments:
+
+db.assignments.remove (
+    {$and : [
+	{ "username": { $not: { $eq: "bridges_public"}}},
+	{ "username": { $not: { $eq: "bridges_workshop"}}},
+	{ "dateCreated": {$lt: new Date('2019-08-10') }}
+    ]
+    },
+    {}
+)
+
+Removing assignments from the bridges team:
+
+db.assignments.remove (
+    {$or : [
+	{ "username": "esaule"},
+	{ "username": "kalpathi60"},
+	{ "username": "dburlins"},
+	{ "username": "lsloop4"},
+	{ "username": "agoncharow"},
+	{ "username": "jstrahler"},
+      ]
+    },
+    {}
+)
+
+To reduce the file usage on mlab one needs to compact the database, resync the secondary, failover the primary which becomes secondary, resync the new secondary, and you are done. To compact the database run:
+
+db.runCommand({compact:'assignments', force:true})
+
+Note that this is causing downtime. So beware!!! The resync, failover, and resync are done from mlab's dashboard.
+
 
