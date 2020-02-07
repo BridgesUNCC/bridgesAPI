@@ -4,6 +4,7 @@ var mongoose = require('mongoose'),
     Assignment = mongoose.model('Assignment'),
     treemill = require('treemill'),
     visTypes = require('./visTypes.js');
+    distype = "";
 
 //API route to toggle the visibility of an assignment
 //between private and public.
@@ -82,6 +83,9 @@ exports.upload = function (req, res, next) {
     var visualizationType = visTypes.getVisType(assignmentType);
     if(visualizationType == "Alist") {
       visualizationType = visTypes.checkIfHasDims(rawBody);
+    }
+    if(visualizationType == "Audio"){
+      var display_mode = "audio";
     }
 
     // Use SVG for < 100 nodes, Canvas for > 100
@@ -378,8 +382,9 @@ exports.get = function (req, res, next) {
           linkResources.css.push('/css/map.css');
         }
 
+
         // add webgl resources if appropriate
-        if(assignment.vistype == "graph-webgl") {
+        if(assignment.vistype == "graph-webgl" || assignment.vistype == "Audio") {
           linkResources.script.push('/webgl/webgl-utils.js');
           linkResources.script.push('/webgl/initShaders.js');
           linkResources.script.push('/webgl/MV.js');
@@ -397,11 +402,21 @@ exports.get = function (req, res, next) {
             displayMode = "assignmentMulti";
           if(req.query.displayMode == "slide")
             displayMode = "assignmentSlide";
+          if(assignment.display_mode == "audio"){
+            displayMode = 'assignmentAudio';
+          }
         } else {
           displayMode = (assignment.display_mode == "stack") ? "assignmentMulti" : "assignmentSlide";
         }
 
-        return res.render ('assignments/' + displayMode, {
+        if(displayMode == "assignmentMulti"){
+          distype = "stack";
+        }else if(displayMode == "assignmentAudio"){
+          distype = "audio";
+        }else{
+          distype = "slide";
+        }
+        return res.render ('assignments/' + 'assignmentAudio', {
             "user": sessionUser,
             "assignment": assignment,
             "map": map,
@@ -410,7 +425,7 @@ exports.get = function (req, res, next) {
             "shared":assignment.shared,
             "owner":owner,
             "navItems": navItems,
-            "displayMode": (displayMode == "assignmentMulti") ? "stack" : "slide"
+            "displayMode": distype
         });
       }
   };

@@ -35,7 +35,9 @@ exports.getVisType = function(toCheck) {
 
     "SymbolCollection":           "collection",
 
-    "LineChart":                       "LineChart"
+    "LineChart":                       "LineChart",
+
+    "Audio":         				"Audio" 		
   };
     if( toCheck && validTypes[toCheck] )
       return validTypes[toCheck];
@@ -156,6 +158,11 @@ exports.getVisTypeObject = function(data) {
         "vistype": "LineChart",
         "script":"/js/plot/plot.js",
         "link":""
+      },
+      "Audio": {
+      	"vistype": "Audio",
+      	"script": "/js/audio/audio.js",
+      	"link": ""
       }
     };
 

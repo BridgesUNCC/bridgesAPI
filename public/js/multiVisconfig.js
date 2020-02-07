@@ -452,6 +452,18 @@ function visualizeAssignment(assignment, index){
       plot = d3.lineChart(vis, "vis" + index, assignmentData);
       BridgesVisualizer.visualizations[assignment.subAssignment] = (plot);
   }
+  else if (assignment.vistype == "Audio"){
+      d3.select("#vis" + index).select("#svg"+index).remove("*");
+      vis = d3.select("#vis" + index).append("canvas")
+        .attr("id", "canvas_webgl_overview")
+        .attr("width", 1080)
+        .attr("height", 150);
+      vis = d3.select("#vis" + index).append("canvas")
+        .attr("id", "canvas_webgl"+index);
+      audio = d3.audio_webgl(vis, width, height, assignmentData);
+
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (audio);
+  }
   else {
     console.log('error..', assignment);
 
