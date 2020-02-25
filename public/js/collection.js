@@ -22,7 +22,9 @@ d3.collection = function(svg, W, H, data) {
 
     var xScale = d3.scaleLinear().domain(data.domainX).range([-w/2,w/2]);
     var yScale = d3.scaleLinear().domain(data.domainY).range([h/2,-h/2]); // negatives invert to cartesian space
-    var scaleFactor =  xScale.range()[0] / data.domainX[0];
+    var scaleFactorX =  xScale.range()[0] / data.domainX[0];
+    var scaleFactorY =  yScale.range()[0] / data.domainY[0];
+    var scaleFactor = Math.min(scaleFactorX, scaleFactorY);
     // console.log('scale factor', scaleFactor);
 
     // determine how to scale the symbols as a function of the current scales and default scales
@@ -59,9 +61,17 @@ d3.collection = function(svg, W, H, data) {
 
     // translate origin to center of screen
     transform = "translate(" + w/2 +  "," + h/2 + ")";
-
     svgGroup = vis.append("g").attr('transform', transform);
 
+    //scale to make the viewport (dimension) fit in the screen
+    scale = "scale("+scaleFactor+")";
+    svgGroup = svgGroup.append("g").attr('transform', scale);
+
+    //transfrom from view coordinate to display coordinate by flipping the y axis
+    flip = "matrix(1, 0, 0, -1, 0, 0)"
+    svgGroup = svgGroup.append("g").attr('transform', flip);
+
+    
     var symbolData = data.symbols,
         symbol = null,  // d3 symbol selection
         text = null,    // d3 text selection
@@ -79,12 +89,12 @@ d3.collection = function(svg, W, H, data) {
     symbolData.forEach(function(symbol) {
       if(!symbol.location) {
           symbol.location = {};
-          symbol.location.x = xScale(0);
-          symbol.location.y = yScale(0);
+          symbol.location.x = 0.0;
+          symbol.location.y = 0.0;
       } else {
         // console.log('starting with', symbol.location.x, symbol.location.y);
-        symbol.location.x = xScale(symbol.location.x);
-        symbol.location.y = yScale(symbol.location.y);
+        symbol.location.x = symbol.location.x;
+        symbol.location.y = symbol.location.y;
         // console.log('becomes', symbol.location.x, symbol.location.y);
       }
 
@@ -92,9 +102,9 @@ d3.collection = function(svg, W, H, data) {
       if(symbol.shape == "polygon" || symbol.shape == "polyline" || symbol.shape == "line" || symbol.shape == "point") {
         for(var i = 0; i < symbol.points.length; i++) {
           if(i % 2 === 0) {// x
-            symbol.points[i] = xScale(symbol.points[i]);
+            symbol.points[i] = symbol.points[i];
           } else {
-            symbol.points[i] = yScale(symbol.points[i]);
+            symbol.points[i] = symbol.points[i];
           }
         }
       }
@@ -127,7 +137,7 @@ d3.collection = function(svg, W, H, data) {
             me
             .append("svg:circle")
             .attr("r", function(d) {
-              return scaleFactor*d.r || 15;
+              return d.r || 15;
             })
             .attr("cx", function(d) {
               if(d.location)
@@ -166,10 +176,10 @@ d3.collection = function(svg, W, H, data) {
             me
             .append("svg:ellipse")
             .attr("rx", function(d) {
-              return scaleFactor*d.rx || 15;
+              return d.rx || 15;
             })
             .attr("ry", function(d) {
-              return scaleFactor*d.ry || 15;
+              return d.ry || 15;
             })
             .attr("cx", function(d) {
               if(d.location)
@@ -190,19 +200,19 @@ d3.collection = function(svg, W, H, data) {
             .append("svg:rect")
               .attr("x", function(d) {
                 if(d.location)
-                  return d.location.x - (scaleFactor*d.width / 2);
-                return 0 - (scaleFactor*d.width / 2);
+                  return d.location.x - (d.width / 2);
+                return 0 - (d.width / 2);
               })
               .attr("y", function(d) {
                 if(d.location)
-                  return d.location.y - (scaleFactor*d.height / 2);
-                return 0 - (scaleFactor*d.height / 2);
+                  return d.location.y - (d.height / 2);
+                return 0 - (d.height / 2);
               })
               .attr("width", function(d) {
-                return scaleFactor*d.width || 10;
+                return d.width || 10;
               })
               .attr("height", function(d) {
-                return scaleFactor*d.height || 10;
+                return d.height || 10;
               });
               break;
           /*

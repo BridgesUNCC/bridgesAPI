@@ -11,7 +11,7 @@ Check out some visualizations at http://bridges-cs.herokuapp.com/
 
 Overview:
 1. Install git
-2. Install mongoDB and run it in the background
+2. Install mongoDB and run it in the background (Debian install [https://docs.mongodb.com/manual/tutorial/install-mongodb-on-debian/#install-mongodb-community-edition](here))
 3. [Install node and npm][nodenpm](node's package manager) 
 4. Use 'npm install' and 'bower install' to retrieve all dependencies
 5. Run 'grunt' in the root directory to start the local server!
