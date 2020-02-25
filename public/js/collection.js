@@ -20,19 +20,6 @@ d3.collection = function(svg, W, H, data) {
     data.domainY[0] = data.domainY[0] + (data.domainY[0] * 0.1);
     data.domainY[1] = data.domainY[1] + (data.domainY[1] * 0.1);
 
-    var xScale = d3.scaleLinear().domain(data.domainX).range([-w/2,w/2]);
-    var yScale = d3.scaleLinear().domain(data.domainY).range([h/2,-h/2]); // negatives invert to cartesian space
-    var scaleFactorX =  xScale.range()[0] / data.domainX[0];
-    var scaleFactorY =  yScale.range()[0] / data.domainY[0];
-    var scaleFactor = Math.min(scaleFactorX, scaleFactorY);
-    // console.log('scale factor', scaleFactor);
-
-    // determine how to scale the symbols as a function of the current scales and default scales
-    // var symbolScale =
-    //
-    // console.log('domains', xScale.domain(), yScale.domain());
-    // console.log('ranges', xScale.range(), yScale.range());
-    //
 
 
     graph.reset = function() {
@@ -64,6 +51,10 @@ d3.collection = function(svg, W, H, data) {
     svgGroup = vis.append("g").attr('transform', transform);
 
     //scale to make the viewport (dimension) fit in the screen
+    var scaleFactorX =  w / (data.domainX[1] - data.domainX[0]);
+    var scaleFactorY =  h / (data.domainY[1] -data.domainY[0]);
+    var scaleFactor = Math.min(scaleFactorX, scaleFactorY);
+
     scale = "scale("+scaleFactor+")";
     svgGroup = svgGroup.append("g").attr('transform', scale);
 
@@ -87,27 +78,12 @@ d3.collection = function(svg, W, H, data) {
 
     // separate shapes from text labels
     symbolData.forEach(function(symbol) {
+	//setting default location is unspecified
       if(!symbol.location) {
           symbol.location = {};
           symbol.location.x = 0.0;
           symbol.location.y = 0.0;
-      } else {
-        // console.log('starting with', symbol.location.x, symbol.location.y);
-        symbol.location.x = symbol.location.x;
-        symbol.location.y = symbol.location.y;
-        // console.log('becomes', symbol.location.x, symbol.location.y);
-      }
-
-      // for all lines, scale the points accordingly
-      if(symbol.shape == "polygon" || symbol.shape == "polyline" || symbol.shape == "line" || symbol.shape == "point") {
-        for(var i = 0; i < symbol.points.length; i++) {
-          if(i % 2 === 0) {// x
-            symbol.points[i] = symbol.points[i];
-          } else {
-            symbol.points[i] = symbol.points[i];
-          }
-        }
-      }
+      } 
 
       // complete the polygon with the original point
       if(symbol.shape == "polygon" && symbol.points && symbol.points.length >= 2) {
