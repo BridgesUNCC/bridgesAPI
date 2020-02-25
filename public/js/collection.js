@@ -15,25 +15,17 @@ d3.collection = function(svg, W, H, data) {
         transform;
 
     // pad domains
-    data.domainX[0] = data.domainX[0] + (data.domainX[0] * 0.1);
-    data.domainX[1] = data.domainX[1] + (data.domainX[1] * 0.1);
-    data.domainY[0] = data.domainY[0] + (data.domainY[0] * 0.1);
-    data.domainY[1] = data.domainY[1] + (data.domainY[1] * 0.1);
+    data.domainX[0] = 1.1*data.domainX[0];
+    data.domainX[1] = 1.1*data.domainX[1];
+    data.domainY[0] = 1.1*data.domainY[0];
+    data.domainY[1] = 1.1*data.domainY[1];
 
 
 
     graph.reset = function() {
 
-      if(!data.coord_system_type || data.coord_system_type == "cartesian") {
-        // finalTranslate = BridgesVisualizer.defaultTransforms.collection.translate;
-        // finalScale = BridgesVisualizer.defaultTransforms.collection.scale;
-        // transform = d3.zoomIdentity.translate(finalTranslate[0], finalTranslate[1]).scale(finalScale);
-      } else {
-        // finalTranslate = BridgesVisualizer.defaultTransforms[data.coord_system_type].translate;
-        // finalScale = BridgesVisualizer.defaultTransforms[data.coord_system_type].scale;
-        // transform = d3.zoomIdentity.translate(finalTranslate[0], finalTranslate[1]).scale(finalScale);
-      }
-      // svg.call(zoom.transform, transform);
+	//This code is only supporting cartesian space mapping.
+	//if(!data.coord_system_type || data.coord_system_type == "cartesian") {}
     };
     // graph.reset();
 
@@ -42,9 +34,6 @@ d3.collection = function(svg, W, H, data) {
             .attr("preserveAspectRatio", "xMinYMin meet")
             .attr("viewBox", "0 0 " + w + " " + h)
             .classed("svg-content", true);
-            // .call(zoom)
-            // .call(zoom.transform, transform);
-
 
     // translate origin to center of screen
     transform = "translate(" + w/2 +  "," + h/2 + ")";
@@ -147,8 +136,9 @@ d3.collection = function(svg, W, H, data) {
             break;
           /*
            * E L L I P S E
+	   * (though they are currently not supported in BRIDGES clients)
            */
-          case "circle":
+          case "ellipse":
             me
             .append("svg:ellipse")
             .attr("rx", function(d) {
@@ -248,10 +238,23 @@ d3.collection = function(svg, W, H, data) {
     // draw text labels
     text = svgGroup.selectAll(".text")
       .data(symbols.text)
-      .enter().append('g').attr('class', 'textLabel');
+	.enter().append('g').attr('class', 'textLabel');
 
     text  // add text itself
         .append('svg:text')
+	.attr('transform', function(d) {
+	    //this is a transformation that print the text in the correct way.
+	    //There is a need to flip the y axis to cancel out the cartesian mapping otherwise text get printed upside down. this is what the first 4 parameters of the call to matrix do
+	    //But also there is a need to shift back the text at the right position, hence the shift base on location and font-size
+	    yoffset = 0;
+	    if (d.location)
+		yoffset += 2*d.location.y;
+	    if (d['font-size'])
+		yoffset -= d['font-size']/2
+	    else
+		yoffset -= 6;
+	    return 'matrix (1,0,0,-1,0, '+yoffset+')';
+	})
         .attr('class', 'text')
         .attr('x', function(d) {
           if(d.location) return d.location.x;
