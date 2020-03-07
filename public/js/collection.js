@@ -51,6 +51,10 @@ d3.collection = function(svg, W, H, data) {
     flip = "matrix(1, 0, 0, -1, 0, 0)"
     svgGroup = svgGroup.append("g").attr('transform', flip);
 
+    //adjust the origin to be at center of viewport
+    transformv = "translate(" + -(data.domainX[0]+data.domainX[1])/2 +  "," + -(data.domainY[0]+data.domainY[1])/2 + ")";
+    svgGroup = svgGroup.append("g").attr('transform', transformv);
+    
     
     var symbolData = data.symbols,
         symbol = null,  // d3 symbol selection
