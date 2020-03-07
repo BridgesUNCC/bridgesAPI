@@ -29,9 +29,11 @@ block content
 
       div#audiocontrols
         audio#audio(controls='', autoplay='')
-        input#sample-size
-        button#sample-button
-        input#time-sample
+        div#sampleinput
+            input(id = sample-size placeholder="Sample Size: ")
+            button#sample-button submit
+        div#timesample
+            input#time-sample
 
 block footerjs
     script.

@@ -175,3 +175,25 @@ div.slideButton:hover {
   display: inline;
   background-color: steelblue;
 }
+
+div#audiocontrols{
+  position: relative;
+  padding: 20px;
+}
+
+div#sampleinput{
+  display: inline;
+  padding: 4px;
+  display: inline-block;
+  vertical-align: middle;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 30%;
+  width: 50%;
+  margin: -3% 0 0 -20%;
+}
+
+#time-sample{
+  width: 350px;
+}

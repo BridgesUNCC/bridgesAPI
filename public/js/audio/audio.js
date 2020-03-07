@@ -474,6 +474,7 @@ function base64ToArrayBuffer(b64) {
  * 
  */
 function base64ToArray(b64) {
+    console.log(b64)
     var binary_string = window.atob(b64);
     var bytes = [];
     for (var i = 0; i < binary_string.length; i++)        {
