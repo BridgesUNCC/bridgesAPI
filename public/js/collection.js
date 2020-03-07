@@ -15,10 +15,10 @@ d3.collection = function(svg, W, H, data) {
         transform;
 
     // pad domains
-    data.domainX[0] = 1.1*data.domainX[0];
-    data.domainX[1] = 1.1*data.domainX[1];
-    data.domainY[0] = 1.1*data.domainY[0];
-    data.domainY[1] = 1.1*data.domainY[1];
+    // data.domainX[0] = 1.1*data.domainX[0];
+    // data.domainX[1] = 1.1*data.domainX[1];
+    // data.domainY[0] = 1.1*data.domainY[0];
+    // data.domainY[1] = 1.1*data.domainY[1];
 
 
 
@@ -42,6 +42,9 @@ d3.collection = function(svg, W, H, data) {
     //scale to make the viewport (dimension) fit in the screen
     var scaleFactorX =  w / (data.domainX[1] - data.domainX[0]);
     var scaleFactorY =  h / (data.domainY[1] -data.domainY[0]);
+    //give some padding
+    scaleFactorX = scaleFactorX/1.1;
+    scaleFactorY = scaleFactorY/1.1;
     var scaleFactor = Math.min(scaleFactorX, scaleFactorY);
 
     scale = "scale("+scaleFactor+")";
