@@ -86,8 +86,8 @@
 
   //this boolean is used to deactivate the tooltip when all labels are shown (key 'L')
   BridgesVisualizer.tooltipEnabled = true;
-  BridgesVisualizer.showingNodeLabels = false;
-  BridgesVisualizer.showingLinkLabels = false;
+  BridgesVisualizer.showingNodeLabels = localStorage.getItem("showNodeLabels-"+assignmentNumber)==="true";
+  BridgesVisualizer.showingLinkLabels = localStorage.getItem("showLinkLabels-"+assignmentNumber)==="true";
 
   BridgesVisualizer.centerTextHorizontallyInRect = function(obj, width){
       return (width - obj.getComputedTextLength()) / 2;
@@ -285,6 +285,7 @@
         d3.selectAll(".nodeLabel").style("display","none").style("opacity","0");
         BridgesVisualizer.showingNodeLabels = false;
     }
+    localStorage.setItem("showNodeLabels-"+assignmentNumber, BridgesVisualizer.showingNodeLabels)
     BridgesVisualizer.redraw();
   };
 
@@ -299,6 +300,7 @@
         d3.selectAll(".selfLinkLabel").style("display", "none");
         BridgesVisualizer.showingLinkLabels = false;
     }
+    localStorage.setItem("showLinkLabels-"+assignmentNumber, BridgesVisualizer.showingLinkLabels)
     BridgesVisualizer.redraw();
   };
 
