@@ -55,7 +55,7 @@ in your application:
 ## Linux:
 
 1. Install git
-2. Install mongoDB and run it in the background: (Debian install [https://docs.mongodb.com/manual/administration/install-on-linux/](here))
+2. Install mongoDB and run it in the background: (Debian install: [https://docs.mongodb.com/manual/administration/install-on-linux/]
 3. Make sure you have an uptodate C/C++ compiler and related tools
 4. [Install node and npm][nodenpm](node's package manager) 
 5. Follow steps 5 through 12 in the OSX section (substituting Linux install 
