@@ -35,9 +35,44 @@ d3.collection = function(svg, W, H, data) {
             .attr("viewBox", "0 0 " + w + " " + h)
             .classed("svg-content", true);
 
+	// transforming shapes - use the bounding box of the shape for the
+	// transformation, given by data.domain
+	// Transformation involves translating the center of the shape to 
+	// the origin,  (Transl_Origin), scale to the size of the bounding box of 
+	// the symbols(ScaleFactor) and translating to the viewport (T_VP), while
+	// maintaining the aspect ratio
+
+	// translation to origin
+	Transl_Origin = [-(data.domainX[0]+data.domainX[1])/2, -(data.domainY[0]+data.domainY[1])/2];
+
+	// scale to the width, height of the domain
+	Scale = [	w/(data.domainX[1] - data.domainX[0]), 
+				h/(data.domainY[1] - data.domainY[0]) ];
+
+	// choose the smaller of the two scale factors to maintain aspect ratio
+	ScaleFactor = Math.min(Scale[0], Scale[1]);
+
+	// add some padding
+	ScaleFactor = ScaleFactor/1.1;
+
+	// final translation to center the visualization
+	Transl_VP = [w/2, h/2];
+	
+	// flip y -- device origin is upper left
+    Y_flip = "matrix(1, 0, 0, -1, 0, 0)";
+
+	// add the transformation to the svg group
+	svgGroup = vis.append("g").attr('transform', 
+			"translate(" + Transl_VP[0] + "," + Transl_VP[1] + ")" +
+			"scale(" + ScaleFactor + ")" + 
+			Y_flip + 
+			"translate(" + Transl_Origin[0] + "," + Transl_Origin[1] + ")"
+		);
+
+/*  old code commented out
     // translate origin to center of screen
     transform = "translate(" + w/2 +  "," + h/2 + ")";
-    svgGroup = vis.append("g").attr('transform', transform);
+  	svgGroup = vis.append("g").attr('transform', transform);
 
     //scale to make the viewport (dimension) fit in the screen
     var scaleFactorX =  w / (data.domainX[1] - data.domainX[0]);
@@ -54,10 +89,12 @@ d3.collection = function(svg, W, H, data) {
     flip = "matrix(1, 0, 0, -1, 0, 0)"
     svgGroup = svgGroup.append("g").attr('transform', flip);
 
+
     //adjust the origin to be at center of viewport
     transformv = "translate(" + -(data.domainX[0]+data.domainX[1])/2 +  "," + -(data.domainY[0]+data.domainY[1])/2 + ")";
-    svgGroup = svgGroup.append("g").attr('transform', transformv);
+	svgGroup = svgGroup.append("g").attr('transform', transformv);
     
+*/
     
     var symbolData = data.symbols,
         symbol = null,  // d3 symbol selection
@@ -173,13 +210,17 @@ d3.collection = function(svg, W, H, data) {
             .append("svg:rect")
               .attr("x", function(d) {
                 if(d.location)
-                  return d.location.x - (d.width / 2);
-                return 0 - (d.width / 2);
+//                return d.location.x - (d.width / 2);
+                  return d.location.x;
+//              return 0 - (d.width / 2);
+                return 0;
               })
               .attr("y", function(d) {
                 if(d.location)
-                  return d.location.y - (d.height / 2);
-                return 0 - (d.height / 2);
+//                return d.location.y - (d.height / 2);
+                  return d.location.y;
+//                return 0 - (d.height / 2);
+                return 0;
               })
               .attr("width", function(d) {
                 return d.width || 10;
