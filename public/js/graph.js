@@ -70,6 +70,7 @@ d3.graph = function(svg, W, H, data) {
     }
 
     svgGroup = vis.append("g").attr('transform', transform);
+	console.log (transform);
 
     var nodes = data.nodes;
     var links = data.links.filter(function(d){

@@ -39,6 +39,7 @@ d3.sllist = function(d3, canvasID, w, h, data) {
         .classed("svg", true)
         .call(zoom);
 
+
     var svgGroup = chart.append("g");
     // initialize the scale and translation
     svgGroup.attr('transform', 'translate(' + zoom.translate() + ') scale(' + zoom.scale() + ')');

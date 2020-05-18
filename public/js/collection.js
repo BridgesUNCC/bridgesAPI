@@ -14,33 +14,16 @@ d3.collection = function(svg, W, H, data) {
         finalScale,
         transform;
 
-    // pad domains
-    // data.domainX[0] = 1.1*data.domainX[0];
-    // data.domainX[1] = 1.1*data.domainX[1];
-    // data.domainY[0] = 1.1*data.domainY[0];
-    // data.domainY[1] = 1.1*data.domainY[1];
+	var finalTranslate = BridgesVisualizer.defaultTransforms.graph.translate;
+	var finalScale =  BridgesVisualizer.defaultTransforms.graph.scale;
 
 
-
-    graph.reset = function() {
-
-	//This code is only supporting cartesian space mapping.
-	//if(!data.coord_system_type || data.coord_system_type == "cartesian") {}
-    };
-    // graph.reset();
-
-    vis = svg.attr("width", w)
-            .attr("height", h)
-            .attr("preserveAspectRatio", "xMinYMin meet")
-            .attr("viewBox", "0 0 " + w + " " + h)
-            .classed("svg-content", true);
-
-	// transforming shapes - use the bounding box of the shape for the
-	// transformation, given by data.domain
-	// Transformation involves translating the center of the shape to 
-	// the origin,  (Transl_Origin), scale to the size of the bounding box of 
-	// the symbols(ScaleFactor) and translating to the viewport (T_VP), while
-	// maintaining the aspect ratio
+	// 	transforming shapes - use the bounding box of the shape for the
+	// 	transformation, given by data.domain
+	// 	Transformation involves translating the center of the shape to 
+	// 	the origin,  (Transl_Origin), then scale to the size of the bounding 
+	//	box of the symbols(ScaleFactor) and translating to the viewport,
+	//	(T_VP), while // maintaining the aspect ratio
 
 	// translation to origin
 	Transl_Origin = [-(data.domainX[0]+data.domainX[1])/2, -(data.domainY[0]+data.domainY[1])/2];
@@ -61,41 +44,45 @@ d3.collection = function(svg, W, H, data) {
 	// flip y -- device origin is upper left
     Y_flip = "matrix(1, 0, 0, -1, 0, 0)";
 
+	// form the composite transform, used by the Zoom function
+	var T_Comp = d3.zoomIdentity
+					.translate(Transl_VP[0], Transl_VP[1])
+					.scale(ScaleFactor)
+					.scale(1.0, -1.0)
+					.translate(Transl_Origin[0], Transl_Origin[1]);
+
+	// same thing for the svg group
+	var T_Composite = 
+			"translate(" + Transl_VP[0] + "," + Transl_VP[1] + ") " + 
+			"scale(" + ScaleFactor + ") " + Y_flip + " translate(" + 
+			Transl_Origin[0] + "," + Transl_Origin[1] + ")";
+
+	// initialize zoom parameters, handler
+	var zoom = d3.zoom()
+			.scaleExtent([0.1,5])
+			.on("zoom", zoomHandler);
+
+	// update the svg with some global attributes and zoom attribute
+    vis = svg.attr("width", w)
+            .attr("height", h)
+            .attr("preserveAspectRatio", "xMinYMin meet")
+            .attr("viewBox", "0 0 " + w + " " + h)
+            .classed("svg-content", true)
+			.call(zoom)
+
 	// add the transformation to the svg group
-	svgGroup = vis.append("g").attr('transform', 
-			"translate(" + Transl_VP[0] + "," + Transl_VP[1] + ")" +
-			"scale(" + ScaleFactor + ")" + 
-			Y_flip + 
-			"translate(" + Transl_Origin[0] + "," + Transl_Origin[1] + ")"
-		);
+	// this centers the symbols on the display
+	svgGroup = vis.append("g").attr('transform', T_Composite);
 
-/*  old code commented out
-    // translate origin to center of screen
-    transform = "translate(" + w/2 +  "," + h/2 + ")";
-  	svgGroup = vis.append("g").attr('transform', transform);
+	// zoom handler
+	function zoomHandler() {
+		if (svgGroup) {
+			var T = d3.event.transform;
+			svg.attr('transform', d3.event.transform);
+		}
+	}
 
-    //scale to make the viewport (dimension) fit in the screen
-    var scaleFactorX =  w / (data.domainX[1] - data.domainX[0]);
-    var scaleFactorY =  h / (data.domainY[1] -data.domainY[0]);
-    //give some padding
-    scaleFactorX = scaleFactorX/1.1;
-    scaleFactorY = scaleFactorY/1.1;
-    var scaleFactor = Math.min(scaleFactorX, scaleFactorY);
-
-    scale = "scale("+scaleFactor+")";
-    svgGroup = svgGroup.append("g").attr('transform', scale);
-
-    //transfrom from view coordinate to display coordinate by flipping the y axis
-    flip = "matrix(1, 0, 0, -1, 0, 0)"
-    svgGroup = svgGroup.append("g").attr('transform', flip);
-
-
-    //adjust the origin to be at center of viewport
-    transformv = "translate(" + -(data.domainX[0]+data.domainX[1])/2 +  "," + -(data.domainY[0]+data.domainY[1])/2 + ")";
-	svgGroup = svgGroup.append("g").attr('transform', transformv);
-    
-*/
-    
+	// parse and set all symbols in the shape collection
     var symbolData = data.symbols,
         symbol = null,  // d3 symbol selection
         text = null,    // d3 text selection
@@ -140,7 +127,7 @@ d3.collection = function(svg, W, H, data) {
         var me = d3.select(this);
         switch(d.shape) {
           /*
-           * C I R C L E
+           * Circle
            */
           case "circle":
             me
@@ -160,7 +147,7 @@ d3.collection = function(svg, W, H, data) {
             });
             break;
           /*
-           * P O I N T
+           * Point
            */
           case "point":
             me
@@ -178,10 +165,10 @@ d3.collection = function(svg, W, H, data) {
               return 0;
             });
             break;
-          /*
-           * E L L I P S E
-	   * (though they are currently not supported in BRIDGES clients)
-           */
+			/*
+			 * Ellipse
+			 * (though they are currently not supported in BRIDGES clients)
+			 */
           case "ellipse":
             me
             .append("svg:ellipse")
@@ -202,9 +189,9 @@ d3.collection = function(svg, W, H, data) {
               return 0;
             });
             break;
-          /*
-           * R E C T A N G L E
-           */
+			/*
+			 * Rectangle
+			 */
           case "rect":
             me
             .append("svg:rect")
@@ -229,9 +216,9 @@ d3.collection = function(svg, W, H, data) {
                 return d.height || 10;
               });
               break;
-          /*
-           * P O L Y G O N
-           */
+			/*
+			 * Polygon
+			 */
            case "polygon":
            case "polyline":
            case "line":
@@ -248,6 +235,7 @@ d3.collection = function(svg, W, H, data) {
         }
       });
 
+	// shape properties
     shapes
       .style('opacity', function(d) {
         if(d.opacity) return d.opacity;
@@ -279,9 +267,9 @@ d3.collection = function(svg, W, H, data) {
         });
 
 
-    /*
-     *    L A B E L S
-     */
+		/*
+		 *    Shape labels
+		 */
 
     // draw text labels
     text = svgGroup.selectAll(".text")
@@ -377,6 +365,4 @@ d3.collection = function(svg, W, H, data) {
     function dragended(d) {
 
     }
-
-    return graph;
 };
