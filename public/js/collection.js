@@ -248,8 +248,9 @@ d3.collection = function(svg, W, H, data) {
       .style("stroke", function(d) {
           return BridgesVisualizer.getColor(d.stroke) || "black";
       })
-      .style("stroke-dasharray", function(d) {
-          return d['stroke-dasharray'] || 0;
+	.style("stroke-dasharray", function(d) {
+	    if (d['stroke-dasharray'] === undefined) return 0;
+            return d['stroke-dasharray'];
       })
       .style("fill", function(d) {
           return BridgesVisualizer.getColor(d.fill) || "none";
@@ -312,8 +313,8 @@ d3.collection = function(svg, W, H, data) {
           return 1;
         })
         .style("font-size", function(d) {
-          if(d['font-size']) return d['font-size'] + "px";
-          return "12px";
+            if(d['font-size'] === undefined) return "12px";
+	    return d['font-size'] + "px";
         })
         .text(function(d) {
           return d.name || "";
@@ -322,25 +323,39 @@ d3.collection = function(svg, W, H, data) {
     text // then draw rectangles around each textbox
       .append("svg:rect")
         .attr('x', function(d) {
-          return d3.select(this.parentNode).select('.text').node().getBBox().x-(d['stroke-width'] || 1);
+	    var strw = d['stroke-width'];
+	    if (strw === undefined)
+		strw = 1;
+          return d3.select(this.parentNode).select('.text').node().getBBox().x-( strw);
         })
         .attr('y', function(d) {
-          return d3.select(this.parentNode).select('.text').node().getBBox().y-(d['stroke-width'] || 1);
+	    var strw = d['stroke-width'];
+	    if (strw === undefined)
+		strw = 1;	    
+          return d3.select(this.parentNode).select('.text').node().getBBox().y-( strw);
         })
         .attr('width', function(d) {
-          return d3.select(this.parentNode).select('.text').node().getBBox().width+(2 * (d['stroke-width'] || 1));
+	    var strw = d['stroke-width'];
+	    if (strw === undefined)
+		strw = 1;
+            return d3.select(this.parentNode).select('.text').node().getBBox().width+(2 * (strw));
         })
         .attr('height', function(d) {
-          return d3.select(this.parentNode).select('.text').node().getBBox().height+(2 * (d['stroke-width'] || 1));
+	    var strw = d['stroke-width'];
+	    if (strw === undefined)
+		strw = 1;	    
+            return d3.select(this.parentNode).select('.text').node().getBBox().height+(2 * (strw));
         })
         .style("stroke-width", function(d) {
-            return d['stroke-width'] || 1;
+	    if (d['stroke-width'] === undefined) return 1;
+            return d['stroke-width'];
         })
         .style("stroke", function(d) {
             return BridgesVisualizer.getColor(d.stroke) || "white";
         })
         .style("stroke-dasharray", function(d) {
-            return d['stroke-dasharray'] || 0;
+	    if (d['stroke-dasharray'] === undefined) return 0;
+            return d['stroke-dasharray'];
         })
         .style("fill", "none");
 
