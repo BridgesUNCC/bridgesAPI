@@ -132,8 +132,9 @@ d3.collection = function(svg, W, H, data) {
           case "circle":
             me
             .append("svg:circle")
-            .attr("r", function(d) {
-              return d.r || 15;
+		.attr("r", function(d) {
+		    if (d.r === undefined) return 15;
+		    return d.r;
             })
             .attr("cx", function(d) {
               if(d.location)
@@ -172,11 +173,13 @@ d3.collection = function(svg, W, H, data) {
           case "ellipse":
             me
             .append("svg:ellipse")
-            .attr("rx", function(d) {
-              return d.rx || 15;
+		.attr("rx", function(d) {
+		    if (d.rx === undefined) return 15;
+		    return d.rx;
             })
-            .attr("ry", function(d) {
-              return d.ry || 15;
+		.attr("ry", function(d) {
+		    if (d.ry === undefined) return 15;
+		    return d.ry;
             })
             .attr("cx", function(d) {
               if(d.location)
@@ -209,11 +212,13 @@ d3.collection = function(svg, W, H, data) {
 //                return 0 - (d.height / 2);
                 return 0;
               })
-              .attr("width", function(d) {
-                return d.width || 10;
+		.attr("width", function(d) {
+		    if (d.width === undefined) return 10;
+                    return d.width;
               })
-              .attr("height", function(d) {
-                return d.height || 10;
+		.attr("height", function(d) {
+		    if (d.height === undefined) return 10;
+                return d.height;
               });
               break;
 			/*
@@ -238,8 +243,8 @@ d3.collection = function(svg, W, H, data) {
 	// shape properties
     shapes
       .style('opacity', function(d) {
-        if(d.opacity) return d.opacity;
-        return 1;
+          if(d.opacity === undefined) return 1;
+	  return d.opacity;
       })
 	.style("stroke-width", function(d) {
             if (d['stroke-width'] === undefined) return 1;
@@ -317,7 +322,8 @@ d3.collection = function(svg, W, H, data) {
 	    return d['font-size'] + "px";
         })
         .text(function(d) {
-          return d.name || "";
+	    if (d.name === undefined) return "";
+            return d.name;
         });
 
     text // then draw rectangles around each textbox
