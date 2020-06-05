@@ -242,7 +242,7 @@ d3.collection = function(svg, W, H, data) {
         return 1;
       })
       .style("stroke-width", function(d) {
-          if (d.has('stroke-width')) return d['stroke-width'];
+          if (d['stroke-width']) return d['stroke-width'];
 	  return  1;
       })
       .style("stroke", function(d) {
