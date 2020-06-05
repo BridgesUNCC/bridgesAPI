@@ -60,7 +60,7 @@ d3.collection = function(svg, W, H, data) {
 	// initialize zoom parameters, handler
 	var zoom = d3.zoom()
 			.scaleExtent([0.1,5])
-			.on("zoom", zoomHandler);
+		.on("zoom", zoomHandler);
 
 	// update the svg with some global attributes and zoom attribute
     vis = svg.attr("width", w)
@@ -242,7 +242,7 @@ d3.collection = function(svg, W, H, data) {
         return 1;
       })
       .style("stroke-width", function(d) {
-          if (d['stroke-width']) return d['stroke-width'];
+          if (d.has('stroke-width')) return d['stroke-width'];
 	  return  1;
       })
       .style("stroke", function(d) {
