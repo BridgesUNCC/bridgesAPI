@@ -242,7 +242,8 @@ d3.collection = function(svg, W, H, data) {
         return 1;
       })
       .style("stroke-width", function(d) {
-          return d['stroke-width'] || 1;
+          if (d['stroke-width']) return d['stroke-width'];
+	  return  1;
       })
       .style("stroke", function(d) {
           return BridgesVisualizer.getColor(d.stroke) || "black";
