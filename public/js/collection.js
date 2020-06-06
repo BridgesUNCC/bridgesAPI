@@ -250,15 +250,17 @@ d3.collection = function(svg, W, H, data) {
             if (d['stroke-width'] === undefined) return 1;
 	    return d['stroke-width'];
       })
-      .style("stroke", function(d) {
-          return BridgesVisualizer.getColor(d.stroke) || "black";
+	.style("stroke", function(d) {
+	    if (d.stroke === undefined) return "black";
+            return BridgesVisualizer.getColor(d.stroke); 
       })
 	.style("stroke-dasharray", function(d) {
 	    if (d['stroke-dasharray'] === undefined) return 0;
             return d['stroke-dasharray'];
       })
-      .style("fill", function(d) {
-          return BridgesVisualizer.getColor(d.fill) || "none";
+	.style("fill", function(d) {
+	    if (d.fill === undefined) return "none";
+	    return BridgesVisualizer.getColor(d.fill);
       })
       .on("mouseover", function(d) {
           BridgesVisualizer.textMouseover(d.name);
@@ -310,8 +312,9 @@ d3.collection = function(svg, W, H, data) {
         .attr("text-anchor", "middle")          //  Draw centered on given location
         .attr("alignment-baseline", "middle")   //  (or 0,0)
         .style('fill', function(d) {
-          if(d.fill) return BridgesVisualizer.getColor(d.fill);
-          return 'black';
+            if(d.fill === undefined) return 'black';
+	    return BridgesVisualizer.getColor(d.fill);
+          
         })
         .style('opacity', function(d) {
           if(d.opacity) return d.opacity;
@@ -357,7 +360,8 @@ d3.collection = function(svg, W, H, data) {
             return d['stroke-width'];
         })
         .style("stroke", function(d) {
-            return BridgesVisualizer.getColor(d.stroke) || "white";
+	    if (d.stroke === undefined) return "white"
+	    return BridgesVisualizer.getColor(d.stroke);
         })
         .style("stroke-dasharray", function(d) {
 	    if (d['stroke-dasharray'] === undefined) return 0;
