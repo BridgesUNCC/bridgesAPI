@@ -75,9 +75,9 @@
   };
 
   // function to return color depending on the style of representation
-  BridgesVisualizer.getColor = function(color) {
-    if(Array.isArray(color))
-      return "rgba(" + color[0] + "," + color[1] + "," + color[2] + "," + color[3] + ")";
+    BridgesVisualizer.getColor = function(color) {
+	if(Array.isArray(color)) 
+	    return "rgba(" + color[0] + "," + color[1] + "," + color[2] + "," + color[3] + ")";
     return color;
   };
 
