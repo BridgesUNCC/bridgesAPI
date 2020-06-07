@@ -52,7 +52,7 @@
     "grunt-contrib-compass": "~0.2.0",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-develop": "~0.1.1",
-    "grunt-modernizr": "latest",
+    "grunt-modernizr": "^3.0.0",
     "grunt-update-submodules": "^0.4.1",
     "mocha": "latest",
     "should": "latest",
