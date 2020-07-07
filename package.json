@@ -28,7 +28,7 @@
     "morgan": "^1.9.1",
     "newrelic": "latest",
     "nodemailer": "^4.1.0",
-    "npm": "^6.10.1",
+    "npm": "^6.14.6",
     "passport": "latest",
     "passport-local": "latest",
     "passport-twitter": "latest",
