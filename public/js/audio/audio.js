@@ -483,6 +483,24 @@ function base64ToArray(b64) {
     return bytes;
 }
 
+/**
+ * Return an Array built from a base64 string.
+ * This convert shift each byte from signed to the unsigned domain by adding 128 to each value.
+ * @param {String} b64 The base64 string
+ * @return {Array} The Array built from the b64 string
+ * 
+ */
+function base64ToArray8BitConvert(b64) {
+    console.log(b64)
+    var binary_string = window.atob(b64);
+    var bytes = [];
+    for (var i = 0; i < binary_string.length; i++)        {
+        bytes.push(binary_string.charCodeAt(i)+128);
+    }
+    return bytes;
+}
+
+
 // Called once a file is input
 function onInputChange(data) {
     // Create or resume AudioContext
@@ -560,8 +578,15 @@ function JSONToWaveBytes(jsonString) {
 
     // Sub Chunk 2 Size - 4 bytes
     data = data.concat(longToByteArray(subChunk2Size, 4));
-    // Sample Data - variable bytes
-    data = data.concat(base64ToArray(jsonString.samples));
+    if (jsonString.bitsPerSample != 8) {
+	// Sample Data - variable bytes
+	data = data.concat(base64ToArray(jsonString.samples));
+    }
+    else
+    {
+	//This is necessary becasue wav encodes 8 bit unsigned rather than signed
+	data = data.concat(base64ToArray8BitConvert(jsonString.samples));
+    }
     
     return new Uint8Array(data);
 }
