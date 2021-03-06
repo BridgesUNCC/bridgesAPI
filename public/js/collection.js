@@ -296,6 +296,8 @@ d3.collection = function(svg, W, H, data) {
 	    //We do all three operations in transform because the translation needs to be the last operation done
 	    //Because of that, the order in which they are specified matters. The first operation in the string is the last operation to be applied
 
+	    let dastr = "";
+	    
 	    if (d.location) {
 		dastr = dastr +"translate("+d.location.x+" "+d.location.y+") ";
 	    }
