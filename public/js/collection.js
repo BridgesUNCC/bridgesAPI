@@ -289,21 +289,35 @@ d3.collection = function(svg, W, H, data) {
         .append('svg:text')
 	.attr('transform', function(d) {
 	    //this is a transformation that print the text in the correct way.
-	    //There is a need to flip the y axis to cancel out the cartesian mapping otherwise text get printed upside down. this is what the first 4 parameters of the call to matrix do
-	    yoffset = 0;
-	    if (d.location)
-		yoffset += 2*d.location.y;
-	    return 'matrix (1,0,0,-1,0, '+yoffset+')';
+	    //we need to do three operations.
+	    //1) There is a need to flip the y axis to cancel out the cartesian mapping otherwise text get printed upside down. this is what the first 4 parameters of the call to matrix do
+	    //2) The angle of rotation of the text needs to be taken into account
+	    //3) The placement of the text in thespace needs to be set.
+	    //We do all three operations in transform because the translation needs to be the last operation done
+	    //Because of that, the order in which they are specified matters. The first operation in the string is the last operation to be applied
+
+	    if (d.location) {
+		dastr = dastr +"translate("+d.location.x+" "+d.location.y+") ";
+	    }
+	    
+	    if (d.angle) {
+		dastr = dastr +"rotate("+d.angle+") ";
+	    }
+
+	    dastr = dastr + 'matrix (1, 0, 0, -1, 0, 0)'
+	    return dastr;
 	})
         .attr('class', 'text')
-        .attr('x', function(d) {
-          if(d.location) return d.location.x;
-          return 0;
-        })
-        .attr('y', function(d) {
-          if(d.location) return d.location.y;
-          return 0;
-        })
+    //We do not use x and y parameter in the text attribute because we take location into account in the transformation of the text.
+    //We do that to make the transform code easier becasue it needs to do a couple of axis flipping and rotation
+//        .attr('x', function(d) {
+//          if(d.location) return d.location.x;
+//          return 0;
+//        })
+//        .attr('y', function(d) {
+//          if(d.location) return d.location.y;
+//          return 0;
+//        })
     
         .attr("text-anchor", "middle")          //  Draw centered on given location along x-axis
         .attr("dominant-baseline", "middle")    //  Draw centered on given location along y-axis. This makes the coordinate we use be the center of the text (in between the two line in an elementary writing class). Beware that there is an other parameter alignment-baseline that does not do what we want.
