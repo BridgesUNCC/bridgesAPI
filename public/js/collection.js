@@ -290,14 +290,9 @@ d3.collection = function(svg, W, H, data) {
 	.attr('transform', function(d) {
 	    //this is a transformation that print the text in the correct way.
 	    //There is a need to flip the y axis to cancel out the cartesian mapping otherwise text get printed upside down. this is what the first 4 parameters of the call to matrix do
-	    //But also there is a need to shift back the text at the right position, hence the shift base on location and font-size
 	    yoffset = 0;
 	    if (d.location)
 		yoffset += 2*d.location.y;
-	    if (d['font-size'])
-		yoffset -= d['font-size']/2
-	    else
-		yoffset -= 6;
 	    return 'matrix (1,0,0,-1,0, '+yoffset+')';
 	})
         .attr('class', 'text')
@@ -309,8 +304,9 @@ d3.collection = function(svg, W, H, data) {
           if(d.location) return d.location.y;
           return 0;
         })
-        .attr("text-anchor", "middle")          //  Draw centered on given location
-        .attr("alignment-baseline", "middle")   //  (or 0,0)
+    
+        .attr("text-anchor", "middle")          //  Draw centered on given location along x-axis
+        .attr("dominant-baseline", "middle")    //  Draw centered on given location along y-axis. This makes the coordinate we use be the center of the text (in between the two line in an elementary writing class). Beware that there is an other parameter alignment-baseline that does not do what we want.
         .style('fill', function(d) {
             if(d.fill === undefined) return 'black';
 	    return BridgesVisualizer.getColor(d.fill);
