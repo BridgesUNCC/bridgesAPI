@@ -323,6 +323,8 @@ d3.collection = function(svg, W, H, data) {
     
         .attr("text-anchor", "middle")          //  Draw centered on given location along x-axis
         .attr("dominant-baseline", "middle")    //  Draw centered on given location along y-axis. This makes the coordinate we use be the center of the text (in between the two line in an elementary writing class). Beware that there is an other parameter alignment-baseline that does not do what we want.
+
+    //The fill of a label is actually the primary color of the text. That's what you would normally think of as "font color"
         .style('fill', function(d) {
             if(d.fill === undefined) return 'black';
 	    return BridgesVisualizer.getColor(d.fill);
@@ -335,7 +337,8 @@ d3.collection = function(svg, W, H, data) {
             if(d['font-size'] === undefined) return "12px";
 	    return d['font-size'] + "px";
         })
-    	.style("stroke-width", function(d) { //it is a little strange to put a stroke on a label but that could be useful.
+    //The stroke on a label is the outline of the label. so typically one would want the stroke width to be very small
+    	.style("stroke-width", function(d) { 
             if (d['stroke-width'] === undefined) return 1;
 	    return d['stroke-width'];
       })
