@@ -325,46 +325,6 @@ d3.collection = function(svg, W, H, data) {
             return d.name;
         });
 
-    text // then draw rectangles around each textbox
-      .append("svg:rect")
-        .attr('x', function(d) {
-	    var strw = d['stroke-width'];
-	    if (strw === undefined)
-		strw = 1;
-          return d3.select(this.parentNode).select('.text').node().getBBox().x-( strw);
-        })
-        .attr('y', function(d) {
-	    var strw = d['stroke-width'];
-	    if (strw === undefined)
-		strw = 1;	    
-          return d3.select(this.parentNode).select('.text').node().getBBox().y-( strw);
-        })
-        .attr('width', function(d) {
-	    var strw = d['stroke-width'];
-	    if (strw === undefined)
-		strw = 1;
-            return d3.select(this.parentNode).select('.text').node().getBBox().width+(2 * (strw));
-        })
-        .attr('height', function(d) {
-	    var strw = d['stroke-width'];
-	    if (strw === undefined)
-		strw = 1;	    
-            return d3.select(this.parentNode).select('.text').node().getBBox().height+(2 * (strw));
-        })
-        .style("stroke-width", function(d) {
-	    if (d['stroke-width'] === undefined) return 1;
-            return d['stroke-width'];
-        })
-        .style("stroke", function(d) {
-	    if (d.stroke === undefined) return "white"
-	    return BridgesVisualizer.getColor(d.stroke);
-        })
-        .style("stroke-dasharray", function(d) {
-	    if (d['stroke-dasharray'] === undefined) return 0;
-            return d['stroke-dasharray'];
-        })
-        .style("fill", "none");
-
 
 
     // d3.selectAll(".nodeLabel").each(BridgesVisualizer.insertLinebreaks);
