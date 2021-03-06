@@ -310,7 +310,6 @@ d3.collection = function(svg, W, H, data) {
         .style('fill', function(d) {
             if(d.fill === undefined) return 'black';
 	    return BridgesVisualizer.getColor(d.fill);
-          
         })
         .style('opacity', function(d) {
           if(d.opacity) return d.opacity;
@@ -320,6 +319,18 @@ d3.collection = function(svg, W, H, data) {
             if(d['font-size'] === undefined) return "12px";
 	    return d['font-size'] + "px";
         })
+    	.style("stroke-width", function(d) { //it is a little strange to put a stroke on a label but that could be useful.
+            if (d['stroke-width'] === undefined) return 1;
+	    return d['stroke-width'];
+      })
+	.style("stroke", function(d) {
+	    if (d.stroke === undefined) return "black";
+            return BridgesVisualizer.getColor(d.stroke); 
+      })
+	.style("stroke-dasharray", function(d) {
+	    if (d['stroke-dasharray'] === undefined) return 0;
+            return d['stroke-dasharray'];
+      })
         .text(function(d) {
 	    if (d.name === undefined) return "";
             return d.name;
