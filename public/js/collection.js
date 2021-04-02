@@ -96,219 +96,197 @@ d3.collection = function(svg, W, H, data) {
                     "shapes": []
                   };
 
-    // separate shapes from text labels
+	// separate shapes from text labels
     symbolData.forEach(function(symbol) {
-	//setting default location is unspecified
-      if(!symbol.location) {
-          symbol.location = {};
-          symbol.location.x = 0.0;
-          symbol.location.y = 0.0;
-      } 
+		//setting default location is unspecified
+		if(!symbol.location) {
+			symbol.location = {};
+			symbol.location.x = 0.0;
+			symbol.location.y = 0.0;
+		} 
 
-      // complete the polygon with the original point
-      if(symbol.shape == "polygon" && symbol.points && symbol.points.length >= 2) {
-        symbol.points.push(symbol.points[0]);
-        symbol.points.push(symbol.points[1]);
-      }
+		// complete the polygon with the original point
+		if(symbol.shape == "polygon" && symbol.points && symbol.points.length >= 2) {
+			symbol.points.push(symbol.points[0]);
+ 			symbol.points.push(symbol.points[1]);
+		}
 
-      if(symbol.shape == "text") {
-        symbols.text.push(symbol);
-      } else {
-        symbols.shapes.push(symbol);
-      }
-    });
+		if(symbol.shape == "text") {
+			symbols.text.push(symbol);
+		} 
+		else {
+			symbols.shapes.push(symbol);
+		}
+	});
 
 
     // draw and style all shapes
-    shapes = svgGroup.selectAll(".shape")
-      .data(symbols.shapes).enter().append("g")
-        .attr("class", "shape")
-      .each(function(d) {
-        var me = d3.select(this);
-        switch(d.shape) {
-          /*
-           * Circle
-           */
-          case "circle":
-            me
-            .append("svg:circle")
-		.attr("r", function(d) {
-		    if (d.r === undefined) return 15;
-		    return d.r;
-            })
-            .attr("cx", function(d) {
-              if(d.location)
-                return d.location.x;
-              return 0;
-            })
-            .attr("cy", function(d) {
-              if(d.location)
-                return d.location.y;
-              return 0;
-            });
-            break;
-          /*
-           * Point
-           */
-          case "point":
-            me
-            .append("svg:circle")
-            .classed("point", true)
-            .attr("r", 1)
-            .attr("cx", function(d) {
-              if(d.points)
-                return d.points[0];
-              return 0;
-            })
-            .attr("cy", function(d) {
-              if(d.points)
-                return d.points[1];
-              return 0;
-            });
-            break;
-			/*
-			 * Ellipse
-			 * (though they are currently not supported in BRIDGES clients)
-			 */
-          case "ellipse":
-            me
-            .append("svg:ellipse")
-		.attr("rx", function(d) {
-		    if (d.rx === undefined) return 15;
-		    return d.rx;
-            })
-		.attr("ry", function(d) {
-		    if (d.ry === undefined) return 15;
-		    return d.ry;
-            })
-            .attr("cx", function(d) {
-              if(d.location)
-                return d.location.x;
-              return 0;
-            })
-            .attr("cy", function(d) {
-              if(d.location)
-                return d.location.y;
-              return 0;
-            });
-            break;
-			/*
-			 * Rectangle
-			 */
-          case "rect":
-            me
-            .append("svg:rect")
-              .attr("x", function(d) {
-                if(d.location)
-//                return d.location.x - (d.width / 2);
-                  return d.location.x;
-//              return 0 - (d.width / 2);
-                return 0;
-              })
-              .attr("y", function(d) {
-                if(d.location)
-//                return d.location.y - (d.height / 2);
-                  return d.location.y;
-//                return 0 - (d.height / 2);
-                return 0;
-              })
-		.attr("width", function(d) {
-		    if (d.width === undefined) return 10;
-                    return d.width;
-              })
-		.attr("height", function(d) {
-		    if (d.height === undefined) return 10;
-                return d.height;
-              });
-              break;
-			/*
-			 * Polygon
-			 */
-           case "polygon":
-           case "polyline":
-           case "line":
-             me
-             .append("svg:polyline")
-               .attr("points", function(d) {
-                 return d.points;
-               })
-               .attr("transform", function(d) {
-                 if(d.location)
-                   return "translate(" + d.location.x +  "," + d.location.y + ")";
-                 return "translate(0,0)";
-               });
-        }
-      });
+	shapes = svgGroup.selectAll(".shape")
+		.data(symbols.shapes).enter().append("g")
+		.attr("class", "shape")
+		.each(function(d) {
+			var me = d3.select(this);
+			switch(d.shape) {
+				case "circle":    // Circle
+					me
+					.append("svg:circle")
+					.attr("r", function(d) {
+						if (d.r === undefined) return 15;
+							return d.r;
+					})
+					.attr("cx", function(d) {
+						if(d.location)
+							return d.location.x;
+							return 0;
+					})
+					.attr("cy", function(d) {
+						if(d.location)
+							return d.location.y;
+							return 0;
+					});
+					break;
+
+				case "point":    // Point 
+					me
+					.append("svg:circle")
+					.classed("point", true)
+					.attr("r", 1)
+					.attr("cx", function(d) {
+					if(d.points)
+						return d.points[0];
+						return 0;
+					})
+					.attr("cy", function(d) {
+					if(d.points)
+						return d.points[1];
+						return 0;
+					});
+					break;
+
+				case "ellipse":    // Ellipse: currently not supported
+					me
+					.append("svg:ellipse")
+					.attr("rx", function(d) {
+						if (d.rx === undefined) return 15;
+							return d.rx;
+					})
+					.attr("ry", function(d) {
+						if (d.ry === undefined) return 15;
+							return d.ry;
+					})
+					.attr("cx", function(d) {
+						if(d.location)
+							return d.location.x;
+						return 0;
+					})
+					.attr("cy", function(d) {
+						if(d.location)
+							return d.location.y;
+						return 0;
+					});
+					break;
+
+          		case "rect":    // Rectangle
+					me
+					.append("svg:rect")
+					.attr("x", function(d) {
+						if(d.location)
+							return d.location.x;
+						return 0;
+					})
+					.attr("y", function(d) {
+						if(d.location)
+							return d.location.y;
+						return 0;
+					})
+					.attr("width", function(d) {
+						if (d.width === undefined) return 10;
+						return d.width;
+					})
+					.attr("height", function(d) {
+						if (d.height === undefined) return 10;
+						return d.height;
+					});
+					break;
+
+				case "polygon":				// Polygon
+				case "polyline": 			// Polyline
+				case "line":
+					me
+					.append("svg:polyline")
+					.attr("points", function(d) {
+						return d.points;
+					})
+					.attr("transform", function(d) {
+					if(d.location)
+						return "translate(" + d.location.x +  "," + d.location.y + ")";
+						return "translate(0,0)";
+					});
+			}
+		});
 
 	// shape properties
-    shapes
-      .style('opacity', function(d) {
-          if(d.opacity === undefined) return 1;
-	  return d.opacity;
-      })
-	.style("stroke-width", function(d) {
-            if (d['stroke-width'] === undefined) return 1;
-	    return d['stroke-width'];
-      })
-	.style("stroke", function(d) {
-	    if (d.stroke === undefined) return "black";
-            return BridgesVisualizer.getColor(d.stroke); 
-      })
-	.style("stroke-dasharray", function(d) {
-	    if (d['stroke-dasharray'] === undefined) return 0;
-            return d['stroke-dasharray'];
-      })
-	.style("fill", function(d) {
-	    if (d.fill === undefined) return "none";
-	    return BridgesVisualizer.getColor(d.fill);
-      })
-      .on("mouseover", function(d) {
-          BridgesVisualizer.textMouseover(d.name);
-      })
-      .on("mouseout", BridgesVisualizer.textMouseout);
+	shapes
+		.style('opacity', function(d) {
+			if(d.opacity === undefined) return 1;
+				return d.opacity;
+		})
+		.style("stroke-width", function(d) {
+		if (d['stroke-width'] === undefined) return 1;
+			return d['stroke-width'];
+		})
+		.style("stroke", function(d) {
+		if (d.stroke === undefined) return "black";
+			return BridgesVisualizer.getColor(d.stroke); 
+		})
+		.style("stroke-dasharray", function(d) {
+		if (d['stroke-dasharray'] === undefined) return 0;
+			return d['stroke-dasharray'];
+		})
+		.style("fill", function(d) {
+		if (d.fill === undefined) return "none";
+			return BridgesVisualizer.getColor(d.fill);
+		})
+		.on("mouseover", function(d) {
+			BridgesVisualizer.textMouseover(d.name);
+		})
+		.on("mouseout", BridgesVisualizer.textMouseout);
 
-    // shape labels
-    shapes
-        .append("text")
-        .attr("class","nodeLabel")
-        .text(function(d) {
-            return d.name;
-        });
+	// shape node names
+	shapes
+		.append("text")
+		.attr("class","nodeLabel")
+		.text(function(d) {
+			return d.name;
+		});
 
 
-		/*
-		 *    Shape labels
-		 */
-
-    // draw text labels
+	// draw text labels
     text = svgGroup.selectAll(".text")
       .data(symbols.text)
 	.enter().append('g').attr('class', 'textLabel');
 
-    text  // add text itself
-        .append('svg:text')
-	.attr('transform', function(d) {
-	    //this is a transformation that print the text in the correct way.
+	text  // add text itself
+		.append('svg:text')
+		.attr('transform', function(d) {
+	    //this is a transformation that prints the text in the correct way.
 	    //we need to do three operations.
-	    //1) There is a need to flip the y axis to cancel out the cartesian mapping otherwise text get printed upside down. this is what the first 4 parameters of the call to matrix do
-	    //2) The angle of rotation of the text needs to be taken into account
-	    //3) The placement of the text in thespace needs to be set.
+	    //1. There is a need to flip the y axis to cancel out the cartesian mapping otherwise text get printed upside down. this is what the first 4 parameters of the call to matrix do
+	    //2. The angle of rotation of the text needs to be taken into account
+	    //3. The placement of the text in the space needs to be set.
 	    //We do all three operations in transform because the translation needs to be the last operation done
 	    //Because of that, the order in which they are specified matters. The first operation in the string is the last operation to be applied
 
-	    let dastr = "";
-	    
-	    if (d.location) {
-		dastr = dastr +"translate("+d.location.x+" "+d.location.y+") ";
-	    }
-	    
-	    if (d.angle) {
-		dastr = dastr +"rotate("+d.angle+") ";
-	    }
-
-	    dastr = dastr + 'matrix (1, 0, 0, -1, 0, 0)'
-	    return dastr;
-	})
+			let dastr = "";
+			if (d.location) {
+				dastr = dastr +"translate("+d.location.x+" "+d.location.y+") ";
+			}
+			if (d.angle) {
+				dastr = dastr +"rotate("+d.angle+") ";
+			}
+			dastr = dastr + 'matrix (1, 0, 0, -1, 0, 0)'
+			return dastr;
+		})
         .attr('class', 'text')
     //We do not use x and y parameter in the text attribute because we take location into account in the transformation of the text.
     //We do that to make the transform code easier becasue it needs to do a couple of axis flipping and rotation
@@ -321,60 +299,57 @@ d3.collection = function(svg, W, H, data) {
 //          return 0;
 //        })
     
-        .attr("text-anchor", "middle")          //  Draw centered on given location along x-axis
-        .attr("dominant-baseline", "middle")    //  Draw centered on given location along y-axis. This makes the coordinate we use be the center of the text (in between the two line in an elementary writing class). Beware that there is an other parameter alignment-baseline that does not do what we want.
+		.attr("text-anchor", "middle")  //  Draw centered on given location along x-axis
+		.attr("dominant-baseline", "middle")    //  Draw centered on given location along y-axis. This makes the coordinate we use be the center of the text (in between the two line in an elementary writing class). Beware that there is an other parameter alignment-baseline that does not do what we want.
 
-    //The fill of a label is actually the primary color of the text. That's what you would normally think of as "font color"
-        .style('fill', function(d) {
-            if(d.fill === undefined) return 'black';
-	    return BridgesVisualizer.getColor(d.fill);
-        })
-        .style('opacity', function(d) {
-          if(d.opacity) return d.opacity;
-          return 1;
-        })
-        .style("font-size", function(d) {
-            if(d['font-size'] === undefined) return "12px";
-	    return d['font-size'] + "px";
-        })
-    //The stroke on a label is the outline of the label. so typically one would want the stroke width to be very small
-    	.style("stroke-width", function(d) { 
-            if (d['stroke-width'] === undefined) return 1;
-	    return d['stroke-width'];
-      })
-	.style("stroke", function(d) {
-	    if (d.stroke === undefined) return "black";
-            return BridgesVisualizer.getColor(d.stroke); 
-      })
-	.style("stroke-dasharray", function(d) {
-	    if (d['stroke-dasharray'] === undefined) return 0;
-            return d['stroke-dasharray'];
-      })
-        .text(function(d) {
-	    if (d.name === undefined) return "";
-            return d.name;
-        });
-
-
-
-    // d3.selectAll(".nodeLabel").each(BridgesVisualizer.insertLinebreaks);
+		//The fill of a label is actually the primary color of the text. 
+		// That's what you would normally think of as "font color"
+		.style('fill', function(d) {
+			if(d.fill === undefined) return 'black';
+			return BridgesVisualizer.getColor(d.fill);
+		})
+		.style('opacity', function(d) {
+			if(d.opacity) return d.opacity;
+			return 1;
+		})
+		.style("font-size", function(d) {
+			if(d['font-size'] === undefined) return "12px";
+			return d['font-size'] + "px";
+		})
+		//The stroke on a label is the outline of the label. so typically one would want the stroke width to be very small
+		.style("stroke-width", function(d) { 
+		if (d['stroke-width'] === undefined) return 1;
+			return d['stroke-width'];
+		})
+		.style("stroke", function(d) {
+			if (d.stroke === undefined) return "black";
+			return BridgesVisualizer.getColor(d.stroke); 
+		})
+		.style("stroke-dasharray", function(d) {
+		if (d['stroke-dasharray'] === undefined) return 0;
+			return d['stroke-dasharray'];
+		})
+		.text(function(d) {
+		if (d.name === undefined) return "";
+			return d.name;
+		});
 
 
-    // Handle doubleclick on node path (shape)
-    function dblclick(d) {
 
-    }
+		// d3.selectAll(".nodeLabel").each(BridgesVisualizer.insertLinebreaks);
 
-    // Handle dragstart on force.drag()
-    function dragstart(d) {
 
-    }
+		// Handle doubleclick on node path (shape)
+		function dblclick(d) {
+		}
 
-    function dragged(d) {
+		// Handle dragstart on force.drag()
+		function dragstart(d) {
+		}
 
-    }
+		function dragged(d) {
+		}
 
-    function dragended(d) {
-
-    }
+		function dragended(d) {
+		}
 };

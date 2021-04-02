@@ -123,7 +123,6 @@ d3.audio_webgl = function(canvas, W, H, data){
     programMain = initShaderProgram(glMain, vsSource, fsSource);
     glMain.useProgram(programMain);
 
-
     audioElem = document.getElementById("audio");
     sampleButton = document.getElementById("sample-button");
     sampleSize = document.getElementById("sample-size");
