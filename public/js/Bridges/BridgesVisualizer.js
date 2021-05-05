@@ -16,9 +16,9 @@
 
   BridgesVisualizer.defaultColors = d3.scaleOrdinal(d3.schemeCategory20);
 
-  BridgesVisualizer.strokeWidthRange = d3.scaleLinear().domain([1,10]).range([1,15]).clamp(true);
+  BridgesVisualizer.strokeWidthRange = d3.scaleLinear().domain([0.0001,10]).range([0.0001,15]).clamp(true);
   //scale values between 1 and 100 to a reasonable range
-  BridgesVisualizer.scaleSize = d3.scaleLinear().domain([1,50]).range([10,500]);
+  BridgesVisualizer.scaleSize = d3.scaleLinear().domain([0.001,50]).range([0.001,500]);
   BridgesVisualizer.shapeEdge = d3.scaleLinear().domain([1,50]).range([0.5,3.3]);
   BridgesVisualizer.selfEdge = d3.scaleLinear().domain([1,50]).range([3,13]);
 
