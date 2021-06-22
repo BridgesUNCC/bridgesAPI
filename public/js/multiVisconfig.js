@@ -450,6 +450,10 @@ function visualizeAssignment(assignment, index){
       collection = d3.collection(vis, width, height, assignmentData);
       BridgesVisualizer.visualizations[assignment.subAssignment] = (collection);
   }
+  else if (assignment.vistype == "collectionv2" && d3.collectionv2) {
+      collectionv2 = d3.collectionv2(vis, width, height, assignmentData);
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (collectionv2);
+  }
   else if (assignment.vistype == "LineChart" && d3.lineChart){
       plot = d3.lineChart(vis, "vis" + index, assignmentData);
       BridgesVisualizer.visualizations[assignment.subAssignment] = (plot);

@@ -33,7 +33,8 @@ exports.getVisType = function(toCheck) {
 
     "ColorGrid":                  "grid",
 
-    "SymbolCollection":           "collection",
+   "SymbolCollection":           "collection",
+   "SymbolCollectionV2":           "collectionv2",
 
     "LineChart":                       "LineChart",
 
@@ -87,6 +88,11 @@ exports.getVisTypeObject = function(data) {
       "collection": {
         "vistype":"collection",
         "script":"/js/collection.js",
+        "link":""
+      },
+      "collectionv2": {
+        "vistype":"collectionv2",
+        "script":"/js/collectionv2.js",
         "link":""
       },
       "tree": {
