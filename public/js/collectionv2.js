@@ -1,5 +1,54 @@
 //based loosely on bostock's example and
 //http://bl.ocks.org/d3noob/5141278
+
+// Symbol collection: structure and  attributes
+
+// Each symbol consists of a set of mandatory and optional attributes; optional
+// attributes maybe assignmed a default value 
+
+// Symbol JSON structure:
+//"symbols: [ 
+//    {"id:   :  int,   // mandatory
+//     "parent" : int,  // optional, group has a parent id, highest level symbols dont
+//     "type" :  string,// mandatory, can be 'line', 'circle', 'rect', etc.
+//     "layer":  int,   // optional, represents the depth of object, used for 
+//					  //  rendering order
+//     "transform": 3x3 float // optional, represents 2D transform of symbol/group
+//     "stroke-color": string // optional
+//     "stroke-width": float // optional
+//     "stroke-dash": string // optional, check type
+//     "fill-color": string // optional -- not can take rgba
+//     "opacity":  float    // range 0-1
+//     "label" : string     // for mouse over, etc
+//     // symbol types and their properties
+//     "circle" :   
+//          "center":  float
+//          "radius":  float
+//	 "rect": 
+//          "ll_x":  float,
+//          "ll_y":  float,
+//          "width":  float,
+//          "height":  float,
+//     "text": 
+//           "text": string    // text of the label
+//           "font-size": int
+//     "polyline":
+//           "points" : [.....]  // set of x,y pairs in float
+//     "polygon":
+//           "points" : [.....]  // set of x,y pairs in float
+//           
+//       },
+//	   {
+//         "id: int,
+//         ........
+//         ........
+//         ........
+//       }
+//       ......
+//       ......
+//      ]
+//
+
 d3.collectionv2 = function(svg, W, H, data) {
 
      //defaults
