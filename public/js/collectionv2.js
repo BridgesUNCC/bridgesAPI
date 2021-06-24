@@ -10,11 +10,11 @@
 //"symbols: [ 
 //    {"id:   :  int,   // mandatory
 //     "parent" : int,  // optional, group has a parent id, highest level symbols dont
-//     "type" :  string,// mandatory, can be 'line', 'circle', 'rect', etc.
+//     "type" :  string,// mandatory, can be 'line', 'circle', 'rect', 'text' etc.
 //     "layer":  int,   // optional, represents the depth of object, used for 
 //					  //  rendering order
 //     "transform": 3x3 float // optional, represents 2D transform of symbol/group
-//     "stroke-color": string // optional
+//     "stroke-color": [r,g,b,a] // optional
 //     "stroke-width": float // optional
 //     "stroke-dash": string // optional, check type
 //     "fill-color": string // optional -- not can take rgba
@@ -22,16 +22,17 @@
 //     "label" : string     // for mouse over, etc
 //     // symbol types and their properties
 //     "circle" :   
-//          "center":  float
+//          "center":  float[2]
 //          "radius":  float
 //	 "rect": 
-//          "ll_x":  float,
-//          "ll_y":  float,
+//          "lowerleftcorner":  float[2],
 //          "width":  float,
 //          "height":  float,
 //     "text": 
 //           "text": string    // text of the label
 //           "font-size": int
+//           "anchor-location": float[2]
+//           "anchor-style": string // optional
 //     "polyline":
 //           "points" : [.....]  // set of x,y pairs in float
 //     "polygon":
@@ -74,6 +75,37 @@ d3.collectionv2 = function(svg, W, H, data) {
 	//	box of the symbols(ScaleFactor) and translating to the viewport,
 	//	(T_VP), while // maintaining the aspect ratio
 
+
+    var sourceSymbols = data["symbols"]
+    //    console.log("symbols are "+ JSON.stringify(sourceSymbols));
+
+    //create dictionary of symbols that associate ID to symbol
+    var symbolDict = {};
+    for (const symb of sourceSymbols) {
+	symbolDict[symb["ID"]] = symb;
+
+	symbolDict[symb["ID"]]["children"] = [];
+    }
+
+    var symbolRoot = []
+    
+    //recreate hierarchy
+    for (var id in symbolDict) {
+	if ("parentID" in symbolDict[id]) {
+	    parentID = symbolDict[id]["parentID"];
+	    symbolDict[ parentID ]["children"].push(id);
+	}
+	else {
+	    symbolRoot.push(id);
+	}
+    }
+
+    console.log("symbolDict "+ JSON.stringify(symbolDict));
+    console.log("root: "+ JSON.stringify(symbolRoot));
+
+    //TODO: sort children list and root by layer.
+	
+    
 	// translation to origin
 	Transl_Origin = [-(data.domainX[0]+data.domainX[1])/2, -(data.domainY[0]+data.domainY[1])/2];
 
@@ -131,261 +163,86 @@ d3.collectionv2 = function(svg, W, H, data) {
 		}
 	}
 
-	// parse and set all symbols in the shape collection
-    var symbolData = data.symbols,
-        symbol = null,  // d3 symbol selection
-        text = null,    // d3 text selection
-        symbols = { // data binding
-                    "text": [],
-                    "circles": [],
-                    "ellipses": [],
-                    "rectangles": [],
-                    "polylines": [],
-                    "points": [],
-                    "shapes": []
-                  };
+    var helper = function (svgElement, IDarray) {
+	for (var id of IDarray) {
+	    var symb = symbolDict[id];
+	    var symbSVG = null;
 
-	// separate shapes from text labels
-    symbolData.forEach(function(symbol) {
-		//setting default location is unspecified
-		if(!symbol.location) {
-			symbol.location = {};
-			symbol.location.x = 0.0;
-			symbol.location.y = 0.0;
-		} 
+	    if (symb["type"] === "rect" ) {
+		//console.log("rect is "+JSON.stringify(symb));
+		symbSVG =
+		    svgElement.append('rect')
+		    .attr('x', symb["lowerleftcorner"][0])
+		    .attr('y', symb["lowerleftcorner"][1])
+		    .attr('width', symb["width"])
+		    .attr('height', symb["height"]);
+	    } else if (symb["type"] === "circle" ) {
+		//console.log("circle is "+JSON.stringify(symb));
+		symbSVG =
+		    svgElement.append('circle')
+		    .attr('cx', symb["center"][0])
+		    .attr('cy', symb["center"][1])
+		    .attr('r', symb["r"]);		
+	    } else if (symb["type"] === "text" ) {
+		//console.log("text is "+JSON.stringify(symb));
+		symbSVG =
+		    svgElement.append('text')
+		    .attr('x', symb["anchor-location"][0])
+		    .attr('y', symb["anchor-location"][1])
+		    .text(symb['text'])
+	    } else if (symb["type"] === "polyline" ) {
+		//console.log("polyline is "+JSON.stringify(symb));
+		symbSVG =
+		    svgElement.append('svg:polyline')
+		    .attr("points", symb["points"]);
+	    } else if (symb["type"] === "polygon" ) {
+		//console.log("polygon is "+JSON.stringify(symb));
+		var points = symb["points"];
+		points.push(points[0]);
+		points.push(points[1]);
+		symbSVG =
+		    svgElement.append('svg:polyline')
+		    .attr("points", points);
+	    } else if (symb["type"] === "group" ) {
+		console.log("group is "+JSON.stringify(symb));
+		symbSVG =
+		    svgElement.append('g');
+		helper(symbSVG, symb['children']);
 
-		// complete the polygon with the original point
-		if(symbol.shape == "polygon" && symbol.points && symbol.points.length >= 2) {
-			symbol.points.push(symbol.points[0]);
- 			symbol.points.push(symbol.points[1]);
+	    } 
+	    
+	    
+	    //add generic parameters
+	    if (!(symbSVG === null)) {
+		if ("fill-color" in symb) {
+		    symbSVG.attr('fill', BridgesVisualizer.getColor(symb["fill-color"]));
+		} else {
+		    symbSVG.attr('fill', 'none');
 		}
 
-		if(symbol.shape == "text") {
-			symbols.text.push(symbol);
-		} 
-		else {
-			symbols.shapes.push(symbol);
+		if ("stroke-color" in symb) {
+		    symbSVG.attr('stroke', BridgesVisualizer.getColor(symb["stroke-color"]));
 		}
-	});
+		
+		if ("stroke-width" in symb) {
+		    symbSVG.attr('stroke-width', 1*symb["stroke-width"]);
+		}
 
+		if ("transform" in symb) {
+		    symbSVG.attr("transform",
+				 "matrix("
+				 +(symb["transform"][0])+","
+				 +(symb["transform"][1])+","
+				 +(symb["transform"][2])+","
+				 +(symb["transform"][3])+","
+				 +(symb["transform"][4])+","
+				 +(symb["transform"][5])+")")
+		}
+	    }
+	}
+    };
 
-    // draw and style all shapes
-	shapes = svgGroup.selectAll(".shape")
-		.data(symbols.shapes).enter().append("g")
-		.attr("class", "shape")
-		.each(function(d) {
-			var me = d3.select(this);
-			switch(d.shape) {
-				case "circle":    // Circle
-					me
-					.append("svg:circle")
-					.attr("r", function(d) {
-						if (d.r === undefined) return 15;
-							return d.r;
-					})
-					.attr("cx", function(d) {
-						if(d.location)
-							return d.location.x;
-							return 0;
-					})
-					.attr("cy", function(d) {
-						if(d.location)
-							return d.location.y;
-							return 0;
-					});
-					break;
-
-				case "point":    // Point 
-					me
-					.append("svg:circle")
-					.classed("point", true)
-					.attr("r", 1)
-					.attr("cx", function(d) {
-					if(d.points)
-						return d.points[0];
-						return 0;
-					})
-					.attr("cy", function(d) {
-					if(d.points)
-						return d.points[1];
-						return 0;
-					});
-					break;
-
-				case "ellipse":    // Ellipse: currently not supported
-					me
-					.append("svg:ellipse")
-					.attr("rx", function(d) {
-						if (d.rx === undefined) return 15;
-							return d.rx;
-					})
-					.attr("ry", function(d) {
-						if (d.ry === undefined) return 15;
-							return d.ry;
-					})
-					.attr("cx", function(d) {
-						if(d.location)
-							return d.location.x;
-						return 0;
-					})
-					.attr("cy", function(d) {
-						if(d.location)
-							return d.location.y;
-						return 0;
-					});
-					break;
-
-          		case "rect":    // Rectangle
-					me
-					.append("svg:rect")
-					.attr("x", function(d) {
-						if(d.location)
-							return d.location.x;
-						return 0;
-					})
-					.attr("y", function(d) {
-						if(d.location)
-							return d.location.y;
-						return 0;
-					})
-					.attr("width", function(d) {
-						if (d.width === undefined) return 10;
-						return d.width;
-					})
-					.attr("height", function(d) {
-						if (d.height === undefined) return 10;
-						return d.height;
-					});
-					break;
-
-				case "polygon":				// Polygon
-				case "polyline": 			// Polyline
-				case "line":
-					me
-					.append("svg:polyline")
-					.attr("points", function(d) {
-						return d.points;
-					})
-					.attr("transform", function(d) {
-					if(d.location)
-						return "translate(" + d.location.x +  "," + d.location.y + ")";
-						return "translate(0,0)";
-					});
-			}
-		});
-
-	// shape properties
-	shapes
-		.style('opacity', function(d) {
-			if(d.opacity === undefined) return 1;
-				return d.opacity;
-		})
-		.style("stroke-width", function(d) {
-		if (d['stroke-width'] === undefined) return 1;
-			return d['stroke-width'];
-		})
-		.style("stroke", function(d) {
-		if (d.stroke === undefined) return "black";
-			return BridgesVisualizer.getColor(d.stroke); 
-		})
-		.style("stroke-dasharray", function(d) {
-		if (d['stroke-dasharray'] === undefined) return 0;
-			return d['stroke-dasharray'];
-		})
-		.style("fill", function(d) {
-		if (d.fill === undefined) return "none";
-			return BridgesVisualizer.getColor(d.fill);
-		})
-		.on("mouseover", function(d) {
-			BridgesVisualizer.textMouseover(d.name);
-		})
-		.on("mouseout", BridgesVisualizer.textMouseout);
-
-	// shape node names
-	shapes
-		.append("text")
-		.attr("class","nodeLabel")
-		.text(function(d) {
-			return d.name;
-		});
-
-
-	// draw text labels
-    text = svgGroup.selectAll(".text")
-      .data(symbols.text)
-	.enter().append('g').attr('class', 'textLabel');
-
-	text  // add text itself
-		.append('svg:text')
-		.attr('transform', function(d) {
-	    //this is a transformation that prints the text in the correct way.
-	    //we need to do three operations.
-	    //1. There is a need to flip the y axis to cancel out the cartesian mapping otherwise text get printed upside down. this is what the first 4 parameters of the call to matrix do
-	    //2. The angle of rotation of the text needs to be taken into account
-	    //3. The placement of the text in the space needs to be set.
-	    //We do all three operations in transform because the translation needs to be the last operation done
-	    //Because of that, the order in which they are specified matters. The first operation in the string is the last operation to be applied
-
-			let dastr = "";
-			if (d.location) {
-				dastr = dastr +"translate("+d.location.x+" "+d.location.y+") ";
-			}
-			if (d.angle) {
-				dastr = dastr +"rotate("+d.angle+") ";
-			}
-			dastr = dastr + 'matrix (1, 0, 0, -1, 0, 0)'
-			return dastr;
-		})
-        .attr('class', 'text')
-    //We do not use x and y parameter in the text attribute because we take location into account in the transformation of the text.
-    //We do that to make the transform code easier becasue it needs to do a couple of axis flipping and rotation
-//        .attr('x', function(d) {
-//          if(d.location) return d.location.x;
-//          return 0;
-//        })
-//        .attr('y', function(d) {
-//          if(d.location) return d.location.y;
-//          return 0;
-//        })
-    
-		.attr("text-anchor", "middle")  //  Draw centered on given location along x-axis
-		.attr("dominant-baseline", "middle")    //  Draw centered on given location along y-axis. This makes the coordinate we use be the center of the text (in between the two line in an elementary writing class). Beware that there is an other parameter alignment-baseline that does not do what we want.
-
-		//The fill of a label is actually the primary color of the text. 
-		// That's what you would normally think of as "font color"
-		.style('fill', function(d) {
-			if(d.fill === undefined) return 'black';
-			return BridgesVisualizer.getColor(d.fill);
-		})
-		.style('opacity', function(d) {
-			if(d.opacity) return d.opacity;
-			return 1;
-		})
-		.style("font-size", function(d) {
-			if(d['font-size'] === undefined) return "12px";
-			return d['font-size'] + "px";
-		})
-		//The stroke on a label is the outline of the label. so typically one would want the stroke width to be very small
-		.style("stroke-width", function(d) { 
-		if (d['stroke-width'] === undefined) return 1;
-			return d['stroke-width'];
-		})
-		.style("stroke", function(d) {
-			if (d.stroke === undefined) return "black";
-			return BridgesVisualizer.getColor(d.stroke); 
-		})
-		.style("stroke-dasharray", function(d) {
-		if (d['stroke-dasharray'] === undefined) return 0;
-			return d['stroke-dasharray'];
-		})
-		.text(function(d) {
-		if (d.name === undefined) return "";
-			return d.name;
-		});
-
-
-
-		// d3.selectAll(".nodeLabel").each(BridgesVisualizer.insertLinebreaks);
+    helper(svgGroup, symbolRoot);
 
 
 		// Handle doubleclick on node path (shape)
