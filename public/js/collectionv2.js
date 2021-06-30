@@ -32,7 +32,8 @@
 //           "text": string    // text of the label
 //           "font-size": int
 //           "anchor-location": float[2]
-//           "anchor-style": string // optional
+//           "anchor-alignmentLR": string //valid "left", "middle", and "right" // optional
+//           "anchor-alignmentTB": string //valid "top", "bottom", "embottom", "emtop", "middle" // optional
 //     "polyline":
 //           "points" : [.....]  // set of x,y pairs in float
 //     "polygon":
@@ -194,6 +195,31 @@ d3.collectionv2 = function(svg, W, H, data) {
 		    svgElement.append('text')
 		    .text(symb['text'])
 		    .attr('font-size', symb['font-size'])
+		if ("anchor-alignmentLR" in symb) {
+		    var ta = ""
+		    if (symb['anchor-alignmentTB'] == 'left')
+			ta = 'start'
+		    if (symb['anchor-alignmentTB'] == 'right')
+			ta = 'end'
+		    if (symb['anchor-alignmentTB'] == 'middle')
+			ta = 'middle'
+		    symbSVG.attr('text-anchor', ta)
+		}
+		if ("anchor-alignmentTB" in symb) {
+		    var db = ""
+		    if (symb['anchor-alignmentTB'] == 'top')
+			db = 'text-before-edge'
+		    if (symb['anchor-alignmentTB'] == 'emtop')
+			db = 'mathematical'
+		    if (symb['anchor-alignmentTB'] == 'middle')
+			db = 'middle'
+		    if (symb['anchor-alignmentTB'] == 'embottom')
+			db = 'alphabetic'
+		    if (symb['anchor-alignmentTB'] == 'bottom')
+			db = 'text-bottom'
+		    symbSVG.attr('dominant-baseline', db)
+		}
+		
 	    } else if (symb["type"] === "polyline" ) {
 		//console.log("polyline is "+JSON.stringify(symb));
 		symbSVG =
