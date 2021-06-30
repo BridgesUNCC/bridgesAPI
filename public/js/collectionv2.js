@@ -105,7 +105,25 @@ d3.collectionv2 = function(svg, W, H, data) {
     console.log("root: "+ JSON.stringify(symbolRoot));
 
     //TODO: sort children list and root by layer.
-	
+    var sortlayers = function(arr) {
+	arr.sort(function(a, b) {
+	    var alayer=0
+	    var blayer=0
+	    
+	    if ('layer' in symbolDict[a]) 
+		alayer = symbolDict[a]['layer']
+	    
+	    if ('layer' in symbolDict[b]) 
+		blayer = symbolDict[b]['layer']
+	    
+	    return blayer - alayer ;
+	});
+    };
+
+    sortlayers(symbolRoot);
+    for (var id in symbolDict) {
+	sortlayers(symbolDict[id]['children'])
+    }    
     
 	// translation to origin
 	Transl_Origin = [-(data.domainX[0]+data.domainX[1])/2, -(data.domainY[0]+data.domainY[1])/2];
