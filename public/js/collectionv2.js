@@ -159,7 +159,7 @@ d3.collectionv2 = function(svg, W, H, data) {
 
 	// initialize zoom parameters, handler
 	var zoom = d3.zoom()
-			.scaleExtent([0.1,5])
+			.scaleExtent([.5, 2])
 		.on("zoom", zoomHandler);
 
 	// update the svg with some global attributes and zoom attribute
@@ -298,18 +298,4 @@ d3.collectionv2 = function(svg, W, H, data) {
 
     helper(svgGroup, symbolRoot);
 
-
-		// Handle doubleclick on node path (shape)
-		function dblclick(d) {
-		}
-
-		// Handle dragstart on force.drag()
-		function dragstart(d) {
-		}
-
-		function dragged(d) {
-		}
-
-		function dragended(d) {
-		}
 };
