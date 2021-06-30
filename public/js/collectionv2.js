@@ -197,11 +197,11 @@ d3.collectionv2 = function(svg, W, H, data) {
 		    .attr('font-size', symb['font-size'])
 		if ("anchor-alignmentLR" in symb) {
 		    var ta = ""
-		    if (symb['anchor-alignmentTB'] == 'left')
+		    if (symb['anchor-alignmentLR'] == 'left')
 			ta = 'start'
-		    if (symb['anchor-alignmentTB'] == 'right')
+		    if (symb['anchor-alignmentLR'] == 'right')
 			ta = 'end'
-		    if (symb['anchor-alignmentTB'] == 'middle')
+		    if (symb['anchor-alignmentLR'] == 'middle')
 			ta = 'middle'
 		    symbSVG.attr('text-anchor', ta)
 		}
@@ -216,7 +216,7 @@ d3.collectionv2 = function(svg, W, H, data) {
 		    if (symb['anchor-alignmentTB'] == 'embottom')
 			db = 'alphabetic'
 		    if (symb['anchor-alignmentTB'] == 'bottom')
-			db = 'text-bottom'
+			db = 'ideographic'
 		    symbSVG.attr('dominant-baseline', db)
 		}
 		
