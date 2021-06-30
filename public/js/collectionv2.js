@@ -231,6 +231,9 @@ d3.collectionv2 = function(svg, W, H, data) {
 		    symbSVG.attr('stroke-width', 1*symb["stroke-width"]);
 		}
 
+		if ("opacity" in symb) {
+		    symbSVG.attr('opacity', symb["opacity"]);
+		}
 		
 		if ("transform" in symb) {
 		    transformString = "matrix("
