@@ -12,7 +12,7 @@
 //     "parent" : int,  // optional, group has a parent id, highest level symbols dont
 //     "type" :  string,// mandatory, can be 'line', 'circle', 'rect', 'text' etc.
 //     "layer":  int,   // optional, represents the depth of object, used for 
-//					  //  rendering order
+//					  //  rendering order. lower values are closer to the camera
 //     "transform": 3x3 float // optional, represents 2D transform of symbol/group
 //     "stroke-color": [r,g,b,a] // optional
 //     "stroke-width": float // optional
