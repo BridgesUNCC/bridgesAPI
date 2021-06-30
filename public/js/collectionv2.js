@@ -264,9 +264,7 @@ d3.collectionv2 = function(svg, W, H, data) {
 	    if (!(symbSVG === null)) {
 		if ("fill-color" in symb) {
 		    symbSVG.attr('fill', BridgesVisualizer.getColor(symb["fill-color"]));
-		} else {
-		    symbSVG.attr('fill', 'none');
-		}
+		} 
 
 		if ("stroke-color" in symb) {
 		    symbSVG.attr('stroke', BridgesVisualizer.getColor(symb["stroke-color"]));
