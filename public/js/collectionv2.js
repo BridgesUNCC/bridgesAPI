@@ -189,10 +189,11 @@ d3.collectionv2 = function(svg, W, H, data) {
 		//console.log("text is "+JSON.stringify(symb));
 
 		transformString = "translate("+ symb['anchor-location'][0] + ", "+ symb['anchor-location'][1]+")"
-	    transformString = transformString + " scale(1,-1)"
+		transformString = transformString + " scale(1,-1)"
 		symbSVG =
 		    svgElement.append('text')
 		    .text(symb['text'])
+		    .attr('font-size', symb['font-size'])
 	    } else if (symb["type"] === "polyline" ) {
 		//console.log("polyline is "+JSON.stringify(symb));
 		symbSVG =
