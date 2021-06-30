@@ -168,6 +168,8 @@ d3.collectionv2 = function(svg, W, H, data) {
 	    var symb = symbolDict[id];
 	    var symbSVG = null;
 
+	    var transformString = ""; 		//some off the trans may come from different places
+	    
 	    if (symb["type"] === "rect" ) {
 		//console.log("rect is "+JSON.stringify(symb));
 		symbSVG =
@@ -185,10 +187,11 @@ d3.collectionv2 = function(svg, W, H, data) {
 		    .attr('r', symb["r"]);		
 	    } else if (symb["type"] === "text" ) {
 		//console.log("text is "+JSON.stringify(symb));
+
+		transformString = "translate("+ symb['anchor-location'][0] + ", "+ symb['anchor-location'][1]+")"
+	    transformString = transformString + " scale(1,-1)"
 		symbSVG =
 		    svgElement.append('text')
-		    .attr('x', symb["anchor-location"][0])
-		    .attr('y', symb["anchor-location"][1])
 		    .text(symb['text'])
 	    } else if (symb["type"] === "polyline" ) {
 		//console.log("polyline is "+JSON.stringify(symb));
@@ -228,15 +231,20 @@ d3.collectionv2 = function(svg, W, H, data) {
 		    symbSVG.attr('stroke-width', 1*symb["stroke-width"]);
 		}
 
+		
 		if ("transform" in symb) {
-		    symbSVG.attr("transform",
-				 "matrix("
+		    transformString = "matrix("
 				 +(symb["transform"][0])+","
 				 +(symb["transform"][1])+","
 				 +(symb["transform"][2])+","
 				 +(symb["transform"][3])+","
 				 +(symb["transform"][4])+","
-				 +(symb["transform"][5])+")")
+			+(symb["transform"][5])+") " + transformString 
+				 
+		}
+
+		if (transformString != "") {
+	            symbSVG.attr("transform", transformString)
 		}
 	    }
 	}
