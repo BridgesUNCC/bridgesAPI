@@ -177,9 +177,9 @@ d3.collectionv2 = function(svg, W, H, data) {
 
 	// zoom handler
 	function zoomHandler() {
-		if (svgGroup) {
+		if (svgZoomGroup) {
 			var T = d3.event.transform;
-			svgZoomGroup.attr('transform', d3.event.transform);
+			svgZoomGroup.attr('transform', T);
 		}
 	}
 
