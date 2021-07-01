@@ -159,7 +159,7 @@ d3.collectionv2 = function(svg, W, H, data) {
 
 	// initialize zoom parameters, handler
 	var zoom = d3.zoom()
-			.scaleExtent([.5, 2])
+			.scaleExtent([.01, 100])
 		.on("zoom", zoomHandler);
 
 	// update the svg with some global attributes and zoom attribute
@@ -171,14 +171,15 @@ d3.collectionv2 = function(svg, W, H, data) {
 			.call(zoom)
 
 	// add the transformation to the svg group
-	// this centers the symbols on the display
-	svgGroup = vis.append("g").attr('transform', T_Composite);
+    // this centers the symbols on the display
+    svgZoomGroup = vis.append("g")
+    svgGroup = svgZoomGroup.append("g").attr('transform', T_Composite)
 
 	// zoom handler
 	function zoomHandler() {
 		if (svgGroup) {
 			var T = d3.event.transform;
-			svg.attr('transform', d3.event.transform);
+			svgZoomGroup.attr('transform', d3.event.transform);
 		}
 	}
 
