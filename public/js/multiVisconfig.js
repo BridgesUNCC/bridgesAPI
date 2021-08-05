@@ -8,6 +8,8 @@ d3.select("#delete").on("click", deleteAssignment);
 d3.select("#nodelabels").on("click", BridgesVisualizer.displayNodeLabels);
 d3.select("#linklabels").on("click", BridgesVisualizer.displayLinkLabels);
 d3.select("#toggleDisplay").on("click", toggleDisplay);
+d3.select("#resetit").on("click", nextVis);
+d3.select("#play").on("click", playVis);
 
 var key = 0;
 var subAssignmentNumber = 0; // subassignment number
@@ -51,8 +53,9 @@ function deleteAssignment() {
 
 function toggleDisplay() {
   d3.event.preventDefault();
-  var newMode = (displayMode == "slide") ? "stack" : "slide";
+  newMode = (displayMode == "slide") ? "stack" : "slide";
   window.location = "/assignments/"+assignment.assignmentNumber+"/"+assignment.username+"?displayMode="+newMode;
+
 }
 
 
@@ -265,6 +268,24 @@ function nextVis(){
   if(subAssignmentNumber < assignment.numSubassignments-1) {
     updateVis(++subAssignmentNumber);
   }
+}
+
+function playVis(){
+  if(assignment.numSubassignments > 1){
+    var intervalId = window.setInterval(function(){
+      nextVis()
+      if(subAssignmentNumber == assignment.numSubassignments-1){
+        clearInterval(intervalId)
+      }
+    }, 1000);
+  }
+}
+
+function delay(){
+  var millisecondsToWait = 500;
+  setTimeout(function() {
+      nextVis();
+  }, millisecondsToWait);
 }
 
 // bind assignment slide buttons if appropriate

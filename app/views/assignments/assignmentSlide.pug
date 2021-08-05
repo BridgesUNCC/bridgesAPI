@@ -27,6 +27,15 @@ block content
 
         div(id="vis0", display="block").assignmentContainer
 
+        a#resetit(href="#", title="Reset View")
+          span.glyphicon.glyphicon-resize-full
+          span.nav-label Reset View
+
+        a#play(href="#", title="Play Visuals")
+          span.glyphicon.glyphicon-resize-full
+          span.nav-label Play View
+
+
 block footerjs
     script.
         var owner = '#{owner}'
