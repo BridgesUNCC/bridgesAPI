@@ -176,6 +176,12 @@ div.slideButton:hover {
   background-color: steelblue;
 }
 
+.button{
+  padding-left: 10px;
+  padding-top: 10px;
+  margin-left: 40px;
+}
+
 div#audiocontrols{
   position: relative;
   padding: 20px;

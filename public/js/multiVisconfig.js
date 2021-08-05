@@ -10,9 +10,12 @@ d3.select("#linklabels").on("click", BridgesVisualizer.displayLinkLabels);
 d3.select("#toggleDisplay").on("click", toggleDisplay);
 d3.select("#resetit").on("click", nextVis);
 d3.select("#play").on("click", playVis);
+d3.select("#stop").on("click", stopVis);
 
 var key = 0;
 var subAssignmentNumber = 0; // subassignment number
+var intervalId;
+var playing = false;
 
 BridgesVisualizer.visualizations = [];
 
@@ -270,14 +273,24 @@ function nextVis(){
   }
 }
 
+function stopVis(){
+  clearInterval(intervalId)
+  playing = false
+}
+
 function playVis(){
   if(assignment.numSubassignments > 1){
-    var intervalId = window.setInterval(function(){
+    if(!playing){
+      playing = true
+      intervalId = window.setInterval(function(){
       nextVis()
       if(subAssignmentNumber == assignment.numSubassignments-1){
         clearInterval(intervalId)
+        playing = false
       }
     }, 1000);
+    }
+    
   }
 }
 

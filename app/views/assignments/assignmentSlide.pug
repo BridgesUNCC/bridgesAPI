@@ -27,13 +27,18 @@ block content
 
         div(id="vis0", display="block").assignmentContainer
 
-        a#resetit(href="#", title="Reset View")
-          span.glyphicon.glyphicon-resize-full
-          span.nav-label Reset View
+        if(assignment.numSubassignments > 1)
+            a#resetit(href="#")
+              button(type="button" class='btn-lg button')
+                span.glyphicon.glyphicon-chevron-right
 
-        a#play(href="#", title="Play Visuals")
-          span.glyphicon.glyphicon-resize-full
-          span.nav-label Play View
+            a#play(href="#", title="Play Visuals")
+              button(id="play" type="button" class='btn-lg')
+                span.glyphicon.glyphicon-play
+
+            a#stop(href="#", title="Stop Visuals")
+              button(id="stop" type="button" class='btn-lg')
+                span.glyphicon.glyphicon-stop
 
 
 block footerjs

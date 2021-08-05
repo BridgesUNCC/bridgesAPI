@@ -393,11 +393,20 @@ exports.get = function (req, res, next) {
         sessionUser = sessionUser ? {"username": sessionUser.username, "email": sessionUser.email} : null;
 
         // add display toggle if >1 assignment
-        navItems.toggleDisplay = (assignment.numSubassignments > 1);
+        navItems.toggleDisplay = (assignment.numSubassignments > 1 && assignment.display_mode !== 'audio');
         // use display mode specified by query param or assignment
         // use display mode specified by query param or assignment
         displayMode = "assignmentSlide"; // default
         distype = assignment.display_mode
+        if(distype == 'stack'){
+          displayMode = "assignmentMulti"
+        }
+        if(distype == 'slide'){
+          displayMode = "assignmentSlide"
+        }
+        if(distype == 'audio'){
+          displayMode = "assignmentAudio"
+        }
         if(req.query.displayMode) {
           if(req.query.displayMode == "stack"){
             displayMode = "assignmentMulti";
@@ -412,8 +421,8 @@ exports.get = function (req, res, next) {
             distype = "audio"
           }
         } else {
-          displayMode = (assignment.display_mode == "stack") ? "assignmentMulti" : "assignmentSlide";
-          distype = assignment.display_mode
+          //displayMode = (assignment.display_mode == "stack") ? "assignmentMulti" : "assignmentSlide";
+          //distype = assignment.display_mode
         }
 
         return res.render ('assignments/' + displayMode, {
