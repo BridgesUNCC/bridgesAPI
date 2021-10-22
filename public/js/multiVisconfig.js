@@ -5,8 +5,24 @@ d3.selectAll("#collapse").on("click", collapse);
 d3.select("#reset").on("click", reset);
 d3.select("#save").on("click", savePositions);
 d3.select("#delete").on("click", deleteAssignment);
-d3.select("#nodelabels").on("click", BridgesVisualizer.displayNodeLabels);
-d3.select("#linklabels").on("click", BridgesVisualizer.displayLinkLabels);
+d3.select("#nodelabels").on("click",function(){
+  if(BridgesVisualizer.labels_shown === false){
+    BridgesVisualizer.labels_shown = true;
+  }else{
+    BridgesVisualizer.labels_shown = false;
+  }
+  BridgesVisualizer.displayNodeLabels();
+});
+
+d3.select("#linklabels").on("click", function(){
+  if(BridgesVisualizer.link_labels_shown === false){
+    BridgesVisualizer.link_labels_shown = true;
+  }else{
+    BridgesVisualizer.link_labels_shown = false;
+  }
+  BridgesVisualizer.displayLinkLabels()
+
+});
 d3.select("#toggleDisplay").on("click", toggleDisplay);
 d3.select("#resetit").on("click", nextVis);
 d3.select("#play").on("click", playVis);
@@ -16,6 +32,10 @@ var key = 0;
 var subAssignmentNumber = 0; // subassignment number
 var intervalId;
 var playing = false;
+
+//toggles for labels within the visualization
+BridgesVisualizer.labels_shown = false;
+BridgesVisualizer.link_labels_shown = false;
 
 BridgesVisualizer.visualizations = [];
 
@@ -290,7 +310,7 @@ function playVis(){
       }
     }, 1000);
     }
-    
+
   }
 }
 
@@ -604,5 +624,6 @@ function debounce(func, wait, immediate) {
         if (callNow) func.apply(context, args);
     };
 }
+
 
 })();
