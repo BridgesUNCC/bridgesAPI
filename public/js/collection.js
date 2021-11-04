@@ -325,7 +325,8 @@ d3.collection = function(svg, W, H, data) {
 			if (d.stroke === undefined) return "black";
 			return BridgesVisualizer.getColor(d.stroke); 
 		})
-		.attr("stroke-dasharray", function(d) {
+	.attr("stroke-dasharray", function(d) {
+	    console.log(" "+d['stroke-dasharray'] + " "+JSON.stringify(d));
 		if (d['stroke-dasharray'] === undefined) return 0;
 			return d['stroke-dasharray'];
 		})
