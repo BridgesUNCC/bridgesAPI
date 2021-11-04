@@ -240,8 +240,7 @@ d3.collection = function(svg, W, H, data) {
 			return BridgesVisualizer.getColor(d.stroke); 
 		})
 	.attr("stroke-dasharray", function(d) {
-	    	    console.log(" "+d['stroke-dasharray'] + " "+JSON.stringify(d));
-		if (d['stroke-dasharray'] === undefined) return 0;
+	    if (d['stroke-dasharray'] === undefined) return 0;
 			return d['stroke-dasharray'];
 		})
 		.style("fill", function(d) {
@@ -327,7 +326,6 @@ d3.collection = function(svg, W, H, data) {
 			return BridgesVisualizer.getColor(d.stroke); 
 		})
 	.attr("stroke-dasharray", function(d) {
-	    console.log(" "+d['stroke-dasharray'] + " "+JSON.stringify(d));
 		if (d['stroke-dasharray'] === undefined) return 0;
 			return d['stroke-dasharray'];
 		})
