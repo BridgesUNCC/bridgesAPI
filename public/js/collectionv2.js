@@ -16,7 +16,7 @@
 //     "transform": 3x3 float // optional, represents 2D transform of symbol/group
 //     "stroke-color": [r,g,b,a] // optional
 //     "stroke-width": float // optional
-//     "stroke-dash": string // optional, check type
+//     "stroke-dasharray": int // optional, does not provide the full dash array feature
 //     "fill-color": string // optional -- not can take rgba
 //     "opacity":  float    // range 0-1
 //     "label" : string     // for mouse over, etc
