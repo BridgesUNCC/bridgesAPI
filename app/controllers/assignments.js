@@ -380,7 +380,7 @@ exports.get = function (req, res, next) {
         //assign the coordsystem type and the area to show. this gets used in map.js/graph.js for deciding projection
         data.coord_system_type = data.coord_system_type ? data.coord_system_type.toLowerCase() : "cartesian";
         //in map.js it picks the area to show from this variable
-        data.map = data.map ? data.map.toLowerCase() : "None";
+        data.map = data.map ? data.map : "None";
 
         // add map resources if appropriate
         if(assignment.data[0] && assignment.data[0].map_overlay) {

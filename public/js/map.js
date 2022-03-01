@@ -1,4 +1,4 @@
-BridgesVisualizer.map = function(vis, overlay, map) {
+BridgesVisualizer.map = function(vis, overlay, map, state) {
 
   // get id of svg
   var id = +vis.attr("id").substr(3);
@@ -96,19 +96,22 @@ BridgesVisualizer.map = function(vis, overlay, map) {
       var array = topojson.feature(us, us.objects.collection).features
       var arraycopy = [...array];
 
+      if(state.toLowerCase() == "all"){
+        var visData = arraycopy
+      }else{
+        var visData = arraycopy.filter(function(d) { return d.properties.state.toLowerCase() == state.toLowerCase(); })
+      }
+
       states.selectAll("path")
           .attr("class", "land")
           .attr("id", "state_fips")
-          .data(arraycopy.filter(function(d) { return d.properties.state.toLowerCase() == map.toLowerCase(); }))
+          .data(visData)
           .enter()
           .append("path")
-          // .attr("fill", "black")
+          .attr("fill", "black")
           .attr("d", path)
-          // .attr("stroke","green")
-          // .attr("strokeWidth", 20)
-
-
-      console.log(us.objects.states)
+          // .attr("stroke","blue")
+          // .attr("strokeWidth", 2)
 
 
       vis.select("g").select("#map_overlay"+id).moveToBack();
@@ -123,7 +126,9 @@ BridgesVisualizer.map = function(vis, overlay, map) {
   switch(overlay) {
     case "albersusa":
       //albersUsa();
-      svgMap();
+      if(map.toLowerCase() == "us"){
+        svgMap();
+      }
       break;
     case "equirectangular":
       equirectangular();

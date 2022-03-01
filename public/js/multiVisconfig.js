@@ -3,6 +3,24 @@
 // bind event handlers for ui
 d3.selectAll("#collapse").on("click", collapse);
 d3.select("#reset").on("click", reset);
+d3.select("#hideNodes").on("click", function(){
+  if(BridgesVisualizer.nodes_shown === false){
+    BridgesVisualizer.nodes_shown = true;
+  }else{
+    BridgesVisualizer.nodes_shown = false;
+  }
+  BridgesVisualizer.displayNodes();
+});
+
+d3.select("#hideLinks").on("click", function(){
+  if(BridgesVisualizer.links_shown === false){
+    BridgesVisualizer.links_shown = true;
+  }else{
+    BridgesVisualizer.links_shown = false;
+  }
+  BridgesVisualizer.displayLinks();
+});
+
 d3.select("#save").on("click", savePositions);
 d3.select("#delete").on("click", deleteAssignment);
 d3.select("#nodelabels").on("click",function(){
@@ -36,6 +54,8 @@ var playing = false;
 //toggles for labels within the visualization
 BridgesVisualizer.labels_shown = false;
 BridgesVisualizer.link_labels_shown = false;
+BridgesVisualizer.nodes_shown = true;
+BridgesVisualizer.links_shown = true;
 
 BridgesVisualizer.visualizations = [];
 
@@ -57,6 +77,10 @@ function reset() {
   for(var subassign in BridgesVisualizer.visualizations) {
     BridgesVisualizer.visualizations[subassign].reset();
   }
+}
+
+function hideNodes(){
+
 }
 
 function deleteAssignment() {
@@ -596,7 +620,7 @@ function addMapOverlay(assignmentData, vis) {
     switch(vis.node().tagName) {
       case 'svg':
       //we now pass the area to render from map as assignmentData.map: example-North Carolina
-        BridgesVisualizer.map(vis, assignmentData.coord_system_type, assignmentData.map);
+        BridgesVisualizer.map(vis, assignmentData.coord_system_type, assignmentData.map[0], assignmentData.map[1]);
         break;
 
       case 'CANVAS':

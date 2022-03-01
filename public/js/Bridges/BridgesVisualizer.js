@@ -88,6 +88,7 @@
   BridgesVisualizer.tooltipEnabled = true;
   BridgesVisualizer.showingNodeLabels = false;
   BridgesVisualizer.showingLinkLabels = false;
+  BridgesVisualizer.hown = true;
 
 
   BridgesVisualizer.centerTextHorizontallyInRect = function(obj, width){
@@ -276,6 +277,32 @@
         return d3.geoEquirectangular();
     }
   };
+
+  BridgesVisualizer.displayNodes = function() {
+    if(BridgesVisualizer.nodes_shown) {
+        d3.selectAll(".node").style("display","block");
+        // BridgesVisualizer.labels_shown = true;
+    } else {
+        d3.selectAll(".node").style("display","none");
+        // BridgesVisualizer.labels_shown = false;
+    }
+
+    // BridgesVisualizer.labels_shown = true;
+    BridgesVisualizer.redraw();
+  }
+
+  BridgesVisualizer.displayLinks = function() {
+    if(BridgesVisualizer.links_shown) {
+        d3.selectAll(".link").style("display","block");
+        // BridgesVisualizer.labels_shown = true;
+    } else {
+        d3.selectAll(".link").style("display","none");
+        // BridgesVisualizer.labels_shown = false;
+    }
+
+    // BridgesVisualizer.labels_shown = true;
+    BridgesVisualizer.redraw();
+  }
 
   //function that changes the opacity of the labels in the visualization
   //then redraws the visualization
