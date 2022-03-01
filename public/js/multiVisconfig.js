@@ -500,6 +500,14 @@ function visualizeAssignment(assignment, index){
 
       BridgesVisualizer.visualizations[assignment.subAssignment] = (graph_webgl);
   }
+  else if (assignment.vistype == "scene" && d3.scene_webgl) {
+      d3.select("#vis"+index).select("#svg"+index).remove("*");
+      vis = d3.select("#vis" + index).append("canvas")
+        .attr("id", "canvas_webgl"+index);
+      scene = d3.scene_webgl(vis, width, height, assignmentData);
+
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (scene);
+  }
   else if (assignment.vistype == "collection" && d3.collection) {
       collection = d3.collection(vis, width, height, assignmentData);
       BridgesVisualizer.visualizations[assignment.subAssignment] = (collection);
@@ -587,7 +595,8 @@ function addMapOverlay(assignmentData, vis) {
     // call the correct map overlay (svg, CANVAS)
     switch(vis.node().tagName) {
       case 'svg':
-        BridgesVisualizer.map(vis, assignmentData.coord_system_type);
+      //we now pass the area to render from map as assignmentData.map: example-North Carolina
+        BridgesVisualizer.map(vis, assignmentData.coord_system_type, assignmentData.map);
         break;
 
       case 'CANVAS':

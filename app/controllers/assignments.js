@@ -301,6 +301,10 @@ exports.get = function (req, res, next) {
             });
         });
 
+    /*
+    function to construct the nessaccary information to render a bridges visualization
+    from the assignment information
+    */
     function renderVis (res, assignment) {
         var owner=false,
             map=false,
@@ -347,6 +351,7 @@ exports.get = function (req, res, next) {
           data = unflatten(data);
           if(!navItems.labels) navItems.labels = true;
         }
+
         // This captures the data from the NEW hierarchical tree representation
         if("nodes" in data && "children" in data.nodes) {
           data = data.nodes;
@@ -372,7 +377,10 @@ exports.get = function (req, res, next) {
             }
         }
 
+        //assign the coordsystem type and the area to show. this gets used in map.js/graph.js for deciding projection
         data.coord_system_type = data.coord_system_type ? data.coord_system_type.toLowerCase() : "cartesian";
+        //in map.js it picks the area to show from this variable
+        data.map = data.map ? data.map.toLowerCase() : "None";
 
         // add map resources if appropriate
         if(assignment.data[0] && assignment.data[0].map_overlay) {
@@ -384,17 +392,28 @@ exports.get = function (req, res, next) {
 
 
         // add webgl resources if appropriate
-        if(assignment.vistype == "graph-webgl" || assignment.vistype == "Audio") {
+        if(assignment.vistype == "graph-webgl" || assignment.vistype == "Audio" || assignment.vistype == 'scene') {
           linkResources.script.push('/webgl/webgl-utils.js');
           linkResources.script.push('/webgl/initShaders.js');
           linkResources.script.push('/webgl/MV.js');
+        }
+
+        if(assignment.vistype == 'scene'){
+          linkResources.script.push('/js/graphicsEngine/camera.js');
+          linkResources.script.push('/js/graphicsEngine/lighting.js');
+          linkResources.script.push('/js/graphicsEngine/primitives.js');
+          linkResources.script.push('/js/graphicsEngine/texture.js');
+          linkResources.script.push('/js/math/Mat2.js');
+          linkResources.script.push('/js/math/Mat3.js');
+          linkResources.script.push('/js/math/Mat4.js');
+          linkResources.script.push('/js/math/sylvester.js');
         }
 
         sessionUser = sessionUser ? {"username": sessionUser.username, "email": sessionUser.email} : null;
 
         // add display toggle if >1 assignment
         navItems.toggleDisplay = (assignment.numSubassignments > 1 && assignment.display_mode !== 'audio');
-        // use display mode specified by query param or assignment
+
         // use display mode specified by query param or assignment
         displayMode = "assignmentSlide"; // default
         distype = assignment.display_mode
@@ -425,6 +444,8 @@ exports.get = function (req, res, next) {
           //distype = assignment.display_mode
         }
 
+        //calls to render the specific view from the app/views folder with the given information
+        //this behavior is defined in the config/exrpess.js file on where to render views from
         return res.render ('assignments/' + displayMode, {
             "user": sessionUser,
             "assignment": assignment,

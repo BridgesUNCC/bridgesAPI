@@ -224,8 +224,9 @@ d3.graph = function(svg, W, H, data) {
           if(data.coord_system_type == "equirectangular") {
             proj = d3.geoEquirectangular();
           } else if(data.coord_system_type == "albersusa") {
-            proj = d3.geoAlbersUsa();
-          } else if(data.coord_system_type == "window") {
+            proj = d3.geoAlbersUsa()
+          }
+          else if(data.coord_system_type == "window") {
             proj = windowProjection;
           } else if(data.coord_system_type == "cartesian"){
             d.fx = d.location[0];
@@ -238,7 +239,7 @@ d3.graph = function(svg, W, H, data) {
           }
 
           point = proj([d.location[0], d.location[1]]);
-
+          console.log(point)
           // make sure the transformed location exists
           if(point) {
             d.fx = point[0];
