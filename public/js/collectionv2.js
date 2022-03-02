@@ -4,14 +4,14 @@
 // Symbol collection: structure and  attributes
 
 // Each symbol consists of a set of mandatory and optional attributes; optional
-// attributes maybe assignmed a default value 
+// attributes maybe assignmed a default value
 
 // Symbol JSON structure:
-//"symbols: [ 
+//"symbols: [
 //    {"id:   :  int,   // mandatory
 //     "parent" : int,  // optional, group has a parent id, highest level symbols dont
 //     "type" :  string,// mandatory, can be 'line', 'circle', 'rect', 'text' etc.
-//     "layer":  int,   // optional, represents the depth of object, used for 
+//     "layer":  int,   // optional, represents the depth of object, used for
 //					  //  rendering order. lower values are closer to the camera
 //     "transform": 3x3 float // optional, represents 2D transform of symbol/group
 //     "stroke-color": [r,g,b,a] // optional
@@ -21,14 +21,14 @@
 //     "opacity":  float    // range 0-1
 //     "label" : string     // for mouse over, etc
 //     // symbol types and their properties
-//     "circle" :   
+//     "circle" :
 //          "center":  float[2]
 //          "radius":  float
-//	 "rect": 
+//	 "rect":
 //          "lowerleftcorner":  float[2],
 //          "width":  float,
 //          "height":  float,
-//     "text": 
+//     "text":
 //           "text": string    // text of the label
 //           "font-size": int
 //           "anchor-location": float[2]
@@ -38,7 +38,7 @@
 //           "points" : [.....]  // set of x,y pairs in float
 //     "polygon":
 //           "points" : [.....]  // set of x,y pairs in float
-//           
+//
 //       },
 //	   {
 //         "id: int,
@@ -71,8 +71,8 @@ d3.collectionv2 = function(svg, W, H, data) {
 
 	// 	transforming shapes - use the bounding box of the shape for the
 	// 	transformation, given by data.domain
-	// 	Transformation involves translating the center of the shape to 
-	// 	the origin,  (Transl_Origin), then scale to the size of the bounding 
+	// 	Transformation involves translating the center of the shape to
+	// 	the origin,  (Transl_Origin), then scale to the size of the bounding
 	//	box of the symbols(ScaleFactor) and translating to the viewport,
 	//	(T_VP), while // maintaining the aspect ratio
 
@@ -89,7 +89,7 @@ d3.collectionv2 = function(svg, W, H, data) {
     }
 
     var symbolRoot = []
-    
+
     //recreate hierarchy
     for (var id in symbolDict) {
 	if ("parentID" in symbolDict[id]) {
@@ -109,13 +109,13 @@ d3.collectionv2 = function(svg, W, H, data) {
 	arr.sort(function(a, b) {
 	    var alayer=0
 	    var blayer=0
-	    
-	    if ('layer' in symbolDict[a]) 
+
+	    if ('layer' in symbolDict[a])
 		alayer = symbolDict[a]['layer']
-	    
-	    if ('layer' in symbolDict[b]) 
+
+	    if ('layer' in symbolDict[b])
 		blayer = symbolDict[b]['layer']
-	    
+
 	    return blayer - alayer ;
 	});
     };
@@ -123,13 +123,13 @@ d3.collectionv2 = function(svg, W, H, data) {
     sortlayers(symbolRoot);
     for (var id in symbolDict) {
 	sortlayers(symbolDict[id]['children'])
-    }    
-    
+    }
+
 	// translation to origin
 	Transl_Origin = [-(data.domainX[0]+data.domainX[1])/2, -(data.domainY[0]+data.domainY[1])/2];
 
 	// scale to the width, height of the domain
-	Scale = [	w/(data.domainX[1] - data.domainX[0]), 
+	Scale = [	w/(data.domainX[1] - data.domainX[0]),
 				h/(data.domainY[1] - data.domainY[0]) ];
 
 	// choose the smaller of the two scale factors to maintain aspect ratio
@@ -140,9 +140,10 @@ d3.collectionv2 = function(svg, W, H, data) {
 
 	// final translation to center the visualization
 	Transl_VP = [w/2, h/2];
-	
+
 	// flip y -- device origin is upper left
     Y_flip = "matrix(1, 0, 0, -1, 0, 0)";
+
 
 	// form the composite transform, used by the Zoom function
 	var T_Comp = d3.zoomIdentity
@@ -152,10 +153,11 @@ d3.collectionv2 = function(svg, W, H, data) {
 					.translate(Transl_Origin[0], Transl_Origin[1]);
 
 	// same thing for the svg group
-	var T_Composite = 
-			"translate(" + Transl_VP[0] + "," + Transl_VP[1] + ") " + 
-			"scale(" + ScaleFactor + ") " + Y_flip + " translate(" + 
+	var T_Composite =
+			"translate(" + Transl_VP[0] + "," + Transl_VP[1] + ") " +
+			"scale(" + ScaleFactor + ") " + Y_flip + " translate(" +
 			Transl_Origin[0] + "," + Transl_Origin[1] + ")";
+
 
 	// initialize zoom parameters, handler
 	var zoom = d3.zoom()
@@ -173,7 +175,12 @@ d3.collectionv2 = function(svg, W, H, data) {
 	// add the transformation to the svg group
     // this centers the symbols on the display
     svgZoomGroup = vis.append("g")
-    svgGroup = svgZoomGroup.append("g").attr('transform', T_Composite)
+    if(data.coord_system_type == "albersusa"){
+      svgGroup = svgZoomGroup.append("g")
+    }else{
+      svgGroup = svgZoomGroup.append("g").attr('transform', T_Composite)
+    }
+    // svgGroup = svgZoomGroup.append("g").attr('transform', T_Composite)
 
 	// zoom handler
 	function zoomHandler() {
@@ -189,7 +196,10 @@ d3.collectionv2 = function(svg, W, H, data) {
 	    var symbSVG = null;
 
 	    var transformString = ""; 		//some off the trans may come from different places
-	    
+      var proj, point
+
+
+
 	    if (symb["type"] === "rect" ) {
 		//console.log("rect is "+JSON.stringify(symb));
 		symbSVG =
@@ -200,11 +210,17 @@ d3.collectionv2 = function(svg, W, H, data) {
 		    .attr('height', symb["height"]);
 	    } else if (symb["type"] === "circle" ) {
 		//console.log("circle is "+JSON.stringify(symb));
+    if(data.coord_system_type == "albersusa") {
+      proj = d3.geoAlbersUsa()
+      symb["center"] = proj([symb["center"][0], symb["center"][1]]);
+    }
+    // console.log(point)
+
 		symbSVG =
 		    svgElement.append('circle')
 		    .attr('cx', symb["center"][0])
 		    .attr('cy', symb["center"][1])
-		    .attr('r', symb["r"]);		
+		    .attr('r', symb["r"]);
 	    } else if (symb["type"] === "text" ) {
 		//console.log("text is "+JSON.stringify(symb));
 
@@ -238,9 +254,14 @@ d3.collectionv2 = function(svg, W, H, data) {
 			db = 'ideographic'
 		    symbSVG.attr('dominant-baseline', db)
 		}
-		
+
 	    } else if (symb["type"] === "polyline" ) {
 		//console.log("polyline is "+JSON.stringify(symb));
+    if(data.coord_system_type == "albersusa") {
+      proj = d3.geoAlbersUsa()
+      symb["points"] = proj([symb["points"][0], symb["points"][1]]).concat(proj([symb["points"][2], symb["points"][3]]));
+
+    }
 		symbSVG =
 		    svgElement.append('svg:polyline')
 		    .attr("points", symb["points"]);
@@ -258,19 +279,19 @@ d3.collectionv2 = function(svg, W, H, data) {
 		    svgElement.append('g');
 		helper(symbSVG, symb['children']);
 
-	    } 
-	    
-	    
+	    }
+
+
 	    //add generic parameters
 	    if (!(symbSVG === null)) {
 		if ("fill-color" in symb) {
 		    symbSVG.attr('fill', BridgesVisualizer.getColor(symb["fill-color"]));
-		} 
+		}
 
 		if ("stroke-color" in symb) {
 		    symbSVG.attr('stroke', BridgesVisualizer.getColor(symb["stroke-color"]));
 		}
-		
+
 		if ("stroke-width" in symb) {
 		    symbSVG.attr('stroke-width', 1*symb["stroke-width"]);
 		}
@@ -278,11 +299,11 @@ d3.collectionv2 = function(svg, W, H, data) {
 		if ("stroke-dasharray" in symb) {
 		    symbSVG.attr('stroke-dasharray', 1*symb["stroke-dasharray"]);
 		}
-		
+
 		if ("opacity" in symb) {
 		    symbSVG.attr('opacity', symb["opacity"]);
 		}
-		
+
 		if ("transform" in symb) {
 		    transformString = "matrix("
 				 +(symb["transform"][0])+","
@@ -290,8 +311,8 @@ d3.collectionv2 = function(svg, W, H, data) {
 				 +(symb["transform"][2])+","
 				 +(symb["transform"][3])+","
 				 +(symb["transform"][4])+","
-			+(symb["transform"][5])+") " + transformString 
-				 
+			+(symb["transform"][5])+") " + transformString
+
 		}
 
 		if (transformString != "") {
