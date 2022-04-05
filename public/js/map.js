@@ -119,6 +119,59 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
     })
   }
 
+  var svgWorldMap = function(){
+
+    d3.json("/assets/world_countries.json", function(error, us) {
+      if (error) throw error;
+
+      d3.select(vis.node().parentNode).selectAll(".map_overlay").remove();
+
+      path = d3.geoPath();
+
+      var projection = d3.geoEquirectangular();
+
+      var path = d3.geoPath()
+          .projection(projection);
+
+      states = vis.select("g")
+        .append("g")
+          .attr("id","map_overlay"+id)
+          .classed("map_overlay", true)
+
+
+      var array = topojson.feature(us, us.objects.countries).features
+      console.log(array)
+      var arraycopy = [...array];
+
+      if(state.toLowerCase() !== "all"){
+        var visData = arraycopy
+      }else{
+        var visData = arraycopy.filter(function(d) { return d.properties.name.toLowerCase() == state.toLowerCase(); })
+      }
+
+      states.selectAll("path")
+          .attr("class", "land")
+          .attr("id", "state_fips")
+          .data(visData)
+          .enter()
+          .append("path")
+          .attr("fill", "black")
+          .attr("d", path)
+          // .attr("stroke","blue")
+          // .attr("strokeWidth", 2)
+
+      var mySVG = document.getElementById('svg'+id);
+
+      let bbox = document.getElementById("map_overlay"+id).getBBox();
+
+      mySVG.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
+      document.getElementsByTagName('g')[0].setAttribute("transform", "translate(" + 0 + "," + 0 + ")");
+
+      vis.select("g").select("#map_overlay"+id).moveToBack();
+
+    })
+  }
+
 
   /*
     Call the appropriate projection and overlay functions
@@ -131,8 +184,11 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
       }
       break;
     case "equirectangular":
-      equirectangular();
-      //svgMap();
+      //equirectangular();
+      svgWorldMap();
       break;
+    case "equirectangularOld"
+     equirectangular();
+     break;
   }
 };
