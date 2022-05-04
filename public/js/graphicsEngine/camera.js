@@ -90,6 +90,10 @@ class Camera{
         at = vec3(Math.cos((Math.PI/180) *pitch) * Math.cos((Math.PI/180) *yaw),
                   Math.sin((Math.PI/180) *pitch),
                   Math.cos((Math.PI/180) *pitch) * Math.sin((Math.PI/180) *yaw));
+
+        let temp = vec3(0.0, 1.0, 0.0);
+        right = cross(temp, at)
+        console.log(right)
       }
     }
   }
@@ -103,29 +107,44 @@ window.addEventListener('keyup',function(e){
     keyState[e.keyCode || e.which] = false;
 },true);
 
+/*
+function to handle the camera movement per game tick independent to frames per second.
+Updates applied are from the mouse movements and keyboard input. If orbital camera type is passed in,
+keyboard input is not used and only dragging is read
+args:
+  camera - is the camera object in the scene.
+*/
 function movementTick(camera){
-  if (keyState[38] || keyState[87]){
-    forwardX += xDirection * 0.02; // move in forward in direction camera
-    forwardZ += zDirection * 0.02; // move in forward in direction camera
-    bobs += 0.2;//for bobbing during walking
+  //update eye position and what it is looking at from keyboard input such as 'wasd'
+  if(camera.type === 'fps'){
+    if (keyState[38] || keyState[87]){
+      forwardX += xDirection * 0.02; // move in forward in direction camera
+      forwardZ += zDirection * 0.02; // move in forward in direction camera
+      bobs += 0.2;//for bobbing during walking
+    }
+    if (keyState[40] || keyState[83]){
+      forwardX -= xDirection * 0.02; // move in backwards in direction camera
+      forwardZ -= zDirection * 0.02; // move in backwards in direction camera
+      bobs -= 0.2;//for bobbing during walking
+    }
+    if (keyState[65] || keyState[65]){
+      //move left to the camera in the right vector direction
+      forwardX += right[0]
+      forwardZ += right[2]
+      bobs += 0.1;//for bobbing during walking
+    }
+    if (keyState[68] || keyState[68]){
+      //move right to the camera in the right camera direction
+      forwardX -= right[0]
+      forwardZ -= right[2]
+      bobs += 0.1;//for bobbing during walking
+    }
+    //update the eye position from keyboard input. this is used in the lookat function
+    eye[0] = Math.sin(dy) * Math.cos(dx) + forwardX;
+    eye[1] = 0.01 * Math.cos(bobs) + 1.0; //0.25 for stationary and last constant for camera height
+    eye[2] = Math.cos(dy) * Math.cos(dx) + forwardZ;
   }
-  if (keyState[40] || keyState[83]){
-    forwardX -= xDirection * 0.02; // move in backwards in direction camera
-    forwardZ -= zDirection * 0.02; // move in backwards in direction camera
-    bobs -= 0.2;//for bobbing during walking
-  }
-  // if (keyState[65] || keyState[65]){
-  //   forwardX += at[0] * 0.005; // move in forward in direction camera
-  //   bobs += 0.1;//for bobbing during walking
-  // }
-  // if (keyState[68] || keyState[68]){
-  //   forwardX += at[0] * 0.005; // move in forward in direction camera
-  //   forwardZ += at[2] * 0.005; // move in forward in direction camera
-  //   bobs += 0.1;//for bobbing during walking
-  // }
-  // eye[0] = Math.sin(dy) * Math.cos(dx) + forwardX;
-  // eye[1] = 0.01 * Math.cos(bobs) + 1.0; //0.25 for stationary and last constant for camera height
-  // eye[2] = Math.cos(dy) * Math.cos(dx) + forwardZ;
+  //update the camera lookat
   updateLookat(camera);
 }
 

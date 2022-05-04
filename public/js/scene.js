@@ -1,8 +1,6 @@
 var gl;
 var u_color;
-// var ground;
 var u_view_point, u_projection_point;
-// var u_view_lamp, u_projection_lamp;
 var canvas;
 var now, dt;
 var vertex_buffer, color_buffer, line_buffer, line_color_buffer;
@@ -20,6 +18,7 @@ var zpos = 1.0;
 var dx= 0, dy = 0;
 var forwardX = 0;
 var forwardZ = 0;
+
 var bobs = 0.2;
 var vBufferId, indexBuffer;
 var keyState = {};
@@ -36,7 +35,7 @@ var reverseLightDirectionLocation;
 var lightWorldPositionLocation;
 var viewPosition, shininessLocation, lightColorLocation, specularColorLocation;
 var pointlightShader, lampShader, currentShader;
-var eye, at, front;
+var eye, at, front, right;
 var vertices;
 
 d3.scene_webgl = function(canvas, W, H, data){
@@ -202,7 +201,7 @@ d3.scene_webgl = function(canvas, W, H, data){
      gl.enableVertexAttribArray(coord);
 
      /*==========Defining and storing the geometry=======*/
-       camera = new Camera("orbital", canvas);
+       camera = new Camera(data.camera.type, canvas);
 
        // light = new Lighting("point");
        // light.genUniforms();
