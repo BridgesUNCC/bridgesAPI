@@ -5,12 +5,37 @@ d3.selectAll("#collapse").on("click", collapse);
 d3.select("#reset").on("click", reset);
 d3.select("#save").on("click", savePositions);
 d3.select("#delete").on("click", deleteAssignment);
-d3.select("#nodelabels").on("click", BridgesVisualizer.displayNodeLabels);
-d3.select("#linklabels").on("click", BridgesVisualizer.displayLinkLabels);
+d3.select("#nodelabels").on("click",function(){
+  if(BridgesVisualizer.labels_shown === false){
+    BridgesVisualizer.labels_shown = true;
+  }else{
+    BridgesVisualizer.labels_shown = false;
+  }
+  BridgesVisualizer.displayNodeLabels();
+});
+
+d3.select("#linklabels").on("click", function(){
+  if(BridgesVisualizer.link_labels_shown === false){
+    BridgesVisualizer.link_labels_shown = true;
+  }else{
+    BridgesVisualizer.link_labels_shown = false;
+  }
+  BridgesVisualizer.displayLinkLabels()
+
+});
 d3.select("#toggleDisplay").on("click", toggleDisplay);
+d3.select("#resetit").on("click", nextVis);
+d3.select("#play").on("click", playVis);
+d3.select("#stop").on("click", stopVis);
 
 var key = 0;
 var subAssignmentNumber = 0; // subassignment number
+var intervalId;
+var playing = false;
+
+//toggles for labels within the visualization
+BridgesVisualizer.labels_shown = false;
+BridgesVisualizer.link_labels_shown = false;
 
 BridgesVisualizer.visualizations = [];
 
@@ -51,8 +76,9 @@ function deleteAssignment() {
 
 function toggleDisplay() {
   d3.event.preventDefault();
-  var newMode = (displayMode == "slide") ? "stack" : "slide";
+  newMode = (displayMode == "slide") ? "stack" : "slide";
   window.location = "/assignments/"+assignment.assignmentNumber+"/"+assignment.username+"?displayMode="+newMode;
+
 }
 
 
@@ -217,7 +243,9 @@ $( document ).ready( function() {
 // return true if the (i)th assignment is not loaded yet
 function unloaded(i) {
   // console.log(i, d3.select("#svg"+i).node());
-  return (d3.select("#svg"+i).node() == null) && (d3.select("#canvas"+i).node() === null);
+    return (d3.select("#svg"+i).node() == null)
+	&& (d3.select("#canvas"+i).node() === null && d3.select("#vis"+i).select(".highcharts-container").empty())
+	&& (d3.select("#canvas_webgl"+i).node() == null);
 }
 
 // Update default transforms that rely on window sizes
@@ -263,6 +291,34 @@ function nextVis(){
   if(subAssignmentNumber < assignment.numSubassignments-1) {
     updateVis(++subAssignmentNumber);
   }
+}
+
+function stopVis(){
+  clearInterval(intervalId)
+  playing = false
+}
+
+function playVis(){
+  if(assignment.numSubassignments > 1){
+    if(!playing){
+      playing = true
+      intervalId = window.setInterval(function(){
+      nextVis()
+      if(subAssignmentNumber == assignment.numSubassignments-1){
+        clearInterval(intervalId)
+        playing = false
+      }
+    }, 1000);
+    }
+
+  }
+}
+
+function delay(){
+  var millisecondsToWait = 500;
+  setTimeout(function() {
+      nextVis();
+  }, millisecondsToWait);
 }
 
 // bind assignment slide buttons if appropriate
@@ -455,11 +511,37 @@ function visualizeAssignment(assignment, index){
       collection = d3.collection(vis, width, height, assignmentData);
       BridgesVisualizer.visualizations[assignment.subAssignment] = (collection);
   }
+  else if (assignment.vistype == "collectionv2" && d3.collectionv2) {
+      collectionv2 = d3.collectionv2(vis, width, height, assignmentData);
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (collectionv2);
+  }
+  else if (assignment.vistype == "LineChart" && d3.lineChart){
+      plot = d3.lineChart(vis, "vis" + index, assignmentData);
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (plot);
+  }
+  else if (assignment.vistype == "Audio"){
+      d3.select("#vis" + index).select("#svg"+index).remove("*");
+      vis = d3.select("#vis" + index).append("canvas")
+        .attr("id", "canvas_webgl_overview")
+        .attr("width", 1080)
+        .attr("height", 150);
+      vis = d3.select("#vis" + index).append("canvas")
+        .attr("id", "canvas_webgl"+index);
+      audio = d3.audio_webgl(vis, width, height, assignmentData);
+
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (audio);
+  }
   else {
     console.log('error..', assignment);
+
+    var errorDiv = d3.select("#vis"+index).append("div").attr("id", "errorDiv");
+
+    if(assignment.vistype == "gamegrid") {
+      errorDiv.html("This assignment does not work with this version of Bridges. Perhaps try the <a href=\"https://bridges-games.herokuapp.com/assignments/" + assignment.assignmentNumber + "/" + assignment.username + "\"> games server? </a>");
+    } else {
+      errorDiv.text("This assignment does not seem to be working :(");
+    }
     return;
-      graph = d3.graph(d3, "#vis" + index, width, height, assignmentData);
-      BridgesVisualizer.visualizations[assignment.subAssignment] = (graph);
   }
 
   // handle map overlay for subassignment if appropriate
@@ -549,5 +631,6 @@ function debounce(func, wait, immediate) {
         if (callNow) func.apply(context, args);
     };
 }
+
 
 })();

@@ -7,22 +7,21 @@
   "scripts": {
     "start": "app.js",
     "test": "grunt test",
-    "postinstall": "bower install"
+    "postinstall": "bower cache clean && bower install"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
     "bower": "^1.8.8",
     "compression": "^1.7.3",
-    "constantinople": ">=3.1.1",
     "connect-flash": "*",
     "connect-mongo": "*",
+    "constantinople": ">=3.1.1",
     "cookie-parser": "^1.4.3",
     "crypto": "latest",
     "d3": "3.5.17",
     "deep-extend": "^0.6.0",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
-    "pug": "latest",
     "jquery": "^3.4.1",
     "method-override": "^3.0.0",
     "mongoose": "latest",
@@ -33,6 +32,7 @@
     "passport": "latest",
     "passport-local": "latest",
     "passport-twitter": "latest",
+    "pug": "latest",
     "request": "^2.88.0",
     "serve-favicon": "^2.5.0",
     "serve-static": "^1.13.2",
@@ -42,7 +42,8 @@
     "treemill": "latest",
     "twit": "latest",
     "underscore": "latest",
-    "view-helpers": "*"
+    "view-helpers": "*",
+    "yo": "^3.1.1"
   },
   "devDependencies": {
     "async": "latest",

@@ -4,6 +4,7 @@ var mongoose = require('mongoose'),
     Assignment = mongoose.model('Assignment'),
     treemill = require('treemill'),
     visTypes = require('./visTypes.js');
+    distype = "";
 
 //API route to toggle the visibility of an assignment
 //between private and public.
@@ -82,6 +83,9 @@ exports.upload = function (req, res, next) {
     var visualizationType = visTypes.getVisType(assignmentType);
     if(visualizationType == "Alist") {
       visualizationType = visTypes.checkIfHasDims(rawBody);
+    }
+    if(visualizationType == "Audio"){
+      var display_mode = "audio";
     }
 
     // Use SVG for < 100 nodes, Canvas for > 100
@@ -471,8 +475,9 @@ exports.get = function (req, res, next) {
 // >>>>>>> master
         }
 
+
         // add webgl resources if appropriate
-        if(assignment.vistype == "graph-webgl") {
+        if(assignment.vistype == "graph-webgl" || assignment.vistype == "Audio") {
           linkResources.script.push('/webgl/webgl-utils.js');
           linkResources.script.push('/webgl/initShaders.js');
           linkResources.script.push('/webgl/MV.js');
@@ -481,17 +486,36 @@ exports.get = function (req, res, next) {
         sessionUser = sessionUser ? {"username": sessionUser.username, "email": sessionUser.email, "apikey": sessionUser.apikey} : null;
 
         // add display toggle if >1 assignment
-        navItems.toggleDisplay = (assignment.numSubassignments > 1);
-
+        navItems.toggleDisplay = (assignment.numSubassignments > 1 && assignment.display_mode !== 'audio');
+        // use display mode specified by query param or assignment
         // use display mode specified by query param or assignment
         displayMode = "assignmentSlide"; // default
+        distype = assignment.display_mode
+        if(distype == 'stack'){
+          displayMode = "assignmentMulti"
+        }
+        if(distype == 'slide'){
+          displayMode = "assignmentSlide"
+        }
+        if(distype == 'audio'){
+          displayMode = "assignmentAudio"
+        }
         if(req.query.displayMode) {
-          if(req.query.displayMode == "stack")
+          if(req.query.displayMode == "stack"){
             displayMode = "assignmentMulti";
-          if(req.query.displayMode == "slide")
+            distype = "stack"
+          }
+          if(req.query.displayMode == "slide"){
             displayMode = "assignmentSlide";
+            distype = "slide"
+          }
+          if(req.query.displayMode == "audio"){
+            displayMode = 'assignmentAudio';
+            distype = "audio"
+          }
         } else {
-          displayMode = (assignment.display_mode == "stack") ? "assignmentMulti" : "assignmentSlide";
+          //displayMode = (assignment.display_mode == "stack") ? "assignmentMulti" : "assignmentSlide";
+          //distype = assignment.display_mode
         }
 
         return res.render ('assignments/' + "assignmentMulti", {
@@ -503,7 +527,7 @@ exports.get = function (req, res, next) {
             "shared":assignment.shared,
             "owner":owner,
             "navItems": navItems,
-            "displayMode": (displayMode == "assignmentMulti") ? "stack" : "slide"
+            "displayMode": distype
         });
       }
   };

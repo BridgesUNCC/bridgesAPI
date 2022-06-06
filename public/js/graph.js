@@ -15,6 +15,8 @@ d3.graph = function(svg, W, H, data) {
         finalScale,
         transform;
 
+    var labels_shown = false;
+
     var zoom = d3.zoom()
         .scaleExtent([0.1,10])
         .on("zoom", zoomed);
@@ -70,6 +72,7 @@ d3.graph = function(svg, W, H, data) {
     }
 
     svgGroup = vis.append("g").attr('transform', transform);
+	console.log (transform);
 
     var nodes = data.nodes;
     var links = data.links.filter(function(d){
@@ -258,6 +261,10 @@ d3.graph = function(svg, W, H, data) {
       });
 
   d3.selectAll(".nodeLabel").each(BridgesVisualizer.insertLinebreaks);
+  if(BridgesVisualizer.labels_shown === true){
+    d3.selectAll(".nodeLabel").each(BridgesVisualizer.displayNodeLabels)
+  }
+
 
   // get control point for quadratic curve link
   function getControlPoint(from, to) {
@@ -338,6 +345,8 @@ d3.graph = function(svg, W, H, data) {
   // zoom function
   function zoomed() {
     if(svgGroup) {
+      //scales labels based on distance zoomed in
+      d3.selectAll(".nodeLabel").style("font-size", 10/d3.event.transform.k)
       svgGroup.attr("transform", d3.event.transform);
     }
   }
@@ -374,6 +383,7 @@ d3.graph = function(svg, W, H, data) {
   function dragended(d) {
       if (!d3.event.active) simulation.alphaTarget(0);
   }
+
 
   return graph;
 };

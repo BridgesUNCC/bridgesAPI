@@ -16,9 +16,9 @@
 
   BridgesVisualizer.defaultColors = d3.scaleOrdinal(d3.schemeCategory20);
 
-  BridgesVisualizer.strokeWidthRange = d3.scaleLinear().domain([1,10]).range([1,15]).clamp(true);
+  BridgesVisualizer.strokeWidthRange = d3.scaleLinear().domain([0.0001,10]).range([0.0001,15]).clamp(true);
   //scale values between 1 and 100 to a reasonable range
-  BridgesVisualizer.scaleSize = d3.scaleLinear().domain([1,50]).range([10,500]);
+  BridgesVisualizer.scaleSize = d3.scaleLinear().domain([0.001,50]).range([0.001,500]);
   BridgesVisualizer.shapeEdge = d3.scaleLinear().domain([1,50]).range([0.5,3.3]);
   BridgesVisualizer.selfEdge = d3.scaleLinear().domain([1,50]).range([3,13]);
 
@@ -240,6 +240,7 @@
   BridgesVisualizer.showingNodeLabels = false;
   BridgesVisualizer.showingLinkLabels = false;
 
+
   BridgesVisualizer.centerTextHorizontallyInRect = function(obj, width){
       return (width - obj.getComputedTextLength()) / 2;
   };
@@ -427,28 +428,33 @@
     }
   };
 
+  //function that changes the opacity of the labels in the visualization
+  //then redraws the visualization
   BridgesVisualizer.displayNodeLabels = function() {
     if(d3.event) d3.event.preventDefault();
-    if(!BridgesVisualizer.showingNodeLabels) {
+    if(BridgesVisualizer.labels_shown) {
         d3.selectAll(".nodeLabel").style("display","block").style("opacity","1");
-        BridgesVisualizer.showingNodeLabels = true;
+        // BridgesVisualizer.labels_shown = true;
     } else {
         d3.selectAll(".nodeLabel").style("display","none").style("opacity","0");
-        BridgesVisualizer.showingNodeLabels = false;
+        // BridgesVisualizer.labels_shown = false;
     }
+
+    // BridgesVisualizer.labels_shown = true;
+    console.log(BridgesVisualizer.labels_shown)
     BridgesVisualizer.redraw();
   };
 
   BridgesVisualizer.displayLinkLabels = function() {
     if(d3.event) d3.event.preventDefault();
-    if(!BridgesVisualizer.showingLinkLabels) {
+    if(BridgesVisualizer.link_labels_shown) {
         d3.selectAll(".linkLabel").style("display", "block");
         d3.selectAll(".selfLinkLabel").style("display", "block");
-        BridgesVisualizer.showingLinkLabels = true;
+        // BridgesVisualizer.showingLinkLabels = true;
     } else {
         d3.selectAll(".linkLabel").style("display", "none");
         d3.selectAll(".selfLinkLabel").style("display", "none");
-        BridgesVisualizer.showingLinkLabels = false;
+        // BridgesVisualizer.showingLinkLabels = false;
     }
     BridgesVisualizer.redraw();
   };
@@ -467,5 +473,6 @@
         BridgesVisualizer.displayLinkLabels();
       }
   });
+
 
 })();

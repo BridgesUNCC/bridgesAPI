@@ -3,11 +3,15 @@ var nodemailer = require('nodemailer'),
 
 // create reusable transporter object using the default SMTP transport
 let transporter = nodemailer.createTransport({
-    service: "Yahoo",
+    host: 'smtp.mail.yahoo.com',
+    port: 465,
+    service: "yahoo",
     auth: {
         user: "bridgesuncc_reset@yahoo.com",
-        pass: process.env.PASSWORD_RESET_PASS
-    }
+        pass: process.env.PASSWORD_RESET_KEY
+    },
+    debug: false,
+    logger: true
 });
 
 // Send a password reset email to the given email address

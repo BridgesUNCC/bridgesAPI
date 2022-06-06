@@ -34,7 +34,12 @@ exports.getVisType = function(toCheck) {
     "ColorGrid":                  "grid",
     "GameGrid":                   "gamegrid",
 
-    "SymbolCollection":           "collection"
+   "SymbolCollection":           "collection",
+   "SymbolCollectionV2":           "collectionv2",
+
+    "LineChart":                       "LineChart",
+
+    "Audio":         				"Audio" 		
   };
     if( toCheck && validTypes[toCheck] )
       return validTypes[toCheck];
@@ -89,6 +94,11 @@ exports.getVisTypeObject = function(data) {
       "collection": {
         "vistype":"collection",
         "script":"/js/collection.js",
+        "link":""
+      },
+      "collectionv2": {
+        "vistype":"collectionv2",
+        "script":"/js/collectionv2.js",
         "link":""
       },
       "tree": {
@@ -155,6 +165,16 @@ exports.getVisTypeObject = function(data) {
         "vistype":"nodelink",
         "script":"/js/graph.js",
         "link":""
+      },
+      "LineChart": {
+        "vistype": "LineChart",
+        "script":"/js/plot/plot.js",
+        "link":""
+      },
+      "Audio": {
+      	"vistype": "Audio",
+      	"script": "/js/audio/audio.js",
+      	"link": ""
       }
     };
 

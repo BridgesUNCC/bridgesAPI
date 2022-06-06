@@ -27,19 +27,13 @@ block content
 
         div(id="vis0", display="block").assignmentContainer
 
-        if(assignment.numSubassignments > 1)
-            a#resetit(href="#")
-              button(type="button" class='btn-lg button')
-                span.glyphicon.glyphicon-chevron-right
-
-            a#play(href="#", title="Play Visuals")
-              button(id="play" type="button" class='btn-lg')
-                span.glyphicon.glyphicon-play
-
-            a#stop(href="#", title="Stop Visuals")
-              button(id="stop" type="button" class='btn-lg')
-                span.glyphicon.glyphicon-stop
-
+      div#audiocontrols
+        audio#audio(controls='', autoplay='')
+        div#sampleinput
+            input(id = sample-size placeholder="Sample Size: ")
+            button#sample-button submit
+        div#timesample
+            input#time-sample
 
 block footerjs
     script.

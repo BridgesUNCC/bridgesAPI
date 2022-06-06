@@ -195,6 +195,7 @@ d3.bst = function (vis, W, H) {
         // Enter any new links at the parent's previous position.
         var linkEnter = link.enter().insert("svg:path", "g")
             .attr("class", "link")
+	    .style("fill", "none")
             .style("stroke", function(d,i) {
                 if(d.data.linkProperties) return BridgesVisualizer.getColor(d.data.linkProperties.color);
                 return "#ccc";

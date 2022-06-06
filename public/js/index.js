@@ -46,7 +46,7 @@
           else if(d.assignment_type && d.assignment_type.indexOf("Graph") >= 0)
               return '/img/graph.png';
           else if(d.vistype)
-              return '/img/'+d.vistype.toLowerCase()+'.png';
+              return '/img/'+d.vistype+'.png';
           else
               return '/img/nodelink.png';
         });
@@ -92,7 +92,7 @@
           else if(d.assignment_type && d.assignment_type.indexOf("Graph") >= 0)
               return '/img/graph.png';
           else if(d.vistype)
-              return '/img/'+d.vistype.toLowerCase()+'.png';
+              return '/img/'+d.vistype+'.png';
           else
               return '/img/nodelink.png';
         });
