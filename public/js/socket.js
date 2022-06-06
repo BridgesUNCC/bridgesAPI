@@ -44,17 +44,17 @@
     d3.select("#socketConnect").on('click', socketDisconnect);
 
     /* Live socket server */
-    socket = io.connect('https://bridges-games.herokuapp.com', {
-      transports: ['websocket']
-    });
+    //socket = io.connect('https://bridges-games.herokuapp.com', {
+    //  transports: ['websocket']
+    //});
 
     /* Localhost testing server */
-    // socket = io.connect('localhost:3000',{
-    //   transports: ['websocket']
-    // });
+     socket = io.connect('localhost:3000',{
+       transports: ['websocket']
+     });
 
     /* Automatically register credentials to join the correct channel */
-    socket.on('connect', function (data) {
+      socket.on('connect', function (data) {
       socket.emit('credentials', JSON.stringify({user: user.username, assignment: assignmentNumber, apikey: user.apikey}));
     });
 
@@ -147,7 +147,7 @@
       if(keys[e.keyCode]) {
         delete keys[e.keyCode];
         socket.emit('keyup', {key: e.key});
-        // console.log("sending keyup: ", e.key);
+          //console.log("sending keyup: ", e.key, socket);
       }
     });
 
@@ -156,7 +156,7 @@
       if(!keys[e.keyCode]) {
         keys[e.keyCode] = true;
         socket.emit('keydown', {key: e.key});
-        // console.log('sending keydown: ', e.key);
+          //console.log('sending keydown: ', e.key);
       }
     });
   }
