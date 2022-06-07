@@ -38,7 +38,6 @@
     "serve-static": "^1.13.2",
     "socket.io": "latest",
     "streamable": "latest",
-    "tomatoes": "latest",
     "treemill": "latest",
     "twit": "latest",
     "underscore": "latest",

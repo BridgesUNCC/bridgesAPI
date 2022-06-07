@@ -4,7 +4,6 @@ var mongoose = require('mongoose')
     , account
     , sourceHandlers = {
             'twitter.com':'twitter.js',
-            'rottentomatoes.com':'rotten.js',
             'actors':'actors.js'
     }
 
