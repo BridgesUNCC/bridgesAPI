@@ -24,7 +24,7 @@
     "express-session": "^1.15.6",
     "jquery": "^3.4.1",
     "method-override": "^3.0.0",
-    "mongoose": "latest",
+    "mongoose": "4.13.20",
     "morgan": "^1.9.1",
     "newrelic": "latest",
     "nodemailer": "^6.4.16",
