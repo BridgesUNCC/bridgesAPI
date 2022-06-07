@@ -39,7 +39,8 @@ exports.getVisType = function(toCheck) {
 
     "LineChart":                       "LineChart",
 
-    "Audio":         				"Audio" 		
+    "Audio":         				"Audio",
+    "Scene":                "scene"
   };
     if( toCheck && validTypes[toCheck] )
       return validTypes[toCheck];
@@ -175,6 +176,11 @@ exports.getVisTypeObject = function(data) {
       	"vistype": "Audio",
       	"script": "/js/audio/audio.js",
       	"link": ""
+      },
+      "scene":{
+        "vistype": "scene",
+        "script": "/js/scene.js",
+        "link":""
       }
     };
 

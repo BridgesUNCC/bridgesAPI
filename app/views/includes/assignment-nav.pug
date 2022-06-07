@@ -41,6 +41,16 @@
         span.glyphicon.glyphicon-resize-full
         span.nav-label Reset View
 
+      if (assignment.vistype == "nodelink")
+        a#hideNodes(href="#", title="Reset View")
+          span.glyphicon.glyphicon-eye-close
+          span.nav-label Hide Nodes
+
+      if (assignment.vistype == "nodelink")
+        a#hideLinks(href="#", title="Reset View")
+          span.glyphicon.glyphicon-eye-close
+          span.nav-label Hide Links
+
       if (owner)
         a#delete(href="#", title="Delete Assignment")
           span.glyphicon.glyphicon-trash

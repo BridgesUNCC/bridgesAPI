@@ -4,7 +4,6 @@
 
 var mongoose = require('mongoose'),
     LocalStrategy = require('passport-local').Strategy,
-    TwitterStrategy = require('passport-twitter').Strategy,
     keys = require('./keys'),
     User = mongoose.model('User'),
     Account = mongoose.model('Account');
@@ -72,37 +71,5 @@ module.exports = function (passport, config) {
         });
     }));
 
-    //======================
-    //passport twitter setup
-    //======================
-
-    twitterKeys = keys.twitter.keys;
-    passport.use('twitter-authz', new TwitterStrategy({
-        consumerKey:    twitterKeys.consumer_key,
-        consumerSecret: twitterKeys.consumer_secret,
-        callbackURL:    twitterKeys.callbackURL
-    },
-
-    function(token, tokenSecret, profile, done) {
-
-        Account.findOne({ domainProvider: 'twitter.com', uid: profile.id }, function(err, account) {
-            if (err) { return done(err); }
-            if (account) { return done(null, account); }
-
-            var account = new Account();
-            account.domainProvider = 'twitter.com';
-            account.email = profile.email;
-            account.uid = profile.id;
-            var t = {
-                kind: 'oauth',
-                token: token,
-                tokenSecret: tokenSecret
-            }
-            console.log(t);
-            account.tokens = t;
-            return done(null, account);
-      });
-  }
-));
 
 }
