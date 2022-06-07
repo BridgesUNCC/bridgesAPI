@@ -49,23 +49,19 @@ UserSchema.path('email').validate(function (email) {
 }, 'Email cannot be blank');
 
 UserSchema.path('email').validate({
-  
-  validator: function (email) {
+  isAsync: true,
+  validator: function (email, fn) {
     var User = mongoose.model('User');
 
     // if authenticating by an oauth strategies, don't validate
-    if (authTypes.indexOf(this.provider) !== -1) Promise.resolve(true);
+    if (authTypes.indexOf(this.provider) !== -1) fn(true);
 
     // Check only when it is a new user or when email field is modified
     if (this.isNew || this.isModified('email')) {
         User.find({ email: email }).exec(function (err, users) {
-          if(!err && users.length === 0){
-            Promise.resolve(false)
-          }else{
-            Promise.resolve(true)
-          }
+          fn(!err && users.length === 0);
       });
-    } else Promise.resolve(true);
+    } else fn(true);
   },
   message: 'Email already exists'
 });
@@ -82,23 +78,19 @@ UserSchema.path('username').validate(function (username) {
 }, 'Usernames must contain alphanumeric characters a-z, A-Z, 0-9, underscores, and hyphens, and must be between 3 and 20 characters long.');
 
 UserSchema.path('username').validate({
-
-  validator: function (username) {
+  isAsync: true,
+  validator: function (username, fn) {
     var User = mongoose.model('User');
 
     // if authenticating by an oauth strategies, don't validate
-    if (authTypes.indexOf(this.provider) !== -1) Promise.resolve(true);
+    if (authTypes.indexOf(this.provider) !== -1) fn(true);
 
     // Check only when it is a new user or when email field is modified
     if (this.isNew || this.isModified('username')) {
         User.find({ username: username }).exec(function (err, users) {
-            if(!err && users.length === 0){
-            Promise.resolve(false)
-          }else{
-            Promise.resolve(true)
-          }
+            fn(!err && users.length === 0);
         });
-    } else Promise.resolve(true);
+    } else fn(true);
   },
   message: 'Username already exists'
 });
