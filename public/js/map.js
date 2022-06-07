@@ -187,7 +187,7 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
       //equirectangular();
       svgWorldMap();
       break;
-    case "equirectangularOld"
+    case "equirectangularOld":
      equirectangular();
      break;
   }
