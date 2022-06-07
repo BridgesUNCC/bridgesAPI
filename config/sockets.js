@@ -23,8 +23,7 @@ var valid = function(creds, cb) {
 
 module.exports = function(server) {
 
-  var io = socketio.listen(server);
-  io.set('transports', ['websocket']);
+    var io = socketio(server, {'transports':['websocket']});
   var socks = {};
   var verbose = false;
 
@@ -68,11 +67,12 @@ module.exports = function(server) {
         socket.join(channel);
         if(verbose) {
           console.log("User " + socket.id + " connected to channel " + channel);
-          console.log('All sockets: ', socks);
+            console.log('All sockets: ', socks);
+	    console.log(io.sockets.adapter.rooms.get(channel));
         }
 
         /* Count users in current channel */
-        var usersInChannel = io.sockets.adapter.rooms[channel].length;
+          var usersInChannel = io.sockets.adapter.rooms.get(channel).length;
 
         /* Emit announcement to everyone in channel to validate connection */
         io.sockets.in(channel).emit('announcement', {message: "User " + socket.id + " connected to channel " + channel, userCount: usersInChannel});
@@ -118,8 +118,8 @@ module.exports = function(server) {
         var channel = socks[socket.id];
 
         /* If the channel has users in it, inform them that someone disconnected */
-        if(io.sockets.adapter.rooms[channel]) {
-          var usersInChannel = io.sockets.adapter.rooms[channel].length;
+          if(io.sockets.adapter.rooms.get(channel)) {
+              var usersInChannel = io.sockets.adapter.rooms.get(channel).length;
 
           io.sockets.in(channel).emit('announcement', {message: "User " + socket.id + " disconnected", userCount: usersInChannel});
         }
