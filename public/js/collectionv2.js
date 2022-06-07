@@ -285,7 +285,7 @@ d3.collectionv2 = function(svg, W, H, data) {
 	    //add generic parameters
 	    if (!(symbSVG === null)) {
 		if ("fill-color" in symb) {
-		    symbSVG.attr('fill', BridgesVisualizer.getColor(symb["fill-color"]));
+		    symbSVG.attr('fill', BridgesVisualizer.getSVGColor(symb["fill-color"]));
 		}
 
 		if ("stroke-color" in symb) {

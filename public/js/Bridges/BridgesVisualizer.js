@@ -81,6 +81,13 @@
     return color;
   };
 
+  // function to return color depending on the style of representation
+  BridgesVisualizer.getSVGColor = function(color) {
+    if(Array.isArray(color))
+      return "rgba(" + color[0] + "," + color[1] + "," + color[2] + ")";
+    return color;
+  };
+
   //this array holds the assignments types; it's used to handle the mixed assignements
   BridgesVisualizer.assignmentTypes = [];
 
@@ -343,7 +350,7 @@
     }
   };
 
-  // event for pressing L on keyboard and toggling label views
+  // event for pressing L on keyboard and toggling label
   $("body").on("keydown", function(event) {
       if(event.which == "76"){
         BridgesVisualizer.link_labels_shown = !BridgesVisualizer.link_labels_shown;
