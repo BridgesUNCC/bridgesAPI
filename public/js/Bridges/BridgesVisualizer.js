@@ -343,6 +343,7 @@
     }
   };
 
+  // event for pressing L on keyboard and toggling label views
   $("body").on("keydown", function(event) {
       if(event.which == "76"){
         BridgesVisualizer.link_labels_shown = !BridgesVisualizer.link_labels_shown;

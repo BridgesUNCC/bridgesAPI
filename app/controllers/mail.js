@@ -8,9 +8,9 @@ let transporter = nodemailer.createTransport({
     service: "yahoo",
     auth: {
         user: "bridgesuncc_reset@yahoo.com",
-        pass: process.env.PASSWORD_RESET_KEY
+        pass: process.env.PASSWORD_RESET_PASS
     },
-    debug: false,
+    debug: true,
     logger: true
 });
 
