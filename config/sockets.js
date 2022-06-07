@@ -23,7 +23,7 @@ var valid = function(creds, cb) {
 
 module.exports = function(server) {
 
-  var io = socketio(server);
+  var io = socketio.listen(server);
   io.set('transports', ['websocket']);
   var socks = {};
   var verbose = false;

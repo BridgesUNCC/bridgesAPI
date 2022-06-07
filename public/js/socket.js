@@ -1,6 +1,6 @@
 (function() {
   var socket = null;
-
+    
   /* If logged in, bind handler socket connection */
   if(user) {
     // console.log(user.username+"_"+assignmentNumber);
@@ -32,7 +32,6 @@
 
   /* Connect the client socket to the server */
   function socketConnect() {
-
     // modify socket nav and status items
     d3.select("#socketStatus")
       .classed("alert alert-warning", true)

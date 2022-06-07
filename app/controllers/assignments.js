@@ -537,6 +537,10 @@ exports.get = function (req, res, next) {
           //distype = assignment.display_mode
         }
 
+        if(assignment.vistype == 'gamegrid'){
+	    displayMode = "assignmentMulti"; //the game grid ONLY works with assignmentMulti
+	}
+	
         //calls to render the specific view from the app/views folder with the given information
         //this behavior is defined in the config/exrpess.js file on where to render views from
         return res.render ('assignments/' + displayMode, {
