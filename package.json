@@ -39,7 +39,6 @@
     "socket.io": "latest",
     "streamable": "latest",
     "treemill": "latest",
-    "twit": "latest",
     "underscore": "latest",
     "view-helpers": "*",
     "yo": "^3.1.1"

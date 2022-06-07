@@ -3,12 +3,9 @@ var mongoose = require('mongoose')
     , Account = mongoose.model('Account')
     , account
     , sourceHandlers = {
-            'twitter.com':'twitter.js',
             'actors':'actors.js'
     }
 
-//Example Request:  /streams/twitter.com/timeline/usgs/200
-                //  /streams/twitter.com/followers/usgs/200
 
 exports.getSource = function (req, res, next) {
   
