@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "async": "latest",
-    "grunt": "latest",
+    "grunt": "^1.5.3",
     "grunt-bower-task": "0.5.0",
     "grunt-contrib-compass": "~0.2.0",
     "grunt-contrib-watch": "^1.1.0",
