@@ -31,7 +31,6 @@
     "npm": "^6.10.1",
     "passport": "latest",
     "passport-local": "latest",
-    "passport-twitter": "latest",
     "pug": "latest",
     "request": "^2.88.0",
     "serve-favicon": "^2.5.0",
