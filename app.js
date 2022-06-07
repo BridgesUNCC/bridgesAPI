@@ -33,7 +33,7 @@ require('./config/express')(app, config, passport);
 var port = process.env.PORT || config.port;
 
 var server = app.listen(port);
-var io = require('socket.io').listen(server);
+var io = require('socket.io')(server);
 var streamable = require('streamable').streamable(io);
 
 console.log("Server listening on port " + port);
