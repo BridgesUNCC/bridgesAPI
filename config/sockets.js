@@ -42,7 +42,8 @@ module.exports = function(server) {
   	    if (verbose)
   		    console.log('Malformed JSON credentials: ', credentials);
   	    else
-  		    console.log('Malformed JSON credentials');
+  		console.log('Malformed JSON credentials');
+	    socket.disconnect();
   	    return;
     	}
 	if (verbose) console.log (credentials);
@@ -51,7 +52,8 @@ module.exports = function(server) {
 
         // invalid credentials
         if(!proceed) {
-          if(verbose) console.log('Invalid credentials', socket.id);
+            if(verbose) console.log('Invalid credentials', socket.id);
+	    socket.disconnect();
           return;
         }
 
