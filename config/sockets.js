@@ -14,7 +14,8 @@ var valid = function(creds, cb) {
     .exec(function(err, user) {
         if (err || !user) {
           console.log(err, user);
-          cb(false);
+            cb(false);
+	    return;
         }
         console.log('returning true');
         cb(true);
@@ -44,7 +45,7 @@ module.exports = function(server) {
   		    console.log('Malformed JSON credentials');
   	    return;
     	}
-
+	if (verbose) console.log (credentials);
       /* Validate Credentials */
       valid(credentials, function(proceed){
 
