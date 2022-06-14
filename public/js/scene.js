@@ -237,7 +237,6 @@ d3.scene_webgl = function(canvas, W, H, data){
      // Clear the color buffer bit
      gl.clear(gl.COLOR_BUFFER_BIT);
 
-     // Draw the triangle
 
 
 
