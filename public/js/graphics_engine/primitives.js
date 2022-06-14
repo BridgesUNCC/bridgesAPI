@@ -12,40 +12,16 @@ class Primitives{
   }
 
   genBuffers(){
-    this.vBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.vBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
-    gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-    this.nBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.nBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normals), gl.STATIC_DRAW);
-    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    this.vbuffer = new VertexBuffer(gl.ARRAY_BUFFER, new Float32Array(thi.vertices), gl.STATIC_DRAW);
+    this.vbuffer.specBuffer("coordinates", 3, gl.FLOAT, 0, 0);
+
+    this.nbuffer = new VertexBuffer(gl.ARRAY_BUFFER, new Float32Array(this.normals), gl.STATIC_DRAW);
+    this.nbuffer.specBuffer("a_normal", 3, gl.FLOAT, 0, 0);
 
     if(this.im){
-      this.tBuffer = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, this.tBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texCoords), gl.STATIC_DRAW);
-      gl.bindBuffer(gl.ARRAY_BUFFER, null);
-    }
-  }
-
-  associateBuffers(){
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.vBuffer);
-    var coord = gl.getAttribLocation(currentShader, "coordinates");
-    gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(coord);
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.nBuffer);
-    var norms = gl.getAttribLocation(currentShader, "a_normal");
-    gl.vertexAttribPointer(norms, 3, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(norms);
-
-    if(this.im){
-      gl.bindBuffer(gl.ARRAY_BUFFER, this.tBuffer);
-      var texs = gl.getAttribLocation(currentShader, "a_texcoord");
-      gl.vertexAttribPointer(texs, 2, gl.FLOAT, false, 0, 0);
-      gl.enableVertexAttribArray(texs);
+      this.tbuffer = new VertexBuffer(gl.ARRAY_BUFFER, new Float32Array(this.texCoords), gl.STATIC_DRAW);
+      this.tbuffer.specBuffer("a_texcoord", 2, gl.FLOAT, 0, 0);
     }
   }
 

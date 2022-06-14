@@ -135,20 +135,37 @@ d3.scene_webgl = function(canvas, W, H, data){
     // vertex shader source code
    var vertCode =`
    attribute vec3 coordinates;
+   attribute vec3 a_normal;
 
    uniform mat4 u_model;
    uniform mat4 u_view;
    uniform mat4 u_projection;
 
+   varying vec3 v_normal;
+
    void main(void) {
      vec4 position = vec4(u_projection * u_view * u_model *  vec4(coordinates, 1.0));
+     v_normal = a_normal;
      gl_Position = position;
       //gl_PointSize = 10.0;
    }`;
 
    var fragCode =`
+   precision highp float;
+   varying vec3 v_normal;
+
+   uniform vec3 u_reverseLightDirection;
+   uniform vec4 u_color;
    void main(void) {
-      gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
+     vec3 normal = normalize(v_normal);
+
+     float light = dot(normal, u_reverseLightDirection);
+
+     gl_FragColor = u_color;
+
+     // Lets multiply just the color portion (not the alpha)
+     // by the light
+     gl_FragColor.rgb *= light;
    }`;
 
 
@@ -177,48 +194,42 @@ d3.scene_webgl = function(canvas, W, H, data){
     currentShader = elev
     console.log(data)
 
+    var mesh = new CustomMesh(vertices)
+    // mesh.genNormals();
+    mesh.genBuffers();
+
+    var colorLocation = gl.getUniformLocation(currentShader, "u_color");
+    var reverseLightDirectionLocation =
+    gl.getUniformLocation(currentShader, "u_reverseLightDirection");
+
+    // Set the color to use
+    gl.uniform4fv(colorLocation, [0.2, 1, 0.2, 1]); // green
+
+    // set the light direction.
+    gl.uniform3fv(reverseLightDirectionLocation, normalize(vec3(0.0, 1.7, 0.0)));
+
     // Create an empty buffer object to store the vertex buffer
-     var vertex_buffer = gl.createBuffer();
+    // var vertex_buffer = new VertexBuffer(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    // vertex_buffer.specBuffer("coordinates", 3, gl.FLOAT, 0, 0);
 
-     //Bind appropriate array buffer to it
-     gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+    /*==========Defining and storing the geometry=======*/
+    camera = new Camera("orbital", canvas);
 
-     // Pass the vertex data to the buffer
-     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    // light = new Lighting("point");
+    // light.genUniforms();
 
-     // Unbind the buffer
-     gl.bindBuffer(gl.ARRAY_BUFFER, null);
-
-     // Bind vertex buffer object
-     gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
-
-     // Get the attribute location
-     var coord = gl.getAttribLocation(elev, "coordinates");
-
-     // Point an attribute to the currently bound VBO
-     gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
-
-     // Enable the attribute
-     gl.enableVertexAttribArray(coord);
-
-     /*==========Defining and storing the geometry=======*/
-       camera = new Camera("orbital", canvas);
-
-       // light = new Lighting("point");
-       // light.genUniforms();
-
-       // cube = new Cube(0.5);
-       // cube.genBuffers();
-       // cube.genUniforms();
+    // cube = new Cube(0.5);
+    // cube.genBuffers();
+    // cube.genUniforms();
 
 
-       //get uniform location for vertex shader
-       u_projection_point = gl.getUniformLocation(currentShader, "u_projection");
-       u_view_point = gl.getUniformLocation(currentShader, "u_view");
-       u_model = gl.getUniformLocation(currentShader, "u_model");
+    //get uniform location for vertex shader
+    u_projection_point = gl.getUniformLocation(currentShader, "u_projection");
+    u_view_point = gl.getUniformLocation(currentShader, "u_view");
+    u_model = gl.getUniformLocation(currentShader, "u_model");
 
-       /*============= Drawing the primitive ===============*/
-       now = 0;
+    /*============= Drawing the primitive ===============*/
+    now = 0;
 
      // Enable the depth test
      gl.enable(gl.DEPTH_TEST);

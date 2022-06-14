@@ -28,14 +28,14 @@ class AttributeBuffer{
     this.unbind();
   }
 
-  specBuffer(name, numOfComponents, typeOfValue, offset, ){
+  specBuffer(name, numOfComponents, typeOfValue, offset ){
     this.bufferValueType = typeOfValue;
     this.numOfComponents = numOfComponents;
     this.offset = offset;
     this.stride = this.getStride();
     this.bind()
     let bufferLoc = gl.getAttribLocation(currentShader, name);
-    gl.vertexAttribPointer(bufferLoc, numOfComponents, typeOfValue, false, this.stride, this.offset);
+    gl.vertexAttribPointer(bufferLoc, numOfComponents, typeOfValue, false, 0, this.offset);
     gl.enableVertexAttribArray(bufferLoc);
     this.unbind();
   }
