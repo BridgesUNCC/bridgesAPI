@@ -37,7 +37,7 @@ var lightWorldPositionLocation;
 var viewPosition, shininessLocation, lightColorLocation, specularColorLocation;
 var pointlightShader, lampShader, currentShader;
 var eye, at, front;
-var vertices, mesh;
+var vertices, mesh, objectList;
 
 d3.scene_webgl = function(canvas, W, H, data){
 
@@ -220,9 +220,21 @@ d3.scene_webgl = function(canvas, W, H, data){
     // light = new Lighting("point");
     // light.genUniforms();
 
-    cube = new Cube(10.5);
-    cube.genBuffers();
-    cube.genUniforms();
+    objectList = [];
+    for(let i=1; i < data['meshes'].length; i++){
+      objectList.push(new Cube(10.5));
+      objectList[i-1].model = mult(objectList[i-1].model, rotate(0.5, 0.0, 1.0, 0.0))
+      objectList[i-1].model = mult(objectList[i-1].model, translate(data['meshes'][i].transform[0][1],
+                                                                    data['meshes'][i].transform[0][2],
+                                                                    data['meshes'][i].transform[0][3]))
+      objectList[i-1].genBuffers();
+      objectList[i-1].genUniforms();
+    }
+
+    console.log(objectList)
+    // cube = new Cube(10.5);
+    // cube.genBuffers();
+    // cube.genUniforms();
 
 
     //get uniform location for vertex shader
@@ -278,10 +290,16 @@ d3.scene_webgl = function(canvas, W, H, data){
         mesh.setUniforms();
         gl.drawArrays(gl.TRIANGLES, 0, vertices.length);
 
-        cube.associateBuffers();
-        cube.model = mult(cube.model, rotate(0.5, 0.0, 1.0, 0.0));
-        cube.setUniforms();
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24);
+        for(let i=0; i < objectList.length; i++){
+          objectList[i].associateBuffers();
+          objectList[i].model = mult(objectList[i].model, rotate(0.5, 0.0, 1.0, 0.0));
+          objectList[i].setUniforms();
+          gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24);
+        }
+        // cube.associateBuffers();
+        // cube.model = mult(cube.model, rotate(0.5, 0.0, 1.0, 0.0));
+        // cube.setUniforms();
+        // gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24);
       }
 
     }
