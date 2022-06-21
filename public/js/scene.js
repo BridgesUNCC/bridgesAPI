@@ -37,7 +37,7 @@ var lightWorldPositionLocation;
 var viewPosition, shininessLocation, lightColorLocation, specularColorLocation;
 var pointlightShader, lampShader, currentShader;
 var eye, at, front;
-var vertices;
+var vertices, mesh;
 
 d3.scene_webgl = function(canvas, W, H, data){
 
@@ -194,9 +194,11 @@ d3.scene_webgl = function(canvas, W, H, data){
     currentShader = elev
     console.log(data)
 
-    var mesh = new CustomMesh(vertices)
+    mesh = new CustomMesh(vertices)
     // mesh.genNormals();
     mesh.genBuffers();
+    mesh.genUniforms();
+    mesh.associateBuffers();
 
     var colorLocation = gl.getUniformLocation(currentShader, "u_color");
     var reverseLightDirectionLocation =
@@ -209,7 +211,7 @@ d3.scene_webgl = function(canvas, W, H, data){
     gl.uniform3fv(reverseLightDirectionLocation, normalize(vec3(0.0, 1.7, 0.0)));
 
     // Create an empty buffer object to store the vertex buffer
-    // var vertex_buffer = new VertexBuffer(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    // var vertex_buffer = new AttributeBuffer(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
     // vertex_buffer.specBuffer("coordinates", 3, gl.FLOAT, 0, 0);
 
     /*==========Defining and storing the geometry=======*/
@@ -218,9 +220,9 @@ d3.scene_webgl = function(canvas, W, H, data){
     // light = new Lighting("point");
     // light.genUniforms();
 
-    // cube = new Cube(0.5);
-    // cube.genBuffers();
-    // cube.genUniforms();
+    cube = new Cube(10.5);
+    cube.genBuffers();
+    cube.genUniforms();
 
 
     //get uniform location for vertex shader
@@ -270,13 +272,16 @@ d3.scene_webgl = function(canvas, W, H, data){
 
         //light.setUniforms();
 
-        //cube.associateBuffers();
-        //cube.model = mult(cube.model, rotate(0.5, 0.0, 1.0, 0.0));
-        //cube.setUniforms();
-        //gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24);
 
 
-        gl.drawArrays(gl.LINES, 0, vertices.length);
+        mesh.associateBuffers();
+        mesh.setUniforms();
+        gl.drawArrays(gl.TRIANGLES, 0, vertices.length);
+
+        cube.associateBuffers();
+        cube.model = mult(cube.model, rotate(0.5, 0.0, 1.0, 0.0));
+        cube.setUniforms();
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24);
       }
 
     }

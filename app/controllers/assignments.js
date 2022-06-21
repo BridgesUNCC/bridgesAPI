@@ -403,6 +403,7 @@ exports.get = function (req, res, next) {
           linkResources.script.push('/js/graphics_engine/lighting.js');
           linkResources.script.push('/js/graphics_engine/primitives.js');
           linkResources.script.push('/js/graphics_engine/texture.js');
+          linkResources.script.push('/js/graphics_engine/buffer_management/attribute_buffer.js');
           linkResources.script.push('/js/math/Mat2.js');
           linkResources.script.push('/js/math/Mat3.js');
           linkResources.script.push('/js/math/Mat4.js');
