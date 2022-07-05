@@ -94,7 +94,7 @@ d3.graph = function(svg, W, H, data) {
                         }))
       .force("collision", d3.forceCollide()
                         .radius(function(d) {
-                          return d.size || 10;
+                          return d.size/3 || 10;
                         }))
       .force("center", d3.forceCenter(BridgesVisualizer.visCenter()[0], BridgesVisualizer.visCenter()[1]))
       .on("tick", ticked);
