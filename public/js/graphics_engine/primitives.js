@@ -31,12 +31,12 @@ class Primitives{
 
   associateBuffers(){
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vBuffer);
-    var coord = gl.getAttribLocation(currentShader, "coordinates");
+    let coord = gl.getAttribLocation(currentShader, "coordinates");
     gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(coord);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.nBuffer);
-    var norms = gl.getAttribLocation(currentShader, "a_normal");
+    let norms = gl.getAttribLocation(currentShader, "a_normal");
     gl.vertexAttribPointer(norms, 3, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(norms);
 
@@ -316,12 +316,12 @@ class CustomMesh{
 
   associateBuffers(){
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vBuffer);
-    var coord = gl.getAttribLocation(currentShader, "coordinates");
+    let coord = gl.getAttribLocation(currentShader, "coordinates");
     gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(coord);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.nBuffer);
-    var norms = gl.getAttribLocation(currentShader, "a_normal");
+    let norms = gl.getAttribLocation(currentShader, "a_normal");
     gl.vertexAttribPointer(norms, 3, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(norms);
 

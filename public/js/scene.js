@@ -215,7 +215,7 @@ d3.scene_webgl = function(canvas, W, H, data){
     // vertex_buffer.specBuffer("coordinates", 3, gl.FLOAT, 0, 0);
 
     /*==========Defining and storing the geometry=======*/
-    camera = new Camera("orbital", canvas);
+    camera = new Camera("fps", canvas);
 
     // light = new Lighting("point");
     // light.genUniforms();
@@ -285,10 +285,10 @@ d3.scene_webgl = function(canvas, W, H, data){
         //light.setUniforms();
 
 
-
+        mesh.genBuffers();
         mesh.associateBuffers();
         mesh.setUniforms();
-        gl.drawArrays(gl.TRIANGLES, 0, vertices.length);
+        gl.drawArrays(gl.TRIANGLES, 0, vertices.length/3);
 
         for(let i=0; i < objectList.length; i++){
           objectList[i].associateBuffers();
