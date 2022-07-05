@@ -41,59 +41,73 @@ var validatePasswordLength = function (password) {
     return password.length > 5;
 };
 
-// Validate Email
+/*
+Validation code to check if the email field for the signup form is 
+populated and not empty. If validation fails, it sends a message that it cannot be blank. 
+*/
 UserSchema.path('email').validate(function (email) {
     // if authenticating by an oauth strategies, don't validate
     if (authTypes.indexOf(this.provider) !== -1) return true;
     return email.length;
 }, 'Email cannot be blank');
 
-UserSchema.path('email').validate({
-  isAsync: true,
-  validator: function (email, fn) {
+/*
+Validation code to check if the email submitted from the signup page
+is not a duplicate. It queries the database for a document that matches the email from the 
+form. If there is a response document it returns a rejected promise, else it resolves as true.
+This function must be async so we can get the response back from the database query.
+*/
+UserSchema.path('email').validate(async (email)=>{
     var User = mongoose.model('User');
 
     // if authenticating by an oauth strategies, don't validate
-    if (authTypes.indexOf(this.provider) !== -1) fn(true);
+    if (authTypes.indexOf(this.provider) !== -1) Promise.resolve(true);
 
-    // Check only when it is a new user or when email field is modified
-    if (this.isNew || this.isModified('email')) {
-        User.find({ email: email }).exec(function (err, users) {
-          fn(!err && users.length === 0);
-      });
-    } else fn(true);
-  },
-  message: 'Email already exists'
-});
+      let queryRes = await User.findOne({ email: email });
 
-//Validate Username
+      if(queryRes){
+        return Promise.reject(new Error("Email already in use."))
+      }else{
+        return Promise.resolve(true)
+      }
+    })
+
+/*
+Validation code to check if the username field for the signup form is 
+populated and not empty. If validation fails, it sends a message that it cannot be blank. 
+*/
 UserSchema.path('username').validate(function (username) {
     // if authenticating by an oauth strategies, don't validate
     if (authTypes.indexOf(this.provider) !== -1) return true;
     return username.length;
 }, 'Username cannot be blank');
 
+/*
+Validation code to check if the username submitted from the signup page
+is not a duplicate. It queries the database for a document that matches the username from the 
+form. If there is a response document it returns a rejected promise, else it resolves as true.
+This function must be async so we can get the response back from the database query.
+*/
 UserSchema.path('username').validate(function (username) {
   return /^[a-zA-Z0-9\-_]{3,40}$/.test(username);
 }, 'Usernames must contain alphanumeric characters a-z, A-Z, 0-9, underscores, and hyphens, and must be between 3 and 40 characters long.');
 
-UserSchema.path('username').validate({
-  isAsync: true,
-  validator: function (username, fn) {
+UserSchema.path('username').validate(async(username) =>{
     var User = mongoose.model('User');
 
     // if authenticating by an oauth strategies, don't validate
-    if (authTypes.indexOf(this.provider) !== -1) fn(true);
+    if (authTypes.indexOf(this.provider) !== -1) Promise.resolve(true);
 
     // Check only when it is a new user or when email field is modified
-    if (this.isNew || this.isModified('username')) {
-        User.find({ username: username }).exec(function (err, users) {
-            fn(!err && users.length === 0);
-        });
-    } else fn(true);
-  },
-  message: 'Username already exists'
-});
+      let queryRes = await User.findOne({ username: username });
+
+      if(queryRes){
+        return Promise.reject(new Error("Username already in use."))
+      }else{
+        return Promise.resolve(true)
+      }
+    })
+
 
 UserSchema.path('hashed_password').validate(function (hashed_password) {
     // if authenticating by an oauth strategies, don't validate
