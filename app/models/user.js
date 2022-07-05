@@ -74,7 +74,7 @@ UserSchema.path('username').validate(function (username) {
 }, 'Username cannot be blank');
 
 UserSchema.path('username').validate(function (username) {
-  return /^[a-zA-Z0-9]+[a-zA-Z0-9\-_]{3,20}$/.test(username);
+  return /^[a-zA-Z0-9\-_]{3,40}$/.test(username);
 }, 'Usernames must contain alphanumeric characters a-z, A-Z, 0-9, underscores, and hyphens, and must be between 3 and 20 characters long.');
 
 UserSchema.path('username').validate({
