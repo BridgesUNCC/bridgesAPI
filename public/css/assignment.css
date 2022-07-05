@@ -140,7 +140,7 @@ div.tooltip {
     font-size: 90%;
     max-height:200px;
     max-width: 60%;
-    overflow: scroll;
+    overflow: auto;
 }
 div#assignmentSlide{
     margin: auto;
