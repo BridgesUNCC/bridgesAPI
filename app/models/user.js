@@ -65,11 +65,15 @@ UserSchema.path('email').validate(async (email)=>{
 
       let queryRes = await User.findOne({ email: email });
 
-      if(queryRes){
-        return Promise.reject(new Error("Email already in use."))
+      if (this.isNew) {
+        if(queryRes){
+          return Promise.reject(new Error("Email already in use."))
+        }else{
+          return Promise.resolve(true)
+        }
       }else{
-        return Promise.resolve(true)
-      }
+         return Promise.resolve(true)
+      } 
     })
 
 /*
@@ -101,8 +105,12 @@ UserSchema.path('username').validate(async(username) =>{
     // Check only when it is a new user or when email field is modified
       let queryRes = await User.findOne({ username: username });
 
-      if(queryRes){
-        return Promise.reject(new Error("Username already in use."))
+      if(this.isNew) {
+        if(queryRes){
+          return Promise.reject(new Error("Username already in use."))
+        }else{
+          return Promise.resolve(true)
+        }
       }else{
         return Promise.resolve(true)
       }
