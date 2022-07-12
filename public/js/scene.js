@@ -36,15 +36,19 @@ var reverseLightDirectionLocation;
 var lightWorldPositionLocation;
 var viewPosition, shininessLocation, lightColorLocation, specularColorLocation;
 var pointlightShader, lampShader, currentShader;
-var eye, at, front;
-var vertices, mesh, objectList;
+var eye, at, front, right;
+var vertices, mesh, objectList = [];
 
 d3.scene_webgl = function(canvas, W, H, data){
 
-    vertices = data["meshes"][0]["vertices"];
+  var bridges_scene = {};
+  var meshes = [];
+
+    //vertices = data["meshes"][0]["vertices"];
     front = vec3(0.0, 0.0, -1.0);
     at = vec3(0.0, 0.0, -1.0);
-    eye = vec3(0.0, 200.0, 100.0);
+    eye = vec3(0.0, 0.0, 1.0);
+    right = vec3(1.0, 0.0, 0.0);
 
     // fragment shader
     const fsSource = `
@@ -168,8 +172,6 @@ d3.scene_webgl = function(canvas, W, H, data){
      gl_FragColor.rgb *= light;
    }`;
 
-
-
     canvas = document.getElementById("canvas_webgl0");
     // gets the main canvas for the main wave
     gl = WebGLUtils.setupWebGL(document.getElementById("canvas_webgl0"));
@@ -192,14 +194,8 @@ d3.scene_webgl = function(canvas, W, H, data){
     //gl.useProgram(programMain);
     gl.useProgram(elev);
     currentShader = elev
-    console.log(data)
 
-    mesh = new CustomMesh(vertices)
-    // mesh.genNormals();
-    mesh.genBuffers();
-    mesh.genUniforms();
-    mesh.associateBuffers();
-
+  
     var colorLocation = gl.getUniformLocation(currentShader, "u_color");
     var reverseLightDirectionLocation =
     gl.getUniformLocation(currentShader, "u_reverseLightDirection");
@@ -208,7 +204,7 @@ d3.scene_webgl = function(canvas, W, H, data){
     gl.uniform4fv(colorLocation, [0.2, 1, 0.2, 1]); // green
 
     // set the light direction.
-    gl.uniform3fv(reverseLightDirectionLocation, normalize(vec3(0.0, 1.7, 0.0)));
+    gl.uniform3fv(reverseLightDirectionLocation, normalize(vec3(1.0, 1.7, 0.0)));
 
     // Create an empty buffer object to store the vertex buffer
     // var vertex_buffer = new AttributeBuffer(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
@@ -216,25 +212,6 @@ d3.scene_webgl = function(canvas, W, H, data){
 
     /*==========Defining and storing the geometry=======*/
     camera = new Camera("fps", canvas);
-
-    // light = new Lighting("point");
-    // light.genUniforms();
-
-    objectList = [];
-    for(let i=1; i < data['meshes'].length; i++){
-      objectList.push(new Cube(10.5));
-      objectList[i-1].model = mult(objectList[i-1].model, rotate(0.5, 0.0, 1.0, 0.0))
-      objectList[i-1].model = mult(objectList[i-1].model, translate(data['meshes'][i].transform[0][1],
-                                                                    data['meshes'][i].transform[0][2],
-                                                                    data['meshes'][i].transform[0][3]))
-      objectList[i-1].genBuffers();
-      objectList[i-1].genUniforms();
-    }
-
-    console.log(objectList)
-    // cube = new Cube(10.5);
-    // cube.genBuffers();
-    // cube.genUniforms();
 
 
     //get uniform location for vertex shader
@@ -252,9 +229,53 @@ d3.scene_webgl = function(canvas, W, H, data){
      gl.clear(gl.COLOR_BUFFER_BIT);
 
 
+     for(let i=0; i < data['meshes'].length; i++){
+          objectList.push(new Cube(10.5));
+          objectList[i].model = translate(vec3(data['meshes'][i].position))
+          objectList[i].model = mult(objectList[i].model, rotate(0.5, 0.0, 1.0, 0.0))
+          objectList[i].color = vec4(data['meshes'][i].color)
+          objectList[i].genBuffers();
+          objectList[i].genUniforms();
+      }
+      //render()
+
+      bridges_scene.unpack = function(data){
+        
+      }
+
+      bridges_scene.render = function(data){
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        dt = 0.01;
+        currentFrame = Date.now();
+        delta = currentFrame - then;
+        if (delta > interval){
+          then = currentFrame - (delta % interval);
+          movementTick(camera);
+        }  
+        
+
+        // gl.enable(gl.CULL_FACE);
+
+        // Enable the depth buffer
+        gl.enable(gl.DEPTH_TEST);
+
+        gl.uniformMatrix4fv(u_projection_point, false, flatten(perspective(90, gl.canvas.width/gl.canvas.height, 0.01, 1000)));
+        gl.uniformMatrix4fv(u_view_point, false, flatten(lookat));
+        // gl.uniformMatrix4fv(u_model, false, flatten(translate(-100, 0.0, -100)))
+        gl.uniformMatrix4fv(u_model, false, flatten(mat4()))
+
+        //light.setUniforms();
 
 
-      render()
+        for(let i=0; i < objectList.length; i++){
+          objectList[i].associateBuffers();
+          objectList[i].model = mult(objectList[i].model, rotate(now, 0.0, 1.0, 0.0));
+          objectList[i].setUniforms();
+          gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24);
+        }
+      }
+
+      return bridges_scene;
     }
 
     function render(event){
@@ -284,11 +305,6 @@ d3.scene_webgl = function(canvas, W, H, data){
 
         //light.setUniforms();
 
-
-        mesh.genBuffers();
-        mesh.associateBuffers();
-        mesh.setUniforms();
-        gl.drawArrays(gl.TRIANGLES, 0, vertices.length/3);
 
         for(let i=0; i < objectList.length; i++){
           objectList[i].associateBuffers();

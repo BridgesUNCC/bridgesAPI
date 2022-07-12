@@ -332,6 +332,89 @@ exports.get = function (req, res, next) {
             return tree;
         };
 
+// <<<<<<< HEAD
+//         /* parse and store all subassignments */
+//         for(var i = 0; i < assignments.length; i++) {
+//           try{
+//             data = assignments[i].data.toObject()[0];
+//           } catch(err) {
+//             console.log("Error getting data object");
+//             return next(err);
+//           }
+//
+//           if(data === null) {
+//             console.log("Erroneous data");
+//             return next("Erroneous data");
+//           }
+//
+//           // Client should send trees as hierarchical representation now..
+//           // This captures the data from the OLD flat tree representation
+//           if((data.visual == "tree") && !("nodes" in data && "children" in data.nodes)) {
+//             data = unflatten(data);
+//             data['visual'] = "tree";
+//             if(!navItems.labels) navItems.labels = true;
+//           }
+//           // This captures the data from the NEW hierarchical tree representation
+//           if("nodes" in data && "children" in data.nodes) {
+//             var tempVisual = data.visual;
+//             data = data.nodes;
+//             data.visual = tempVisual;
+//             if(!navItems.labels) navItems.labels = true;
+//           }
+//
+//           data.visType = visTypes.getVisType(data.visual);
+//
+//           // Make sure multiple arrays are visualized
+//           if(data.visType == "Alist") {
+//             visTypes.checkIfHasDims(data);
+//           }
+//
+//           // add optional nav buttons where appropriate
+//           if(data.visType == "nodelink") {
+//             if(!navItems.save) navItems.save = true;
+//             if(!navItems.labels) navItems.labels = true;
+//           } else if(data.visType == "tree") {
+//             if(!navItems.labels) navItems.labels = true;
+//           }
+//
+//           // handle nav buttons for gamegrid (TODO refactor)
+//           // gamegrids do not need a reset button
+//           // gamegrids need a socket connection button
+//           if(data.visType != "gamegrid") {
+//             if(!navItems.reset) navItems.reset = true;
+//           } else {
+//             if(!navItems.socketConnect) navItems.socketConnect = true;
+//           }
+//
+//           // Are there nodes in the data? Use SVG for < 100 nodes, Canvas for > 100
+//           if(data.visType == "nodelink" && data.nodes && data.nodes.length > 100) {
+//             data.visType = "nodelink-canvas";
+//             linkResources.script.push('/js/graph-canvas.js');
+//           }
+//
+//           // add new resource info
+//           if(!assignmentTypes[data['visType']]){
+//               assignmentTypes[data['visType']] = 1;
+//
+//               var vistypeObjectTemp = visTypes.getVisTypeObject(data);
+//               linkResources.script.push(vistypeObjectTemp.script);
+//               if(vistypeObjectTemp.link != ""){
+//                 linkResources.css.push(vistypeObjectTemp.link);
+//               }
+//           }
+//
+//           // add map resources if appropriate
+//           if(data.map_overlay) {
+//             map = true;
+//             linkResources.script.push('/js/map.js');
+//             linkResources.script.push('/js/lib/topojson.v1.min.js');
+//             linkResources.css.push('/css/map.css');
+//             data.coord_system_type = data.coord_system_type.toLowerCase() || "cartesian";
+//           }
+//
+//           // finally, store the subassignment
+//           allAssigns[i] = data;
+// =======
         /* parse assignment data */
         try{
           data = assignment.data[0];
@@ -356,6 +439,15 @@ exports.get = function (req, res, next) {
         if("nodes" in data && "children" in data.nodes) {
           data = data.nodes;
           if(!navItems.labels) navItems.labels = true;
+        }
+
+        // handle nav buttons for gamegrid (TODO refactor)
+        // gamegrids do not need a reset button
+        // gamegrids need a socket connection button
+        if(assignment.vistype != "gamegrid" && assignment.vistype != 'scene') {
+          if(!navItems.reset) navItems.reset = true;
+        } else {
+          if(!navItems.socketConnect) navItems.socketConnect = true;
         }
 
         // add optional nav buttons where appropriate
@@ -388,6 +480,7 @@ exports.get = function (req, res, next) {
           linkResources.script.push('/js/map.js');
           linkResources.script.push('/js/lib/topojson.v1.min.js');
           linkResources.css.push('/css/map.css');
+// >>>>>>> master
         }
 
 
@@ -399,6 +492,7 @@ exports.get = function (req, res, next) {
         }
 
         if(assignment.vistype == 'scene'){
+          if(!navItems.socketConnect) navItems.socketConnect = true;
           linkResources.script.push('/js/graphics_engine/camera.js');
           linkResources.script.push('/js/graphics_engine/lighting.js');
           linkResources.script.push('/js/graphics_engine/primitives.js');
@@ -410,7 +504,7 @@ exports.get = function (req, res, next) {
           linkResources.script.push('/js/math/sylvester.js');
         }
 
-        sessionUser = sessionUser ? {"username": sessionUser.username, "email": sessionUser.email} : null;
+        sessionUser = sessionUser ? {"username": sessionUser.username, "email": sessionUser.email, "apikey": sessionUser.apikey} : null;
 
         // add display toggle if >1 assignment
         navItems.toggleDisplay = (assignment.numSubassignments > 1 && assignment.display_mode !== 'audio');
@@ -445,6 +539,10 @@ exports.get = function (req, res, next) {
           //distype = assignment.display_mode
         }
 
+        if(assignment.vistype == 'gamegrid' || assignment.vistype == 'scene'){
+	    displayMode = "assignmentMulti"; //the game grid ONLY works with assignmentMulti
+	}
+	
         //calls to render the specific view from the app/views folder with the given information
         //this behavior is defined in the config/exrpess.js file on where to render views from
         return res.render ('assignments/' + displayMode, {

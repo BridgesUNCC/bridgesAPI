@@ -503,6 +503,13 @@ function visualizeAssignment(assignment, index){
         .attr("id", "canvas"+index);
         d3.grid(vis, width, height, assignmentData, d3.select("#vis"+index));
   }
+  else if (assignment.vistype == "gamegrid" && d3.gamegrid) {
+      d3.select("#vis"+index).select("#svg"+index).remove("*");
+      vis = d3.select("#vis" + key).append("canvas")
+        .attr("id", "canvas" + key);
+      gamegrid = d3.gamegrid(vis, width, height, assignmentData, d3.select("#vis" + key));
+      BridgesVisualizer.visualizations.push(gamegrid);
+  }
   else if (assignment.vistype == "nodelink" && d3.graph) {
       graph = d3.graph(vis, width, height, assignmentData);
       BridgesVisualizer.visualizations[assignment.subAssignment] = (graph);
@@ -528,9 +535,8 @@ function visualizeAssignment(assignment, index){
       d3.select("#vis"+index).select("#svg"+index).remove("*");
       vis = d3.select("#vis" + index).append("canvas")
         .attr("id", "canvas_webgl"+index);
-      scene = d3.scene_webgl(vis, width, height, assignmentData);
-
-      BridgesVisualizer.visualizations[assignment.subAssignment] = (scene);
+      scene = d3.scene_webgl(vis, width, height, assignmentData); //needs to return something *forgot*
+      BridgesVisualizer.visualizations.push(scene);
   }
   else if (assignment.vistype == "collection" && d3.collection) {
       collection = d3.collection(vis, width, height, assignmentData);

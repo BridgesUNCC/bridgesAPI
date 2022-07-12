@@ -32,6 +32,7 @@ exports.getVisType = function(toCheck) {
     "largegraph":                 "graph-webgl",
 
     "ColorGrid":                  "grid",
+    "GameGrid":                   "gamegrid",
 
    "SymbolCollection":           "collection",
    "SymbolCollectionV2":           "collectionv2",
@@ -86,6 +87,11 @@ exports.getVisTypeObject = function(data) {
         "script":"/js/grid.js",
         "link":""
       },
+      "gamegrid": {
+        "vistype":"gamegrid",
+        "script":"/js/gamegrid.js",
+        "link":""
+        },
       "collection": {
         "vistype":"collection",
         "script":"/js/collection.js",

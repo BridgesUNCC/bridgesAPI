@@ -13,11 +13,15 @@
               label(for='private') Private
               a#toggle.btn.btn-primary
 
-
           if (navItems.save)
             a#save(href="#", title="Save Node Positions")
               span.glyphicon.glyphicon-save
               span.nav-label  Save Node Positions
+
+          if (navItems.socketConnect)
+            a#socketConnect(href="#")
+              span.glyphicon.glyphicon-eye-open
+              span.nav-label Connect to Game
 
       if (navItems.labels)
         a#nodelabels(href="#", title="Toggle Node Labels")

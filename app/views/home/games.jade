@@ -1,0 +1,224 @@
+.col-lg-12(style="font-family: system-ui;font-size:1.2em")
+
+    .row.text-center
+      .col-md-12
+        iframe(style="width:720px;height:450px"
+          src='https://www.youtube.com/embed/fQgxvqd8BIg'
+          frameborder='0'
+          allow='autoplay; encrypted-media'
+          allowfullscreen)
+      //div(style="width:720px;height:450px;background-color:black;margin:auto")
+
+    .row.text-center
+      .col-md-4
+        a.btn.btn-block.btn-primary(href="/#setup" role="button")
+          h2 Setup
+
+      .col-md-4
+        a.btn.btn-block.btn-primary(href="/#api" role="button")
+          h2 API
+      .col-md-4
+        a.btn.btn-block.btn-primary(href="#examples" role="button")
+          h2 Examples
+
+    .row.spacer
+
+    .row#setup
+      .col-md-6(style="margin-top:25px")
+        .panel.panel-primary
+          div.panel-heading.text-center
+            h3 BRIDGES Account
+          div.panel-body
+            ul.list-group
+              li.list-group-item
+                p Set up an account here on the Bridges app.
+                a(href="/signup") (Signup)
+              li.list-group-item
+                p Locate your username and api key under <i>Profile</i>. You will need these to run your programs.
+                a(href="/profile") (Profile)
+              li.list-group-item
+                p When you run a Bridges program, it will appear under <i>My Projects</i>.
+                a(href="/username") (My Projects)
+
+      .col-md-6(style="margin-top:25px")
+        .panel.panel-primary
+          div.panel-heading.text-center
+            h3 Environment Setup
+          div.panel-body
+            ul.list-group
+              li.list-group-item
+                p You will need Java version 1.8 running on your machine and your favorite Java IDE
+              li.list-group-item
+                p Download the starter project from our git repo. It contains our bridges-games JAR file, and blocking and non-blocking code stubs to get your program moving quickly!
+                a(href="http://github.com/squeetus/BridgesGames", target="_blank") (GITHUB Link)
+              li.list-group-item
+                p Associate the bridges-games JAR file with your project. If you need help, check out the link below or try googling "add jar to classpath" + your IDE
+                a(href="https://bridgesuncc.github.io/bridges_setup.html", target="_blank") (BRIDGES IDE setup help)
+
+
+    .row.text-left#api
+      .col-md-12(style="margin-top:25px")
+        .panel.panel-primary
+          div.panel-heading.text-center
+            h3 API Overview
+          div.panel-body
+          ul.list-group
+            li.list-group-item
+              p At its core, your game is a simple grid with rows and columns. Each cell in the grid can have a <b>background color</b>, <b>foreground color</b>, and <b>symbol</b>.
+            li.list-group-item.clearfix
+              .col-md-6
+                p
+                  | You set the <b>background color</b> like this:
+                  div.well
+                    p gamegrid.setBGColor(<i>int row</i>, <i>int col</i>, <i>NamedColor</i>);
+                p
+                  | For example, let's set the background color of the top row, third column (note that they are zero-indexed just like arrays!):
+                  div.well
+                    p gamegrid.setBGColor(0, 2, NamedColor.purple);
+                  .col-md-6.col-md-offset-3
+                    div.center-block
+                      img(src="/assets/games/img1.png").img-responsive
+
+              .col-md-6
+                p
+                  | You set the <b>symbol</b> like this (note that the final color argument is optional):
+                  div.well
+                    p gamegrid.drawObject(<i>int row</i>, <i>int col</i>, <i>NamedSymbol</i>, [<i>NamedColor</i>]);
+                p
+                  | Let's draw a green circle in the 8th row, 5th column:
+                  div.well
+                    p gamegrid.drawObject(7, 4, NamedSymbol.circle, NamedColor.green);
+                  .col-md-6.col-md-offset-3
+                    div.center-block
+                      img(src="/assets/games/img2.png").img-responsive
+
+          li.list-group-item.clearfix
+            .col-md-6
+              .panel.panel-primary
+                div.panel-heading.text-center
+                  h3 Blocking Game
+                div.panel-body
+                  p The blocking game architecture waits until a keypress is registered, performs some game logic, then renders the next state of the game.
+
+                  div.text-center(style="margin-bottom:20px")
+                    a.btn.btn-primary(href="https://github.com/squeetus/BridgesGames/blob/master/minimalBlocking/minimalBlockingStub.java", target="_blank") Check out the blocking stub code here
+
+                  p <b>Digging into the code:</b>
+
+                  ul.list-group
+                    li.list-group-item
+                      p Note the api key and username arguments in the initialization of the blocking game.
+                    li.list-group-item
+                      p Each time the <i>bg.render()</i> method is called, the current state of the game grid is sent to your browser.
+                    li.list-group-item
+                      p Inside the <i>while</i> loop, we listen for the next keypress and modify the game grid accordingly.
+
+            .col-md-6
+              .panel.panel-primary
+                div.panel-heading.text-center
+                  h3 Non-Blocking Game
+                div.panel-body
+                  p The non-blocking game architecture renders the state of the game continuously. You can examine the current keypresses at every frame.
+
+                  div.text-center(style="margin-bottom:20px")
+                    a.btn.btn-primary(href="https://github.com/squeetus/BridgesGames/blob/master/minimalInteractive/MinimalGameStub.java", target="_blank") Check out the non-blocking stub code here
+
+                  p <b>Digging into the code:</b>
+
+                  ul.list-group
+                    li.list-group-item
+                      p Note the api key and username arguments in the initialization of the non-blocking game.
+                    li.list-group-item
+                      p The <i>initialize()</i> method is called once when you first run your game. Modify the <i>grid</i> object using the <i>setBGColor(..)</i> and <i>drawObject(..)</i> methods described #[a(href='#api') above].
+                    li.list-group-item
+                      p The <i>gameLoop()</i> method is called multiple times per second. Examine the currently-pressed keys using the <i>KeyUp(), KeyDown(), Keyw()</i> methods (etc.) and modify the grid accordingly.
+
+
+        .row.text-left#examples
+          .col-md-12(style="margin-top:25px")
+            .panel.panel-primary
+              div.panel-heading.text-center
+                h3 Examples
+              div.panel-body
+                .col-md-6
+                  ul.list-group
+                    li.list-group-item
+                      h2.text-center Snake
+
+                      .col-md-6.col-md-offset-3
+                        div.center-block
+                          img(src="/assets/games/snake.png").img-responsive
+                      div.text-center(style="margin:20px")
+                        a.btn.btn-primary(href="https://github.com/squeetus/BridgesGames/blob/master/Snake/Snake.java", target="_blank") Full Source Code
+
+                      p <b>Description and Instructions</b>
+                      p Snake is implemented in the <b>non-blocking</b> architecture. Arrow keys change the direction of the snake. Keep eating food to grow the snake, but be careful not to run into yourself!
+                      p If you followed the #[a(href='#setup') setup] instructions above, just add your api key and username to play for yourself.
+                      p <b>Learning Outcomes and Scaffolding</b>
+                      p This project can be used at a variety of levels depending on what you want students to implement.
+                      ul.list-group
+                        li.list-group-item
+                          p <b>Looping</b>
+                          p Early CS courses could keep most of the game logic intact and simply remove the nested <i>for()</i> loops for drawing the background each frame.
+                        li.list-group-item
+                          p <b>Conditional Statements</b>
+                          p Students in early CS courses could be asked to implement the <i>detectApple()</i> method; the outcome depends on comparing the current position of the snake's head to the position of the food.
+                        li.list-group-item
+                          p <b>Data Structures</b>
+                          p Students in second-year CS courses might implement snake using a linked list or queue structure. The <i>detectDeath()</i> and <i>updatePosition()</i> methods require stepping through the pieces of the snake.
+
+
+                .col-md-6
+                  ul.list-group
+                    li.list-group-item
+                      h2.text-center Bug Stomp
+
+                      .col-md-6.col-md-offset-3
+                        div.center-block
+                          img(src="/assets/games/bugstomp.png").img-responsive
+                      div.text-center
+                        a.btn.btn-primary(style="margin:20px")(href="https://github.com/squeetus/BridgesGames/blob/master/BUGSTOMP/BUGSTOMP.java", target="_blank") Full Source Code
+
+                      p <b>Description and Instructions</b>
+                      p Bug Stomp is implemented in the <b>non-blocking</b> architecture. Arrow keys change the position of the person. Quickly move to the randomly spawning bugs before they disappear!
+                      p If you followed the #[a(href='#setup') setup] instructions above, just add your api key and username to play for yourself.
+                      p <b>Learning Outcomes and Scaffolding</b>
+                      p This project is fairly simple. It primarily involves loops, random number generation, and conditional comparisons.
+                      ul.list-group
+                        li.list-group-item
+                          p <b>Looping</b>
+                          p Early CS courses could require students implement the <i>for()</i> loops for drawing the background each frame.
+                        li.list-group-item
+                          p <b>Conditional Statements</b>
+                          p Students in early CS courses could be asked to implement the <i>handleInput()</i> method to update the current (row, column) position of the person based on the current keypresses.
+                        li.list-group-item
+                          p <b>Random Number Generating (and OOP)</b>
+                          p Students could be asked to write the code to spawn a new bug at a random location in the grid with a random time duration. (This could be abstracted into a new Bug object with attributes and methods for an extra challenge).
+
+                .col-md-6
+                  ul.list-group
+                    li.list-group-item
+                      h2.text-center Minesweeper
+
+                      .col-md-6.col-md-offset-3
+                        div.center-block
+                          img(src="/assets/games/minesweeper.png").img-responsive
+
+                      div.text-center
+                        a.btn.btn-primary(style="margin:20px")(href="https://github.com/squeetus/BridgesGames/blob/master/Minesweeper/Minesweeper.java") (Full Source Code)
+
+                      p <b>Description and Instructions</b>
+                      p Minesweeper is implemented in the <b>blocking</b> architecture. Arrow keys change the position of the current selection, 'space' exposes the current cell, and 'f' places a flag at a suspected mine location.
+                      p If you followed the #[a(href='#setup') setup] instructions above, just add your api key and username to play for yourself.
+                      p <b>Learning Outcomes and Scaffolding</b>
+                      p This project is more complex due to the multiple cell states (mine, visited, unvisited, flagged, etc) and the trickier logic for maintaining the board symbols and colors.
+                      ul.list-group
+                        li.list-group-item
+                          p <b>Looping, Random Number Generating</b>
+                          p Early CS courses could require students to implement the <i>setupMines()</i> and <i>highlightMines()</i> methods, which require nested <i>for()</i> loops and random number generation.
+                        li.list-group-item
+                          p <b>Conditional Statements</b>
+                          p Students in earlier CS courses could implement the logic for counting the number of mines in cells adjacent to the current selection. These can be hard-coded conditional statements that must observe the dimensions of the grid.
+                        li.list-group-item
+                          p <b>Recursion</b>
+                          p Intermediate students can implement the <i>visitCell</i> method, which recursively visits cells surrounding the current selection until a non-zero number of adjacent mines are found.

@@ -178,7 +178,7 @@ class Cube extends Primitives{
       ];
     } else {
       this.color = [
-        Math.random(),  Math.random(),  Math.random(),  1.0
+        1.0,  0.0,  1.0,  1.0
       ];
     }
     this.model = mat4();

@@ -1,4 +1,5 @@
 extends ../includes/boilerplate.pug
+
 block css
     link(rel='stylesheet', href='/css/assignment.css')
     link(rel='stylesheet', href='/css/assignment-nav.css')
@@ -9,23 +10,27 @@ block content
       include ../includes/header.pug
       include ../includes/assignment-nav.pug
 
-      div#updateStatus
-      div#assignmentCanvas(overflow='auto')
-        -for (var i = 0; i < assignment.numSubassignments; i++) {
+      .row(style="margin:auto")
+        div#updateStatus
+        div#assignmentCanvas(overflow='auto')
+          -for (var i = 0; i < assignment.numSubassignments; i++) {
 
-          if (assignment && assignment.title && assignment.title.length > 0)
-            h1(id="title" + i).assignmentTitle #{assignment.title}
-          else
-            h1(id="title" + i).assignmentTitle Assignment #{assignmentNumber}
+            if (assignment && assignment.title && assignment.title.length > 0)
+              h1.col-md-offset-1.col-md-8.assignmentTitle #{assignment.title}
+            else
+              h1.col-md-offset-1.col-md-6.assignmentTitle Assignment #{assignmentNumber}
 
-          if (assignment && assignment.description  && assignment.description.length > 0)
-            div(id="description" + i).assignmentDescription #{assignment.description}
+            if (assignment && assignment.description && assignment.description.length > 0)
+              div.col-md-offset-1.col-md-5.assignmentDescription #{assignment.description}
 
-          div(id="vis" + i, display="block").assignmentContainer
-            //button(class='vis-menu-button', id='vis-menu-'+i)
-            //div(id="menu"+i, class="vis-menu", display="block")
-              //button(class='vis-menu-button', name='fullscreen')
-        -}
+            if (navItems && navItems.socketConnect)
+              div.col-md-3.alert.alert-danger#socketStatus not connected...
+
+      div(id="vis" + i, display="block").assignmentContainer(overflow='auto')
+        //button(class='vis-menu-button', id='vis-menu-'+i)
+        //div(id="menu"+i, class="vis-menu", display="block")
+          //button(class='vis-menu-button', name='fullscreen')
+      -}
 
 block footerjs
     script.
@@ -46,6 +51,9 @@ block footerjs
         var map_overlay = map_overlay;
 
 
+    script(src='/socket.io/socket.io.js')
+    script(src='/js/socket.js')
+
     each script in linkResources.script
         script(src = script)
 
@@ -54,6 +62,7 @@ block footerjs
 
     script(src = '/js/Bridges/BridgesVisualizer.js')
     script(src = '/js/multiVisconfig.js')
+
 
     script.
         // Asynchronously update the assignment visibility
