@@ -95,10 +95,11 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
       var array = topojson.feature(us, us.objects.collection).features
       var arraycopy = [...array];
 
+
       if(state.toLowerCase() == "all"){
         var visData = arraycopy
       }else{
-        var visData = arraycopy.filter(function(d) { return d.properties.state.toLowerCase() == state.toLowerCase(); })
+        var visData = arraycopy.filter(function(d) { return d.properties.state.toLowerCase() == state.toLowerCase()})
       }
 
       states.selectAll("path")

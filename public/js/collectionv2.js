@@ -284,6 +284,7 @@ d3.collectionv2 = function(svg, W, H, data) {
 		    		tempArray = tempArray.concat(projShape(symb["points"][i], symb["points"][i+1]))
 		    	}
 		    	symb['points'] = tempArray;
+		    	console.log(symb['points'])
 	    	}
 		symbSVG =
 		    svgElement.append('svg:polyline')
