@@ -31,7 +31,6 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
           .attr("class", "land")
           .attr("d", path);
 
-      console.log(us.objects.states)
 
       // Send the overlay to the back to catch mouse events
       vis.select("g").select("#map_overlay"+id).moveToBack();
@@ -147,7 +146,6 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
           .classed("map_overlay", true)
 
       var array = topojson.feature(us, us.objects.countries).features
-      console.log(array)
       var arraycopy = [...array];
       if(state.toLowerCase() == "all"){
         var visData = arraycopy

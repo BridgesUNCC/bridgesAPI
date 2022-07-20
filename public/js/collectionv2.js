@@ -215,7 +215,6 @@ d3.collectionv2 = function(svg, W, H, data) {
 
 	    if (symb["type"] === "rect" ) {
 	    	if(data.coord_system_type != "window" && data.coord_system_type != "cartesian") {
-	    		console.log(symb)
 	    		symb["lowerleftcorner"] = projShape(symb["lowerleftcorner"][0], symb["lowerleftcorner"][1])
 		    }
 		//console.log("rect is "+JSON.stringify(symb));
@@ -284,7 +283,6 @@ d3.collectionv2 = function(svg, W, H, data) {
 		    		tempArray = tempArray.concat(projShape(symb["points"][i], symb["points"][i+1]))
 		    	}
 		    	symb['points'] = tempArray;
-		    	console.log(symb['points'])
 	    	}
 		symbSVG =
 		    svgElement.append('svg:polyline')
@@ -292,13 +290,11 @@ d3.collectionv2 = function(svg, W, H, data) {
 		    .attr("fill", 'none');
 	    } else if (symb["type"] === "polygon" ) {
 	    	if(data.coord_system_type != 'window' && data.coord_system_type != "cartesian"){
-	    		console.log(symb['points'])
 		    	let tempArray = [];
 		    	for(let i = 0; i < symb['points'].length; i+=2){
 		    		tempArray = tempArray.concat(projShape(symb["points"][i], symb["points"][i+1]))
 		    	}
 		    	symb['points'] = tempArray;
-		    	console.log(symb['points'])
 	    	}
 	    	
 
