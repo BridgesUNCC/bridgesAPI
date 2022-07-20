@@ -175,7 +175,7 @@ d3.collectionv2 = function(svg, W, H, data) {
 	// add the transformation to the svg group
     // this centers the symbols on the display
     svgZoomGroup = vis.append("g")
-    if(data.coord_system_type == "albersusa"){
+    if(data.coord_system_type == "albersusa" || data.coord_system_type == "equirectangular"){
       svgGroup = svgZoomGroup.append("g")
     }else{
       svgGroup = svgZoomGroup.append("g").attr('transform', T_Composite)
@@ -190,6 +190,19 @@ d3.collectionv2 = function(svg, W, H, data) {
 		}
 	}
 
+	function projShape(posx, posy){
+		let projection, pos;
+		if(data.coord_system_type == 'albersusa'){
+		    projection = d3.geoAlbersUsa()
+		    pos = projection([posx, posy]);
+		    console.log(projection([0, 0]))
+		}else if(data.coord_system_type == 'equirectangular'){
+			projection = d3.geoEquirectangular()
+			pos = projection([posx, posy]);
+		}
+		return pos
+	}
+
     var helper = function (svgElement, IDarray) {
 	for (var id of IDarray) {
 	    var symb = symbolDict[id];
@@ -201,6 +214,10 @@ d3.collectionv2 = function(svg, W, H, data) {
 
 
 	    if (symb["type"] === "rect" ) {
+	    	if(data.coord_system_type != "window") {
+	    		console.log(symb)
+	    		symb["lowerleftcorner"] = projShape(symb["lowerleftcorner"][0], symb["lowerleftcorner"][1])
+		    }
 		//console.log("rect is "+JSON.stringify(symb));
 		symbSVG =
 		    svgElement.append('rect')
@@ -209,11 +226,9 @@ d3.collectionv2 = function(svg, W, H, data) {
 		    .attr('width', symb["width"])
 		    .attr('height', symb["height"]);
 	    } else if (symb["type"] === "circle" ) {
-		//console.log("circle is "+JSON.stringify(symb));
-    if(data.coord_system_type == "albersusa") {
-      proj = d3.geoAlbersUsa()
-      symb["center"] = proj([symb["center"][0], symb["center"][1]]);
-    }
+	    if(data.coord_system_type != "window") {
+	    	symb["center"] = projShape(symb["center"][0], symb["center"][1])
+	    }
     // console.log(point)
 
 		symbSVG =
@@ -224,8 +239,14 @@ d3.collectionv2 = function(svg, W, H, data) {
 	    } else if (symb["type"] === "text" ) {
 		//console.log("text is "+JSON.stringify(symb));
 
-		transformString = "translate("+ symb['anchor-location'][0] + ", "+ symb['anchor-location'][1]+")"
-		transformString = transformString + " scale(1,-1)"
+		if(data.coord_system_type != "window") {
+	      	symb["anchor-location"] = projShape(symb["anchor-location"][0], symb["anchor-location"][1]);
+	    	transformString = "translate("+ symb['anchor-location'][0] + ", "+ symb['anchor-location'][1]+")"
+	    	transformString = transformString + " scale(1,-1)" +  Y_flip
+	    }else{
+	    	transformString = "translate("+ symb['anchor-location'][0] + ", "+ symb['anchor-location'][1]+")"
+	    	transformString = transformString + " scale(1,-1)"
+	    }
 		symbSVG =
 		    svgElement.append('text')
 		    .text(symb['text'])
@@ -257,19 +278,36 @@ d3.collectionv2 = function(svg, W, H, data) {
 
 	    } else if (symb["type"] === "polyline" ) {
 		//console.log("polyline is "+JSON.stringify(symb));
-    if(data.coord_system_type == "albersusa") {
-      proj = d3.geoAlbersUsa()
-      symb["points"] = proj([symb["points"][0], symb["points"][1]]).concat(proj([symb["points"][2], symb["points"][3]]));
-
-    }
+		    if(data.coord_system_type != 'window'){
+		    	let tempArray = [];
+		    	for(let i = 0; i < symb['points'].length; i+=2){
+		    		tempArray = tempArray.concat(projShape(symb["points"][i], symb["points"][i+1]))
+		    	}
+		    	symb['points'] = tempArray;
+	    	}
 		symbSVG =
 		    svgElement.append('svg:polyline')
-		    .attr("points", symb["points"]);
+		    .attr("points", symb["points"])
+		    .attr("fill", 'none');
 	    } else if (symb["type"] === "polygon" ) {
+	    	if(data.coord_system_type != 'window'){
+	    		console.log(symb['points'])
+		    	let tempArray = [];
+		    	for(let i = 0; i < symb['points'].length; i+=2){
+		    		tempArray = tempArray.concat(projShape(symb["points"][i], symb["points"][i+1]))
+		    	}
+		    	symb['points'] = tempArray;
+		    	console.log(symb['points'])
+	    	}
+	    	
+
+	    	// if(data.coord_system_type != "window") {
+		    //   symb["points"] = projShape(symb["points"][0], symb["points"][1]).concat(projShape(symb["points"][2], symb["points"][3]));
+		    // }
 		//console.log("polygon is "+JSON.stringify(symb));
 		var points = symb["points"];
-		points.push(points[0]);
-		points.push(points[1]);
+		points.push(points[0])
+		points.push(points[1])
 		symbSVG =
 		    svgElement.append('svg:polyline')
 		    .attr("points", points);
