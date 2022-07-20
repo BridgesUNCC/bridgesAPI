@@ -15,7 +15,7 @@ d3.graph_canvas = function(canvas, W, H, data) {
     context.canvas.height = h;
 
     if(data.coord_system_type) {
-      //finalTranslate = BridgesVisualizer.defaultTransforms[data.coord_system_type].translate;
+      finalTranslate = BridgesVisualizer.defaultTransforms[data.coord_system_type].translate;
       finalScale =  BridgesVisualizer.defaultTransforms[data.coord_system_type].scale;
     } else {
       finalTranslate = BridgesVisualizer.defaultTransforms.graph.translate;

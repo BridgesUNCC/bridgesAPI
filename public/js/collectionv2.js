@@ -214,7 +214,7 @@ d3.collectionv2 = function(svg, W, H, data) {
 
 
 	    if (symb["type"] === "rect" ) {
-	    	if(data.coord_system_type != "window") {
+	    	if(data.coord_system_type != "window" && data.coord_system_type != "cartesian") {
 	    		console.log(symb)
 	    		symb["lowerleftcorner"] = projShape(symb["lowerleftcorner"][0], symb["lowerleftcorner"][1])
 		    }
@@ -226,7 +226,7 @@ d3.collectionv2 = function(svg, W, H, data) {
 		    .attr('width', symb["width"])
 		    .attr('height', symb["height"]);
 	    } else if (symb["type"] === "circle" ) {
-	    if(data.coord_system_type != "window") {
+	    if(data.coord_system_type != "window" && data.coord_system_type != "cartesian") {
 	    	symb["center"] = projShape(symb["center"][0], symb["center"][1])
 	    }
     // console.log(point)
@@ -238,8 +238,8 @@ d3.collectionv2 = function(svg, W, H, data) {
 		    .attr('r', symb["r"]);
 	    } else if (symb["type"] === "text" ) {
 		//console.log("text is "+JSON.stringify(symb));
-
-		if(data.coord_system_type != "window") {
+		console.log(data.coord_system_type)
+		if(data.coord_system_type != "window" && data.coord_system_type != "cartesian") {
 	      	symb["anchor-location"] = projShape(symb["anchor-location"][0], symb["anchor-location"][1]);
 	    	transformString = "translate("+ symb['anchor-location'][0] + ", "+ symb['anchor-location'][1]+")"
 	    	transformString = transformString + " scale(1,-1)" +  Y_flip
@@ -278,7 +278,7 @@ d3.collectionv2 = function(svg, W, H, data) {
 
 	    } else if (symb["type"] === "polyline" ) {
 		//console.log("polyline is "+JSON.stringify(symb));
-		    if(data.coord_system_type != 'window'){
+		    if(data.coord_system_type != 'window' && data.coord_system_type != "cartesian"){
 		    	let tempArray = [];
 		    	for(let i = 0; i < symb['points'].length; i+=2){
 		    		tempArray = tempArray.concat(projShape(symb["points"][i], symb["points"][i+1]))
@@ -290,7 +290,7 @@ d3.collectionv2 = function(svg, W, H, data) {
 		    .attr("points", symb["points"])
 		    .attr("fill", 'none');
 	    } else if (symb["type"] === "polygon" ) {
-	    	if(data.coord_system_type != 'window'){
+	    	if(data.coord_system_type != 'window' && data.coord_system_type != "cartesian"){
 	    		console.log(symb['points'])
 		    	let tempArray = [];
 		    	for(let i = 0; i < symb['points'].length; i+=2){

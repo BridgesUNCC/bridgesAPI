@@ -43,7 +43,6 @@ d3.graph = function(svg, W, H, data) {
       svg.call(zoom.transform, transform);
     };
     graph.reset();
-
     // if we want to do a window -> viewport transformation, set up the scales
     if(data.coord_system_type == "window") {
       var xExtent, yExtent, viewportX, viewportY;
