@@ -38,6 +38,7 @@ var viewPosition, shininessLocation, lightColorLocation, specularColorLocation;
 var pointlightShader, lampShader, currentShader;
 var eye, at, front, right;
 var vertices, mesh, objectList = [];
+var objectListDesc = [];
 
 d3.scene_webgl = function(canvas, W, H, data){
 
@@ -195,7 +196,7 @@ d3.scene_webgl = function(canvas, W, H, data){
     gl.useProgram(elev);
     currentShader = elev
 
-  
+
     var colorLocation = gl.getUniformLocation(currentShader, "u_color");
     var reverseLightDirectionLocation =
     gl.getUniformLocation(currentShader, "u_reverseLightDirection");
@@ -228,19 +229,20 @@ d3.scene_webgl = function(canvas, W, H, data){
      // Clear the color buffer bit
      gl.clear(gl.COLOR_BUFFER_BIT);
 
-
+     //init two arrays. one holds the actual object to be rendered. The other holds information about
+     //the object for indexing and removing/altering object properties. Had to do it this way to access object functions
      for(let i=0; i < data['meshes'].length; i++){
-          objectList.push(new Cube(10.5));
-          objectList[i].model = translate(vec3(data['meshes'][i].position))
-          objectList[i].model = mult(objectList[i].model, rotate(0.5, 0.0, 1.0, 0.0))
-          objectList[i].color = vec4(data['meshes'][i].color)
-          objectList[i].genBuffers();
-          objectList[i].genUniforms();
+        objectListDesc.push({'name': data['meshes'][i].name, 'index': i})
+        objectList.push(new Cube(10.5));
+        objectList[i].model = translate(vec3(data['meshes'][i].position))
+        objectList[i].model = mult(objectList[i].model, rotate(0.5, 0.0, 1.0, 0.0))
+        objectList[i].color = vec4(data['meshes'][i].color)
+        objectList[i].genBuffers();
+        objectList[i].genUniforms();
       }
-      //render()
 
       bridges_scene.unpack = function(data){
-        
+
       }
 
       bridges_scene.render = function(data){
@@ -251,8 +253,8 @@ d3.scene_webgl = function(canvas, W, H, data){
         if (delta > interval){
           then = currentFrame - (delta % interval);
           movementTick(camera);
-        }  
-        
+        }
+
 
         // gl.enable(gl.CULL_FACE);
 
