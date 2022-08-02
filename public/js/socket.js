@@ -48,10 +48,15 @@
     //});
 
     /* Localhost testing server */
-     socket = io.connect('localhost:3000',{
+     // socket = io.connect('localhost:3000',{
+     //   transports: ['websocket']
+     // });
+
+     socket = io.connect(window.location.origin,{
        transports: ['websocket']
      });
 
+      
     /* Automatically register credentials to join the correct channel */
       socket.on('connect', function (data) {
       socket.emit('credentials', JSON.stringify({user: user.username, assignment: assignmentNumber, apikey: user.apikey}));
