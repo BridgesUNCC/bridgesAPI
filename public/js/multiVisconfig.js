@@ -52,7 +52,7 @@ var intervalId;
 var playing = false;
 
 //toggles for labels within the visualization
-BridgesVisualizer.labels_shown = false;
+BridgesVisualizer.labels_shown = assignment.data[0].label_flag;
 BridgesVisualizer.link_labels_shown = false;
 BridgesVisualizer.nodes_shown = true;
 BridgesVisualizer.links_shown = true;
