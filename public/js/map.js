@@ -179,6 +179,7 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
   /*
     Call the appropriate projection and overlay functions
   */
+
   switch(overlay) {
     case "albersusa":
       if(map.toLowerCase() == "us"){
