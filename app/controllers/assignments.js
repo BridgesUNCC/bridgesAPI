@@ -167,10 +167,27 @@ exports.upload = function (req, res, next) {
       assignment.data = rawBody;
 
       assignment.save(function (err, product, numAffected) {
-        if (err) {
-          // trap errors saving the assignment to the DB
-          console.log(err);
-          next(err);
+          if (err) {
+	      // trap errors saving the assignment to the DB
+
+	      //A classic error would be that the payload is too big
+	      //in which case err is an Error() of type
+	      //MongoServerError with codeName BSONObjectTooLarge. We
+	      //can trap that first.
+
+	      errorHandled = false;
+              if (err.name == "MongoServerError") {
+		  if (err.codeName == "BSONObjectTooLarge") {
+		      res.status(413).json({"msg": "The volume of data in the assignment is too large for BRIDGES to handle. Try a smaller assignment. For reference, a BRIDGES assignment has to be smaller than about 17MB once serialized to JSON."});
+		      errorHandled = true;
+		  }
+	      }
+	      if (! errorHandled) {
+		  // No idea what that error is
+	      
+		  console.log("Error trapped while trying to save assignment : " + err);
+		  next(err);
+	      }
         } else {
           User.findOne({
               email: user.email
