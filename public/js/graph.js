@@ -38,12 +38,11 @@ d3.graph = function(svg, W, H, data) {
       } else {
         finalTranslate = BridgesVisualizer.defaultTransforms[data.coord_system_type].translate;
         finalScale = BridgesVisualizer.defaultTransforms[data.coord_system_type].scale;
-        transform = d3.zoomIdentity.translate(finalTranslate[0], finalTranslate[1]).scale(finalScale);
+        transform = d3.zoomIdentity.translate(0, 0).scale(finalScale);
       }
       svg.call(zoom.transform, transform);
     };
     graph.reset();
-
     // if we want to do a window -> viewport transformation, set up the scales
     if(data.coord_system_type == "window") {
       var xExtent, yExtent, viewportX, viewportY;

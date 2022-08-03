@@ -56,8 +56,11 @@
     "dllist": { "scale": 0.3, "translate": [50, -5]},
     "cdllist": { "scale": 0.3, "translate": [50, -5]},
     "cllist": { "scale": 0.3, "translate": [50, -5]},
-    "equirectangular": { "scale": 1, "translate": [BridgesVisualizer.visCenter()[0]/3, BridgesVisualizer.visCenter()[1]/4]},
-    "albersusa": { "scale": 1, "translate": [BridgesVisualizer.visCenter()[0]/3, BridgesVisualizer.visCenter()[1]/4]},
+    //depricated
+    // "equirectangular": { "scale": 1, "translate": [BridgesVisualizer.visCenter()[0]/3, BridgesVisualizer.visCenter()[1]/4]},
+    // "albersusa": { "scale": 1, "translate": [BridgesVisualizer.visCenter()[0]/3, BridgesVisualizer.visCenter()[1]/4]},
+    "equirectangular": { "scale": 1, "translate": [0.0, 0.0]},
+    "albersusa": { "scale": 1, "translate": [0.0, 0.0]},
     "window": { "scale": 1, "translate": [0,0]},
     "nodelink": { "scale": 0.5, "translate": BridgesVisualizer.visCenter()},
     "cartesian": { "scale": 0.5, "translate": [BridgesVisualizer.visCenter()[0]/2, BridgesVisualizer.visCenter()[1]/2] },

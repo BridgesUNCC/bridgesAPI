@@ -1,4 +1,4 @@
-BridgesVisualizer.map_canvas = function(canvas, overlay) {
+BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
 
   var assignmentContainer = canvas.node().parentNode;
 
@@ -110,14 +110,154 @@ BridgesVisualizer.map_canvas = function(canvas, overlay) {
   };
 
 
+  //parse the svg file as xml and get the path tag based on the state selected and render in d3
+  var svgMap = function(){
+
+    d3.json("/assets/us-albers-counties.json", function(error, us) {
+      if (error) throw error;
+
+      d3.select(assignmentContainer).selectAll(".map_overlay").remove();
+      vis = d3.select(assignmentContainer)
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+      vis
+       .attr("id", "map_overlay_svg_" + id)
+       .attr("class", "map_overlay_svg");
+
+      path = d3.geoPath();
+
+      var projection = d3.geoAlbersUsa();
+
+      var path = d3.geoPath().projection(projection);
+
+      states = vis.append("g")
+          .attr("id","map_overlay"+id)
+          .classed("map_overlay", true)
+
+
+      var array = topojson.feature(us, us.objects.collection).features
+      var arraycopy = [...array];
+
+
+      if(state.toLowerCase() == "all"){
+        var visData = arraycopy
+      }else{
+        var visData = arraycopy.filter(function(d) { return d.properties.state.toLowerCase() == state.toLowerCase()})
+      }
+
+      states.selectAll("path")
+          .attr("class", "land")
+          .attr("id", "state_fips")
+          .data(visData)
+          .enter()
+          .append("path")
+          .attr("fill", 'rgba(0.0, 0.0, 0.0, 0.08)')
+          .attr("d", path)
+          .attr("stroke","blue")
+          .attr("stroke-width", 0.5)
+
+
+      var mySVG = document.getElementById("map_overlay_svg_" + id);
+
+      let bbox = document.getElementById("map_overlay"+id).getBBox();
+
+      mySVG.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
+      document.getElementsByTagName('g')[0].setAttribute("transform", "translate(" + 0 + "," + 0 + ")");
+
+      vis.select("#map_overlay"+id).attr("transform", d3.zoomTransform(canvas.node()));
+
+      // update the transformation based on the sibling transform
+      vis.zoom = function(d) {
+        d3.select("#map_overlay"+id).attr("transform", d3.zoomTransform(canvas.node()));
+      };
+
+      vis.select("g").select("#map_overlay"+id).moveToBack();
+      canvas.registerMapOverlay(vis);
+
+    })
+  }
+
+  var svgWorldMap = function(){
+
+    d3.json("/assets/world_countries.json", function(error, us) {
+      if (error) throw error;
+
+      d3.select(assignmentContainer).selectAll(".map_overlay").remove();
+      vis = d3.select(assignmentContainer)
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+      vis
+        .attr("id", "map_overlay_svg_" + id)
+        .attr("class", "map_overlay_svg");
+ 
+      path = d3.geoPath();
+
+      var projection = d3.geoEquirectangular();
+      
+      var path = d3.geoPath()
+          .projection(projection);
+
+      states = vis.append("g")
+          .attr("id","map_overlay"+id)
+          .classed("map_overlay", true)
+
+      var array = topojson.feature(us, us.objects.countries).features
+      var arraycopy = [...array];
+      if(state.toLowerCase() == "all"){
+        var visData = arraycopy
+      }else{
+        var visData = arraycopy.filter(function(d) { return d.properties.name.toLowerCase() == state.toLowerCase(); })
+      }
+
+      states.selectAll("path")
+          .attr("class", "land")
+          .attr("id", "state_fips")
+          .data(visData)
+          .enter()
+          .append("path")
+          .attr("fill", 'rgba(0.0, 0.0, 0.0, 0.08)')
+          .attr("d", path)
+          .attr("stroke","blue")
+          .attr("stroke-width", 0.5)
+
+      var mySVG = document.getElementById("map_overlay_svg_" + id);
+
+      let bbox = document.getElementById("map_overlay"+id).getBBox();
+
+      mySVG.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
+      document.getElementsByTagName('g')[0].setAttribute("transform", "translate(" + 0 + "," + 0 + ")");
+
+      vis.select("#map_overlay"+id).attr("transform", d3.zoomTransform(canvas.node()));
+
+      // update the transformation based on the sibling transform
+      vis.zoom = function(d) {
+        d3.select("#map_overlay"+id).attr("transform", d3.zoomTransform(canvas.node()));
+      };
+
+      vis.select("g").select("#map_overlay"+id).moveToBack();
+      canvas.registerMapOverlay(vis);
+    })
+  }
+
+
   /*
     Call the appropriate projection and overlay functions
   */
   switch(overlay) {
     case "albersusa":
-      albersUsa();
+      if(map.toLowerCase() == "us"){
+        console.log("here")
+        svgMap();
+      }
       break;
     case "equirectangular":
+      svgWorldMap();
+      break;
+    case "equirectangularOld":
       equirectangular();
       break;
   }
