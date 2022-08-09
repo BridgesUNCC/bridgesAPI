@@ -342,6 +342,7 @@
         d3.selectAll(".selfLinkLabel").style("display", "none");
         // BridgesVisualizer.showingLinkLabels = false;
     }
+    console.log("links")
     BridgesVisualizer.redraw();
   };
 

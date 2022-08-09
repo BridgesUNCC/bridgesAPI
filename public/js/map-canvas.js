@@ -159,12 +159,12 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
           .attr("stroke-width", 0.5)
 
 
-      var mySVG = document.getElementById("map_overlay_svg_" + id);
+      // var mySVG = document.getElementById("map_overlay_svg_" + id);
 
-      let bbox = document.getElementById("map_overlay"+id).getBBox();
+      // let bbox = document.getElementById("map_overlay"+id).getBBox();
 
-      mySVG.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
-      document.getElementsByTagName('g')[0].setAttribute("transform", "translate(" + 0 + "," + 0 + ")");
+      // mySVG.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
+      // document.getElementsByTagName('g')[0].setAttribute("transform", "translate(" + 0 + "," + 0 + ")");
 
       vis.select("#map_overlay"+id).attr("transform", d3.zoomTransform(canvas.node()));
 
@@ -224,12 +224,12 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
           .attr("stroke","blue")
           .attr("stroke-width", 0.5)
 
-      var mySVG = document.getElementById("map_overlay_svg_" + id);
+      // var mySVG = document.getElementById("map_overlay"+id);
 
-      let bbox = document.getElementById("map_overlay"+id).getBBox();
+      // let bbox = document.getElementById("map_overlay"+id).getBBox();
 
-      mySVG.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
-      document.getElementsByTagName('g')[0].setAttribute("transform", "translate(" + 0 + "," + 0 + ")");
+      // // mySVG.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
+      // // document.getElementsByTagName('g')[0].setAttribute("transform", "translate(" + 0 + "," + 0 + ")");
 
       vis.select("#map_overlay"+id).attr("transform", d3.zoomTransform(canvas.node()));
 
@@ -237,6 +237,8 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
       vis.zoom = function(d) {
         d3.select("#map_overlay"+id).attr("transform", d3.zoomTransform(canvas.node()));
       };
+
+
 
       vis.select("g").select("#map_overlay"+id).moveToBack();
       canvas.registerMapOverlay(vis);

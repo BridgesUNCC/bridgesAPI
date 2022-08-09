@@ -280,6 +280,13 @@ d3.bst = function (vis, W, H) {
             })
             .remove();
 
+        if(BridgesVisualizer.labels_shown === true){
+          d3.selectAll(".nodeLabel").each(BridgesVisualizer.displayNodeLabels)
+        }
+        if(BridgesVisualizer.link_labels_shown === true){
+          d3.selectAll(".linkLabel").each(BridgesVisualizer.displayLinkLabels)
+        }
+
         // Stash the old positions for transition.
         nodes.forEach(function(d) {
             d.x0 = d.x;

@@ -264,6 +264,10 @@ d3.graph = function(svg, W, H, data) {
   if(BridgesVisualizer.labels_shown === true){
     d3.selectAll(".nodeLabel").each(BridgesVisualizer.displayNodeLabels)
   }
+  if(BridgesVisualizer.link_labels_shown === true){
+    d3.selectAll(".linkLabel").each(BridgesVisualizer.displayLinkLabels)
+  }
+
 
 
   // get control point for quadratic curve link
