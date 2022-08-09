@@ -129,7 +129,6 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
 
     d3.json("/assets/world_countries.json", function(error, us) {
       if (error) throw error;
-
  
       d3.select(vis.node().parentNode).selectAll(".map_overlay").remove();
 
@@ -180,15 +179,22 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
     Call the appropriate projection and overlay functions
   */
 
-  switch(overlay) {
-    case "albersusa":
-      if(map.toLowerCase() == "us"){
-        svgMap();
-      }
-      break;
-    case "equirectangular":
+  switch(map.toLowerCase()) {
+    case "world":
       svgWorldMap();
       break;
+    case "us":
+      svgMap();
+      break;
+    // case "albersusa":
+    //   if(map.toLowerCase() == "us"){
+    //     console.log("here")
+    //     svgMap();
+    //   }
+    //   break;
+    // case "equirectangular":
+    //   svgWorldMap();
+    //   break;
     case "equirectangularOld":
       equirectangular();
       break;

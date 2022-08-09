@@ -166,7 +166,7 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
       // mySVG.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
       // document.getElementsByTagName('g')[0].setAttribute("transform", "translate(" + 0 + "," + 0 + ")");
 
-      vis.select("#map_overlay"+id).attr("transform", d3.zoomTransform(canvas.node()));
+      // vis.select("#map_overlay"+id).attr("transform", d3.zoomTransform(canvas.node()));
 
       // update the transformation based on the sibling transform
       vis.zoom = function(d) {
@@ -231,7 +231,7 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
       // // mySVG.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
       // // document.getElementsByTagName('g')[0].setAttribute("transform", "translate(" + 0 + "," + 0 + ")");
 
-      vis.select("#map_overlay"+id).attr("transform", d3.zoomTransform(canvas.node()));
+      // vis.select("#map_overlay"+id).attr("transform", d3.zoomTransform(canvas.node()));
 
       // update the transformation based on the sibling transform
       vis.zoom = function(d) {
@@ -249,16 +249,22 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
   /*
     Call the appropriate projection and overlay functions
   */
-  switch(overlay) {
-    case "albersusa":
-      if(map.toLowerCase() == "us"){
-        console.log("here")
-        svgMap();
-      }
-      break;
-    case "equirectangular":
+  switch(map.toLowerCase()) {
+    case "world":
       svgWorldMap();
       break;
+    case "us":
+      svgMap();
+      break;
+    // case "albersusa":
+    //   if(map.toLowerCase() == "us"){
+    //     console.log("here")
+    //     svgMap();
+    //   }
+    //   break;
+    // case "equirectangular":
+    //   svgWorldMap();
+    //   break;
     case "equirectangularOld":
       equirectangular();
       break;
