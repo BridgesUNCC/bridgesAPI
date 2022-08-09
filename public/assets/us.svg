@@ -20,7 +20,7 @@
    version="1.1"
    viewBox="0 0 1000 589"
    width="1000px"
-   id="svg"
+   id="svg1"
    inkscape:version="0.48.4 r9939"
    sodipodi:docname="us.svg">
   <sodipodi:namedview
@@ -59,7 +59,7 @@
          w="1000"
          id="view12">
         <proj
-           id="laea-usa"
+           id="albersusa"
            lat0="45"
            lon0="-100" />
         <bbox

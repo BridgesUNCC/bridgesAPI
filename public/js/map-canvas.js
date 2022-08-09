@@ -113,7 +113,7 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
   //parse the svg file as xml and get the path tag based on the state selected and render in d3
   var svgMap = function(){
 
-    d3.json("/assets/us-albers-counties.json", function(error, us) {
+    d3.json("/assets/states-10m.json", function(error, us) {
       if (error) throw error;
 
       d3.select(assignmentContainer).selectAll(".map_overlay").remove();
@@ -137,14 +137,14 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
           .classed("map_overlay", true)
 
 
-      var array = topojson.feature(us, us.objects.collection).features
+      var array = topojson.feature(us, us.objects.states).features
       var arraycopy = [...array];
 
 
       if(state.toLowerCase() == "all"){
         var visData = arraycopy
       }else{
-        var visData = arraycopy.filter(function(d) { return d.properties.state.toLowerCase() == state.toLowerCase()})
+        var visData = arraycopy.filter(function(d) { return d.properties.name.toLowerCase() == state.toLowerCase()})
       }
 
       states.selectAll("path")
@@ -256,15 +256,6 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
     case "us":
       svgMap();
       break;
-    // case "albersusa":
-    //   if(map.toLowerCase() == "us"){
-    //     console.log("here")
-    //     svgMap();
-    //   }
-    //   break;
-    // case "equirectangular":
-    //   svgWorldMap();
-    //   break;
     case "equirectangularOld":
       equirectangular();
       break;

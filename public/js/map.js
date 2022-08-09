@@ -73,15 +73,51 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
 
   //parse the svg file as xml and get the path tag based on the state selected and render in d3
   var svgMap = function(){
+    // var svg = null
+    // d3.xml("/assets/us.svg", function(error, xml) {
+    //   if (error) throw error;
 
-    d3.json("/assets/us-albers-counties.json", function(error, us) {
+    //   d3.select(vis.node().parentNode).selectAll(".map_overlay").remove();
+
+    //   path = d3.geoPath();
+
+    //   var projection = d3.geoAlbersUsa();
+
+    //   var path = d3.geoPath().projection(projection);
+
+    //   states = vis.select("g")
+    //     .append("g")
+    //       .attr("id","map_overlay"+id)
+    //       .classed("map_overlay", true)
+
+    //   var htmlSVG = document.getElementById("map_overlay"+id);
+    //   htmlSVG.appendChild(xml.getElementById('svg1'));
+
+    //   // d3 objects for later use
+    //   svg = d3.select(htmlSVG);
+    //   // svg.attr("stroke-width", 0.5)
+    //   maproot = svg.select('#svg');
+
+    //   // get the svg-element from the original SVG file
+    //   var xmlSVG = d3.select(xml.getElementsByTagName('svg')[0]);
+    //   // copy its "viewBox" attribute to the svg element in our HTML file
+    //   svg.attr('viewBox', xmlSVG.attr('viewBox'));
+    //   svg.selectAll("path")
+    //       .attr("d", path)
+    //       .attr("stroke","blue")
+    //       .attr("stroke-width", 0.5)
+
+    // })
+
+
+    d3.json("/assets/states-10m.json", function(error, us) {
       if (error) throw error;
 
       d3.select(vis.node().parentNode).selectAll(".map_overlay").remove();
 
       path = d3.geoPath();
 
-      var projection = d3.geoAlbersUsa();
+      var projection = d3.geoAlbersUsa()
 
       var path = d3.geoPath().projection(projection);
 
@@ -91,14 +127,14 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
           .classed("map_overlay", true)
 
 
-      var array = topojson.feature(us, us.objects.collection).features
+      var array = topojson.feature(us, us.objects.states).features
       var arraycopy = [...array];
 
 
       if(state.toLowerCase() == "all"){
         var visData = arraycopy
       }else{
-        var visData = arraycopy.filter(function(d) { return d.properties.state.toLowerCase() == state.toLowerCase()})
+        var visData = arraycopy.filter(function(d) { return d.properties.name.toLowerCase() == state.toLowerCase()})
       }
 
       states.selectAll("path")
@@ -173,8 +209,6 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
       vis.select("g").select("#map_overlay"+id).moveToBack();
     })
   }
-
-
   /*
     Call the appropriate projection and overlay functions
   */
@@ -186,15 +220,6 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
     case "us":
       svgMap();
       break;
-    // case "albersusa":
-    //   if(map.toLowerCase() == "us"){
-    //     console.log("here")
-    //     svgMap();
-    //   }
-    //   break;
-    // case "equirectangular":
-    //   svgWorldMap();
-    //   break;
     case "equirectangularOld":
       equirectangular();
       break;

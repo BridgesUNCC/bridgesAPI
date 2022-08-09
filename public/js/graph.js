@@ -71,7 +71,6 @@ d3.graph = function(svg, W, H, data) {
     }
 
     svgGroup = vis.append("g").attr('transform', transform);
-	console.log (transform);
 
     var nodes = data.nodes;
     var links = data.links.filter(function(d){
@@ -238,7 +237,6 @@ d3.graph = function(svg, W, H, data) {
           }
 
           point = proj([d.location[0], d.location[1]]);
-          console.log(point)
           // make sure the transformed location exists
           if(point) {
             d.fx = point[0];
