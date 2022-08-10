@@ -356,9 +356,5 @@ class Sphere{
   constructor(divisions, radius){
     this.divisions = divisions;
     this.radius = radius;
-    this.model = mat4();
-    this.color = [
-      1.0,  1.0,  0.5,  1.0
-    ];
   }
 }

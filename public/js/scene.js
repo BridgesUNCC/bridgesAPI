@@ -149,6 +149,7 @@ d3.scene_webgl = function(canvas, W, H, data){
    varying vec3 v_normal;
 
    void main(void) {
+     gl_PointSize = 10.0;
      vec4 position = vec4(u_projection * u_view * u_model *  vec4(coordinates, 1.0));
      v_normal = a_normal;
      gl_Position = position;
@@ -164,8 +165,7 @@ d3.scene_webgl = function(canvas, W, H, data){
    void main(void) {
      vec3 normal = normalize(v_normal);
 
-     float light = dot(normal, u_reverseLightDirection);
-
+     float light = clamp(dot(normal, u_reverseLightDirection), 0.1, 1.0);
      gl_FragColor = u_color;
 
      // Lets multiply just the color portion (not the alpha)
@@ -205,7 +205,7 @@ d3.scene_webgl = function(canvas, W, H, data){
     gl.uniform4fv(colorLocation, [0.2, 1, 0.2, 1]); // green
 
     // set the light direction.
-    gl.uniform3fv(reverseLightDirectionLocation, normalize(vec3(1.0, 1.7, 0.0)));
+    gl.uniform3fv(reverseLightDirectionLocation, normalize(vec3(1.0, 1.7, 1.0)));
 
     // Create an empty buffer object to store the vertex buffer
     // var vertex_buffer = new AttributeBuffer(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
@@ -213,6 +213,31 @@ d3.scene_webgl = function(canvas, W, H, data){
 
     /*==========Defining and storing the geometry=======*/
     camera = new Camera("fps", canvas);
+
+    wall = new Wall([-10.5, 0, -30], [10.5, 20, -30], [0, 0, 1]);
+      wall.genBuffers();
+      wall.genUniforms();
+
+      wall2 = new Wall([10.5, 0, -30], [10.5, 20, 30], [-1, 0, 0]);
+      wall2.genBuffers();
+      wall2.genUniforms();
+
+      wall3 = new Wall([-10.5, 0, 30], [-10.5, 20, -30], [1, 0, 0]);
+      wall3.genBuffers();
+      wall3.genUniforms();
+
+      wall4 = new Wall([10.5, 0, 30], [-10.5, 20, 30], [0, 0, -1]);
+      wall4.genBuffers();
+      wall4.genUniforms();
+
+      flat = new Flat([-20.0, 0, 30], [20.0, 0, -30], 0, [0, 1, 0]);
+      flat.genBuffers();
+      flat.genUniforms();
+
+
+      particle = new ParticleStream(0.0, 10.0, 10, 200)
+        particle.genBuffers();
+        particle.genUniforms();
 
 
     //get uniform location for vertex shader
@@ -232,13 +257,59 @@ d3.scene_webgl = function(canvas, W, H, data){
      //init two arrays. one holds the actual object to be rendered. The other holds information about
      //the object for indexing and removing/altering object properties. Had to do it this way to access object functions
      for(let i=0; i < data['meshes'].length; i++){
-        objectListDesc.push({'name': data['meshes'][i].name, 'index': i})
-        objectList.push(new Cube(10.5));
-        objectList[i].model = translate(vec3(data['meshes'][i].position))
-        objectList[i].model = mult(objectList[i].model, rotate(0.5, 0.0, 1.0, 0.0))
-        objectList[i].color = vec4(data['meshes'][i].color)
-        objectList[i].genBuffers();
-        objectList[i].genUniforms();
+       if(data['meshes'][i].type == 'terrain'){
+         let tempVerts = [];
+         let tempColors = [];
+         objectListDesc.push({'name': data['meshes'][i].name, 'index': i})
+         for(let j = 0; j < data['meshes'][i].rows-1; j++){
+           for(let k = 0; k < data['meshes'][i].cols-1; k++){
+             tempVerts.push(j)
+             tempVerts.push(data['meshes'][i].vertices[j][k] * 0.005)
+             tempVerts.push(k)
+
+             tempVerts.push(j+1)
+             tempVerts.push(data['meshes'][i].vertices[j+1][k+1] * 0.005)
+             tempVerts.push(k+1)
+
+             tempVerts.push(j+1)
+             tempVerts.push(data['meshes'][i].vertices[j+1][k] * 0.005)
+             tempVerts.push(k)
+
+             tempVerts.push(j)
+             tempVerts.push(data['meshes'][i].vertices[j][k] * 0.005)
+             tempVerts.push(k)
+
+             tempVerts.push(j)
+             tempVerts.push(data['meshes'][i].vertices[j][k+1] * 0.005)
+             tempVerts.push(k+1)
+
+             tempVerts.push(j+1)
+             tempVerts.push(data['meshes'][i].vertices[j+1][k+1] * 0.005)
+             tempVerts.push(k+1)
+           }
+         }
+         let tempCurrMesh = new CustomMesh(tempVerts)
+         tempCurrMesh.genBuffers()
+         tempCurrMesh.genUniforms()
+         tempCurrMesh.associateBuffers();
+         objectList.push(tempCurrMesh);
+
+       }else{
+         if(data['meshes'][i].type == 'cube'){
+           objectListDesc.push({'name': data['meshes'][i].name, 'index': i})
+           tempCube = new Cube(10.5)
+           // objectList.push(new Cube(10.5));
+           tempCube.model = translate(vec3(data['meshes'][i].position))
+           tempCube.model = mult(tempCube.model, rotate(0.5, 0.0, 1.0, 0.0))
+           tempCube.color = vec4(data['meshes'][i].color)
+           tempCube.genBuffers();
+           tempCube.genUniforms();
+           objectList.push(tempCube)
+         }
+
+       }
+
+
       }
 
       bridges_scene.unpack = function(data){
@@ -248,11 +319,53 @@ d3.scene_webgl = function(canvas, W, H, data){
       bridges_scene.render = function(data){
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         dt = 0.01;
+        now = 1.0;
         currentFrame = Date.now();
         delta = currentFrame - then;
         if (delta > interval){
           then = currentFrame - (delta % interval);
           movementTick(camera);
+        }
+
+
+        for(let i=0; i < data['meshes'].length; i++){
+
+          if(data['meshes'][i].type == 'terrain'){
+            let tempVerts = [];
+            objectListDesc.push({'name': data['meshes'][i].name, 'index': i})
+            for(let j = 0; j < data['meshes'][i].rows-1; j++){
+              for(let k = 0; k < data['meshes'][i].cols-1; k++){
+                tempVerts.push(j)
+                tempVerts.push(data['meshes'][i].vertices[j][k] * 0.005)
+                tempVerts.push(k)
+
+                tempVerts.push(j+1)
+                tempVerts.push(data['meshes'][i].vertices[j+1][k+1] * 0.005)
+                tempVerts.push(k+1)
+
+                tempVerts.push(j+1)
+                tempVerts.push(data['meshes'][i].vertices[j+1][k] * 0.005)
+                tempVerts.push(k)
+
+                tempVerts.push(j)
+                tempVerts.push(data['meshes'][i].vertices[j][k] * 0.005)
+                tempVerts.push(k)
+
+                tempVerts.push(j)
+                tempVerts.push(data['meshes'][i].vertices[j][k+1] * 0.005)
+                tempVerts.push(k+1)
+
+                tempVerts.push(j+1)
+                tempVerts.push(data['meshes'][i].vertices[j+1][k+1] * 0.005)
+                tempVerts.push(k+1)
+              }
+            }
+
+            objectList[1] = new CustomMesh(tempVerts);
+            objectList[1].genBuffers()
+            objectList[1].genUniforms()
+            objectList[1].associateBuffers();
+          }
         }
 
 
@@ -270,11 +383,50 @@ d3.scene_webgl = function(canvas, W, H, data){
 
 
         for(let i=0; i < objectList.length; i++){
-          objectList[i].associateBuffers();
-          objectList[i].model = mult(objectList[i].model, rotate(now, 0.0, 1.0, 0.0));
-          objectList[i].setUniforms();
-          gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24);
+          if(objectListDesc[i].name == "terr"){
+            objectList[i].associateBuffers();
+            objectList[i].setUniforms();
+            gl.drawArrays(gl.TRIANGLES, 0, objectList[i].vertices.length/3);
+          }else{
+            objectList[i].associateBuffers();
+            objectList[i].model = mult(objectList[i].model, rotate(now, 0.0, 1.0, 0.0));
+            objectList[i].setUniforms();
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24);
+          }
+
         }
+
+        wall.associateBuffers();
+        wall.setUniforms();
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+        wall2.associateBuffers();
+        wall2.setUniforms();
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+        wall3.associateBuffers();
+        wall3.setUniforms();
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+        wall4.genUniforms();
+        wall4.associateBuffers();
+        wall4.setUniforms();
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+        flat.genUniforms()
+        flat.associateBuffers();
+        flat.setUniforms();
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+
+        particle.associateBuffers();
+        for (let i = 0; i < particle.particleCount; i++){
+          particle.particleList[i].update(dt);
+          // particle.particleList[i].checkCollision(mouseyNDC, mousexNDC);
+          particle.setUniforms(particle.particleList[i].translation.array, particle.particleList[i].color);
+          gl.drawArrays(gl.POINTS, i, 1);
+        }
+
       }
 
       return bridges_scene;

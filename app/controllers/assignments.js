@@ -497,6 +497,8 @@ exports.get = function (req, res, next) {
           linkResources.script.push('/js/graphics_engine/lighting.js');
           linkResources.script.push('/js/graphics_engine/primitives.js');
           linkResources.script.push('/js/graphics_engine/texture.js');
+          linkResources.script.push('/js/graphics_engine/particle.js');
+          linkResources.script.push('/js/graphics_engine/particleStream.js');
           linkResources.script.push('/js/graphics_engine/buffer_management/attribute_buffer.js');
           linkResources.script.push('/js/math/Mat2.js');
           linkResources.script.push('/js/math/Mat3.js');
@@ -542,7 +544,7 @@ exports.get = function (req, res, next) {
         if(assignment.vistype == 'gamegrid' || assignment.vistype == 'scene'){
 	    displayMode = "assignmentMulti"; //the game grid ONLY works with assignmentMulti
 	}
-	
+
         //calls to render the specific view from the app/views folder with the given information
         //this behavior is defined in the config/exrpess.js file on where to render views from
         return res.render ('assignments/' + displayMode, {
