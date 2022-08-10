@@ -189,6 +189,7 @@ module.exports = function(app, passport) {
     //
     // -------------------------------------------------------
 
+
     app.post('/search/', function(req, res, next) {
         var id = req.body.assignmentID;
         res.redirect('/assignments/'+id);

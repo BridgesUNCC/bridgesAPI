@@ -52,7 +52,7 @@ var intervalId;
 var playing = false;
 
 //toggles for labels within the visualization
-BridgesVisualizer.labels_shown = false;
+BridgesVisualizer.labels_shown = assignment.data[0].label_flag;
 BridgesVisualizer.link_labels_shown = false;
 BridgesVisualizer.nodes_shown = true;
 BridgesVisualizer.links_shown = true;
@@ -626,11 +626,12 @@ function addMapOverlay(assignmentData, vis) {
     switch(vis.node().tagName) {
       case 'svg':
       //we now pass the area to render from map as assignmentData.map: example-North Carolina
+      console.log(assignmentData.coord_system_type)
         BridgesVisualizer.map(vis, assignmentData.coord_system_type, assignmentData.map[0], assignmentData.map[1]);
         break;
 
       case 'CANVAS':
-        BridgesVisualizer.map_canvas(vis, assignmentData.coord_system_type);
+        BridgesVisualizer.map_canvas(vis, assignmentData.coord_system_type, assignmentData.map[0], assignmentData.map[1]);
         break;
     }
   });
