@@ -14,6 +14,19 @@ db.on('error', function () {
   throw new Error('unable to connect to database at ' + config.db);
 });
 
+db.on('connected', function () {
+    console.log("Connected to mongodb server");
+});
+
+db.on('disconnected', function () {
+    console.log("Disconnected to mongodb server");
+});
+
+db.on('reconnected', function () {
+    console.log("Reconnected to mongodb server");
+});
+
+
 //Bootstrap models.
 var modelsPath = __dirname + '/app/models';
 fs.readdirSync(modelsPath).forEach(function (file) {

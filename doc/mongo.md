@@ -155,3 +155,12 @@ db.runCommandMispelledOnPurpose({compact:'assignments', force:true})
 Note that this is causing downtime. So beware!!! The resync, failover, and resync are done from mlab's dashboard.
 
 
+## getting time stats
+
+You can get execution time and details on a query by adding ```.explain("executionStats")``` at the end.
+Details of the output at https://www.mongodb.com/docs/manual/reference/explain-results/#mongodb-data-explain.executionStats
+
+for instance: 
+```javascript
+db.assignments.find( { username: "kalpathi60", "dateCreated": {$gt: new Date('2020-01-17') } }  ).explain("executionStats");
+```
