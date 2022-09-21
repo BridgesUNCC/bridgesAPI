@@ -52,6 +52,7 @@ exports.saveSnapshot = function(req, res, next) {
 //API route for uploading assignment data. If the
 //assignment already exists it will be replaced.
 exports.upload = function (req, res, next) {
+    console.log("assignment upload");
     // C++ version posts JSON as object, JAVA and Python post as plain string
     if(typeof req.body != "object") {
         try { rawBody = JSON.parse(req.body); } // try parsing to object
@@ -101,6 +102,7 @@ exports.upload = function (req, res, next) {
       }
     }
 
+    console.log("Verifying credentials")
     //get username from apikey
     User.findOne({
         apikey:req.query.apikey
@@ -115,7 +117,7 @@ exports.upload = function (req, res, next) {
 
     // if the assignment is new, remove old assignments with the same ID
     function replaceAssignment (res, user, assignmentID) {
-
+	console.log( "starting replace assignment" );
         if (subAssignment == '0' || subAssignment == '00') {
              Assignment.deleteMany({
                 assignmentNumber: assignmentNumber,
@@ -134,7 +136,7 @@ exports.upload = function (req, res, next) {
 
     // save the assignment to the DB
     function saveAssignment(user, assignmentNumber) {
-
+	console.log("starting to save assignment");
       assignment = new Assignment();
 
       // set the title and description
@@ -192,11 +194,14 @@ exports.upload = function (req, res, next) {
           User.findOne({
               email: user.email
           }).exec(function (err, resp) {
+	      console.log( "subassignment added" );
               res.status(200).json({ "msg":assignmentID + "/" + resp.username });
+	      
           });
-          console.log( "subassignment added" );
+
         }
       });
+     
     }
 };
 
