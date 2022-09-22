@@ -1,3 +1,4 @@
+
 var gl;
 var u_color;
 // var ground;
@@ -215,29 +216,29 @@ d3.scene_webgl = function(canvas, W, H, data){
     camera = new Camera("fps", canvas);
 
     wall = new Wall([-10.5, 0, -30], [10.5, 20, -30], [0, 0, 1]);
-      wall.genBuffers();
-      wall.genUniforms();
+    wall.genBuffers();
+    wall.genUniforms();
 
-      wall2 = new Wall([10.5, 0, -30], [10.5, 20, 30], [-1, 0, 0]);
-      wall2.genBuffers();
-      wall2.genUniforms();
+    wall2 = new Wall([10.5, 0, -30], [10.5, 20, 30], [-1, 0, 0]);
+    wall2.genBuffers();
+    wall2.genUniforms();
 
-      wall3 = new Wall([-10.5, 0, 30], [-10.5, 20, -30], [1, 0, 0]);
-      wall3.genBuffers();
-      wall3.genUniforms();
+    wall3 = new Wall([-10.5, 0, 30], [-10.5, 20, -30], [1, 0, 0]);
+    wall3.genBuffers();
+    wall3.genUniforms();
 
-      wall4 = new Wall([10.5, 0, 30], [-10.5, 20, 30], [0, 0, -1]);
-      wall4.genBuffers();
-      wall4.genUniforms();
+    wall4 = new Wall([10.5, 0, 30], [-10.5, 20, 30], [0, 0, -1]);
+    wall4.genBuffers();
+    wall4.genUniforms();
 
-      flat = new Flat([-20.0, 0, 30], [20.0, 0, -30], 0, [0, 1, 0]);
-      flat.genBuffers();
-      flat.genUniforms();
+    flat = new Flat([-20.0, 0, 30], [20.0, 0, -30], 0, [0, 1, 0]);
+    flat.genBuffers();
+    flat.genUniforms();
 
 
-      particle = new ParticleStream(0.0, 10.0, 10, 200)
-        particle.genBuffers();
-        particle.genUniforms();
+    particle = new ParticleStream(0.0, 10.0, 10, 200)
+    particle.genBuffers();
+    particle.genUniforms();
 
 
     //get uniform location for vertex shader
@@ -256,6 +257,7 @@ d3.scene_webgl = function(canvas, W, H, data){
 
      //init two arrays. one holds the actual object to be rendered. The other holds information about
      //the object for indexing and removing/altering object properties. Had to do it this way to access object functions
+     console.log(data['meshes'])
      for(let i=0; i < data['meshes'].length; i++){
        if(data['meshes'][i].type == 'terrain'){
          let tempVerts = [];
@@ -264,27 +266,27 @@ d3.scene_webgl = function(canvas, W, H, data){
          for(let j = 0; j < data['meshes'][i].rows-1; j++){
            for(let k = 0; k < data['meshes'][i].cols-1; k++){
              tempVerts.push(j)
-             tempVerts.push(data['meshes'][i].vertices[j][k] * 0.005)
+             tempVerts.push(data['meshes'][i].vertices[j][k] * 0.05)
              tempVerts.push(k)
 
              tempVerts.push(j+1)
-             tempVerts.push(data['meshes'][i].vertices[j+1][k+1] * 0.005)
+             tempVerts.push(data['meshes'][i].vertices[j+1][k+1] * 0.05)
              tempVerts.push(k+1)
 
              tempVerts.push(j+1)
-             tempVerts.push(data['meshes'][i].vertices[j+1][k] * 0.005)
+             tempVerts.push(data['meshes'][i].vertices[j+1][k] * 0.05)
              tempVerts.push(k)
 
              tempVerts.push(j)
-             tempVerts.push(data['meshes'][i].vertices[j][k] * 0.005)
+             tempVerts.push(data['meshes'][i].vertices[j][k] * 0.05)
              tempVerts.push(k)
 
              tempVerts.push(j)
-             tempVerts.push(data['meshes'][i].vertices[j][k+1] * 0.005)
+             tempVerts.push(data['meshes'][i].vertices[j][k+1] * 0.05)
              tempVerts.push(k+1)
 
              tempVerts.push(j+1)
-             tempVerts.push(data['meshes'][i].vertices[j+1][k+1] * 0.005)
+             tempVerts.push(data['meshes'][i].vertices[j+1][k+1] * 0.05)
              tempVerts.push(k+1)
            }
          }
@@ -309,19 +311,23 @@ d3.scene_webgl = function(canvas, W, H, data){
 
        }
 
-
+       console.log(objectList)
       }
 
       bridges_scene.unpack = function(data){
-
+        console.log("here")
       }
 
+      //called every frame
       bridges_scene.render = function(data){
+
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         dt = 0.01;
         now = 1.0;
         currentFrame = Date.now();
         delta = currentFrame - then;
+
+        //base camera movements independent of the fps
         if (delta > interval){
           then = currentFrame - (delta % interval);
           movementTick(camera);

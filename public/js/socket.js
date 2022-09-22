@@ -1,6 +1,6 @@
 (function() {
   var socket = null;
-    
+
   /* If logged in, bind handler socket connection */
   if(user) {
     // console.log(user.username+"_"+assignmentNumber);
@@ -56,7 +56,7 @@
        transports: ['websocket']
      });
 
-      
+
     /* Automatically register credentials to join the correct channel */
       socket.on('connect', function (data) {
       socket.emit('credentials', JSON.stringify({user: user.username, assignment: assignmentNumber, apikey: user.apikey}));
@@ -136,6 +136,7 @@
       var gamegrid = BridgesVisualizer.visualizations[0];
       var gamegridObj = JSON.parse(gamegridData.gridData);
       // draw the current gamegrid
+      console.log("here")
       gamegrid.setupNodes(gamegridObj);
       gamegrid.draw();
     });
@@ -152,7 +153,6 @@
 
       var scene = BridgesVisualizer.visualizations[0];
       var sceneObj = JSON.parse(sceneData.sceneData);
-      console.log(sceneObj)
       // draw the current gamegrid
       scene.unpack(sceneObj);
       scene.render(sceneObj);
