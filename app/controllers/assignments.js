@@ -116,19 +116,34 @@ exports.upload = function (req, res, next) {
     });
 
     // if the assignment is new, remove old assignments with the same ID
-    function replaceAssignment (res, user, assignmentID) {
+    async function replaceAssignment (res, user, assignmentID) {
 	console.log( "starting replace assignment" );
         if (subAssignment == '0' || subAssignment == '00') {
-             Assignment.deleteMany({
-                assignmentNumber: assignmentNumber,
-                email: user.email
-            })
-            .exec(function (err, resp) {
-                 if(err)
-                    console.log(err);
-                console.log("replaceAssignment() removed assignments (" + assignmentNumber + ".*) from user: \"" + user.username + "\"");
-                saveAssignment(user, assignmentNumber);
-            });
+
+	    /// This is the native driver version of the operation
+	    try {
+		await mongoose.connection.db.collection('assignments').deleteMany({
+                    assignmentNumber: assignmentNumber,
+                    email: user.email
+		});
+		console.log("replaceAssignment() removed assignments (" + assignmentNumber + ".*) from user: \"" + user.username + "\"");
+	    }
+	    catch (err) {
+		console.log(err);
+	    }
+	    saveAssignment(user, assignmentNumber);
+
+	    /// This is the mongoose version of the operation
+//             Assignment.deleteMany({
+//                assignmentNumber: assignmentNumber,
+//                email: user.email
+	    //            })	    
+            // .exec(function (err, resp) {
+            //      if(err)
+            //         console.log(err);
+            //     console.log("replaceAssignment() removed assignments (" + assignmentNumber + ".*) from user: \"" + user.username + "\"");
+            //     saveAssignment(user, assignmentNumber);
+            // });
         } else {
           saveAssignment(user, assignmentNumber);
         }
