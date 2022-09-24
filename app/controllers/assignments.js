@@ -119,13 +119,14 @@ exports.upload = function (req, res, next) {
     async function replaceAssignment (res, user, assignmentID) {
 	console.log( "starting replace assignment" );
         if (subAssignment == '0' || subAssignment == '00') {
-
 	    // / This is the native driver version of the operation
+	    // console.log(Date.now());
 	    // try {
 	    // 	await mongoose.connection.db.collection('assignments').deleteMany({
             //         assignmentNumber: assignmentNumber,
             //         email: user.email
 	    // 	});
+	    // 	console.log(Date.now());
 	    // 	console.log("replaceAssignment() removed assignments (" + assignmentNumber + ".*) from user: \"" + user.username + "\"");
 	    // }
 	    // catch (err) {
@@ -134,11 +135,13 @@ exports.upload = function (req, res, next) {
 	    // saveAssignment(user, assignmentNumber);
 
 	    // This is the mongoose version of the operation
+	  
             Assignment.deleteMany({
                assignmentNumber: assignmentNumber,
                email: user.email
 	               })	    
-            .exec(function (err, resp) {
+		.exec(function (err, resp) {
+		    	    console.log(Date.now());
                  if(err)
                     console.log(err);
                 console.log("replaceAssignment() removed assignments (" + assignmentNumber + ".*) from user: \"" + user.username + "\"");
@@ -206,7 +209,7 @@ exports.upload = function (req, res, next) {
 		  next(err);
 	      }
         } else {
-          User.findOne({
+          User.findOne({ //why is this query necessary?
               email: user.email
           }).exec(function (err, resp) {
 	      console.log( "subassignment added" );
