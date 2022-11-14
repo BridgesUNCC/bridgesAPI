@@ -17,11 +17,11 @@ its at https://brew.sh/
 3. Install MongoDB (Community Edition). Detailed instructions at  at https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/.  You
 need to do the following steps:
 	- brew tap mongodb/brew
-	- brew install mongodb-community@4.2 (or whatever version is current)
+	- brew install mongodb-community@4.4 (Or whatever version is newest, however version 6.0 may not work)
 	- mongod --config /usr/local/etc/mongod.conf  (usint the fork doesnt seem to 	work, so ignore that)
-	- brew services start mongodb-community@4.2 (starts the deamon)
+	- sudo brew services start mongodb-community@4.4 (starts the deamon)
 	(the command with 'stop' will stop the service)
-	- [Check if mongod is running]: ps aux|grep mongod 
+	- [Check if mongod is running]: ps aux|grep mongod
 4. Xcode - make sure you have a fairly recent version of Xcode - typically
 you need to go the App Store if you want the latest, but if you are running
 older OSX version, go to Xcode downloads at https://developer.apple.com/download/more/?q=xcode; you will need Apple ID for download; make sure you get the version compatible to your version of OSX! Also make sure command line tools are installed. To check run 
@@ -31,17 +31,17 @@ older OSX version, go to Xcode downloads at https://developer.apple.com/download
 	- Yeoman: npm install -g yo  
 	- Grunt:  npm install grunt
 	- Bower:  npm install bower
-	- run 'rehash' to update command paths
+	- run 'hash -r' to update command paths
 6. Check Dependencies 
 	- npm install  
 	- bower install  
 7. Get the Bridges API repo:
 	- git  clone https://github.com/BridgesUNCC/bridgesAPI.git  
-	- cd to the server repo directory
-8. Run these within the server directory:
+	- cd to the BridgesAPI repo directory
+8. Run these within the BridgesAPI directory:
 	- git submodule init
 	- git submodule update
-9. Run grunt in the root directory  to start the server
+9. Run grunt in the BridgesAPI root directory to start the server
 	- cd
 	- grunt &
 10. To run Bridges examples, you will need to set your server to point to 
