@@ -202,10 +202,25 @@ exports.upload = function (req, res, next) {
 		      errorHandled = true;
 		  }
 	      }
+
+	      //If BSON is WAY too large, then the error is report
+	      //inside of mongoose rather than by the mongodb
+	      //server. In that case some funciont deep in mongoose
+	      //raises a RangeError. So we trap that, even though
+	      //really mongoose should be trapping it and recasting it
+	      //in a more meaningful way. This could theoretically
+	      //cause to trap other range error in mongoose... But that seems unlikely
+	      
+              if (err.name == "RangeError") {
+		  res.status(413).json({"msg": "The volume of data in the assignment is too large for BRIDGES to handle. Try a smaller assignment. For reference, a BRIDGES assignment has to be smaller than about 17MB once serialized to JSON."});
+		  errorHandled = true;
+	      }
+
+	      
 	      if (! errorHandled) {
 		  // No idea what that error is
 	      
-		  console.log("Error trapped while trying to save assignment : " + err + " Stack is "+err.stack+ " name:  " + err.name + "codeName:" +err.codeName);
+		  console.log("Error trapped while trying to save assignment : " + err);
 		  next(err);
 	      }
         } else {
