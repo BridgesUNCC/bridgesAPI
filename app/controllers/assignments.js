@@ -185,7 +185,7 @@ exports.upload = function (req, res, next) {
 	      if (! errorHandled) {
 		  // No idea what that error is
 	      
-		  console.log("Error trapped while trying to save assignment : " + err);
+		  console.log("Error trapped while trying to save assignment : " + err+ " Stack is "+err.stack);
 		  next(err);
 	      }
         } else {
