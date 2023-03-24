@@ -266,27 +266,27 @@ d3.scene_webgl = function(canvas, W, H, data){
          for(let j = 0; j < data['meshes'][i].rows-1; j++){
            for(let k = 0; k < data['meshes'][i].cols-1; k++){
              tempVerts.push(j)
-             tempVerts.push(data['meshes'][i].vertices[j][k] * 0.05)
+             tempVerts.push(data['meshes'][i].vertices[j][k] * 0.005)
              tempVerts.push(k)
 
              tempVerts.push(j+1)
-             tempVerts.push(data['meshes'][i].vertices[j+1][k+1] * 0.05)
+             tempVerts.push(data['meshes'][i].vertices[j+1][k+1] * 0.005)
              tempVerts.push(k+1)
 
              tempVerts.push(j+1)
-             tempVerts.push(data['meshes'][i].vertices[j+1][k] * 0.05)
+             tempVerts.push(data['meshes'][i].vertices[j+1][k] * 0.005)
              tempVerts.push(k)
 
              tempVerts.push(j)
-             tempVerts.push(data['meshes'][i].vertices[j][k] * 0.05)
+             tempVerts.push(data['meshes'][i].vertices[j][k] * 0.005)
              tempVerts.push(k)
 
              tempVerts.push(j)
-             tempVerts.push(data['meshes'][i].vertices[j][k+1] * 0.05)
+             tempVerts.push(data['meshes'][i].vertices[j][k+1] * 0.005)
              tempVerts.push(k+1)
 
              tempVerts.push(j+1)
-             tempVerts.push(data['meshes'][i].vertices[j+1][k+1] * 0.05)
+             tempVerts.push(data['meshes'][i].vertices[j+1][k+1] * 0.005)
              tempVerts.push(k+1)
            }
          }
@@ -338,7 +338,7 @@ d3.scene_webgl = function(canvas, W, H, data){
 
           if(data['meshes'][i].type == 'terrain'){
             let tempVerts = [];
-            objectListDesc.push({'name': data['meshes'][i].name, 'index': i})
+            //objectListDesc.push({'name': data['meshes'][i].name, 'index': i})
             for(let j = 0; j < data['meshes'][i].rows-1; j++){
               for(let k = 0; k < data['meshes'][i].cols-1; k++){
                 tempVerts.push(j)
@@ -367,10 +367,10 @@ d3.scene_webgl = function(canvas, W, H, data){
               }
             }
 
-            objectList[1] = new CustomMesh(tempVerts);
-            objectList[1].genBuffers()
-            objectList[1].genUniforms()
-            objectList[1].associateBuffers();
+            objectList[i] = new CustomMesh(tempVerts);
+            objectList[i].genBuffers()
+            objectList[i].genUniforms()
+            objectList[i].associateBuffers();
           }
         }
 
@@ -402,36 +402,36 @@ d3.scene_webgl = function(canvas, W, H, data){
 
         }
 
-        wall.associateBuffers();
-        wall.setUniforms();
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        // wall.associateBuffers();
+        // wall.setUniforms();
+        // gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-        wall2.associateBuffers();
-        wall2.setUniforms();
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        // wall2.associateBuffers();
+        // wall2.setUniforms();
+        // gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-        wall3.associateBuffers();
-        wall3.setUniforms();
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        // wall3.associateBuffers();
+        // wall3.setUniforms();
+        // gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-        wall4.genUniforms();
-        wall4.associateBuffers();
-        wall4.setUniforms();
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        // wall4.genUniforms();
+        // wall4.associateBuffers();
+        // wall4.setUniforms();
+        // gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-        flat.genUniforms()
-        flat.associateBuffers();
-        flat.setUniforms();
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        // flat.genUniforms()
+        // flat.associateBuffers();
+        // flat.setUniforms();
+        // gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
 
-        particle.associateBuffers();
-        for (let i = 0; i < particle.particleCount; i++){
-          particle.particleList[i].update(dt);
-          // particle.particleList[i].checkCollision(mouseyNDC, mousexNDC);
-          particle.setUniforms(particle.particleList[i].translation.array, particle.particleList[i].color);
-          gl.drawArrays(gl.POINTS, i, 1);
-        }
+        // particle.associateBuffers();
+        // for (let i = 0; i < particle.particleCount; i++){
+        //   particle.particleList[i].update(dt);
+        //   // particle.particleList[i].checkCollision(mouseyNDC, mousexNDC);
+        //   particle.setUniforms(particle.particleList[i].translation.array, particle.particleList[i].color);
+        //   gl.drawArrays(gl.POINTS, i, 1);
+        // }
 
       }
 
