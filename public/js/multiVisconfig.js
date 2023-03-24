@@ -550,6 +550,10 @@ function visualizeAssignment(assignment, index){
       plot = d3.lineChart(vis, "vis" + index, assignmentData);
       BridgesVisualizer.visualizations[assignment.subAssignment] = (plot);
   }
+  else if (assignment.vistype == "BarChart" && d3.barChart){
+      barchart = d3.barChart(vis, "vis" + index, assignmentData);
+      BridgesVisualizer.visualizations[assignment.subAssignment] = (barchart);
+  }
   else if (assignment.vistype == "Audio"){
       d3.select("#vis" + index).select("#svg"+index).remove("*");
       vis = d3.select("#vis" + index).append("canvas")

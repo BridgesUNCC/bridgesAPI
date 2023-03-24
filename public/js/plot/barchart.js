@@ -1,20 +1,31 @@
 d3.barChart = function(vis, id, data){
+    console.log(data)
+
+    let series = [];
+    for(let i = 0; i < data.yaxis_data.series.length; i++){
+      series.push({name: data.yaxis_data.series[i].name, 
+                     data: data.yaxis_data.series[i].data})
+
+    }
+
     let mychart = Highcharts.chart(id, {
       chart: {
           type: 'bar'
       },
       title: {
-          text: 'Historic World Population by Region',
+          text: data.plot_title,
           align: 'left'
       },
       subtitle: {
-          text: 'Source: <a ' +
-              'href="https://en.wikipedia.org/wiki/List_of_continents_and_continental_subregions_by_population"' +
-              'target="_blank">Wikipedia.org</a>',
+          text: data.subtitle,
+          align: 'left'
+      },
+      subtitle: {
+          text: data.subtitle,
           align: 'left'
       },
       xAxis: {
-          categories: ['Africa', 'America', 'Asia', 'Europe', 'Oceania'],
+          categories: data.xaxis_data.xAxis.categories,
           title: {
               text: null
           }
@@ -22,7 +33,7 @@ d3.barChart = function(vis, id, data){
       yAxis: {
           min: 0,
           title: {
-              text: 'Population (millions)',
+              text: '',
               align: 'high'
           },
           labels: {
@@ -30,7 +41,7 @@ d3.barChart = function(vis, id, data){
           }
       },
       tooltip: {
-          valueSuffix: ' millions'
+          valueSuffix: ''
       },
       plotOptions: {
           bar: {
@@ -54,19 +65,8 @@ d3.barChart = function(vis, id, data){
       credits: {
           enabled: false
       },
-      series: [{
-          name: 'Year 1990',
-          data: [631, 727, 3202, 721, 26]
-      }, {
-          name: 'Year 2000',
-          data: [814, 841, 3714, 726, 31]
-      }, {
-          name: 'Year 2010',
-          data: [1044, 944, 4170, 735, 40]
-      }, {
-          name: 'Year 2018',
-          data: [1276, 1007, 4561, 746, 42]
-      }]
+
+      series: series
   });
-    return mychart;
+  return mychart;
 }

@@ -38,6 +38,7 @@ exports.getVisType = function(toCheck) {
    "SymbolCollectionV2":           "collectionv2",
 
     "LineChart":                       "LineChart",
+    "BarChart":                   "BarChart",
 
     "Audio":         				"Audio",
     "Scene":                "scene"
@@ -171,6 +172,11 @@ exports.getVisTypeObject = function(data) {
         "vistype": "LineChart",
         "script":"/js/plot/plot.js",
         "link":""
+      },
+      "BarChart":{
+        "vistype": "BarChart",
+        "script": "/js/plot/barchart.js",
+        "link": ""
       },
       "Audio": {
       	"vistype": "Audio",
