@@ -152,6 +152,7 @@
       // find gamegrid among visualizations?
 
       var scene = BridgesVisualizer.visualizations[0];
+      console.log(sceneData.sceneData)
       var sceneObj = JSON.parse(sceneData.sceneData);
       // draw the current gamegrid
       scene.unpack(sceneObj);
