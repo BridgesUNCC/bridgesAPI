@@ -59,42 +59,43 @@ class Primitives{
 class Cube extends Primitives{
   constructor(sz, textureImagePath){
     super("Cube", sz, textureImagePath);
+    sz = sz/2;
     this.vertices = [
       // Front face
-      -sz, 0,  sz,
-      sz, 0,  sz,
-      -sz,  sz * 2,  sz,
-      sz,  sz * 2,  sz,
+      -sz, -sz,  sz,
+      sz, -sz,  sz,
+      -sz,  sz,  sz,
+      sz,  sz,  sz,
 
       // Back face
-      sz, 0, -sz,
-      -sz,  0, -sz,
-      sz,  sz * 2, -sz,
-       -sz, sz * 2, -sz,
+      sz, -sz, -sz,
+      -sz,  -sz, -sz,
+      sz,  sz, -sz,
+       -sz, sz, -sz,
 
       // Top face
-      -sz,  sz * 2, -sz,
-      sz,  sz * 2,  -sz,
-       -sz,  sz * 2,  sz,
-       sz,  sz * 2, sz,
+      -sz,  sz, -sz,
+      sz,  sz,  -sz,
+       -sz,  sz,  sz,
+       sz,  sz, sz,
 
       // Bottom face
-      -sz, 0, -sz,
-       sz, 0, -sz,
-       -sz, 0,  sz,
-      sz, 0,  sz,
+      -sz, -sz, -sz,
+       sz, -sz, -sz,
+       -sz, -sz,  sz,
+      sz, -sz,  sz,
 
       // Right face
-       sz, 0, sz,
-       sz,  0, -sz,
-       sz,  sz * 2,  sz,
-       sz, sz * 2,  -sz,
+       sz, -sz, sz,
+       sz,  -sz, -sz,
+       sz,  sz,  sz,
+       sz, sz,  -sz,
 
       // Left face
-      -sz, 0, -sz,
-      -sz, 0,  sz,
-      -sz,  sz * 2,  -sz,
-      -sz,  sz * 2, sz
+      -sz, -sz, -sz,
+      -sz, -sz,  sz,
+      -sz,  sz,  -sz,
+      -sz,  sz, sz
     ]
     this.normals = [
       //Front face

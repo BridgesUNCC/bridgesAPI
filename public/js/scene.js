@@ -300,9 +300,11 @@ d3.scene_webgl = function(canvas, W, H, data){
          if(data['scene_objects'][i].type == 'cube'){
            objectListDesc.push({'name': data['scene_objects'][i].name, 'index': i, 'type': 'cube'})
            tempCube = new Cube(10.5)
-           // objectList.push(new Cube(10.5));
            tempCube.model = translate(vec3(data['scene_objects'][i].position))
-           tempCube.model = mult(tempCube.model, rotate(0.5, 0.0, 1.0, 0.0))
+           tempCube.model = mult(tempCube.model, mat4(data['scene_objects'][i].transform[0], 
+                             data['scene_objects'][i].transform[1],
+                             data['scene_objects'][i].transform[2],
+                             data['scene_objects'][i].transform[3]));
            //tempCube.color = vec4(data['scene_objects'][i].color)
            tempCube.genBuffers();
            tempCube.genUniforms();
@@ -359,7 +361,7 @@ d3.scene_webgl = function(canvas, W, H, data){
             gl.drawArrays(gl.TRIANGLES, 0, objectList[i].vertices.length/3);
           }else{
             objectList[i].associateBuffers();
-            objectList[i].model = mult(objectList[i].model, rotate(now, 0.0, 1.0, 0.0));
+            //objectList[i].model = mult(objectList[i].model, rotate(now, 0.0, 1.0, 0.0));
             objectList[i].setUniforms();
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24);
           }
@@ -442,7 +444,10 @@ d3.scene_webgl = function(canvas, W, H, data){
 
         case 'cube':
           objectList[objectListDesc[index].index].model = translate(vec3(data['scene_objects'][i].position))
-          objectList[objectListDesc[index].index].model = mult(tempCube.model, rotate(0.5, 0.0, 1.0, 0.0))
+          objectList[objectListDesc[index].index].model = mult(tempCube.model, mat4(data['scene_objects'][i].transform[0], 
+                             data['scene_objects'][i].transform[1],
+                             data['scene_objects'][i].transform[2],
+                             data['scene_objects'][i].transform[3]));
           //tempCube.color = vec4(data['scene_objects'][i].color)
           //tempCube.genBuffers();
           //tempCube.genUniforms();
