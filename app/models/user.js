@@ -8,8 +8,20 @@ var mongoose = require('mongoose'),
 
 // User Schema
 var UserSchema = new Schema({
-    email: { type: String, default: '' },
-    username: { type: String, default: '' },
+    email: { type: String, default: '', validate:{
+      validator: async function(value){
+        const user = await this.constructor.findOne({email: value});
+        return !user;
+      },
+      message: props => `Email ${props.value} is already in use!`
+    }},
+    username: { type: String, default: '', validate:{
+      validator: async function(value){
+        const user = await this.constructor.findOne({username: value});
+        return !user;
+      },
+      message: props => `Username ${props.value} is already in use!`
+    }},
     provider: { type: String, default: '' },
     hashed_password: { type: String, default: '' },
     salt: { type: String, default: '' },
@@ -57,24 +69,24 @@ is not a duplicate. It queries the database for a document that matches the emai
 form. If there is a response document it returns a rejected promise, else it resolves as true.
 This function must be async so we can get the response back from the database query.
 */
-UserSchema.path('email').validate(async (email)=>{
-    var User = mongoose.model('User');
+// UserSchema.path('email').validate({
+//   isAsync: true,
+//   validator: function (email, fn) {
+//     var User = mongoose.model('User');
 
-    // if authenticating by an oauth strategies, don't validate
-    if (authTypes.indexOf(this.provider) !== -1) Promise.resolve(true);
+//     // if authenticating by an oauth strategies, don't validate
+//     if (authTypes.indexOf(this.provider) !== -1) fn(true);
 
-      let queryRes = await User.findOne({ email: email });
-
-      if (this.isNew) {
-        if(queryRes){
-          return Promise.reject(new Error("Email already in use."))
-        }else{
-          return Promise.resolve(true)
-        }
-      }else{
-         return Promise.resolve(true)
-      } 
-    })
+//     console.log(this.isNew)
+//     // Check only when it is a new user or when email field is modified
+//     if (this.isNew || this.isModified('email')) {
+//         User.find({ email: email }).exec(function (err, users) {
+//           fn(!err && users.length === 0);
+//       });
+//     } else fn(true);
+//   },
+//   message: 'Email already exists'
+// });
 
 /*
 Validation code to check if the username field for the signup form is 
@@ -96,25 +108,23 @@ UserSchema.path('username').validate(function (username) {
   return /^[a-zA-Z0-9\-_]{3,40}$/.test(username);
 }, 'Usernames must contain alphanumeric characters a-z, A-Z, 0-9, underscores, and hyphens, and must be between 3 and 40 characters long.');
 
-UserSchema.path('username').validate(async(username) =>{
-    var User = mongoose.model('User');
+// UserSchema.path('username').validate({
+//   isAsync: true,
+//   validator: function (username, fn) {
+//     var User = mongoose.model('User');
 
-    // if authenticating by an oauth strategies, don't validate
-    if (authTypes.indexOf(this.provider) !== -1) Promise.resolve(true);
+//     // if authenticating by an oauth strategies, don't validate
+//     if (authTypes.indexOf(this.provider) !== -1) fn(true);
 
-    // Check only when it is a new user or when email field is modified
-      let queryRes = await User.findOne({ username: username });
-
-      if(this.isNew) {
-        if(queryRes){
-          return Promise.reject(new Error("Username already in use."))
-        }else{
-          return Promise.resolve(true)
-        }
-      }else{
-        return Promise.resolve(true)
-      }
-    })
+//     // Check only when it is a new user or when email field is modified
+//     if (this.isNew || this.isModified('username')) {
+//         User.find({ username: username }).exec(function (err, users) {
+//             fn(!err && users.length === 0);
+//         });
+//     } else fn(true);
+//   },
+//   message: 'Username already exists'
+// });
 
 
 UserSchema.path('hashed_password').validate(function (hashed_password) {
