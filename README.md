@@ -132,12 +132,7 @@ in your application:
     grunt &
     ```
 
-* Potentially debug
+* Potentially debug (make sure the node verson in package.json matches the one that you installed)
 
 ### If all the installs are successfull, Bridges should be running locally [here](http://localhost:3000/)
     
-
-    
-
-
-	
