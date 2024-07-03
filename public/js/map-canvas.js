@@ -137,26 +137,58 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
           .classed("map_overlay", true)
 
 
-      var array = topojson.feature(us, us.objects.states).features
-      var arraycopy = [...array];
+          var array = topojson.feature(us, us.objects.states).features
+          var arraycopy = [...array];
+    
+          var countiesArray = topojson.feature(us, us.objects.counties).features
+          var countiesArraycopy = [...countiesArray];
+    
+          //TODO: Optimize
+          if(state[0].state_name.toLowerCase() == "all"){
+            var visData = arraycopy
+          }else{
+            var visData = arraycopy.filter(function(d) { 
+              for(let i = 0; i < state.length; i++){
+                if(d.properties.name.toLowerCase() == state[i]._state_name.toLowerCase()){
+                  d.properties.stroke_color = state[i]._stroke_color
+                  d.properties.fill_color = state[i]._fill_color
+                  d.properties.stroke_width = state[i]._stroke_width
+                  return true
+                }
+              }
+              return false
+            })
+            var countiesvisdata = countiesArraycopy.filter(function(d){
+              for(let i = 0; i < state.length; i++){
+                if(state[i]._view_counties == true){
+                  for(let j = 0; j < state[i]._counties.length; j++){
+                    if(d.properties.name.toLowerCase() == state[i]._counties[j]._state_name.substring(0, state[i]._counties[j]._state_name.indexOf(',')).toLowerCase()
+                    && d.id == state[i]._counties[j]._geoid 
+                    && state[i]._counties[j]._hide !== true){
+                      d.properties.stroke_color = state[i]._counties[j]._stroke_color
+                      d.properties.fill_color = state[i]._counties[j]._fill_color
+                      d.properties.stroke_width = state[i]._counties[j]._stroke_width
+                      return true
+                    }
+                  }
+                }       
+              }
+              return false
+            })
+            visData = visData.concat(countiesvisdata)
+            console.log(visData)
+          }
 
-
-      if(state.toLowerCase() == "all"){
-        var visData = arraycopy
-      }else{
-        var visData = arraycopy.filter(function(d) { return d.properties.name.toLowerCase() == state.toLowerCase()})
-      }
-
-      states.selectAll("path")
+        states.selectAll("path")
           .attr("class", "land")
           .attr("id", "state_fips")
           .data(visData)
           .enter()
           .append("path")
-          .attr("fill", 'rgba(0.0, 0.0, 0.0, 0.08)')
+          .attr("fill", function(d){return d.properties.fill_color})
           .attr("d", path)
-          .attr("stroke","blue")
-          .attr("stroke-width", 0.5)
+          .attr("stroke",function(d){return d.properties.stroke_color})
+          .attr("stroke-width", function(d){return d.properties.stroke_width})
 
 
       // var mySVG = document.getElementById("map_overlay_svg_" + id);

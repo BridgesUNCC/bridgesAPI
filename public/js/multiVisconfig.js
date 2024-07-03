@@ -625,11 +625,11 @@ function addMapOverlay(assignmentData, vis) {
       case 'svg':
       //we now pass the area to render from map as assignmentData.map: example-North Carolina
       console.log(assignmentData.coord_system_type)
-        BridgesVisualizer.map(vis, assignmentData.coord_system_type, assignmentData.map[0], assignmentData.map[1]);
+        BridgesVisualizer.map(vis, assignmentData.coord_system_type, assignmentData.coord_system_type, assignmentData.map);
         break;
 
       case 'CANVAS':
-        BridgesVisualizer.map_canvas(vis, assignmentData.coord_system_type, assignmentData.map[0], assignmentData.map[1]);
+        BridgesVisualizer.map_canvas(vis, assignmentData.coord_system_type, assignmentData.coord_system_type, assignmentData.map);
         break;
     }
   });

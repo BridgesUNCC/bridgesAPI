@@ -110,7 +110,7 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
     // })
 
 
-    d3.json("/assets/states-10m.json", function(error, us) {
+    d3.json("/assets/counties-10m.json", function(error, us) {
       if (error) throw error;
 
       d3.select(vis.node().parentNode).selectAll(".map_overlay").remove();
@@ -130,12 +130,46 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
       var array = topojson.feature(us, us.objects.states).features
       var arraycopy = [...array];
 
+      var countiesArray = topojson.feature(us, us.objects.counties).features
+      var countiesArraycopy = [...countiesArray];
 
-      if(state.toLowerCase() == "all"){
+      //TODO: Optimize
+      if(state[0]._state_name.toLowerCase() == "all"){
         var visData = arraycopy
       }else{
-        var visData = arraycopy.filter(function(d) { return d.properties.name.toLowerCase() == state.toLowerCase()})
+        var visData = arraycopy.filter(function(d) { 
+          for(let i = 0; i < state.length; i++){
+            if(d.properties.name.toLowerCase() == state[i]._state_name.toLowerCase()){
+              d.properties.stroke_color = state[i]._stroke_color
+              d.properties.fill_color = state[i]._fill_color
+              d.properties.stroke_width = state[i]._stroke_width
+              return true
+            }
+          }
+          return false
+        })
+        var countiesvisdata = countiesArraycopy.filter(function(d){
+          for(let i = 0; i < state.length; i++){
+            if(state[i]._view_counties == true){
+              for(let j = 0; j < state[i]._counties.length; j++){
+                if(d.properties.name.toLowerCase() == state[i]._counties[j]._state_name.substring(0, state[i]._counties[j]._state_name.indexOf(',')).toLowerCase()
+                && d.id == state[i]._counties[j]._geoid 
+                && state[i]._counties[j]._hide !== true){
+                  d.properties.stroke_color = state[i]._counties[j]._stroke_color
+                  d.properties.fill_color = state[i]._counties[j]._fill_color
+                  d.properties.stroke_width = state[i]._counties[j]._stroke_width
+                  return true
+                }
+              }
+            }       
+          }
+          return false
+        })
+        visData = visData.concat(countiesvisdata)
+        console.log(visData)
       }
+
+      
 
       states.selectAll("path")
           .attr("class", "land")
@@ -143,10 +177,10 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
           .data(visData)
           .enter()
           .append("path")
-          .attr("fill", 'rgba(0.0, 0.0, 0.0, 0.08)')
+          .attr("fill", function(d){return d.properties.fill_color})
           .attr("d", path)
-          .attr("stroke","blue")
-          .attr("stroke-width", 0.5)
+          .attr("stroke",function(d){return d.properties.stroke_color})
+          .attr("stroke-width", function(d){return d.properties.stroke_width})
 
 
       var mySVG = document.getElementById('svg'+id);
@@ -214,10 +248,10 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
   */
 
   switch(map.toLowerCase()) {
-    case "world":
+    case "equirectangular":
       svgWorldMap();
       break;
-    case "us":
+    case "albersusa":
       svgMap();
       break;
     case "equirectangularOld":
