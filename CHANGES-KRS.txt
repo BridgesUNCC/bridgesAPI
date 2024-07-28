@@ -5,3 +5,7 @@ connect-mongo : 2.0.3 --> 5.1.0
 
 #check which ports mongo is listening to and remove process as needed
 lsof -iTCP -sTCP:LISTEN | grep mongo
+
+#publishing a specific version; check
+
+https://gruntjs.com/installing-grunt
