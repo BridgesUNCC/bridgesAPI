@@ -54,9 +54,9 @@ in your application:
 
 ## Linux:
 
-# Ubuntu Bridges API Install Documentation
+### Ubuntu Bridges API Install Documentation
 
-## Installation steps:
+#### Installation steps:
 1. Install git at home directory v. 2.25.1 (or latest version)
     ```bash
     sudo apt-get install git-all
@@ -134,5 +134,16 @@ in your application:
 
 * Potentially debug (make sure the node verson in package.json matches the one that you installed)
 
-### If all the installs are successfull, Bridges should be running locally [here](http://localhost:3000/)
+## How to select how to connect to mongo
+
+Depending on your setting, you might need to connect to the mongo server in differen way.
+The ways to connect are defined in `config/config.js`. Though you probably never need to edit that file. 
+
+The most generic way to configure how the server connect to the mongo database is by setting two environment variable. Set `NODE_ENV` to `production` and `MONGOLAB_URI` to whatever the mongo connect string is for your mongo server. If you are running a local mongo server without particular configuration, then I would expect the following bash command to work:
+
+```bash
+$ NODE_ENV=production MONGOLAB_URI='mongodb://127.0.0.1:27017/' grunt
+```
+
+#### If all the installs are successfull, Bridges should be running locally [here](http://localhost:3000/)
     
