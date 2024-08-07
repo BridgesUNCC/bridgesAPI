@@ -38,8 +38,7 @@
     "streamable": "latest",
     "treemill": "latest",
     "underscore": "latest",
-    "view-helpers": "*",
-    "yo": "^3.1.1"
+    "view-helpers": "*"
   },
   "devDependencies": {
     "async": "latest",

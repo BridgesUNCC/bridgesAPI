@@ -28,7 +28,6 @@ older OSX version, go to Xcode downloads at https://developer.apple.com/download
 	- xcode-select --install
 5. Install npm and npm related tools
 	- Npm:    brew install npm
-	- Yeoman: npm install -g yo  
 	- Grunt:  npm install grunt
 	- Bower:  npm install bower
 	- run 'rehash' to update command paths
@@ -102,10 +101,6 @@ in your application:
     ```
     ```bash
     sudo apt install npm    
-    ```
-5. Install npm related tools
-    ```bash
-    sudo npm install -g yo
     ```
 6. Get the Bridges API repo:
     ```bash
