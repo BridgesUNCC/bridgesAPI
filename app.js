@@ -9,7 +9,7 @@ var mongoose = require('mongoose');
 mongoose.connect(config.db, { useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 
-mongoose.set('debug', true);
+mongoose.set('debug', config.debugmongo);
 
 var db = mongoose.connection;
 db.on('error', function () {
