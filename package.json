@@ -36,8 +36,7 @@
     "serve-static": "^1.13.2",
     "socket.io": "latest",
     "streamable": "latest",
-    "treemill": "latest",
-    "underscore": "latest"
+    "treemill": "latest"
   },
   "devDependencies": {
     "async": "latest",
