@@ -54,10 +54,85 @@ in your application:
 
 ## Linux:
 
-1. Install git
-2. Install mongoDB and run it in the background: (Debian install: [https://docs.mongodb.com/manual/administration/install-on-linux/]
-3. Make sure you have an uptodate C/C++ compiler and related tools
-4. [Install node and npm][nodenpm](node's package manager) 
-5. Follow steps 5 through 12 in the OSX section (substituting Linux install 
-tools for brew)
-	
+# Ubuntu Bridges API Install Documentation
+
+## Installation steps:
+1. Install git at home directory v. 2.25.1 (or latest version)
+    ```bash
+    sudo apt-get install git-all
+    ```
+2. Install [**MongoDB 5.0**](https://www.mongodb.com/docs/v5.0/tutorial/install-mongodb-on-ubuntu/) 
+    ```bash
+    sudo apt-get install gnupg curl
+    ```
+    ```bash
+    curl -fsSL https://www.mongodb.org/static/pgp/server-5.0.asc | \ sudo gpg -o /usr/share/keyrings/mongodb-server-5.0.gpg \ -dearmor
+    ```
+    ```bash
+    echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-5.0.gpg ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+    ```
+    ```bash
+    sudo apt-get update
+    ```
+    ```bash
+    sudo apt-get install -y mongodb-org=5.0.27 mongodb-org-database=5.0.27 mongodb-org-server=5.0.27 mongodb-org-shell=5.0.27 mongodb-org-mongos=5.0.27 mongodb-org-tools=5.0.27
+    ```
+    ```bash
+    sudo systemctl start mongod
+    ```
+    ```bash
+    sudo systemctl status mongod
+    ```
+
+3. Install C compiler
+
+    ```bash
+    sudo apt install gcc
+    ```
+
+4. Install NodeJS **Version 16** and npm
+    ```bash
+    sudo apt update
+    ```
+    ```bash
+    sudo curl -s https://deb.nodesource.com/setup_16.x | sudo bash
+    ```
+    ```bash
+    sudo apt install nodejs -y
+    ```
+    ```bash
+    sudo apt install npm    
+    ```
+5. Install npm related tools
+    ```bash
+    sudo npm install -g yo
+    ```
+6. Get the Bridges API repo:
+    ```bash
+    git clone https://github.com/BridgesUNCC/bridgesAPI.git
+    ```
+* cd to your server repo directory
+    
+    ```bash
+    npm install grunt
+    ```
+    ```bash
+    npm install bower
+    ```
+    ```bash
+    sudo npm install -g grunt-cli
+    ```
+    ```bash
+    git submodule init
+    ```
+    ```bash
+    git submodule update
+    ```
+    ```bash
+    grunt &
+    ```
+
+* Potentially debug (make sure the node verson in package.json matches the one that you installed)
+
+### If all the installs are successfull, Bridges should be running locally [here](http://localhost:3000/)
+    
