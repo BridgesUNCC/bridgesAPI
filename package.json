@@ -30,7 +30,7 @@
     "npm": "^6.10.1",
     "passport": "latest",
     "passport-local": "latest",
-    "pug": "latest",
+    "pug": "^3.0.3",
     "request": "^2.88.0",
     "serve-favicon": "^2.5.0",
     "serve-static": "^1.13.2",
