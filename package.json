@@ -37,8 +37,7 @@
     "socket.io": "latest",
     "streamable": "latest",
     "treemill": "latest",
-    "underscore": "latest",
-    "view-helpers": "*"
+    "underscore": "latest"
   },
   "devDependencies": {
     "async": "latest",
