@@ -6,7 +6,7 @@ var express = require('express'),
   serveFavicon = require('serve-favicon'),
   serveStatic = require('serve-static'),
   morgan = require('morgan'),
-  mongoStore = require('connect-mongo')(expressSession),
+  mongoStore = require('connect-mongo'),
   pkg = require('../package.json'),
   flash = require('connect-flash'),
   methodOverride = require('method-override');
@@ -72,9 +72,9 @@ module.exports = function (app, config, passport) {
         secret: process.env.SESSION_SECRET || 'noobjs',
         resave: false,
         saveUninitialized: false,
-        store: new mongoStore({
-            url: config.db,
-            collection : 'sessions'
+        store: mongoStore.create({
+            mongoUrl: config.db,
+            collectionName : 'sessions'
         })
     }));
 
