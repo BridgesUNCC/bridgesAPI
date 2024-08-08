@@ -361,7 +361,6 @@ d3.scene_webgl = function(canvas, W, H, data){
             gl.drawArrays(gl.TRIANGLES, 0, objectList[i].vertices.length/3);
           }else{
             objectList[i].associateBuffers();
-            //objectList[i].model = mult(objectList[i].model, rotate(now, 0.0, 1.0, 0.0));
             objectList[i].setUniforms();
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24);
           }

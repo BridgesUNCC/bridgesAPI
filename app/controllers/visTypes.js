@@ -41,7 +41,8 @@ exports.getVisType = function(toCheck) {
     "BarChart":                   "BarChart",
 
     "Audio":         				"Audio",
-    "Scene":                "scene"
+    "Scene":                "scene",
+    "Map":  "Map"
   };
     if( toCheck && validTypes[toCheck] )
       return validTypes[toCheck];
@@ -187,6 +188,11 @@ exports.getVisTypeObject = function(data) {
         "vistype": "scene",
         "script": "/js/scene.js",
         "link":""
+      },
+      "Map":{
+        "vistype": "Map",
+        "script": "",
+        "link": ""
       }
     };
 

@@ -52,6 +52,7 @@ exports.saveSnapshot = function(req, res, next) {
 //API route for uploading assignment data. If the
 //assignment already exists it will be replaced.
 exports.upload = function (req, res, next) {
+    console.log("assignment upload");
     // C++ version posts JSON as object, JAVA and Python post as plain string
     if(typeof req.body != "object") {
         try { rawBody = JSON.parse(req.body); } // try parsing to object
@@ -101,6 +102,7 @@ exports.upload = function (req, res, next) {
       }
     }
 
+    console.log("Verifying credentials")
     //get username from apikey
     User.findOne({
         apikey:req.query.apikey
@@ -114,14 +116,32 @@ exports.upload = function (req, res, next) {
     });
 
     // if the assignment is new, remove old assignments with the same ID
-    function replaceAssignment (res, user, assignmentID) {
-
+    async function replaceAssignment (res, user, assignmentID) {
+	console.log( "starting replace assignment" );
         if (subAssignment == '0' || subAssignment == '00') {
-             Assignment.deleteMany({
-                assignmentNumber: assignmentNumber,
-                email: user.email
-            })
-            .exec(function (err, resp) {
+	    // / This is the native driver version of the operation
+	    // console.log(Date.now());
+	    // try {
+	    // 	await mongoose.connection.db.collection('assignments').deleteMany({
+            //         assignmentNumber: assignmentNumber,
+            //         email: user.email
+	    // 	});
+	    // 	console.log(Date.now());
+	    // 	console.log("replaceAssignment() removed assignments (" + assignmentNumber + ".*) from user: \"" + user.username + "\"");
+	    // }
+	    // catch (err) {
+	    // 	console.log(err);
+	    // }
+	    // saveAssignment(user, assignmentNumber);
+
+	    // This is the mongoose version of the operation
+	  
+            Assignment.deleteMany({
+               assignmentNumber: assignmentNumber,
+               email: user.email
+	               })	    
+		.exec(function (err, resp) {
+		    	    console.log(Date.now());
                  if(err)
                     console.log(err);
                 console.log("replaceAssignment() removed assignments (" + assignmentNumber + ".*) from user: \"" + user.username + "\"");
@@ -134,7 +154,7 @@ exports.upload = function (req, res, next) {
 
     // save the assignment to the DB
     function saveAssignment(user, assignmentNumber) {
-
+	console.log("starting to save assignment");
       assignment = new Assignment();
 
       // set the title and description
@@ -182,6 +202,21 @@ exports.upload = function (req, res, next) {
 		      errorHandled = true;
 		  }
 	      }
+
+	      //If BSON is WAY too large, then the error is report
+	      //inside of mongoose rather than by the mongodb
+	      //server. In that case some funciont deep in mongoose
+	      //raises a RangeError. So we trap that, even though
+	      //really mongoose should be trapping it and recasting it
+	      //in a more meaningful way. This could theoretically
+	      //cause to trap other range error in mongoose... But that seems unlikely
+	      
+              if (err.name == "RangeError") {
+		  res.status(413).json({"msg": "The volume of data in the assignment is too large for BRIDGES to handle. Try a smaller assignment. For reference, a BRIDGES assignment has to be smaller than about 17MB once serialized to JSON."});
+		  errorHandled = true;
+	      }
+
+	      
 	      if (! errorHandled) {
 		  // No idea what that error is
 	      
@@ -189,14 +224,17 @@ exports.upload = function (req, res, next) {
 		  next(err);
 	      }
         } else {
-          User.findOne({
+          User.findOne({ //why is this query necessary?
               email: user.email
           }).exec(function (err, resp) {
+	      console.log( "subassignment added" );
               res.status(200).json({ "msg":assignmentID + "/" + resp.username });
+	      
           });
-          console.log( "subassignment added" );
+
         }
       });
+     
     }
 };
 

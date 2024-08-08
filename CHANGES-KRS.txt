@@ -1,0 +1,10 @@
+Can run mongodb-community@7.x.x
+
+#check which ports mongo is listening to and remove process as needed
+lsof -iTCP -sTCP:LISTEN | grep mongo
+
+#publishing a specific version; check
+
+https://gruntjs.com/installing-grunt
+
+check npm, npm-install and how to use npm-lock

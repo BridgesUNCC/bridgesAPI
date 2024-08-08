@@ -28,7 +28,6 @@ older OSX version, go to Xcode downloads at https://developer.apple.com/download
 	- xcode-select --install
 5. Install npm and npm related tools
 	- Npm:    brew install npm
-	- Yeoman: npm install -g yo  
 	- Grunt:  npm install grunt
 	- Bower:  npm install bower
 	- run 'hash -r' to update command paths
@@ -54,10 +53,92 @@ in your application:
 
 ## Linux:
 
-1. Install git
-2. Install mongoDB and run it in the background: (Debian install: [https://docs.mongodb.com/manual/administration/install-on-linux/]
-3. Make sure you have an uptodate C/C++ compiler and related tools
-4. [Install node and npm][nodenpm](node's package manager) 
-5. Follow steps 5 through 12 in the OSX section (substituting Linux install 
-tools for brew)
-	
+### Ubuntu Bridges API Install Documentation
+
+#### Installation steps:
+1. Install git at home directory v. 2.25.1 (or latest version)
+    ```bash
+    sudo apt-get install git-all
+    ```
+2. Install [**MongoDB 5.0**](https://www.mongodb.com/docs/v5.0/tutorial/install-mongodb-on-ubuntu/) 
+    ```bash
+    sudo apt-get install gnupg curl
+    ```
+    ```bash
+    curl -fsSL https://www.mongodb.org/static/pgp/server-5.0.asc | \ sudo gpg -o /usr/share/keyrings/mongodb-server-5.0.gpg \ -dearmor
+    ```
+    ```bash
+    echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-5.0.gpg ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+    ```
+    ```bash
+    sudo apt-get update
+    ```
+    ```bash
+    sudo apt-get install -y mongodb-org=5.0.27 mongodb-org-database=5.0.27 mongodb-org-server=5.0.27 mongodb-org-shell=5.0.27 mongodb-org-mongos=5.0.27 mongodb-org-tools=5.0.27
+    ```
+    ```bash
+    sudo systemctl start mongod
+    ```
+    ```bash
+    sudo systemctl status mongod
+    ```
+
+3. Install C compiler
+
+    ```bash
+    sudo apt install gcc
+    ```
+
+4. Install NodeJS **Version 16** and npm
+    ```bash
+    sudo apt update
+    ```
+    ```bash
+    sudo curl -s https://deb.nodesource.com/setup_16.x | sudo bash
+    ```
+    ```bash
+    sudo apt install nodejs -y
+    ```
+    ```bash
+    sudo apt install npm    
+    ```
+6. Get the Bridges API repo:
+    ```bash
+    git clone https://github.com/BridgesUNCC/bridgesAPI.git
+    ```
+* cd to your server repo directory
+    
+    ```bash
+    npm install grunt
+    ```
+    ```bash
+    npm install bower
+    ```
+    ```bash
+    sudo npm install -g grunt-cli
+    ```
+    ```bash
+    git submodule init
+    ```
+    ```bash
+    git submodule update
+    ```
+    ```bash
+    grunt &
+    ```
+
+* Potentially debug (make sure the node verson in package.json matches the one that you installed)
+
+## How to select how to connect to mongo
+
+Depending on your setting, you might need to connect to the mongo server in differen way.
+The ways to connect are defined in `config/config.js`. Though you probably never need to edit that file. 
+
+The most generic way to configure how the server connect to the mongo database is by setting two environment variable. Set `NODE_ENV` to `production` and `MONGOLAB_URI` to whatever the mongo connect string is for your mongo server. If you are running a local mongo server without particular configuration, then I would expect the following bash command to work:
+
+```bash
+$ NODE_ENV=production MONGOLAB_URI='mongodb://127.0.0.1:27017/' grunt
+```
+
+#### If all the installs are successfull, Bridges should be running locally [here](http://localhost:3000/)
+    

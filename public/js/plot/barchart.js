@@ -1,6 +1,4 @@
 d3.barChart = function(vis, id, data){
-    console.log(data)
-
     let series = [];
     for(let i = 0; i < data.yaxis_data.series.length; i++){
       series.push({name: data.yaxis_data.series[i].name, 
@@ -8,9 +6,11 @@ d3.barChart = function(vis, id, data){
 
     }
 
+    let barAlignment = (data.alignment.toLowerCase() == "vertical") ? "column" : "bar";
+
     let mychart = Highcharts.chart(id, {
       chart: {
-          type: 'bar'
+          type: barAlignment
       },
       title: {
           text: data.plot_title,
@@ -20,20 +20,16 @@ d3.barChart = function(vis, id, data){
           text: data.subtitle,
           align: 'left'
       },
-      subtitle: {
-          text: data.subtitle,
-          align: 'left'
-      },
       xAxis: {
           categories: data.xaxis_data.xAxis.categories,
           title: {
-              text: null
+              text: data.xLabel
           }
       },
       yAxis: {
           min: 0,
           title: {
-              text: '',
+              text: data.yLabel,
               align: 'high'
           },
           labels: {
@@ -42,6 +38,7 @@ d3.barChart = function(vis, id, data){
       },
       tooltip: {
           valueSuffix: ''
+          valueSuffix: data.tooltipSuffix
       },
       plotOptions: {
           bar: {

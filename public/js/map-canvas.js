@@ -113,7 +113,7 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
   //parse the svg file as xml and get the path tag based on the state selected and render in d3
   var svgMap = function(){
 
-    d3.json("/assets/us-albers-counties.json", function(error, us) {
+    d3.json("/assets/states-10m.json", function(error, us) {
       if (error) throw error;
 
       d3.select(assignmentContainer).selectAll(".map_overlay").remove();
@@ -137,36 +137,68 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
           .classed("map_overlay", true)
 
 
-      var array = topojson.feature(us, us.objects.collection).features
-      var arraycopy = [...array];
+          var array = topojson.feature(us, us.objects.states).features
+          var arraycopy = [...array];
+    
+          var countiesArray = topojson.feature(us, us.objects.counties).features
+          var countiesArraycopy = [...countiesArray];
+    
+          //TODO: Optimize
+          if(state[0].state_name.toLowerCase() == "all"){
+            var visData = arraycopy
+          }else{
+            var visData = arraycopy.filter(function(d) { 
+              for(let i = 0; i < state.length; i++){
+                if(d.properties.name.toLowerCase() == state[i]._state_name.toLowerCase()){
+                  d.properties.stroke_color = state[i]._stroke_color
+                  d.properties.fill_color = state[i]._fill_color
+                  d.properties.stroke_width = state[i]._stroke_width
+                  return true
+                }
+              }
+              return false
+            })
+            var countiesvisdata = countiesArraycopy.filter(function(d){
+              for(let i = 0; i < state.length; i++){
+                if(state[i]._view_counties == true){
+                  for(let j = 0; j < state[i]._counties.length; j++){
+                    if(d.properties.name.toLowerCase() == state[i]._counties[j]._state_name.substring(0, state[i]._counties[j]._state_name.indexOf(',')).toLowerCase()
+                    && d.id == state[i]._counties[j]._geoid 
+                    && state[i]._counties[j]._hide !== true){
+                      d.properties.stroke_color = state[i]._counties[j]._stroke_color
+                      d.properties.fill_color = state[i]._counties[j]._fill_color
+                      d.properties.stroke_width = state[i]._counties[j]._stroke_width
+                      return true
+                    }
+                  }
+                }       
+              }
+              return false
+            })
+            visData = visData.concat(countiesvisdata)
+            console.log(visData)
+          }
 
-
-      if(state.toLowerCase() == "all"){
-        var visData = arraycopy
-      }else{
-        var visData = arraycopy.filter(function(d) { return d.properties.state.toLowerCase() == state.toLowerCase()})
-      }
-
-      states.selectAll("path")
+        states.selectAll("path")
           .attr("class", "land")
           .attr("id", "state_fips")
           .data(visData)
           .enter()
           .append("path")
-          .attr("fill", 'rgba(0.0, 0.0, 0.0, 0.08)')
+          .attr("fill", function(d){return d.properties.fill_color})
           .attr("d", path)
-          .attr("stroke","blue")
-          .attr("stroke-width", 0.5)
+          .attr("stroke",function(d){return d.properties.stroke_color})
+          .attr("stroke-width", function(d){return d.properties.stroke_width})
 
 
-      var mySVG = document.getElementById("map_overlay_svg_" + id);
+      // var mySVG = document.getElementById("map_overlay_svg_" + id);
 
-      let bbox = document.getElementById("map_overlay"+id).getBBox();
+      // let bbox = document.getElementById("map_overlay"+id).getBBox();
 
-      mySVG.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
-      document.getElementsByTagName('g')[0].setAttribute("transform", "translate(" + 0 + "," + 0 + ")");
+      // mySVG.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
+      // document.getElementsByTagName('g')[0].setAttribute("transform", "translate(" + 0 + "," + 0 + ")");
 
-      vis.select("#map_overlay"+id).attr("transform", d3.zoomTransform(canvas.node()));
+      // vis.select("#map_overlay"+id).attr("transform", d3.zoomTransform(canvas.node()));
 
       // update the transformation based on the sibling transform
       vis.zoom = function(d) {
@@ -224,19 +256,21 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
           .attr("stroke","blue")
           .attr("stroke-width", 0.5)
 
-      var mySVG = document.getElementById("map_overlay_svg_" + id);
+      // var mySVG = document.getElementById("map_overlay"+id);
 
-      let bbox = document.getElementById("map_overlay"+id).getBBox();
+      // let bbox = document.getElementById("map_overlay"+id).getBBox();
 
-      mySVG.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
-      document.getElementsByTagName('g')[0].setAttribute("transform", "translate(" + 0 + "," + 0 + ")");
+      // // mySVG.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
+      // // document.getElementsByTagName('g')[0].setAttribute("transform", "translate(" + 0 + "," + 0 + ")");
 
-      vis.select("#map_overlay"+id).attr("transform", d3.zoomTransform(canvas.node()));
+      // vis.select("#map_overlay"+id).attr("transform", d3.zoomTransform(canvas.node()));
 
       // update the transformation based on the sibling transform
       vis.zoom = function(d) {
         d3.select("#map_overlay"+id).attr("transform", d3.zoomTransform(canvas.node()));
       };
+
+
 
       vis.select("g").select("#map_overlay"+id).moveToBack();
       canvas.registerMapOverlay(vis);
@@ -247,15 +281,12 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
   /*
     Call the appropriate projection and overlay functions
   */
-  switch(overlay) {
-    case "albersusa":
-      if(map.toLowerCase() == "us"){
-        console.log("here")
-        svgMap();
-      }
-      break;
-    case "equirectangular":
+  switch(map.toLowerCase()) {
+    case "world":
       svgWorldMap();
+      break;
+    case "us":
+      svgMap();
       break;
     case "equirectangularOld":
       equirectangular();

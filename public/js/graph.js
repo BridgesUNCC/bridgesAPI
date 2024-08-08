@@ -71,7 +71,6 @@ d3.graph = function(svg, W, H, data) {
     }
 
     svgGroup = vis.append("g").attr('transform', transform);
-	console.log (transform);
 
     var nodes = data.nodes;
     var links = data.links.filter(function(d){
@@ -238,7 +237,6 @@ d3.graph = function(svg, W, H, data) {
           }
 
           point = proj([d.location[0], d.location[1]]);
-          console.log(point)
           // make sure the transformed location exists
           if(point) {
             d.fx = point[0];
@@ -264,6 +262,10 @@ d3.graph = function(svg, W, H, data) {
   if(BridgesVisualizer.labels_shown === true){
     d3.selectAll(".nodeLabel").each(BridgesVisualizer.displayNodeLabels)
   }
+  if(BridgesVisualizer.link_labels_shown === true){
+    d3.selectAll(".linkLabel").each(BridgesVisualizer.displayLinkLabels)
+  }
+
 
 
   // get control point for quadratic curve link
