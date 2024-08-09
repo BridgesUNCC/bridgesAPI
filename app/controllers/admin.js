@@ -136,3 +136,38 @@ exports.recentassignmentsperuser = function(req, res) {
 	    res.end(JSON.stringify(count));
     });
 }
+
+//return a JSON object specifying the number of recent assignment per user.
+//users that have no assignment in the time window are not included
+//if no since date is given. 
+exports.nbrecentuser = function(req, res) {
+    protectAdmin(req, res);
+
+    const thresholddate = constructSince(req);
+
+    
+    Assignment.find({subAssignment: '00', // only counting the first subassignment
+		     dateCreated: {$gt: thresholddate},
+		    },
+		    { //projecting to retain only few fields
+			username:true,
+			assignmentID:true,
+			dateCreated:true
+		    })
+	.exec(function (err, ass) {
+	    var count={};
+	    
+	    var nb = 0;
+	    
+	    for (var idx in ass) {
+		var a = ass[idx];
+		if (!(a.username in count)) {
+		    count[a.username] = 1
+		    nb ++;
+		}
+	    }
+	    
+	    res.setHeader('Content-Type', 'application/json');
+	    res.end(JSON.stringify({nb}));
+    });
+}
