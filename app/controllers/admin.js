@@ -88,6 +88,11 @@ exports.nbrecentassignments = function(req, res) {
     
     Assignment.find({subAssignment: '00', // only counting the first subassignment
 		     dateCreated: {$gt: thresholddate},
+		    },
+		    { //projecting to retain only few fields
+			username:true,
+			assignmentID:true,
+			dateCreated:true
 		    })
 	.exec(function (err, ass) {
 	    var nb = 0;
