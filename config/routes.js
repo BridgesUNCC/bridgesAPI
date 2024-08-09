@@ -239,6 +239,9 @@ module.exports = function(app, passport) {
     // -------------------------------------------------------
     var admin = require('../app/controllers/admin.js');
 
+    /* return help page */
+    app.get('/admin', admin.help, handleError);
+    
     /* return all users */
     app.get('/admin/allusers', admin.allusers, handleError);
 

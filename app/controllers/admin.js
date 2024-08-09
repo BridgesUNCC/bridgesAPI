@@ -29,6 +29,13 @@ exports.demo = function(req, res) {
 
 }
 
+//returns a simple document that show case the different admin features
+exports.help = function(req, res) {
+    protectAdmin(req, res);
+    
+    return res.render('admin/help');
+}
+
 // return a JSON array of all usernames
 // requires an admin account
 exports.allusers = function(req, res) {

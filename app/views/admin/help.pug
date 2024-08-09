@@ -1,0 +1,32 @@
+extends ../includes/boilerplate.pug
+
+block css
+    link(rel='stylesheet',
+         href='/css/index.css')
+    link(rel='stylesheet',
+         href='/css/gallery.css')
+
+block content
+    include ../includes/header.pug
+
+    .container
+        - if (message != ''){
+            p.alert.alert-danger=message
+        - }
+        .row.spacer
+            h1 Welcome to Bridges admin page!
+
+        .row.spacer
+            ul
+               li
+                   a(href='/admin') Admin Help
+               li
+                   a(href='/admin/allusers') All Users
+               li
+                   a(href='/admin/nbrecent') Count of recent assignment (within this month)
+               li
+                   a(href='/admin/nbrecent?since=2024-08-08:19:10Z') Count of recent assignment (by date)
+	    
+
+
+
