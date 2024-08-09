@@ -239,7 +239,11 @@ module.exports = function(app, passport) {
     // -------------------------------------------------------
     var admin = require('../app/controllers/admin.js');
 
-    /* Send the signup page */
-    app.get('/allusers', admin.allusers, handleError);
+    /* return all users */
+    app.get('/admin/allusers', admin.allusers, handleError);
 
+    /* return number of recent assignments */
+    app.get('/admin/nbrecent', admin.nbrecentassignments, handleError);
+
+    
 };

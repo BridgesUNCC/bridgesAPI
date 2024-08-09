@@ -29,24 +29,67 @@ exports.demo = function(req, res) {
 
 }
 
-
+// return a JSON array of all usernames
+// requires an admin account
 exports.allusers = function(req, res) {
-
     protectAdmin(req, res);
-    
-    userlist = []
     
     User.find ({},{username:true})
 	.exec(function (err, users) {
-	    console.log(users);
+	    var userlist = [];
+
 	    for (var idx in users) {
 		var u = users[idx];
-		console.log(u);
 		userlist.push(u.username);
 	    }
 
 	    res.setHeader('Content-Type', 'application/json');
 	    res.end(JSON.stringify(userlist));
     });
+}
+
+// use since get parameter to construct a time date.
+// If no such parameter is in the query, use the beginning of current month.
+// invalid dates are ignored
+// returns Date
+function constructSince(req) {
+    var sinceTime = undefined;
     
+    if (req.query.since) {
+	sinceTime = new Date(req.query.since);
+    }
+
+    if (!sinceTime || isNaN(sinceTime)) {
+	sinceTime = new Date(); //now
+	sinceTime.setDate(0);
+	sinceTime.setHours(0);
+	sinceTime.setMinutes(0);
+	sinceTime.setSeconds(0);
+	sinceTime.setMilliseconds(0);
+    }
+    
+    return sinceTime;
+}
+
+//return a JSON object specifying the number of recent assignment
+//if no since date is given. 
+exports.nbrecentassignments = function(req, res) {
+    protectAdmin(req, res);
+
+    const thresholddate = constructSince(req);
+    //console.log(thresholddate);
+    
+    Assignment.find({subAssignment: '00', // only counting the first subassignment
+		     dateCreated: {$gt: thresholddate},
+		    })
+	.exec(function (err, ass) {
+	    var nb = 0;
+	    
+	    for (var idx in ass) {
+		nb++;
+	    }
+
+	    res.setHeader('Content-Type', 'application/json');
+	    res.end(JSON.stringify({nb}));
+    });
 }
