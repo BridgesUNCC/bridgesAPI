@@ -30,7 +30,8 @@ var UserSchema = new Schema({
       reset_timeout: {type: Date}
     },
     institution_name: {type: String, default: ''},
-    course_name: {type: String, default: ''}
+    course_name: {type: String, default: ''},
+    admin: {type: Boolean, default: false}
 });
 
 // Virtuals
@@ -192,8 +193,7 @@ UserSchema.methods = {
       return '';
     }
   },
-
-
+    
   /**
    * Add password reset token and expiry date
    *
@@ -208,8 +208,11 @@ UserSchema.methods = {
        if(err) cb(err);
        cb(null);
      });
-   }
+   },
 
+    hasAdminRights: function() {
+	return this.admin == true;
+    }
 };
 
 mongoose.model('User', UserSchema);

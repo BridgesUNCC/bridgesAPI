@@ -232,4 +232,14 @@ module.exports = function(app, passport) {
         }
     );
 
+    // -------------------------------------------------------
+    //
+    //  Admin Routes
+    //
+    // -------------------------------------------------------
+    var admin = require('../app/controllers/admin.js');
+
+    /* Send the signup page */
+    app.get('/allusers', admin.allusers, handleError);
+
 };
