@@ -84,7 +84,6 @@ exports.nbrecentassignments = function(req, res) {
     protectAdmin(req, res);
 
     const thresholddate = constructSince(req);
-    //console.log(thresholddate);
     
     Assignment.find({subAssignment: '00', // only counting the first subassignment
 		     dateCreated: {$gt: thresholddate},
@@ -103,5 +102,37 @@ exports.nbrecentassignments = function(req, res) {
 
 	    res.setHeader('Content-Type', 'application/json');
 	    res.end(JSON.stringify({nb}));
+    });
+}
+
+//return a JSON object specifying the number of recent assignment per user.
+//users that have no assignment in the time window are not included
+//if no since date is given. 
+exports.recentassignmentsperuser = function(req, res) {
+    protectAdmin(req, res);
+
+    const thresholddate = constructSince(req);
+
+    
+    Assignment.find({subAssignment: '00', // only counting the first subassignment
+		     dateCreated: {$gt: thresholddate},
+		    },
+		    { //projecting to retain only few fields
+			username:true,
+			assignmentID:true,
+			dateCreated:true
+		    })
+	.exec(function (err, ass) {
+	    var count={};
+	    
+	    for (var idx in ass) {
+		var a = ass[idx];
+		if (!(a.username in count))
+		    count[a.username] = 0
+		count[a.username] ++;
+	    }
+
+	    res.setHeader('Content-Type', 'application/json');
+	    res.end(JSON.stringify(count));
     });
 }

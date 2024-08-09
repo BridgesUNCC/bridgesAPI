@@ -248,5 +248,7 @@ module.exports = function(app, passport) {
     /* return number of recent assignments */
     app.get('/admin/nbrecent', admin.nbrecentassignments, handleError);
 
+    /* return number of recent assignments */
+    app.get('/admin/recentperuser', admin.recentassignmentsperuser, handleError);
     
 };
