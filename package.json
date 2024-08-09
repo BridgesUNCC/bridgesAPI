@@ -7,21 +7,25 @@
   "scripts": {
     "start": "app.js",
     "test": "grunt test",
-    "postinstall": "bower cache clean && bower install"
+    "postinstall": "grunt copy"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
+    "bootstrap": "^3.3.5",
     "bower": "^1.8.14",
     "compression": "^1.7.4",
     "connect-flash": "*",
     "connect-mongo": "^5.1.0",
     "constantinople": ">=3.1.1",
     "cookie-parser": "^1.4.6",
-    "d3": "3.5.17",
+    "css-toggle-switch": "^4.1.0",
+    "d3": "^4.12.2",
     "deep-extend": "^0.6.0",
     "express": "^4.19.2",
     "express-session": "^1.15.6",
     "grunt": "^1.5.3",
+    "grunt-contrib-copy": "^1.0.0",
+    "highcharts": "^7.2.1",
     "jquery": "^3.4.1",
     "method-override": "^3.0.0",
     "mongoose": "^6.11.6",
@@ -40,6 +44,7 @@
   },
   "devDependencies": {
     "async": "latest",
+    "copy-webpack-plugin": "^4.0.1",
     "grunt-bower-task": "^0.6.2",
     "grunt-contrib-compass": "1.1.1",
     "grunt-contrib-watch": "^1.1.0",
