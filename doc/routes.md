@@ -9,20 +9,22 @@ javascript function, with a error handler.
 
 ## function answering the path
 
-The function that define how to process a path are usually imported
+The function that defines how to process a path are usually imported
 from a controller in `app/controlers`.
 
-The controller file put the function in `exports` and the
-`config/routes.js` use it from there.
+The controller file puts the function in `exports` and the
+`config/routes.js` uses it from there.
 
-The function that process a route takes two parameters: usually `req`
-and `res`.
+The function that processes a route takes three parameters: usually `req`
+, `res` and `next`.
 
 `req` defines the input of the function such as the `req.query`
 parameters. It also contains the session variable such as `req.user`
 (the username authenticated).
 
-`res` is the response object that essentialyl is returned to the webclient.
+`res` is the response object that essentially is returned to the webclient.
+
+`next'  handles errors
 
 ## outputting JSON
 
@@ -38,6 +40,11 @@ res.end(JSON.stringify({foo:1, bar:'soo'}));
 
 If you want to return HTML, you typically dont directly return
 HTML. You usually use a template to make the HTML. Here we use PUG as the templating language. And you can return static html with:
+
+There is a `boilerplate` pug template that creates the `head` and `body` 
+sections of the html document, which is further defined in other more 
+specific pug template files (through `blocks`) See 
+views/includes/boilerplate.pug and any other pug file for more information
 
 ```
 return res.render('admin/help');
@@ -58,8 +65,8 @@ return res.render('assignments/gallery', {
 For instance the declared `assignmentNumber` is used in `gallery.pug` with:
 
 ```
-                    - if (assignmentNumber < 0)
-                            h1(style="text-align: left") Looks like there aren't any assignments here...    :(
-                    - else
-                            h1(style="text-align: left") Public Gallery for assignments with number '#{assignmentNumber}'
+      - if (assignmentNumber < 0)
+             h1(style="text-align: left") Looks like there aren't any assignments here...    :(
+        - else
+             h1(style="text-align: left") Public Gallery for assignments with number '#{assignmentNumber}'
 ```
