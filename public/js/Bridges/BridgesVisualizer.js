@@ -14,7 +14,7 @@
       });
   };
 
-  BridgesVisualizer.defaultColors = d3.scaleOrdinal(d3.schemeCategory20);
+  BridgesVisualizer.defaultColors = d3.scaleOrdinal(d3.schemeCategory10);
 
   BridgesVisualizer.strokeWidthRange = d3.scaleLinear().domain([0.0001,100]).range([0.0001,200]).clamp(true);
   //scale values between 1 and 100 to a reasonable range
