@@ -80,12 +80,17 @@ d3.graph = function(svg, W, H, data) {
       return d.target == d.source;
     });
 
+	var t_graph = {
+		"nodes": nodes,
+		"links": links
+	};
+
+	let link_force = d3.forceLink(links)
+						.id((d) => d.index)
+
     var simulation = d3.forceSimulation(nodes)
-      .force("link", d3.forceLink(links)
-                        .id(function(d) { return d.index; })
-                        .distance(function(d) {
-                          return 40 + links.length;
-                        }))
+      .force('link', link_force)
+                       .distance((d) => 40 + d.length)
       .force("charge", d3.forceManyBody()
                         .strength(function(d) {
                           return -30 - (d.size*5);
