@@ -21,9 +21,17 @@ d3.bst = function (vis, W, H) {
     //     finalScale = transformObject.scale;
     // }
 
+	// zoom related 
     var zoom = d3.zoom()
+		.extent([[0,0], [w, h]])
         .scaleExtent([0.1,5])
         .on("zoom", zoomHandler);
+
+	function zoomHandler(evt) {
+		if(svgGroup) {
+			svgGroup.attr("transform", evt.transform);
+		}
+	}
 
     bst.reset = function() {
         finalTranslate = BridgesVisualizer.defaultTransforms.tree.translate;
@@ -310,12 +318,6 @@ d3.bst = function (vis, W, H) {
     return path;
   }
 
-  // handle zoom and pan
-  function zoomHandler() {
-    if(svgGroup) {
-      svgGroup.attr("transform", d3.event.transform);
-    }
-  }
 
   return bst;
 };
