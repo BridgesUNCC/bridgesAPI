@@ -57,7 +57,7 @@ d3.array3d = function(svg, W, H, data, dimensions) {
         .attr("id",function(d,i){
             return "g"+i;
         })
-        .on("mouseover", function(d) { BridgesVisualizer.textMouseover(d.name); } )
+        .on("mouseover", function(evt, d) { BridgesVisualizer.textMouseover(d.name); } )
         .on("mouseout", BridgesVisualizer.textMouseout);
 
 

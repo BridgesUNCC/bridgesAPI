@@ -49,7 +49,7 @@ d3.array2d = function(svg, W, H, data, dimensions) {
         .attr("transform", function(d, i) {
             return "translate(" + ((i % elementsPerRow) * (spacing + defaultSize)) + "," + ((Math.floor(i / elementsPerRow)) * (spacing + defaultSize)) + ")";
         })
-        .on("mouseover", function(d) { BridgesVisualizer.textMouseover(d.name); } )
+        .on("mouseover", function(evt, d) { BridgesVisualizer.textMouseover(d.name); } )
         .on("mouseout", BridgesVisualizer.textMouseout);
 
     // Create squares for each array element

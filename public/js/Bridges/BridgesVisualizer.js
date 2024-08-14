@@ -238,6 +238,7 @@
 
   BridgesVisualizer.textMouseover = function(label) {
       function addLineBreaks(str) {
+console.log('label' + label);
         str = str.split("\n");
         str = str.join("<br>");
         return str;
@@ -248,8 +249,8 @@
           .style("display", "block")
           .style("opacity", 0.9);
       BridgesVisualizer.tooltip.html(addLineBreaks(label))
-          .style("left", (d3.event.pageX) + "px")
-          .style("top", (d3.event.pageY) + "px");
+          .style("left", (event.pageX) + "px")
+          .style("top", (event.pageY) + "px");
       };
 
   BridgesVisualizer.textMouseout = function(d) {
