@@ -1,3 +1,6 @@
 Javascript modules:
 
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
+
+D3 tutorials:
+https://github.com/sgratzl/d3tutorial?tab=readme-ov-file#js
