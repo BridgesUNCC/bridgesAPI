@@ -81,26 +81,30 @@ d3.graph = function(svg, W, H, data) {
     });
 
 	var t_graph = {
-		"nodes": nodes,
-		"links": links
+		nodes: nodes,
+		links: links
 	};
+console.log('data:' + data.nodes);
 
-	let link_force = d3.forceLink(links)
-						.id((d) => d.index)
 
     var simulation = d3.forceSimulation(nodes)
-      .force('link', link_force)
-                       .distance((d) => 40 + d.length)
+//      .distance((d) => 40 + d.length)
       .force("charge", d3.forceManyBody()
-                        .strength(function(d) {
-                          return -30 - (d.size*5);
-                        }))
+      .strength(function(d) {
+                return -30 - (d.size*5);
+             }))
       .force("collision", d3.forceCollide()
-                        .radius(function(d) {
-                          return d.size/3 || 10;
-                        }))
+	   .radius(function(d) {
+                return d.size/3 || 10;
+             }))
       .force("center", d3.forceCenter(BridgesVisualizer.visCenter()[0], BridgesVisualizer.visCenter()[1]))
-      .on("tick", ticked);
+//      .on("tick", ticked);
+
+	let link_force = d3.forceLink(t_graph.links)
+//						.id((d) => d.index)
+						.id(function(d) { console.log ('index:' + d.index); return  d.id;} )
+
+	simulation.force ("links", link_force);
 
   // Add marker defs to the svg element
   BridgesVisualizer.addMarkerDefs(vis);
@@ -184,7 +188,7 @@ d3.graph = function(svg, W, H, data) {
 
     //outer node
     var node = svgGroup.selectAll(".node")
-        .data(nodes)
+        .data(t_graph.nodes)
         .enter().append("g")
         .on("mouseover", function(d) {BridgesVisualizer.textMouseover(d.name); } )
         .on("mouseout", BridgesVisualizer.textMouseout)
@@ -288,6 +292,7 @@ d3.graph = function(svg, W, H, data) {
   }
 
   function ticked() {
+console.log("here..");
       node
         .attr("transform", function(d, i) {
           return "translate(" + d.x + "," + d.y + ")";
@@ -296,7 +301,7 @@ d3.graph = function(svg, W, H, data) {
       if(selflinks.length > 0) {
         selfLinkG.selectAll("path")
             .attr("d", function(d) {
-              var node = nodes[d.source],
+              var node = t_graph.nodes[d.source],
                   x1 = node.x,
                   y1 = node.y,
                   x2 = x1 + 0.1,
@@ -315,7 +320,7 @@ d3.graph = function(svg, W, H, data) {
 
        selfLinkG.selectAll("text")
          .attr("transform", function(d , i) {
-           var myNode = nodes[d.source];
+           var myNode = t_graph.nodes[d.source];
            return "translate(" + (myNode.x + 10) + "," + (myNode.y - 10) + ")";
          });
       }
