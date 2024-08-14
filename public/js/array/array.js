@@ -16,36 +16,50 @@ d3.array = function(svg, W, H, data) {
         spacing = 5, // spacing between elements
         defaultSize = 100;  // default size of each element box
 
+	// zoom related
     var zoom = d3.zoom()
-        .scaleExtent([0.1,2])
-        .on("zoom", zoomed);
 
+	function zoomed(evt) {
+		if(svgGroup) {
+			svgGroup.attr("transform", evt.transform);
+		}
+	}
+
+	svg.call(d3.zoom()
+		.extent([[0,0], [w, h]])
+		.scaleExtent([0.1, 1.2])
+		.on("zoom", zoomed))
+
+	// get the array into an initial position
     array.reset = function() {
-      finalTranslate = BridgesVisualizer.defaultTransforms.array.translate;
-      finalScale =  BridgesVisualizer.defaultTransforms.array.scale;
-      transform = d3.zoomIdentity.translate(finalTranslate[0], finalTranslate[1]).scale(finalScale);
-
-      svg.call(zoom.transform, transform);
+		finalTranslate = BridgesVisualizer.defaultTransforms.array.translate;
+		finalScale =  BridgesVisualizer.defaultTransforms.array.scale;
+		transform = d3.zoomIdentity.translate(finalTranslate[0], 
+					finalTranslate[1]).scale(finalScale);
+		svg.call(zoom.transform, transform);
     };
+
+	// initial view of array
     array.reset();
 
+	// initialize svg attributes
     vis = svg
           .attr("width", w)
           .attr("height", h)
           .attr("preserveAspectRatio", "xMinYMin meet")
           .attr("viewBox", "0 0 " + w + " " + h)
           .classed("svg-content", true)
-          .call(zoom)
-          .call(zoom.transform, transform);
 
-    svgGroup = vis.append("g").attr('transform', transform);
+
+	// set up initial transform for group
+    svgGroup = vis.append("g")
+		.attr('transform', transform);
 
     // Bind nodes to array elements
     var nodes = svgGroup.selectAll("nodes")
         .data(data)
         .enter().append("g")
         .attr("transform", function(d, i) {
-            //size = parseFloat(d.size || defaultSize);
             size = defaultSize;
             return "translate(" + (i * (spacing + size)) + ")";
         })
@@ -56,7 +70,7 @@ d3.array = function(svg, W, H, data) {
 
     // Create squares for each array element
     nodes.append("rect")
-        .attr("height", defaultSize)
+		.attr("height", defaultSize)
         .attr("width", defaultSize)
         .style("fill", function(d) {
             return BridgesVisualizer.getColor(d.color) || "steelblue";
@@ -65,20 +79,18 @@ d3.array = function(svg, W, H, data) {
         .style("stroke-width", 2);
 
     // Show array index below each element
-    nodes
-        .append("text")
+	nodes.append("text")
         .attr("class","index-textview")
         .text(function(d, i){
-          return i;
-        })
-        .attr("y", 115)
+			return i;
+		})
+        .attr("y", 125)
         .attr("x", function(){
             return BridgesVisualizer.centerTextHorizontallyInRect(this, defaultSize);
         });
 
-    // Show full array label above each element
-    nodes
-        .append("text")
+	// Show full array label above each element
+    nodes.append("text")
         .attr("class","nodeLabel")
         .text(function(d, i){
           return d.name;
@@ -86,9 +98,8 @@ d3.array = function(svg, W, H, data) {
         .attr("y", -10)
         .style("display","none");
 
-    // Show array labels inside each element
-    nodes
-        .append("text")
+	// Show array labels inside each element
+    nodes.append("text")
         .attr("class", "nodeLabelInside")
         .style("display", "block")
         .style("font-size", 30)
@@ -102,13 +113,5 @@ d3.array = function(svg, W, H, data) {
         .attr("y", defaultSize / 2)
         .attr("dy", ".35em");
 
-    // zoom function
-    function zoomed() {
-      if(svgGroup) {
-        svgGroup.attr("transform", d3.event.transform);
-      }
-    }
-
     return array;
-
 };

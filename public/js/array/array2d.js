@@ -18,17 +18,26 @@ d3.array2d = function(svg, W, H, data, dimensions) {
         defaultSize = 100,  // default size of each element box
         levelCount = -1;
 
+	// zoom related
     var zoom = d3.zoom()
+		.extent([[0,0], [w, h]])
         .scaleExtent([0.1,2])
         .on("zoom", zoomed);
+
+    function zoomed(evt) {
+      if(svgGroup) {
+        svgGroup.attr("transform", evt.transform);
+      }
+    }
 
     array2d.reset = function() {
       finalTranslate = BridgesVisualizer.defaultTransforms.Array2D.translate;
       finalScale =  BridgesVisualizer.defaultTransforms.Array2D.scale;
-      transform = d3.zoomIdentity.translate(finalTranslate[0], finalTranslate[1]).scale(finalScale);
-
+      transform = d3.zoomIdentity.translate(finalTranslate[0], 
+				finalTranslate[1]).scale(finalScale);
       svg.call(zoom.transform, transform);
     };
+
     array2d.reset();
 
     vis = svg
@@ -103,12 +112,6 @@ d3.array2d = function(svg, W, H, data, dimensions) {
         .attr("y", defaultSize / 2)
         .attr("dy", ".35em");
 
-    // zoom function
-    function zoomed() {
-      if(svgGroup) {
-        svgGroup.attr("transform", d3.event.transform);
-      }
-    }
 
     return array2d;
 };

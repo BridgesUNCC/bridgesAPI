@@ -1,8 +1,6 @@
-/*
 
-3D Array visualization for Bridges
+// 3D Array visualization for Bridges
 
-*/
 d3.array3d = function(svg, W, H, data, dimensions) {
     var array3d = {},
         svgGroup,
@@ -21,9 +19,19 @@ d3.array3d = function(svg, W, H, data, dimensions) {
         elementsPerRow = dimOne,
         elementsPerColumn = (dimOne * dimTwo) / dimOne;
 
-    var zoom = d3.zoom()
-        .scaleExtent([0.1,2])
-        .on("zoom", zoomed);
+	// zoom related 
+	var zoom = d3.zoom();
+
+    function zoomed(evt) {
+      if(svgGroup) {
+        svgGroup.attr("transform", evt.transform);
+      }
+	}
+
+	svg.call(d3.zoom()
+        .extent([[0,0], [w, h]])
+        .scaleExtent([0.1, 1.2])
+        .on("zoom", zoomed))
 
     array3d.reset = function() {
       finalTranslate = BridgesVisualizer.defaultTransforms.Array3D.translate;
@@ -43,7 +51,8 @@ d3.array3d = function(svg, W, H, data, dimensions) {
           .call(zoom)
           .call(zoom.transform, transform);
 
-    svgGroup = vis.append("g").attr('transform', transform);
+    svgGroup = vis.append("g")
+			.attr('transform', transform);
 
     // Bind nodes to array elements
     var nodes = svgGroup.selectAll(".nodes")
@@ -183,13 +192,6 @@ d3.array3d = function(svg, W, H, data, dimensions) {
         .attr("x2", +d3.select(".last-v").attr("x1")+2)
         .attr("stroke", "black")
         .attr("stroke-width",5);
-
-    // zoom function
-    function zoomed() {
-      if(svgGroup) {
-        svgGroup.attr("transform", d3.event.transform);
-      }
-    }
 
     return array3d;
 };
