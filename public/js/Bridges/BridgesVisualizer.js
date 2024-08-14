@@ -238,7 +238,6 @@
 
   BridgesVisualizer.textMouseover = function(label) {
       function addLineBreaks(str) {
-console.log('label' + label);
         str = str.split("\n");
         str = str.join("<br>");
         return str;

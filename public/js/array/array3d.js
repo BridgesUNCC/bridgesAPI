@@ -20,7 +20,10 @@ d3.array3d = function(svg, W, H, data, dimensions) {
         elementsPerColumn = (dimOne * dimTwo) / dimOne;
 
 	// zoom related 
-	var zoom = d3.zoom();
+	var zoom = d3.zoom()
+		.extent([[0,0], [w, h]])
+		.scaleExtent([0.1,2])
+		.on("zoom", zoomed);
 
     function zoomed(evt) {
       if(svgGroup) {
