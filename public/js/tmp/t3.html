@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>D3 Force Test</title>
+    <script src="https://d3js.org/d3.v4.0.0-alpha.40.min.js"></script>
+  </head>
+  <body>
+    <script>
+	var graph = {
+  	"nodes": [
+    	{"id": "a"},
+    	{"id": "b"},
+    	{"id": "c"}
+  		],
+  	"links": [
+    	{"source": 0, "target": 1},
+    	{"source": 1, "target": 2}
+  		]
+	};
+
+
+      var simulation = d3.forceSimulation(graph.nodes)
+        .force("link", d3.forceLink(graph.links).id( (id,i) => i));
+
+    </script>
+  </body>
+</html>

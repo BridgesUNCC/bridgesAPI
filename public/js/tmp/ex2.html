@@ -25,7 +25,7 @@ var color = d3.scaleOrdinal(d3.schemeCategory10);
 
 //	d3.json("./miserables.json", function (error, graph){
 var simulation = d3.forceSimulation()
-    .force("link", d3.forceLink().id(function(d) { return d.id; }))
+	.force("link", d3.forceLink().id(function(d) { return d.id; }))
     .force("charge", d3.forceManyBody())
     .force("center", d3.forceCenter(width / 2, height / 2));
 
@@ -37,14 +37,14 @@ d3.json("./miserables.json").then((graph) => {
   //  }
 
   var link = svg.append("g")
-      .attr("class", "links")
+     .attr("class", "links")
     .selectAll("line")
     .data(graph.links)
     .enter().append("line")
-      .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
+    .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
 
   var node = svg.append("g")
-      .attr("class", "nodes")
+    .attr("class", "nodes")
     .selectAll("circle")
     .data(graph.nodes)
     .enter().append("circle")

@@ -81,30 +81,33 @@ d3.graph = function(svg, W, H, data) {
     });
 
 	var t_graph = {
-		nodes: nodes,
-		links: links
+		"nodes": [ nodes ],
+		"links": [ links ]
 	};
-console.log('data:' + data.nodes);
 
 
-    var simulation = d3.forceSimulation(nodes)
-//      .distance((d) => 40 + d.length)
-      .force("charge", d3.forceManyBody()
-      .strength(function(d) {
-                return -30 - (d.size*5);
-             }))
-      .force("collision", d3.forceCollide()
-	   .radius(function(d) {
-                return d.size/3 || 10;
-             }))
-      .force("center", d3.forceCenter(BridgesVisualizer.visCenter()[0], BridgesVisualizer.visCenter()[1]))
-//      .on("tick", ticked);
+console.log('data:' + t_graph.links[0]);
+    var simulation = d3.forceSimulation(t_graph.nodes)
+     // .distance((d) => 40 + d.length)
+	  .force("link", d3.forceLink(t_graph.links))
+      .force("charge", d3.forceManyBody())
+      .force("center", d3.forceCenter(BridgesVisualizer.visCenter()[0], 
+					BridgesVisualizer.visCenter()[1]))
+//      .strength(function(d) {
+ //               return -30 - (d.size*5);
+  //           })
+   //   .force("collision", d3.forceCollide()
+	//  .radius(function(d) {
+     //           return d.size/3 || 10;
+      //       }))
+      .on("tick", ticked);
 
-	let link_force = d3.forceLink(t_graph.links)
+//	let link_force = d3.forceLink(t_graph.links)
 //						.id((d) => d.index)
-						.id(function(d) { console.log ('index:' + d.index); return  d.id;} )
+//						.id(function(d) { console.log ('index:' + d.index); return  d.id;} )
 
-	simulation.force ("links", link_force);
+//	simulation.force ("link")
+//		.links(t_graph.links);
 
   // Add marker defs to the svg element
   BridgesVisualizer.addMarkerDefs(vis);

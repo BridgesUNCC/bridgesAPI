@@ -369,12 +369,10 @@ function slideButtonOut(evt, datum) {
 }
 function positionSlideLabel(i) {
   i = +i;
-console.log('entered..' + i);
   d3.select("#currentSubassignment")
     .text(assignment.assignmentNumber + "." + ((i < 10) ? "0"+i : i))
     .style("left", function() {
       var b = d3.select("#slideButton"+i);
-console.log('selection:' + b.node().offsetLeft + 'px');
       return b.node().offsetLeft + "px";
     })
     .style("top", function() {
