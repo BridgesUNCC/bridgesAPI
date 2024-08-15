@@ -13,4 +13,14 @@ elements.
 b). d3.event does not exist. The tooltip and mouse event code in the 
 array files and BridgesVisualizer has been modified. Instead of d3.event, just use event. Seem to be documented nowhere!
 
+Zoom Interaction Fixes:
+
+a) Zoom callback function must use evt as parameter.  As in
+ function zoomed (evt) {
+	svgGroup.attr("transform", evt.transform);
+ }
+
+b) Same issues fixed in array (1d, 2d, 3d), tree (bst.js), shape collection
+(collectionv2.js, which is the one that is being used)
+
 			
