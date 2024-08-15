@@ -347,7 +347,7 @@ function delay(){
 
 // bind assignment slide buttons if appropriate
 (function() {
-  d3.selectAll(".slideButton").on("click", debounce(slideButtonClick, 250));
+  d3.selectAll(".slideButton").on("click", debounce(slideButtonClick, 100));
   d3.selectAll(".slideButton").on("mouseover", slideButtonHover);
   d3.selectAll(".slideButton").on("mouseout", slideButtonOut);
 
@@ -355,21 +355,26 @@ function delay(){
 })();
 
 
-function slideButtonClick(d, i) {
+function slideButtonClick(evt) {
+//this uses .target and not .currentTarget because this functoin is not called in the event handler but in a timeout function which undefined currentTarget. Javascript, am I right?
+var i=evt.target.id.substring("slideButton".length); //we need i to be the index of the button which we can derie from how its HTML id got set
   updateVis(i);
 }
-function slideButtonHover(d, i) {
+function slideButtonHover(evt) {
+var i=evt.currentTarget.id.substring("slideButton".length); //we need i to be the index of the button which we can derie from how its HTML id got set
   positionSlideLabel(i);
 }
-function slideButtonOut(d, i) {
+function slideButtonOut(evt, datum) {
   positionSlideLabel(subAssignmentNumber);
 }
 function positionSlideLabel(i) {
   i = +i;
+console.log('entered..' + i);
   d3.select("#currentSubassignment")
     .text(assignment.assignmentNumber + "." + ((i < 10) ? "0"+i : i))
     .style("left", function() {
       var b = d3.select("#slideButton"+i);
+console.log('selection:' + b.node().offsetLeft + 'px');
       return b.node().offsetLeft + "px";
     })
     .style("top", function() {
@@ -421,7 +426,7 @@ function updateVis(currentNum, index){
       }
 
       // visualize the assignment
-      setTimeout(function() { visualizeAssignment(assignment, index); }, 250);
+      setTimeout(function() { visualizeAssignment(assignment, index); }, 100);
     });
 }
 
