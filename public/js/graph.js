@@ -22,12 +22,12 @@ d3.graph = function(svg, W, H, data) {
         .on("zoom", zoomed);
 
 	// zoom function
-	function zoomed() {
+	function zoomed(evt) {
 		if(svgGroup) {
 			//scales labels based on distance zoomed in
 			d3.selectAll(".nodeLabel").style("font-size", 
-								10/d3.event.transform.k)
-			svgGroup.attr("transform", d3.event.transform);
+								10/evt.transform.k)
+			svgGroup.attr("transform", evt.transform);
 		}
   	}
 
@@ -153,7 +153,7 @@ return d.index;
                 return d.dasharray || "";
             })
             .style("fill", "none")
-            .on("mouseover", function(d) {
+            .on("mouseover", function(evt, d) {
               if(d.label) {
                 BridgesVisualizer.textMouseover(d.label);
               }
@@ -213,7 +213,7 @@ return d.index;
     var node = svgGroup.selectAll(".node")
         .data(nodes)
         .enter().append("g")
-        .on("mouseover", function(d) {BridgesVisualizer.textMouseover(d.name); } )
+        .on("mouseover", function(evt, d) {BridgesVisualizer.textMouseover(d.name); } )
         .on("mouseout", BridgesVisualizer.textMouseout)
         .on("dblclick", dblclick)
         .call(d3.drag()
@@ -222,7 +222,7 @@ return d.index;
          .on("end", dragended))
         .style("stroke", "black")
         .style("stroke-width", "1")
-        .style("stroke-dasharray", function(d) {
+        .style("stroke-dasharray", function(evt, d) {
             return d.fixed ? BridgesVisualizer.treeDashArray : "0,0";
         });
 
@@ -319,7 +319,6 @@ return d.index;
   }
 
   function ticked() {
-console.log("entered..");
       node
         .attr("transform", function(d, i) {
           return "translate(" + d.x + "," + d.y + ")";
@@ -395,24 +394,24 @@ console.log("entered..");
   }
 
   // Handle dragstart on force.drag()
-  function dragstart(d) {
+  function dragstart(evt, d) {
       d3.select(this)
         .style("stroke-width", 1)
         .style("stroke", "black")
         .style("stroke-dasharray", BridgesVisualizer.treeDashArray);
 
-      if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+      if (!evt.active) simulation.alphaTarget(0.3).restart();
       d.fx = d.x;
       d.fy = d.y;
   }
 
-  function dragged(d) {
-      d.fx = d3.event.x;
-      d.fy = d3.event.y;
+  function dragged(evt, d) {
+      d.fx = evt.x;
+      d.fy = evt.y;
   }
 
-  function dragended(d) {
-      if (!d3.event.active) simulation.alphaTarget(0);
+  function dragended(evt, d) {
+      if (!evt.active) simulation.alphaTarget(0);
   }
 
 
