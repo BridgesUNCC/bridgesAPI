@@ -19,7 +19,6 @@ function protectAdmin(req, res) {
 	handleerror();    
 }
 
-
 exports.demo = function(req, res) {
 
     protectAdmin(req, res);
