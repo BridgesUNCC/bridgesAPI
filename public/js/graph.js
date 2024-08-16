@@ -55,7 +55,7 @@ d3.graph = function(svg, W, H, data) {
 	// initialize the graph
     graph.reset();
 
-    // if we want to do a window -> viewport transformation, set up the scales
+    // if a window is specified, then do window -> viewport transformation
     if (data.coord_system_type == "window") {
       var xExtent, yExtent, viewportX, viewportY;
 
@@ -77,34 +77,45 @@ d3.graph = function(svg, W, H, data) {
               .domain(yExtent)
               .range([h, 0]);
 
-      // take a point ([x,y]) in window coords and map it into viewport coords
+      // map to viewport coords
       windowProjection = function(p) {
         return [viewportX(p[0]), viewportY(p[1])];
       };
     }
 
-    svgGroup = vis.append("g").attr('transform', transform);
+    svgGroup = vis.append("g")
+					.attr('transform', transform);
 
     var nodes = data.nodes;
+//d3 expects target and source to be integers if one is to refer to the nodes by index. If target adn soure are strings, then they are refering to IDs of the nodes and not index in the array
+for (var x in data.links) {
+data.links[x].target = +data.links[x].target;
+data.links[x].source = +data.links[x].source;
+}
     var links = data.links.filter(function(d){
-      return d.target != d.source;
-    });
+		return d.target != d.source;
+    })
 
     var selflinks = data.links.filter(function(d){
       return d.target == d.source;
     });
 
-	var t_graph = {
-		"nodes": [ nodes ],
-		"links": [ links ]
-	};
-
-    var simulation = d3.forceSimulation(t_graph.nodes)
+    var simulation = d3.forceSimulation(nodes)
      // .distance((d) => 40 + d.length)
-	  .force("link", d3.forceLink(t_graph.links))
       .force("charge", d3.forceManyBody())
-      .force("center", d3.forceCenter(BridgesVisualizer.visCenter()[0], 
-					BridgesVisualizer.visCenter()[1]))
+   //   .force("center", d3.forceCenter(BridgesVisualizer.visCenter()[0], 
+	//				BridgesVisualizer.visCenter()[1]))
+//	  .force("link", d3.forceLink(links).id(function (d) { 
+//							console.log ("in link.." + d.name); 
+//							return  d.name;
+//						}))
+	  .force("link", d3.forceLink(links).id(
+function(d){
+return d.index;
+})
+)
+
+      .on("tick", ticked);
 //      .strength(function(d) {
  //               return -30 - (d.size*5);
   //           })
@@ -112,14 +123,11 @@ d3.graph = function(svg, W, H, data) {
 	//  .radius(function(d) {
      //           return d.size/3 || 10;
       //       }))
-      .on("tick", ticked);
 
-//	let link_force = d3.forceLink(t_graph.links)
+//	let link_force = d3.forceLink(links)
 //						.id((d) => d.index)
 //						.id(function(d) { console.log ('index:' + d.index); return  d.id;} )
 
-//	simulation.force ("link")
-//		.links(t_graph.links);
 
   // Add marker defs to the svg element
   BridgesVisualizer.addMarkerDefs(vis);
@@ -203,7 +211,7 @@ d3.graph = function(svg, W, H, data) {
 
     //outer node
     var node = svgGroup.selectAll(".node")
-        .data(t_graph.nodes)
+        .data(nodes)
         .enter().append("g")
         .on("mouseover", function(d) {BridgesVisualizer.textMouseover(d.name); } )
         .on("mouseout", BridgesVisualizer.textMouseout)
@@ -232,7 +240,7 @@ d3.graph = function(svg, W, H, data) {
       .style("opacity", function(d) {
           return d.opacity || 1;
       })
-      .each(function(d, i) {
+      .each (function(d, i) {
         if(d.fx && d.fx === 0) {
           d.fx = null;
         }
@@ -240,21 +248,24 @@ d3.graph = function(svg, W, H, data) {
           d.fy = null;
         }
 
-        if(d.location) {
+        if (d.location) {
           var proj, point;
 
           if(data.coord_system_type == "equirectangular") {
             proj = d3.geoEquirectangular();
-          } else if(data.coord_system_type == "albersusa") {
+          } 
+		  else if(data.coord_system_type == "albersusa") {
             proj = d3.geoAlbersUsa()
           }
           else if(data.coord_system_type == "window") {
             proj = windowProjection;
-          } else if(data.coord_system_type == "cartesian"){
+          } 
+		  else if(data.coord_system_type == "cartesian"){
             d.fx = d.location[0];
             d.fy = -d.location[1];
             return;
-          } else {
+          } 
+		  else {
             d.fx = null;
             d.fy = null;
             return;
@@ -283,6 +294,7 @@ d3.graph = function(svg, W, H, data) {
       });
 
   d3.selectAll(".nodeLabel").each(BridgesVisualizer.insertLinebreaks);
+
   if(BridgesVisualizer.labels_shown === true){
     d3.selectAll(".nodeLabel").each(BridgesVisualizer.displayNodeLabels)
   }
@@ -307,6 +319,7 @@ d3.graph = function(svg, W, H, data) {
   }
 
   function ticked() {
+console.log("entered..");
       node
         .attr("transform", function(d, i) {
           return "translate(" + d.x + "," + d.y + ")";
@@ -315,7 +328,7 @@ d3.graph = function(svg, W, H, data) {
       if(selflinks.length > 0) {
         selfLinkG.selectAll("path")
             .attr("d", function(d) {
-              var node = t_graph.nodes[d.source],
+              var node = nodes[d.source],
                   x1 = node.x,
                   y1 = node.y,
                   x2 = x1 + 0.1,
@@ -334,7 +347,7 @@ d3.graph = function(svg, W, H, data) {
 
        selfLinkG.selectAll("text")
          .attr("transform", function(d , i) {
-           var myNode = t_graph.nodes[d.source];
+           var myNode = nodes[d.source];
            return "translate(" + (myNode.x + 10) + "," + (myNode.y - 10) + ")";
          });
       }
