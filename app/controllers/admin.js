@@ -104,10 +104,11 @@ exports.nbassignmentsbydate = function(req, res) {
 
     const sincedate = constructSince(req);
     const untildate = constructUntil(req);
-    
+
     Assignment.find({subAssignment: '00', // only counting the first subassignment
-		     dateCreated: {$gt: sincedate},
-		     dateCreated: {$lt: untildate},
+		     $and: [ { dateCreated: {$lt: untildate} }, //in the right time window
+			     { dateCreated: {$gt: sincedate} }
+			   ],
 		    },
 		    { //projecting to retain only few fields
 			username:true,
@@ -136,8 +137,9 @@ exports.assignmentsperuserbydate = function(req, res) {
     const untildate = constructUntil(req);
     
     Assignment.find({subAssignment: '00', // only counting the first subassignment
-		     dateCreated: {$gt: sincedate},
-		     dateCreated: {$gt: untildate},
+		      $and: [ { dateCreated: {$lt: untildate} }, //in the right time window
+			     { dateCreated: {$gt: sincedate} }
+			   ],
 		    },
 		    { //projecting to retain only few fields
 			username:true,
@@ -170,8 +172,9 @@ exports.nbuserbydate = function(req, res) {
 
     
     Assignment.find({subAssignment: '00', // only counting the first subassignment
-		     dateCreated: {$gt: sincedate},
-		     dateCreated: {$lt: untildate},
+		      $and: [ { dateCreated: {$lt: untildate} }, //in the right time window
+			     { dateCreated: {$gt: sincedate} }
+			   ],
 		    },
 		    { //projecting to retain only few fields
 			username:true,
