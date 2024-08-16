@@ -64,6 +64,19 @@ UserSchema.path('email').validate(function (email) {
 }, 'Email cannot be blank');
 
 /*
+Validation code to check if the institution_name field for the signup form is 
+populated and not empty. If validation fails, it sends a message that it cannot be blank. 
+*/
+UserSchema.path('institution_name').validate(function (institution_name) {
+    console.log("coco");
+    // if authenticating by an oauth strategies, don't validate
+    if (authTypes.indexOf(this.provider) !== -1) return true;
+    return institution_name.length;
+}, 'Institution cannot be blank');
+
+
+
+/*
 Validation code to check if the email submitted from the signup page
 is not a duplicate. It queries the database for a document that matches the email from the 
 form. If there is a response document it returns a rejected promise, else it resolves as true.

@@ -246,13 +246,13 @@ module.exports = function(app, passport) {
     app.get('/admin/allusers', admin.allusers, handleError);
 
     /* return number of recent assignments */
-    app.get('/admin/nbrecent', admin.nbrecentassignments, handleError);
+    app.get('/admin/nbassignmentbydate', admin.nbassignmentsbydate, handleError);
 
     /* return number of recent assignments */
-    app.get('/admin/recentassignmentperuser', admin.recentassignmentsperuser, handleError);
+    app.get('/admin/assignmentperuserbydate', admin.assignmentsperuserbydate, handleError);
 
     /* return number of recent assignments */
-    app.get('/admin/nbrecentuser', admin.nbrecentuser, handleError);
+    app.get('/admin/nbuserbydate', admin.nbuserbydate, handleError);
 
     
 };
