@@ -55,7 +55,7 @@ exports.allusers = function(req, res) {
     });
 }
 
-// use since get parameter to construct a time date.
+// use since GET parameter to construct a time date.
 // If no such parameter is in the query, use the beginning of current month.
 // invalid dates are ignored
 // returns Date
@@ -78,15 +78,36 @@ function constructSince(req) {
     return sinceTime;
 }
 
-//return a JSON object specifying the number of recent assignment
-//if no since date is given. 
-exports.nbrecentassignments = function(req, res) {
+// use until GET parameter to construct a time date.
+// If no such parameter is in the query, use now
+// invalid dates are ignored
+// returns Date
+function constructUntil(req) {
+    var untilTime = undefined;
+    
+    if (req.query.until) {
+	untilTime = new Date(req.query.until);
+    }
+
+    if (!untilTime || isNaN(untilTime)) {
+	untilTime = new Date(); //now
+    }
+    
+    return untilTime;
+}
+
+
+//return a JSON object specifying the number of assignments in a time window.
+//uses since and until GET parameters (which default to beginning of the month and now)
+exports.nbassignmentsbydate = function(req, res) {
     protectAdmin(req, res);
 
-    const thresholddate = constructSince(req);
+    const sincedate = constructSince(req);
+    const untildate = constructUntil(req);
     
     Assignment.find({subAssignment: '00', // only counting the first subassignment
-		     dateCreated: {$gt: thresholddate},
+		     dateCreated: {$gt: sincedate},
+		     dateCreated: {$lt: untildate},
 		    },
 		    { //projecting to retain only few fields
 			username:true,
@@ -107,15 +128,16 @@ exports.nbrecentassignments = function(req, res) {
 
 //return a JSON object specifying the number of recent assignment per user.
 //users that have no assignment in the time window are not included
-//if no since date is given. 
-exports.recentassignmentsperuser = function(req, res) {
+//uses since and until GET parameters (which default to beginning of the month and now)
+exports.assignmentsperuserbydate = function(req, res) {
     protectAdmin(req, res);
 
-    const thresholddate = constructSince(req);
-
+    const sincedate = constructSince(req);
+    const untildate = constructUntil(req);
     
     Assignment.find({subAssignment: '00', // only counting the first subassignment
-		     dateCreated: {$gt: thresholddate},
+		     dateCreated: {$gt: sincedate},
+		     dateCreated: {$gt: untildate},
 		    },
 		    { //projecting to retain only few fields
 			username:true,
@@ -137,17 +159,19 @@ exports.recentassignmentsperuser = function(req, res) {
     });
 }
 
-//return a JSON object specifying the number of recent assignment per user.
-//users that have no assignment in the time window are not included
-//if no since date is given. 
-exports.nbrecentuser = function(req, res) {
+//return a JSON object specifying the number of assignment per user in a time window.
+//users that have no assignment in the time window are not included.
+//uses since and until GET parameters (which default to beginning of the month and now)
+exports.nbuserbydate = function(req, res) {
     protectAdmin(req, res);
 
-    const thresholddate = constructSince(req);
+    const sincedate = constructSince(req);
+    const untildate = constructUntil(req);
 
     
     Assignment.find({subAssignment: '00', // only counting the first subassignment
-		     dateCreated: {$gt: thresholddate},
+		     dateCreated: {$gt: sincedate},
+		     dateCreated: {$lt: untildate},
 		    },
 		    { //projecting to retain only few fields
 			username:true,
