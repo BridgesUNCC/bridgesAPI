@@ -21,6 +21,16 @@ d3.graph = function(svg, W, H, data) {
         .scaleExtent([0.1,10])
         .on("zoom", zoomed);
 
+	// zoom function
+	function zoomed() {
+		if(svgGroup) {
+			//scales labels based on distance zoomed in
+			d3.selectAll(".nodeLabel").style("font-size", 
+								10/d3.event.transform.k)
+			svgGroup.attr("transform", d3.event.transform);
+		}
+  	}
+
     vis = svg.attr("width", w)
             .attr("height", h)
             .attr("preserveAspectRatio", "xMinYMin meet")
@@ -30,8 +40,7 @@ d3.graph = function(svg, W, H, data) {
             .call(zoom.transform, transform);
 
     graph.reset = function() {
-
-      if(!data.coord_system_type || data.coord_system_type == "cartesian") {
+      if (!data.coord_system_type || data.coord_system_type == "cartesian") {
         finalTranslate = BridgesVisualizer.defaultTransforms.graph.translate;
         finalScale = BridgesVisualizer.defaultTransforms.graph.scale;
         transform = d3.zoomIdentity.translate(finalTranslate[0], finalTranslate[1]).scale(finalScale);
@@ -42,16 +51,20 @@ d3.graph = function(svg, W, H, data) {
       }
       svg.call(zoom.transform, transform);
     };
+
+	// initialize the graph
     graph.reset();
+
     // if we want to do a window -> viewport transformation, set up the scales
-    if(data.coord_system_type == "window") {
+    if (data.coord_system_type == "window") {
       var xExtent, yExtent, viewportX, viewportY;
 
       // use specified window or compute the window
-      if(data.window) {
+      if (data.window) {
           xExtent = [data.window[0], data.window[1]];
           yExtent = [data.window[2], data.window[3]];
-      } else {
+      } 
+	  else {
         xExtent = d3.extent(data.nodes.filter(function(d) { return d.location; }), function(d,i) { return d.location[0]; });
         yExtent = d3.extent(data.nodes.filter(function(d) { return d.location; }), function(d,i) { return d.location[1]; });
       }
@@ -64,7 +77,7 @@ d3.graph = function(svg, W, H, data) {
               .domain(yExtent)
               .range([h, 0]);
 
-      // take a point ([x,y]) in window coords and project it into viewport coords
+      // take a point ([x,y]) in window coords and map it into viewport coords
       windowProjection = function(p) {
         return [viewportX(p[0]), viewportY(p[1])];
       };
@@ -76,6 +89,7 @@ d3.graph = function(svg, W, H, data) {
     var links = data.links.filter(function(d){
       return d.target != d.source;
     });
+
     var selflinks = data.links.filter(function(d){
       return d.target == d.source;
     });
@@ -85,8 +99,6 @@ d3.graph = function(svg, W, H, data) {
 		"links": [ links ]
 	};
 
-
-console.log('data:' + t_graph.links[0]);
     var simulation = d3.forceSimulation(t_graph.nodes)
      // .distance((d) => 40 + d.length)
 	  .force("link", d3.forceLink(t_graph.links))
@@ -117,7 +129,7 @@ console.log('data:' + t_graph.links[0]);
       .data(selflinks.reverse())  // reverse to draw end markers over links
       .enter().append("svg:g");
       selfLinkG
-          .insert("svg:path")
+            .insert("svg:path")
             .attr("class", "selflink")
             .attr("id", function(d,i) { return "selflinkId_" + i; })
             .style("stroke-width", function (d) {
@@ -148,7 +160,7 @@ console.log('data:' + t_graph.links[0]);
           })
           .text(function(d,i) { return d.label || ""; });
 
-        d3.selectAll(".selfLinkLabel").each(BridgesVisualizer.insertLinkLinebreaks);
+       d3.selectAll(".selfLinkLabel").each(BridgesVisualizer.insertLinkLinebreaks);
   }
 
   var linkG = svgGroup.selectAll(".link")
@@ -207,7 +219,7 @@ console.log('data:' + t_graph.links[0]);
         });
 
   //inner nodes
-  node
+  	node
       .append('path')
       .attr("class", "node")
       .attr("d", d3.symbol()
@@ -295,7 +307,6 @@ console.log('data:' + t_graph.links[0]);
   }
 
   function ticked() {
-console.log("here..");
       node
         .attr("transform", function(d, i) {
           return "translate(" + d.x + "," + d.y + ")";
@@ -357,14 +368,6 @@ console.log("here..");
         });
   }
 
-  // zoom function
-  function zoomed() {
-    if(svgGroup) {
-      //scales labels based on distance zoomed in
-      d3.selectAll(".nodeLabel").style("font-size", 10/d3.event.transform.k)
-      svgGroup.attr("transform", d3.event.transform);
-    }
-  }
 
   // Handle doubleclick on node path (shape)
   function dblclick(d) {
