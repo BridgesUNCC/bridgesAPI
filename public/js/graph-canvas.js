@@ -162,8 +162,8 @@ d3.graph_canvas = function(canvas, W, H, data) {
         .force("link", d3.forceLink(links)
                           .id(function(d) { return d.index; })
                           .distance(function(d) {
-                            return edgeLength(d.target.degree);
-                          }))
+                             return edgeLength(d.target.degree);
+                           }))
         .force("charge", d3.forceManyBody()
                           .strength(function(d) {
                             return -30 - (d.size * 5);
@@ -370,8 +370,8 @@ d3.graph_canvas = function(canvas, W, H, data) {
     	context.fill();
     }
 
-    function zoomed(d) {
-      transform = d3.event.transform; //<-- set to current transform
+    function zoomed(evt, d) {
+      transform = evt.transform; //<-- set to current transform
       ticked(); //<-- use tick to redraw regardless of event
     }
 
