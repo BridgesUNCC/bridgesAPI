@@ -160,7 +160,6 @@ d3.graph_canvas = function(canvas, W, H, data) {
 
     var simulation = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links)
-//                        .id(function(d) { return (d.index).toString(); })
                           .id(function(d) { return (d.index); })
                           .distance(function(d) {
                              return edgeLength(d.target.degree);
