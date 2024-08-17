@@ -160,7 +160,7 @@ d3.graph_canvas = function(canvas, W, H, data) {
 
     var simulation = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links)
-                          .id(function(d) { return d.index; })
+                          .id(function(d) { return (d.index).toString(); })
                           .distance(function(d) {
                              return edgeLength(d.target.degree);
                            }))
@@ -376,8 +376,8 @@ d3.graph_canvas = function(canvas, W, H, data) {
     }
 
     // handle double clicks on the canvas - unstick node
-    function dblclick(e) {
-      d3.event.stopImmediatePropagation();
+    function dblclick(evt) {
+      evt.stopImmediatePropagation();
       var i,
           x = transform.invertX(d3.mouse(this)[0]),
           y = transform.invertY(d3.mouse(this)[1]),
@@ -400,11 +400,11 @@ d3.graph_canvas = function(canvas, W, H, data) {
     }
 
     // find a node on click
-    function dragsubject() {
-      if (d3.event.defaultPrevented) return;
+    function dragsubject(evt) {
+      if (evt.defaultPrevented) return;
       var i,
-          x = transform.invertX(d3.event.x),
-          y = transform.invertY(d3.event.y),
+          x = transform.invertX(evt.x),
+          y = transform.invertY(evt.y),
           dx,
           dy;
 
@@ -420,34 +420,34 @@ d3.graph_canvas = function(canvas, W, H, data) {
       }
     }
 
-    function dragstarted() {
-      if (d3.event.defaultPrevented) return;
-      if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-      d3.event.subject.fx = transform.invertX(d3.event.x);
-      d3.event.subject.fy = transform.invertY(d3.event.y);
+    function dragstarted(evt) {
+      if (evt.defaultPrevented) return;
+      if (!evt.active) simulation.alphaTarget(0.3).restart();
+      evt.subject.fx = transform.invertX(evt.x);
+      evt.subject.fy = transform.invertY(evt.y);
       fixedNodeCount--;
     }
 
-    function dragged() {
-      if (d3.event.defaultPrevented) return;
-      d3.event.subject.fx = transform.invertX(d3.event.x);
-      d3.event.subject.fy = transform.invertY(d3.event.y);
+    function dragged(evt) {
+      if (evt.defaultPrevented) return;
+      evt.subject.fx = transform.invertX(evt.x);
+      evt.subject.fy = transform.invertY(evt.y);
       ticked();
     }
 
-    function dragended() {
-      if (!d3.event.active) simulation.alphaTarget(0);
+    function dragended(evt) {
+      if (!evt.active) simulation.alphaTarget(0);
       fixedNodeCount++;
     }
 
     // track mousemove to trigger label hovering
-    function mousemoved() {
-      d3.event.preventDefault();
-      d3.event.stopPropagation();
+    function mousemoved(evt) {
+      evt.preventDefault();
+      evt.stopPropagation();
 
       var i,
-          x = transform.invertX(d3.event.layerX),
-          y = transform.invertY(d3.event.layerY),
+          x = transform.invertX(evt.layerX),
+          y = transform.invertY(evt.layerY),
           dx,
           dy;
 
