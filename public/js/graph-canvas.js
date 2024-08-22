@@ -170,10 +170,10 @@ d3.graph_canvas = function(canvas, W, H, data) {
 
     var simulation = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links)
-                          .id(function(d) { return d.index; })
+                          .id(function(d) { return (d.index); })
                           .distance(function(d) {
-                            return edgeLength(d.target.degree);
-                          }))
+                             return edgeLength(d.target.degree);
+                           }))
         .force("charge", d3.forceManyBody()
                           .strength(function(d) {
                             return -30 - (d.size * 5);
@@ -380,14 +380,22 @@ d3.graph_canvas = function(canvas, W, H, data) {
     	context.fill();
     }
 
+<<<<<<< HEAD
     function zoomed(evt) {
+=======
+    function zoomed(evt, d) {
+>>>>>>> 2db21d9db9e2ea3ec91c6c30dcd7de68407af78a
       transform = evt.transform; //<-- set to current transform
       ticked(); //<-- use tick to redraw regardless of event
     }
 
     // handle double clicks on the canvas - unstick node
     function dblclick(evt) {
+<<<<<<< HEAD
       event.stopImmediatePropagation();
+=======
+      evt.stopImmediatePropagation();
+>>>>>>> 2db21d9db9e2ea3ec91c6c30dcd7de68407af78a
       var i,
 //          x = transform.invertX(d3.mouse(this)[0]),
  //         y = transform.invertY(d3.mouse(this)[1]),
@@ -412,11 +420,19 @@ d3.graph_canvas = function(canvas, W, H, data) {
     }
 
     // find a node on click
+<<<<<<< HEAD
     function dragsubject(event) {
       if (event.defaultPrevented) return;
       var i,
           x = transform.invertX(event.x),
           y = transform.invertY(event.y),
+=======
+    function dragsubject(evt) {
+      if (evt.defaultPrevented) return;
+      var i,
+          x = transform.invertX(evt.x),
+          y = transform.invertY(evt.y),
+>>>>>>> 2db21d9db9e2ea3ec91c6c30dcd7de68407af78a
           dx,
           dy;
 
@@ -432,6 +448,7 @@ d3.graph_canvas = function(canvas, W, H, data) {
       }
     }
 
+<<<<<<< HEAD
     function dragstarted(event) {
       if (event.defaultPrevented) return;
       if (!event.active) simulation.alphaTarget(0.3).restart();
@@ -449,6 +466,25 @@ d3.graph_canvas = function(canvas, W, H, data) {
 
     function dragended(event) {
       if (!event.active) simulation.alphaTarget(0);
+=======
+    function dragstarted(evt) {
+      if (evt.defaultPrevented) return;
+      if (!evt.active) simulation.alphaTarget(0.3).restart();
+      evt.subject.fx = transform.invertX(evt.x);
+      evt.subject.fy = transform.invertY(evt.y);
+      fixedNodeCount--;
+    }
+
+    function dragged(evt) {
+      if (evt.defaultPrevented) return;
+      evt.subject.fx = transform.invertX(evt.x);
+      evt.subject.fy = transform.invertY(evt.y);
+      ticked();
+    }
+
+    function dragended(evt) {
+      if (!evt.active) simulation.alphaTarget(0);
+>>>>>>> 2db21d9db9e2ea3ec91c6c30dcd7de68407af78a
       fixedNodeCount++;
     }
 

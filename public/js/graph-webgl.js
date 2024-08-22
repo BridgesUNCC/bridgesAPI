@@ -71,9 +71,9 @@ d3.graph_webgl = function(canvas, W, H, data) {
 
     // set up zoom handler
     var zoom = d3.zoom().on("zoom", zoomed);
-  	function zoomed () {
-  		zoom_factor = d3.event.transform.k;
-  		coords = deviceToNDC([d3.event.transform.x, d3.event.transform.y]);
+  	function zoomed (evt) {
+  		zoom_factor = evt.transform.k;
+  		coords = deviceToNDC([evt.transform.x, evt.transform.y]);
 
   		transl_x = coords[0];
   		transl_y = coords[1];

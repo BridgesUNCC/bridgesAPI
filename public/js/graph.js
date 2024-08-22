@@ -106,27 +106,15 @@ d3.graph = function(svg, W, H, data) {
     });
 
     var simulation = d3.forceSimulation(nodes)
-//		.distance((d) => 40 + d.length)
-		.force("charge", d3.forceManyBody())
+      .force("charge", d3.forceManyBody())
       .force("center", d3.forceCenter(BridgesVisualizer.visCenter()[0], 
 					BridgesVisualizer.visCenter()[1]))
-	  .force("link", d3.forceLink(links).id(function (d) { 
-							return  d.index;
-					}))
-
-      .on("tick", ticked);
-//      .strength(function(d) {
- //               return -30 - (d.size*5);
-  //           })
-   //   .force("collision", d3.forceCollide()
-	//  .radius(function(d) {
-     //           return d.size/3 || 10;
-      //       }))
-
-//	let link_force = d3.forceLink(links)
-//						.id((d) => d.index)
-//						.id(function(d) { console.log ('index:' + d.index); return  d.id;} )
-
+	  .force("link", d3.forceLink(links).id( (d) => d.index))
+      .on("tick", ticked)
+      .force("collision", d3.forceCollide()
+	  .radius(function(d) {
+            return d.size/3 || 10;
+      	}))
 
   // Add marker defs to the svg element
   BridgesVisualizer.addMarkerDefs(vis);
