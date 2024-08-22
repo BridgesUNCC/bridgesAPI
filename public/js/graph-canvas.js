@@ -57,6 +57,16 @@ d3.graph_canvas = function(canvas, W, H, data) {
     var nodes = data.nodes;
     var links = data.links;
 
+	// d3js expects target and source to be integers if one is to refer to the 
+	// nodes by i ndex. If target adn soure are strings, then they are refering 
+	// to IDs of the nodes and not index in the array
+
+	// convert to link source and target to integers
+	for (let x in data.links) {
+		data.links[x].target = +data.links[x].target;
+		data.links[x].source = +data.links[x].source;
+	}
+
     //   pre-split link labels with newlines
     links.forEach(function(d) {
       if(d.label && d.label.length > 0)
@@ -370,17 +380,19 @@ d3.graph_canvas = function(canvas, W, H, data) {
     	context.fill();
     }
 
-    function zoomed(d) {
-      transform = d3.event.transform; //<-- set to current transform
+    function zoomed(evt) {
+      transform = evt.transform; //<-- set to current transform
       ticked(); //<-- use tick to redraw regardless of event
     }
 
     // handle double clicks on the canvas - unstick node
-    function dblclick(e) {
-      d3.event.stopImmediatePropagation();
+    function dblclick(evt) {
+      event.stopImmediatePropagation();
       var i,
-          x = transform.invertX(d3.mouse(this)[0]),
-          y = transform.invertY(d3.mouse(this)[1]),
+//          x = transform.invertX(d3.mouse(this)[0]),
+ //         y = transform.invertY(d3.mouse(this)[1]),
+			x = transform.invertX(evt.x),
+			y = transform.invertX(evt.y),
           dx,
           dy;
 
@@ -400,11 +412,11 @@ d3.graph_canvas = function(canvas, W, H, data) {
     }
 
     // find a node on click
-    function dragsubject() {
-      if (d3.event.defaultPrevented) return;
+    function dragsubject(event) {
+      if (event.defaultPrevented) return;
       var i,
-          x = transform.invertX(d3.event.x),
-          y = transform.invertY(d3.event.y),
+          x = transform.invertX(event.x),
+          y = transform.invertY(event.y),
           dx,
           dy;
 
@@ -420,39 +432,39 @@ d3.graph_canvas = function(canvas, W, H, data) {
       }
     }
 
-    function dragstarted() {
-      if (d3.event.defaultPrevented) return;
-      if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-      d3.event.subject.fx = transform.invertX(d3.event.x);
-      d3.event.subject.fy = transform.invertY(d3.event.y);
+    function dragstarted(event) {
+      if (event.defaultPrevented) return;
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      event.subject.fx = transform.invertX(event.x);
+      event.subject.fy = transform.invertY(event.y);
       fixedNodeCount--;
     }
 
-    function dragged() {
-      if (d3.event.defaultPrevented) return;
-      d3.event.subject.fx = transform.invertX(d3.event.x);
-      d3.event.subject.fy = transform.invertY(d3.event.y);
+    function dragged(event) {
+      if (event.defaultPrevented) return;
+      event.subject.fx = transform.invertX(event.x);
+      event.subject.fy = transform.invertY(event.y);
       ticked();
     }
 
-    function dragended() {
-      if (!d3.event.active) simulation.alphaTarget(0);
+    function dragended(event) {
+      if (!event.active) simulation.alphaTarget(0);
       fixedNodeCount++;
     }
 
     // track mousemove to trigger label hovering
-    function mousemoved() {
-      d3.event.preventDefault();
-      d3.event.stopPropagation();
+    function mousemoved(evt) {
+      evt.preventDefault();
+      evt.stopPropagation();
 
       var i,
-          x = transform.invertX(d3.event.layerX),
-          y = transform.invertY(d3.event.layerY),
+          x = transform.invertX(evt.layerX),
+          y = transform.invertY(evt.layerY),
           dx,
           dy;
 
       // One-size-fits-all
-      // console.log(simulation.find(d3.event.layerX, d3.event.layerY, 20));
+      // console.log(simulation.find(event.layerX, event.layerY, 20));
 
       // Reflect node sizes
       for (i = nodes.length - 1; i >= 0; --i) {

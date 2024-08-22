@@ -87,11 +87,16 @@ d3.graph = function(svg, W, H, data) {
 					.attr('transform', transform);
 
     var nodes = data.nodes;
-//d3 expects target and source to be integers if one is to refer to the nodes by index. If target adn soure are strings, then they are refering to IDs of the nodes and not index in the array
-for (var x in data.links) {
-data.links[x].target = +data.links[x].target;
-data.links[x].source = +data.links[x].source;
-}
+
+	// d3 expects target and source to be integers if one is to refer to the 
+	// nodes by index. If target adn soure are strings, then they are refering to 
+	// IDs of the nodes and not index in the array
+
+	// convert node source and target to integers
+	for (var x in data.links) {
+		data.links[x].target = +data.links[x].target;
+		data.links[x].source = +data.links[x].source;
+	}
     var links = data.links.filter(function(d){
 		return d.target != d.source;
     })
@@ -101,19 +106,13 @@ data.links[x].source = +data.links[x].source;
     });
 
     var simulation = d3.forceSimulation(nodes)
-     // .distance((d) => 40 + d.length)
-      .force("charge", d3.forceManyBody())
-   //   .force("center", d3.forceCenter(BridgesVisualizer.visCenter()[0], 
-	//				BridgesVisualizer.visCenter()[1]))
-//	  .force("link", d3.forceLink(links).id(function (d) { 
-//							console.log ("in link.." + d.name); 
-//							return  d.name;
-//						}))
-	  .force("link", d3.forceLink(links).id(
-function(d){
-return d.index;
-})
-)
+//		.distance((d) => 40 + d.length)
+		.force("charge", d3.forceManyBody())
+      .force("center", d3.forceCenter(BridgesVisualizer.visCenter()[0], 
+					BridgesVisualizer.visCenter()[1]))
+	  .force("link", d3.forceLink(links).id(function (d) { 
+							return  d.index;
+					}))
 
       .on("tick", ticked);
 //      .strength(function(d) {
