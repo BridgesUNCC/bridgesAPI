@@ -23,4 +23,10 @@ a) Zoom callback function must use evt as parameter.  As in
 b) Same issues fixed in array (1d, 2d, 3d), tree (bst.js), shape collection
 (collectionv2.js, which is the one that is being used)
 
+3. Gallery code is done in index.js (horrible name), gallery/{gallery.js, user_gallery.js}
+
+index.js is responsible for setting up the gallery, aided by a bunch of css style files under  ../css/*.css
+
+Right now the fixed tooltip is not showing up since the code in the gallery folder is not getting executed at all. Not sure how thats called.
+
 			
