@@ -26,12 +26,9 @@ b) Same issues fixed in array (1d, 2d, 3d), tree (bst.js), shape collection
 
 3. graph.js, graph-canvas.js -- for the link force (force directed layout code), the link's source and target fields need to be integers, as it indexes into thenode list. So we have converted the strings that are coming in from the JSON input to integers.
 
-4. [To Fix:] The gallery interaction functions (mouseover, mouseout) are not working. The gallery container is coming back with the divs corresponding to each 
-assignment, but the index in the event handler is not getting the index into the assignment and fails as a result to display the meta data of each assignment.
-
+4. Gallery Code: 
 Gallery code is done in index.js (horrible name), gallery/{gallery.js, user_gallery.js}
 
-index.js is responsible for setting up the gallery, aided by a bunch of css style files under  ../css/*.css
-
-Right now the fixed tooltip is not showing up since the code in the gallery folder is not getting executed at all. Not sure how thats called.
+The mouse functions were modified - they take in the event and a datum as arguments. The index of the object array is  no longer passed as an argument. Instead, we generate
+the index using d3.range() and then use that to iterate over the elements.
 
