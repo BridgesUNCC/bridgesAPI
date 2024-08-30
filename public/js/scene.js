@@ -311,7 +311,6 @@ d3.scene_webgl = function(canvas, W, H, data){
       }
 
       bridges_scene.unpack = function(data){
-        console.log("here")
       }
 
       //called every frame
