@@ -44,10 +44,13 @@
 			.attr('class', 'picture')
 			.classed("visimg", true)
 			.attr('src', function(d) {
+console.log("vis type:" + d.vistype);
 				if (d.vistype == "Alist")
 					return '/img/array.png';
 				else if(d.assignment_type && d.assignment_type.indexOf("Graph") >= 0)
 					return '/img/graph.png';
+				else if (d.vistype == "BarChart") 
+					return '/img/BarChart.png';
 				else if(d.vistype)
 					return '/img/'+d.vistype+'.png';
 				else
@@ -94,6 +97,8 @@
               return '/img/array.png';
           else if(d.assignment_type && d.assignment_type.indexOf("Graph") >= 0)
               return '/img/graph.png';
+		  else if (d.vistype == "BarChart") 
+				return '/img/BarChart.png';
           else if(d.vistype)
               return '/img/'+d.vistype+'.png';
           else
