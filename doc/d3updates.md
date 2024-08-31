@@ -32,3 +32,6 @@ Gallery code is done in index.js (horrible name), gallery/{gallery.js, user_gall
 The mouse functions were modified - they take in the event and a datum as arguments. The index of the object array is  no longer passed as an argument. Instead, we generate
 the index using d3.range() and then use that to iterate over the elements.
 
+
+5. Note. All of the lists are implemented using graphs. There is completely 
+	unused code under the list folder that must have been an earlier version!
