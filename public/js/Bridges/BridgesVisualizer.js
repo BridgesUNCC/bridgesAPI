@@ -327,7 +327,6 @@
     }
 
     // BridgesVisualizer.labels_shown = true;
-    console.log(BridgesVisualizer.labels_shown)
     BridgesVisualizer.redraw();
   };
 
@@ -342,7 +341,6 @@
         d3.selectAll(".selfLinkLabel").style("display", "none");
         // BridgesVisualizer.showingLinkLabels = false;
     }
-    console.log("links")
     BridgesVisualizer.redraw();
   };
 
@@ -356,7 +354,7 @@
 
   // event for pressing L on keyboard and toggling label
   $("body").on("keydown", function(event) {
-      if(event.which == "76"){
+	if ((event.key == "l") || (event.key = "L")){
         BridgesVisualizer.link_labels_shown = !BridgesVisualizer.link_labels_shown;
         BridgesVisualizer.labels_shown = !BridgesVisualizer.labels_shown
         BridgesVisualizer.displayNodeLabels();
