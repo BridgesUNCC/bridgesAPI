@@ -72,8 +72,8 @@ function collapse() {
 }
 
 // Reset positions and scales for all visualization divs
-function reset() {
-  d3.event.preventDefault();
+function reset(evt) {
+  evt.preventDefault();
   for(var subassign in BridgesVisualizer.visualizations) {
     BridgesVisualizer.visualizations[subassign].reset();
   }

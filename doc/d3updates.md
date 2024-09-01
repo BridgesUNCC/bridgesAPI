@@ -35,3 +35,5 @@ the index using d3.range() and then use that to iterate over the elements.
 
 5. Note. All of the lists are implemented using graphs. There is completely 
 	unused code under the list folder that must have been an earlier version!
+
+6. Reset view -- was not working, fixed, was a mouse event and the event had to be passed as argument to the reset() method (in multivisconfig.js)
