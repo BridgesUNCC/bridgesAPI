@@ -67,8 +67,8 @@ var ele = document.getElementById("vis0"),
 
 visualizeAssignment(assignment);
 
-function collapse() {
-  d3.event.preventDefault();
+function collapse(evt) {
+  evt.preventDefault();
 }
 
 // Reset positions and scales for all visualization divs
@@ -79,12 +79,8 @@ function reset(evt) {
   }
 }
 
-function hideNodes(){
-
-}
-
-function deleteAssignment() {
-  d3.event.preventDefault();
+function deleteAssignment(evt) {
+  evt.preventDefault();
   var r = confirm("Are you sure you want to delete this assignment?");
   if (r === true) {
       // send delete request
@@ -98,8 +94,8 @@ function deleteAssignment() {
   }
 }
 
-function toggleDisplay() {
-  d3.event.preventDefault();
+function toggleDisplay(evt) {
+  evt.preventDefault();
   newMode = (displayMode == "slide") ? "stack" : "slide";
   window.location = "/assignments/"+assignment.assignmentNumber+"/"+assignment.username+"?displayMode="+newMode;
 
@@ -107,8 +103,8 @@ function toggleDisplay() {
 
 
 // Asynchronously update all node positions
-function savePositions () {
-  d3.event.preventDefault();
+function savePositions (evt) {
+  evt.preventDefault();
 
   var thisVis;
   var updateTheseNodes = {};
