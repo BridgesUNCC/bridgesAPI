@@ -51,7 +51,16 @@ var UserSchema = new Schema({
       reset_token: {type: String},
       reset_timeout: {type: Date}
     },
-    institution_name: {type: String, default: ''},
+    institution_name: {type: String, default: '',
+		       validate: {
+			   validator: async function(value){
+			       if ('_id' in this) //disabling the check if the record is already int he database
+				   return true;
+			       return value.length;
+			   },
+			   message:  'Institution cannot be blank'
+		       }
+		      },
     course_name: {type: String, default: ''},
     admin: {type: Boolean, default: false}
 });
@@ -84,17 +93,6 @@ UserSchema.path('email').validate(function (email) {
     if (authTypes.indexOf(this.provider) !== -1) return true;
     return email.length;
 }, 'Email cannot be blank');
-
-/*
-Validation code to check if the institution_name field for the signup form is 
-populated and not empty. If validation fails, it sends a message that it cannot be blank. 
-*/
-UserSchema.path('institution_name').validate(function (institution_name) {
-    console.log("coco");
-    // if authenticating by an oauth strategies, don't validate
-    if (authTypes.indexOf(this.provider) !== -1) return true;
-    return institution_name.length;
-}, 'Institution cannot be blank');
 
 
 
