@@ -8,15 +8,30 @@ var mongoose = require('mongoose'),
 // User Schema
 var UserSchema = new Schema({
     email: { type: String, default: '', validate:{
-      validator: async function(value){
-        const user = await this.constructor.findOne({email: value});
+	validator: async function(value){
+	    //an email is invalid if it already exist.
+	    //unless we are updating this particular object
+            const user = await this.constructor.findOne({email: value})
+		  .then(val => {
+		      if (val._id == this.id)
+			  return false;
+		      else
+			  return true;
+		  });
         return !user;
       },
       message: props => `Email ${props.value} is already in use!`
     }},
     username: { type: String, default: '', validate:{
       validator: async function(value){
-        const user = await this.constructor.findOne({username: value});
+          const user = await this.constructor.findOne({username: value})
+		.then(val => {
+		    if (val._id == this.id)
+			return false;
+		    else
+			return true;
+		});
+	  
         return !user;
       },
       message: props => `Username ${props.value} is already in use!`
