@@ -13,24 +13,31 @@ var UserSchema = new Schema({
 	    //unless we are updating this particular object
             const user = await this.constructor.findOne({email: value})
 		  .then(val => {
-		      if (val._id == this.id)
+		      if (val === null) //not found
+			  return false;
+		      if (val._id == this.id) //same object
 			  return false;
 		      else
 			  return true;
 		  });
+	    console.log(user);
         return !user;
       },
       message: props => `Email ${props.value} is already in use!`
     }},
     username: { type: String, default: '', validate:{
       validator: async function(value){
+	    //a username is invalid if it already exists.
+	    //unless we are updating this particular object
           const user = await this.constructor.findOne({username: value})
 		.then(val => {
-		    if (val._id == this.id)
-			return false;
-		    else
-			return true;
-		});
+		      if (val === null) //not found
+			  return false;
+		      if (val._id == this.id) //same object
+			  return false;
+		      else
+			  return true;
+		  });
 	  
         return !user;
       },
