@@ -13,7 +13,8 @@ var config = {
     port: 3000,
     // db: process.env.MONGOLAB_URI
       db: 'mongodb://localhost/bridgesapi-development',
-      debugmongo: true
+      debugmongo: true,
+      debuginfo: true
   },
 
   test: {
@@ -23,7 +24,8 @@ var config = {
     },
     port: 3000,
       db: 'mongodb://localhost/bridgesapi-test',
-      debugmongo: true
+      debugmongo: true,
+      debuginfo: true
   },
 
   production: {
@@ -34,7 +36,8 @@ var config = {
     port: 3000,
     // db: 'mongodb://localhost/bridgesapi-production'
       db: process.env.MONGOLAB_URI,
-      debugmongo: false
+      debugmongo: false,
+      debuginfo: false
   }
 
 };

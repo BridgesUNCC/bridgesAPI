@@ -6,6 +6,8 @@ var mongoose = require('mongoose'),
     treemill = require('treemill'),
     visTypes = require('./visTypes.js');
     distype = "";
+var  config = require.main.require('./config/config');
+
 
 //This function takes a properly formed Assignment Object and produce
 //the restriction Object in a SubmissionLog
@@ -67,7 +69,8 @@ exports.saveSnapshot = function(req, res, next) {
             if (err) return next(err);
             if (!assignmentResult)
                 return next("could not find assignment");
-            console.log("snapshot");
+	    if (config.debuginfo)
+		console.log("snapshot");
             //Save JSON with modified positions
             //assignmentResult.save()
             //res.send("OK")
@@ -77,7 +80,8 @@ exports.saveSnapshot = function(req, res, next) {
 //API route for uploading assignment data. If the
 //assignment already exists it will be replaced.
 exports.upload = function (req, res, next) {
-    console.log("assignment upload");
+    if (config.debuginfo)
+	console.log("assignment upload");
     // C++ version posts JSON as object, JAVA and Python post as plain string
     if(typeof req.body != "object") {
         try { rawBody = JSON.parse(req.body); } // try parsing to object
@@ -127,7 +131,8 @@ exports.upload = function (req, res, next) {
       }
     }
 
-    console.log("Verifying credentials")
+    if (config.debuginfo)
+	console.log("Verifying credentials")
     //get username from apikey
     User.findOne({
         apikey:req.query.apikey
@@ -142,7 +147,8 @@ exports.upload = function (req, res, next) {
 
     // if the assignment is new, remove old assignments with the same ID
     async function replaceAssignment (res, user, assignmentID) {
-	console.log( "starting replace assignment" );
+	if (config.debuginfo)
+	    console.log( "starting replace assignment" );
         if (subAssignment == '0' || subAssignment == '00') {
 	    // / This is the native driver version of the operation
 	    // console.log(Date.now());
@@ -166,12 +172,15 @@ exports.upload = function (req, res, next) {
                email: user.email
 	               })	    
 		.exec(function (err, resp) {
-		    	    console.log(Date.now());
-                 if(err)
-                    console.log(err);
-                console.log("replaceAssignment() removed assignments (" + assignmentNumber + ".*) from user: \"" + user.username + "\"");
-                saveAssignment(user, assignmentNumber);
-            });
+		    if (config.debuginfo)
+			console.log(Date.now());
+                    if(err) {
+			console.log(err);
+		    }
+		    if (config.debuginfo)
+			console.log("replaceAssignment() removed assignments (" + assignmentNumber + ".*) from user: \"" + user.username + "\"");
+                    saveAssignment(user, assignmentNumber);
+		});
         } else {
           saveAssignment(user, assignmentNumber);
         }
@@ -179,7 +188,8 @@ exports.upload = function (req, res, next) {
 
     // save the assignment to the DB
     function saveAssignment(user, assignmentNumber) {
-	console.log("starting to save assignment");
+	if (config.debuginfo)
+	    console.log("starting to save assignment");
       assignment = new Assignment();
 
       // set the title and description
@@ -252,7 +262,8 @@ exports.upload = function (req, res, next) {
           User.findOne({ //why is this query necessary?
               email: user.email
           }).exec(function (err, resp) {
-	      console.log( "subassignment added" );
+	      if (config.debuginfo)
+		  console.log( "subassignment added" );
               res.status(200).json({ "msg":assignmentID + "/" + resp.username });
 	      
           });
