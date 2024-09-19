@@ -18,7 +18,6 @@ var login = function (req, res) {
 exports.authCallback = login;
 exports.session = login;
 
-
 /*
   GET
     Render the BRIDGES homepage

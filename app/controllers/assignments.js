@@ -2,9 +2,34 @@ var mongoose = require('mongoose'),
     User = mongoose.model('User'),
     Account = mongoose.model('Account'),
     Assignment = mongoose.model('Assignment'),
+    SubmissionLog = mongoose.model('SubmissionLog'),
     treemill = require('treemill'),
     visTypes = require('./visTypes.js');
     distype = "";
+
+//This function takes a properly formed Assignment Object and produce
+//the restriction Object in a SubmissionLog
+//TODO: should this function go in the submissionlog model somehow?
+function makeLogFromAssignment(assignment) {
+    
+    submissionlog = new SubmissionLog();
+    submissionlog.username = assignment.username;
+    submissionlog.email = assignment.email;
+    submissionlog.assignmentNumber = assignment.assignmentNumber;
+    submissionlog.subAssignment = assignment.subAssignment;
+    submissionlog.assignmentID = assignment.assignmentID;
+    submissionlog.title = assignment.title;
+    submissionlog.dateCreated = assignment.dateCreated;
+    submissionlog.assignment_type = assignment.assignment_type;
+
+    return submissionlog;
+}
+
+function logAssignment(assignment) {
+    sl = makeLogFromAssignment (assignment);
+    sl.save()
+	.catch((error)=>{}); //We can safely ignore the error since this is purely a logging feature
+}
 
 //API route to toggle the visibility of an assignment
 //between private and public.
@@ -234,7 +259,7 @@ exports.upload = function (req, res, next) {
 
         }
       });
-     
+	logAssignment(assignment);
     }
 };
 

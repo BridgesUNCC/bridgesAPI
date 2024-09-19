@@ -8,15 +8,37 @@ var mongoose = require('mongoose'),
 // User Schema
 var UserSchema = new Schema({
     email: { type: String, default: '', validate:{
-      validator: async function(value){
-        const user = await this.constructor.findOne({email: value});
+	validator: async function(value){
+	    //an email is invalid if it already exist.
+	    //unless we are updating this particular object
+            const user = await this.constructor.findOne({email: value})
+		  .then(val => {
+		      if (val === null) //not found
+			  return false;
+		      if (val._id == this.id) //same object
+			  return false;
+		      else
+			  return true;
+		  });
+	    console.log(user);
         return !user;
       },
       message: props => `Email ${props.value} is already in use!`
     }},
     username: { type: String, default: '', validate:{
       validator: async function(value){
-        const user = await this.constructor.findOne({username: value});
+	    //a username is invalid if it already exists.
+	    //unless we are updating this particular object
+          const user = await this.constructor.findOne({username: value})
+		.then(val => {
+		      if (val === null) //not found
+			  return false;
+		      if (val._id == this.id) //same object
+			  return false;
+		      else
+			  return true;
+		  });
+	  
         return !user;
       },
       message: props => `Username ${props.value} is already in use!`
@@ -29,8 +51,18 @@ var UserSchema = new Schema({
       reset_token: {type: String},
       reset_timeout: {type: Date}
     },
-    institution_name: {type: String, default: ''},
-    course_name: {type: String, default: ''}
+    institution_name: {type: String, default: '',
+		       validate: {
+			   validator: async function(value){
+			       if ('_id' in this) //disabling the check if the record is already int he database
+				   return true;
+			       return value.length;
+			   },
+			   message:  'Institution cannot be blank'
+		       }
+		      },
+    course_name: {type: String, default: ''},
+    admin: {type: Boolean, default: false}
 });
 
 // Virtuals
@@ -61,6 +93,8 @@ UserSchema.path('email').validate(function (email) {
     if (authTypes.indexOf(this.provider) !== -1) return true;
     return email.length;
 }, 'Email cannot be blank');
+
+
 
 /*
 Validation code to check if the email submitted from the signup page
@@ -136,7 +170,7 @@ UserSchema.path('hashed_password').validate(function (hashed_password) {
 UserSchema.pre('save', function(next) {
     if (!this.isNew) return next();
     if ((!validatePresenceOf(this.password) || !validatePasswordLength(this.password)) && authTypes.indexOf(this.provider) === -1)
-        next(new Error('Invalid password'));
+        next(new Error('Invalid password (must be at least 5 characters)'));
     else
         next();
 });
@@ -192,8 +226,7 @@ UserSchema.methods = {
       return '';
     }
   },
-
-
+    
   /**
    * Add password reset token and expiry date
    *
@@ -208,8 +241,11 @@ UserSchema.methods = {
        if(err) cb(err);
        cb(null);
      });
-   }
+   },
 
+    hasAdminRights: function() {
+	return this.admin == true;
+    }
 };
 
 mongoose.model('User', UserSchema);

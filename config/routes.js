@@ -232,4 +232,27 @@ module.exports = function(app, passport) {
         }
     );
 
+    // -------------------------------------------------------
+    //
+    //  Admin Routes
+    //
+    // -------------------------------------------------------
+    var admin = require('../app/controllers/admin.js');
+
+    /* return help page */
+    app.get('/admin', admin.help, handleError);
+    
+    /* return all users */
+    app.get('/admin/allusers', admin.allusers, handleError);
+
+    /* return number of recent assignments */
+    app.get('/admin/nbassignmentbydate', admin.nbassignmentsbydate, handleError);
+
+    /* return number of recent assignments */
+    app.get('/admin/assignmentperuserbydate', admin.assignmentsperuserbydate, handleError);
+
+    /* return number of recent assignments */
+    app.get('/admin/nbuserbydate', admin.nbuserbydate, handleError);
+
+    
 };

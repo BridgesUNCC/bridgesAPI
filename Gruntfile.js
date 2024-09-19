@@ -19,13 +19,42 @@ module.exports = function (grunt) {
            }
        }
     },
-    bower: {
-      install: {
-         options: {
-           targetDir: "public/components"
-         }
-      }
-    },
+         copy: {
+             main: {
+		 files: [
+		     {
+			 expand:true,
+			 cwd: './node_modules/d3/build/',
+			 src: '**',
+			 dest: 'public/components/d3/'
+		     },
+		     {
+			 expand:true,
+			 cwd: './node_modules/bootstrap/dist/',
+			 src: '**',
+			 dest: 'public/components/bootstrap/'
+		     },
+		     {
+			 expand:true,
+			 cwd: './node_modules/jquery/dist/',
+			 src: '**',
+			 dest: 'public/components/jquery/'
+		     },
+		     {
+			 expand:true,
+			 cwd: './node_modules/css-toggle-switch/dist/',
+			 src: '**',
+			 dest: 'public/components/css-toggle-switch/'
+		     },
+		     {
+			 expand:true,
+			 cwd: './node_modules/highcharts/',
+			 src: '**',
+			 dest: 'public/components/highcharts/'
+		     },
+		 ]
+            },
+        },
     modernizr: {
       dist: {
         "dest" : "build/modernizr-custom.js",
@@ -53,7 +82,7 @@ module.exports = function (grunt) {
           'config/*.js',
           'app/views/**/*.jade'
         ],
-        tasks: ['develop', 'bower', 'modernizr', 'delayed-livereload']
+        tasks: ['develop', 'modernizr', 'delayed-livereload']
       },
       jade: {
         files: ['app/views/**/*.jade'],
@@ -64,8 +93,8 @@ module.exports = function (grunt) {
 
   grunt.loadNpmTasks('grunt-develop');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-bower-task');
-  grunt.loadNpmTasks("grunt-modernizr");
+    grunt.loadNpmTasks("grunt-modernizr");
+    grunt.loadNpmTasks("grunt-contrib-copy");
   grunt.loadNpmTasks( "grunt-update-submodules" );
 
   grunt.registerTask('test', 'run mocha', function () {
@@ -95,5 +124,5 @@ module.exports = function (grunt) {
     }, 500);
   });
 
-  grunt.registerTask('default', ['develop', 'update_submodules', 'bower', 'modernizr', 'watch']);
+    grunt.registerTask('default', ['develop', 'update_submodules', 'copy', 'modernizr', 'watch']);
 };

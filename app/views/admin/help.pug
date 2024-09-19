@@ -1,0 +1,42 @@
+extends ../includes/boilerplate.pug
+
+block css
+    link(rel='stylesheet',
+         href='/css/index.css')
+    link(rel='stylesheet',
+         href='/css/gallery.css')
+
+block content
+    include ../includes/header.pug
+
+    .container
+        - if (message != ''){
+            p.alert.alert-danger=message
+        - }
+        .row.spacer
+            h1 Welcome to Bridges admin page!
+
+        h2 Reports
+        .row.spacer
+            ul
+               li
+                   a(href='/admin') Admin Help
+               li
+                   a(href='/admin/allusers') All Users
+               li
+                   a(href='/admin/nbassignmentbydate') Count of recent assignments (within this month)
+               li
+                   a(href='/admin/nbassignmentbydate?since=2024-08-08:19:10Z') Count of recent assignments (after since date)
+               li
+                   a(href='/admin/nbassignmentbydate?since=2024-01-01:19:10Z&until=2024-07-31:19:10Z') Count of assignments (after since date and before until date)
+               li
+                   a(href='/admin/assignmentperuserbydate?since=2024-08-08:19:10Z') Breakdown of number of recent assignments per user (after since date)
+               li
+                   a(href='/admin/assignmentperuserbydate?since=2024-01-01:19:10Z&until=2024-07-31:19:10Z') Breakdown of number assignments per user (after since date and before until date)
+               li
+                   a(href='/admin/nbuserbydate?since=2024-08-08:19:10Z') Breakdown of number recent users (with an assignment after since date)	    
+               li
+                   a(href='/admin/nbuserbydate?since=2024-01-01:19:10Z&until=2024-07-31:19:10Z') Breakdown of number recent users (with an assignment after since date and before until date)	    
+
+
+
