@@ -101,8 +101,8 @@ d3.collectionv2 = function(svg, W, H, data) {
 	}
     }
 
-    console.log("symbolDict "+ JSON.stringify(symbolDict));
-    console.log("root: "+ JSON.stringify(symbolRoot));
+//  console.log("symbolDict "+ JSON.stringify(symbolDict));
+  //   console.log("root: "+ JSON.stringify(symbolRoot));
 
     //TODO: sort children list and root by layer.
     var sortlayers = function(arr) {
@@ -161,8 +161,17 @@ d3.collectionv2 = function(svg, W, H, data) {
 
 	// initialize zoom parameters, handler
 	var zoom = d3.zoom()
+			.extent([[0,0], [w, h]])
 			.scaleExtent([.01, 100])
 		.on("zoom", zoomHandler);
+
+	// zoom handler
+	function zoomHandler(evt) {
+		if (svgZoomGroup) {
+			svgZoomGroup.attr('transform', evt.transform);
+		}
+	}
+
 
 	// update the svg with some global attributes and zoom attribute
     vis = svg.attr("width", w)
@@ -182,20 +191,12 @@ d3.collectionv2 = function(svg, W, H, data) {
     }
     // svgGroup = svgZoomGroup.append("g").attr('transform', T_Composite)
 
-	// zoom handler
-	function zoomHandler() {
-		if (svgZoomGroup) {
-			var T = d3.event.transform;
-			svgZoomGroup.attr('transform', T);
-		}
-	}
-
 	function projShape(posx, posy){
 		let projection, pos;
 		if(data.coord_system_type == 'albersusa'){
 		    projection = d3.geoAlbersUsa()
 		    pos = projection([posx, posy]);
-		    console.log(projection([0, 0]))
+//		    console.log(projection([0, 0]))
 		}else if(data.coord_system_type == 'equirectangular'){
 			projection = d3.geoEquirectangular()
 			pos = projection([posx, posy]);
@@ -237,7 +238,7 @@ d3.collectionv2 = function(svg, W, H, data) {
 		    .attr('r', symb["r"]);
 	    } else if (symb["type"] === "text" ) {
 		//console.log("text is "+JSON.stringify(symb));
-		console.log(data.coord_system_type)
+//		console.log(data.coord_system_type)
 		if(data.coord_system_type != "window" && data.coord_system_type != "cartesian") {
 	      	symb["anchor-location"] = projShape(symb["anchor-location"][0], symb["anchor-location"][1]);
 	    	transformString = "translate("+ symb['anchor-location'][0] + ", "+ symb['anchor-location'][1]+")"
@@ -309,7 +310,7 @@ d3.collectionv2 = function(svg, W, H, data) {
 		    svgElement.append('svg:polyline')
 		    .attr("points", points);
 	    } else if (symb["type"] === "group" ) {
-		console.log("group is "+JSON.stringify(symb));
+//		console.log("group is "+JSON.stringify(symb));
 		symbSVG =
 		    svgElement.append('g');
 		helper(symbSVG, symb['children']);

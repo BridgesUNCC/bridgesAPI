@@ -1,0 +1,38 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <meta charset="utf-8">
+    <script src="https://d3js.org/d3.v7.min.js"> 
+   </script>   
+</head>  
+<body> 
+    <center>
+        <h1 style="color: green;"> 
+            Geeksforgeeks 
+        </h1> 
+    
+        <h3>D3.js | d3.zoom() Function</h3>
+        
+        <div id="GFG"></div>
+        
+        <script>
+            var svg = d3.select("#GFG")
+              .append("svg")
+                .attr("width", 300)
+                .attr("height", 300)
+                .call(d3.zoom().on("zoom", function (evt) {
+                   svg.attr("transform", evt.transform)
+                }))
+              .append("g")
+            
+            svg
+              .append("circle")
+                .attr("cx", 150)
+                .attr("cy", 150)
+                .attr("r", 40)
+                .style("fill", "green")
+            
+        </script> 
+    </center>
+</body> 
+</html> 

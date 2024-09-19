@@ -24,7 +24,7 @@ module.exports = function (grunt) {
 		 files: [
 		     {
 			 expand:true,
-			 cwd: './node_modules/d3/build/',
+			 cwd: './node_modules/d3/dist/',
 			 src: '**',
 			 dest: 'public/components/d3/'
 		     },

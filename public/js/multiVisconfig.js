@@ -67,24 +67,20 @@ var ele = document.getElementById("vis0"),
 
 visualizeAssignment(assignment);
 
-function collapse() {
-  d3.event.preventDefault();
+function collapse(evt) {
+  evt.preventDefault();
 }
 
 // Reset positions and scales for all visualization divs
-function reset() {
-  d3.event.preventDefault();
+function reset(evt) {
+  evt.preventDefault();
   for(var subassign in BridgesVisualizer.visualizations) {
     BridgesVisualizer.visualizations[subassign].reset();
   }
 }
 
-function hideNodes(){
-
-}
-
-function deleteAssignment() {
-  d3.event.preventDefault();
+function deleteAssignment(evt) {
+  evt.preventDefault();
   var r = confirm("Are you sure you want to delete this assignment?");
   if (r === true) {
       // send delete request
@@ -98,8 +94,8 @@ function deleteAssignment() {
   }
 }
 
-function toggleDisplay() {
-  d3.event.preventDefault();
+function toggleDisplay(evt) {
+  evt.preventDefault();
   newMode = (displayMode == "slide") ? "stack" : "slide";
   window.location = "/assignments/"+assignment.assignmentNumber+"/"+assignment.username+"?displayMode="+newMode;
 
@@ -107,8 +103,8 @@ function toggleDisplay() {
 
 
 // Asynchronously update all node positions
-function savePositions () {
-  d3.event.preventDefault();
+function savePositions (evt) {
+  evt.preventDefault();
 
   var thisVis;
   var updateTheseNodes = {};
@@ -347,7 +343,7 @@ function delay(){
 
 // bind assignment slide buttons if appropriate
 (function() {
-  d3.selectAll(".slideButton").on("click", debounce(slideButtonClick, 250));
+  d3.selectAll(".slideButton").on("click", debounce(slideButtonClick, 100));
   d3.selectAll(".slideButton").on("mouseover", slideButtonHover);
   d3.selectAll(".slideButton").on("mouseout", slideButtonOut);
 
@@ -355,13 +351,16 @@ function delay(){
 })();
 
 
-function slideButtonClick(d, i) {
+function slideButtonClick(evt) {
+//this uses .target and not .currentTarget because this functoin is not called in the event handler but in a timeout function which undefined currentTarget. Javascript, am I right?
+var i=evt.target.id.substring("slideButton".length); //we need i to be the index of the button which we can derie from how its HTML id got set
   updateVis(i);
 }
-function slideButtonHover(d, i) {
+function slideButtonHover(evt) {
+var i=evt.currentTarget.id.substring("slideButton".length); //we need i to be the index of the button which we can derie from how its HTML id got set
   positionSlideLabel(i);
 }
-function slideButtonOut(d, i) {
+function slideButtonOut(evt, datum) {
   positionSlideLabel(subAssignmentNumber);
 }
 function positionSlideLabel(i) {
@@ -421,7 +420,7 @@ function updateVis(currentNum, index){
       }
 
       // visualize the assignment
-      setTimeout(function() { visualizeAssignment(assignment, index); }, 250);
+      setTimeout(function() { visualizeAssignment(assignment, index); }, 100);
     });
 }
 
