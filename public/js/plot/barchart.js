@@ -37,7 +37,7 @@ d3.barChart = function(vis, id, data){
           }
       },
       tooltip: {
-          valueSuffix: ''
+          valueSuffix: '',
           valueSuffix: data.tooltipSuffix
       },
       plotOptions: {
