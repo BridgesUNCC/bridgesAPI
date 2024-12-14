@@ -676,7 +676,7 @@ exports.deleteAssignment = function (req, res) {
         .exec(function(err, assign) {
             if (err) return next(err);
             for (var i in assign) {
-                assign[i].remove();
+                assign[i].deleteOne();
             }
             console.log("Deleted assignment: " + req.params.assignmentNumber, "for user", req.user.email);
         });
@@ -712,7 +712,7 @@ exports.deleteAssignmentByKey = function (req, res) {
         .exec(function(err, assign) {
             if (err) return next(err);
             for (var i in assign) {
-                assign[i].remove();
+                assign[i].deleteOne();
             }
             console.log("Deleted assignment: " + req.params.assignmentNumber, "for user", req.user.email);
         });

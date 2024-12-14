@@ -195,7 +195,7 @@ exports.deletePerson = function (req, res) {
         .findOne({email: user.email})
         .exec(function (err, user) {
             if (err) return next(err);
-            if (user) user.remove();
+            if (user) user.deleteOne();
         });
 
     Assignment
@@ -204,7 +204,7 @@ exports.deletePerson = function (req, res) {
             if (err) return next(err);
             for (var i in assign) {
                 console.log("removing..", assign[i].assignmentID);
-                assign[i].remove();
+                assign[i].deleteOne();
             }
         });
 
@@ -214,7 +214,7 @@ exports.deletePerson = function (req, res) {
             if (err) return next(err);
             for (var i in acct) {
                 console.log("removing..", acct[i].domain);
-                acct[i].remove();
+                acct[i].deleteOne();
             }
         });
 
