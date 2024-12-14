@@ -63,7 +63,7 @@ exports.forgot = function (req, res) {
   POST route to reset the password of the account with the given token
 */
 exports.resetPassword = function(req, res) {
-  var findthis = crypto.createHash('sha512').update(req.params.token).digest('hex');
+  var findthis = crypto.createHash('sha512').updateOne(req.params.token).digest('hex');
 
   // Find the user with the valid unique token
   User.findOne({'password_reset.reset_token': findthis,
@@ -101,7 +101,7 @@ exports.resetPassword = function(req, res) {
   POST route to begin password reset process for the account with the given token
 */
 exports.getNewPassword = function(req, res) {
-  var findthis = crypto.createHash('sha512').update(req.params.token).digest('hex');
+  var findthis = crypto.createHash('sha512').updateOne(req.params.token).digest('hex');
 
   // Find the user with the valid unique token
   User.findOne({'password_reset.reset_token': findthis,
