@@ -231,7 +231,6 @@ function getSampleAt(time) {
 
 // Helper method for mouse click event that moves the current time of the audio
 function seekEvent(event) {
-    console.log(event)
     var nx = event.offsetX / canvasMain.width;
     
     if (audioElem.readyState != 0) {
@@ -528,7 +527,6 @@ function onInputChange(data) {
  * @returns {Uint8Array} The ByteArray in the format of a wave file
  */
 function JSONToWaveBytes(jsonString) {
-    console.log(jsonString)
     // var results = JSON.parse(str(jsonString));
     var byteRate = jsonString.sampleRate * jsonString.numChannels * jsonString.bitsPerSample / 8;
     var blockAlign = jsonString.numChannels * jsonString.bitsPerSample / 8;

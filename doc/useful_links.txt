@@ -1,0 +1,15 @@
+Javascript modules:
+
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
+
+D3 tutorials:
+https://github.com/sgratzl/d3tutorial?tab=readme-ov-file#js
+
+D3 API:
+https://d3js.org/api
+
+Migration Guides:
+
+https://observablehq.com/@d3/d3v6-migration-guide#event_zoom
+
+https://github.com/d3/d3/blob/main/CHANGES.md
