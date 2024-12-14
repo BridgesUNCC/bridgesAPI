@@ -12,7 +12,7 @@ var config = {
     },
     port: 3000,
     // db: process.env.MONGOLAB_URI
-      db: 'mongodb://localhost/bridgesapi-development',
+      db: process.env.MONGOLAB_URI || 'mongodb://localhost/bridgesapi-development',
       debugmongo: true,
       debuginfo: true
   },
