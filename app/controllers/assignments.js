@@ -87,6 +87,7 @@ exports.upload = function (req, res, next) {
         try { rawBody = JSON.parse(req.body); } // try parsing to object
         catch (e) {
             if(typeof req.body != 'object') {
+		console.log("Invalid JSON: "+e);
                 return res.status(400).render("404", {"message": e + " Invalid JSON in request body."});
             } else {
                 rawBody = req.body;
@@ -95,7 +96,7 @@ exports.upload = function (req, res, next) {
     } else {  // object already
         rawBody = req.body;
     }
-
+    
     // Handle assignment number
     var assignmentID = req.params.assignmentID;
     var assignmentRaw = assignmentID.split(".");
@@ -111,13 +112,18 @@ exports.upload = function (req, res, next) {
     // set correct vistype
     var assignmentType = rawBody.visual;
     var visualizationType = visTypes.getVisType(assignmentType);
+    if (assignmentType == "us_map") {
+	rawBody.nodes = [];
+	rawBody.links = [];
+    }
+    
     if(visualizationType == "Alist") {
       visualizationType = visTypes.checkIfHasDims(rawBody);
     }
     if(visualizationType == "Audio"){
       var display_mode = "audio";
     }
-
+    
     // Use SVG for < 100 nodes, Canvas for > 100
     if(visualizationType == "nodelink" && rawBody.nodes && rawBody.nodes.length > 100) {
       visualizationType = "nodelink-canvas";
