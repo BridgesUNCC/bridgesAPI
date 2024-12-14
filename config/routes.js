@@ -28,7 +28,7 @@ module.exports = function(app, passport) {
               apikey: apikey,
               username: username
           })
-          .exec(function(err, user) {
+	then(function(user) {
               if (!user) {
                 return res.status(401).json({
                     "error": "your api key or username is invalid"
@@ -36,7 +36,10 @@ module.exports = function(app, passport) {
               }
               req.user = user;
               return next();
-          });
+        })
+	    .catch(err =>{
+		//TODO: Nothing? really?
+	    });
     };
 
     //authentication
@@ -224,10 +227,12 @@ module.exports = function(app, passport) {
             var account = req.account;
             // Associate the Twitter account with the logged-in user.
             account.email = user.email;
-            account.save(function(err) {
-                if (err) return (err);
-                res.redirect('/home');
-
+            account.save()
+		.then(function(acc) {
+		    res.redirect('/home');
+		})
+		.catch(err => {
+                    return (err);
             });
         }
     );
