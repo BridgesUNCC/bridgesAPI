@@ -143,14 +143,16 @@ exports.upload = function (req, res, next) {
     User.findOne({
         apikey:req.query.apikey
     })
-    .exec(function (err, user) {
-        if (err) return next (err);
-        if (!user) return res.status(401).render("404", {"message": "could not find user by apikey: " + req.query.apikey});
-
-        //if username found, upload or replace
-        replaceAssignment(res, user, assignmentID);
-    });
-
+	.then(function ( user) {
+            if (!user) return res.status(401).render("404", {"message": "could not find user by apikey: " + req.query.apikey});
+	    
+            //if username found, upload or replace
+            replaceAssignment(res, user, assignmentID);
+	})
+	.catch(err => {
+	    return next (err);
+	});
+    
     // if the assignment is new, remove old assignments with the same ID
     async function replaceAssignment (res, user, assignmentID) {
 	if (config.debuginfo)
@@ -177,15 +179,16 @@ exports.upload = function (req, res, next) {
                assignmentNumber: assignmentNumber,
                email: user.email
 	               })	    
-		.exec(function (err, resp) {
+		.then(function ( resp) {
 		    if (config.debuginfo)
 			console.log(Date.now());
-                    if(err) {
-			console.log(err);
-		    }
+                   
 		    if (config.debuginfo)
 			console.log("replaceAssignment() removed assignments (" + assignmentNumber + ".*) from user: \"" + user.username + "\"");
                     saveAssignment(user, assignmentNumber);
+		})
+		.catch(err => {
+		    	console.log(err);
 		});
         } else {
           saveAssignment(user, assignmentNumber);
@@ -227,55 +230,56 @@ exports.upload = function (req, res, next) {
       // save assignment data
       assignment.data = rawBody;
 
-      assignment.save(function (err, product, numAffected) {
-          if (err) {
-	      // trap errors saving the assignment to the DB
-
-	      //A classic error would be that the payload is too big
-	      //in which case err is an Error() of type
-	      //MongoServerError with codeName BSONObjectTooLarge. We
-	      //can trap that first.
-
-	      errorHandled = false;
-              if (err.name == "MongoServerError") {
-		  if (err.codeName == "BSONObjectTooLarge") {
-		      res.status(413).json({"msg": "The volume of data in the assignment is too large for BRIDGES to handle. Try a smaller assignment. For reference, a BRIDGES assignment has to be smaller than about 17MB once serialized to JSON."});
-		      errorHandled = true;
-		  }
-	      }
-
-	      //If BSON is WAY too large, then the error is report
-	      //inside of mongoose rather than by the mongodb
-	      //server. In that case some funciont deep in mongoose
-	      //raises a RangeError. So we trap that, even though
-	      //really mongoose should be trapping it and recasting it
-	      //in a more meaningful way. This could theoretically
-	      //cause to trap other range error in mongoose... But that seems unlikely
-	      
-              if (err.name == "RangeError") {
-		  res.status(413).json({"msg": "The volume of data in the assignment is too large for BRIDGES to handle. Try a smaller assignment. For reference, a BRIDGES assignment has to be smaller than about 17MB once serialized to JSON."});
-		  errorHandled = true;
-	      }
-
-	      
-	      if (! errorHandled) {
-		  // No idea what that error is
-	      
-		  console.log("Error trapped while trying to save assignment : " + err);
-		  next(err);
-	      }
-        } else {
-          User.findOne({ //why is this query necessary?
-              email: user.email
-          }).exec(function (err, resp) {
-	      if (config.debuginfo)
-		  console.log( "subassignment added" );
-              res.status(200).json({ "msg":assignmentID + "/" + resp.username });
-	      
-          });
-
-        }
-      });
+	assignment.save()
+	    .then(function (assdoc) {
+                User.findOne({ //TODO: why is this query necessary?
+		    email: user.email
+		}).then(function (resp) {
+		    if (config.debuginfo)
+			console.log( "subassignment added" );
+		    res.status(200).json({ "msg":assignmentID + "/" + resp.username });
+		})
+		    .catch(err => {
+			console.log("no error management, really?");
+		    });
+	    })
+	.catch(err => {
+	    // trap errors saving the assignment to the DB
+	    
+	    //A classic error would be that the payload is too big
+	    //in which case err is an Error() of type
+	    //MongoServerError with codeName BSONObjectTooLarge. We
+	    //can trap that first.
+	    
+	    errorHandled = false;
+            if (err.name == "MongoServerError") {
+		if (err.codeName == "BSONObjectTooLarge") {
+		    res.status(413).json({"msg": "The volume of data in the assignment is too large for BRIDGES to handle. Try a smaller assignment. For reference, a BRIDGES assignment has to be smaller than about 17MB once serialized to JSON."});
+		    errorHandled = true;
+		}
+	    }
+	    
+	    //If BSON is WAY too large, then the error is report
+	    //inside of mongoose rather than by the mongodb
+	    //server. In that case some funciont deep in mongoose
+	    //raises a RangeError. So we trap that, even though
+	    //really mongoose should be trapping it and recasting it
+	    //in a more meaningful way. This could theoretically
+	    //cause to trap other range error in mongoose... But that seems unlikely
+	    
+            if (err.name == "RangeError") {
+		res.status(413).json({"msg": "The volume of data in the assignment is too large for BRIDGES to handle. Try a smaller assignment. For reference, a BRIDGES assignment has to be smaller than about 17MB once serialized to JSON."});
+		errorHandled = true;
+	    }
+	    
+	    
+	    if (! errorHandled) {
+		// No idea what that error is
+		
+		console.log("Error trapped while trying to save assignment : " + err);
+		next(err);
+	    }
+	});
 	logAssignment(assignment);
     }
 };
@@ -303,8 +307,7 @@ exports.getJSON = function (req, res, next) {
 
     User
         .findOne( { username: username } )
-        .exec( function( err, usr ){
-            if (err) return next(err);
+        .then( function( usr ){
             if (!usr)
                 return res.status(404).render("404", {"message": "couldn't find the username \'" + username + "\'"});
 
@@ -317,8 +320,7 @@ exports.getJSON = function (req, res, next) {
               "_id": 0
             })
             .lean()
-            .exec( function(err, assignment) {
-              if (err) return next(err);
+            .then( function( assignment) {
               if (!assignment) {
                   return res.status(404).render("404", {"message": "can not find assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'"});
                 }
@@ -340,8 +342,14 @@ exports.getJSON = function (req, res, next) {
                 return res.status(200).json( assignment );
 
               return res.status(401).render("404", {"message": "can not find public assignment " + assignmentNumber + "." + subAssignmentNumber + " for user \'" + username + "\'"});
-            });
-        });
+            })
+	   	.catch(err => {
+		    return next(err);
+		}); 
+        })
+	.catch(err => {
+	    return next(err);
+	});
 };
 
 /*
@@ -360,8 +368,8 @@ exports.get = function (req, res, next) {
 
     User
         .findOne( { username: username } )
-        .exec( function( err, usr ){
-            if (err) return next(err);
+        .then( function(usr ){
+            
             if (!usr)
                 return res.status(404).render("404", {"message": "couldn't find the username " + username});
 
@@ -374,9 +382,7 @@ exports.get = function (req, res, next) {
               "_id": 0
             })
             .lean()
-            .exec(function(err, assignment) {
-                if (err) return next(err);
-
+            .then(function(assignment) {
                 if (!assignment || assignment.length === 0) {
                     return res.status(404).render("404", {"message": "assignment " + assignmentNumber + " was not found"});
                 }
@@ -387,16 +393,24 @@ exports.get = function (req, res, next) {
                   Assignment.countDocuments({
                     email: usr.email,
                     assignmentNumber: assignmentNumber
-                  }).exec(function(err, num) {
-                    if(err) return next(err);
+                  }).then(function(num) {
                     assignment.numSubassignments = num;
                     return renderVis(res, assignment);
-                  });
+                  })
+			.catch (err => {
+			    return next(err);
+			});
                 } else {
                   return res.status(401).render("404", {"message": "can not find public assignment " + assignmentNumber + " for user \'" + username + "\'"});
                 }
-            });
-        });
+            })
+		.catch (err => {
+		     return next(err);
+		});
+        })
+	.catch(err => {
+	     return next(err);
+	});
 
     /*
     function to construct the nessaccary information to render a bridges visualization
@@ -543,7 +557,7 @@ exports.get = function (req, res, next) {
         }
 
         //calls to render the specific view from the app/views folder with the given information
-        //this behavior is defined in the config/exrpess.js file on where to render views from
+        //this behavior is defined in the config/express.js file on where to render views from
         return res.render ('assignments/' + displayMode, {
             "user": sessionUser,
             "assignment": assignment,
@@ -596,9 +610,7 @@ exports.savePositions = function(req, res) {
         .or([{"vistype": "nodelink"}, {"vistype": "nodelink-canvas"} ])
         .where('subAssignment')
         .in(subassigns)
-        .exec(function(err, assign) {
-            if (err) return next(err);
-
+        .then(function(assign) {
             try {
               // handle each sub assignment with nodes
               for(var i in assign) {
@@ -632,7 +644,10 @@ exports.savePositions = function(req, res) {
             } catch (error) {
               console.log(error);
             }
-        });
+        })
+	.catch(err => {
+	    return next(err);
+	});
     return res.status(202).json({"message": "success"});
 };
 
@@ -643,10 +658,8 @@ exports.updateTransforms = function(req, res) {
           "assignmentNumber": req.params.assignmentNumber,
           "email": req.user.email
         })
-        .exec(function(err, assign) {
-            if (err) return next(err);
-
-            // // handle each assignment
+        .then(function(assign) {
+            // handle each assignment
             for(var i in assign) {
               // ignore if default scale and translation
               if(req.body[i].scale === "1" &&
@@ -662,7 +675,10 @@ exports.updateTransforms = function(req, res) {
               assign[i].markModified('data'); //http://mongoosejs.com/docs/faq.html
               assign[i].save();
             }
-        });
+        })
+	.catch(err => {
+	    return next(err);
+	});
     res.send("OK");
 };
 
@@ -673,13 +689,15 @@ exports.deleteAssignment = function (req, res) {
           "assignmentNumber": req.params.assignmentNumber,
           "email": req.user.email
         })
-        .exec(function(err, assign) {
-            if (err) return next(err);
+        .then(function(err, assign) { //TODO: shouldn't this be a delete many?
             for (var i in assign) {
                 assign[i].deleteOne();
             }
             console.log("Deleted assignment: " + req.params.assignmentNumber, "for user", req.user.email);
-        });
+        })
+	.catch(err => {
+	    return next(err);
+	});
     res.send("OK");
 };
 
@@ -709,13 +727,15 @@ exports.deleteAssignmentByKey = function (req, res) {
           "assignmentNumber": assignmentNumber,
           "email": req.user.email
         })
-        .exec(function(err, assign) {
-            if (err) return next(err);
+        .then(function(assign) { //TODO: shouldn't this be a deleteMany?
             for (var i in assign) {
                 assign[i].deleteOne();
             }
             console.log("Deleted assignment: " + req.params.assignmentNumber, "for user", req.user.email);
-        });
+        })
+	.catch(err => {
+	    return next(err);
+	});
     res.status(200).json({"message": "Deleted assignment " + req.params.assignmentNumber + " for user " + req.user.email});
 };
 
@@ -725,12 +745,14 @@ exports.assignmentByEmail = function (req, res) {
 
   User
       .findOne( { email: email  } )
-      .exec( function( err, usr ){
-          if (err) return next(err);
+      .then( function(usr){
           if (!usr)
               return next("couldn't find the user by email: " + email);
 
           res.redirect("/assignments/" + assignment + "/" + usr.username);
 
-      });
+      })
+	.catch(err => {
+	    return next(err);
+	});
 };
