@@ -1,4 +1,4 @@
-
+//MONGOOSE7
 // This module accepts the named assignment type sent by the client
 //    and returns the appropriate vistype to display
 exports.getVisType = function(toCheck) {
