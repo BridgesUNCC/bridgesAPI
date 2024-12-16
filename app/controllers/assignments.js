@@ -223,16 +223,9 @@ exports.upload = function (req, res, next) {
 
 	assignment.save()
 	    .then(function (assdoc) {
-                User.findOne({ //TODO: why is this query necessary?
-		    email: user.email
-		}).then(function (resp) {
 		    if (config.debuginfo)
 			console.log( "subassignment added" );
-		    res.status(200).json({ "msg":assignmentID + "/" + resp.username });
-		})
-		    .catch(err => {
-			console.log("no error management, really?");
-		    });
+		    res.status(200).json({ "msg":assignmentID + "/" + user.username });
 	    })
 	.catch(err => {
 	    // trap errors saving the assignment to the DB
