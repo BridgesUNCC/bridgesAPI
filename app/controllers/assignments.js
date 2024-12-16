@@ -166,23 +166,6 @@ exports.upload = function (req, res, next) {
 	if (config.debuginfo)
 	    console.log( "starting replace assignment" );
         if (subAssignment == '0' || subAssignment == '00') {
-	    // / This is the native driver version of the operation
-	    // console.log(Date.now());
-	    // try {
-	    // 	await mongoose.connection.db.collection('assignments').deleteMany({
-            //         assignmentNumber: assignmentNumber,
-            //         email: user.email
-	    // 	});
-	    // 	console.log(Date.now());
-	    // 	console.log("replaceAssignment() removed assignments (" + assignmentNumber + ".*) from user: \"" + user.username + "\"");
-	    // }
-	    // catch (err) {
-	    // 	console.log(err);
-	    // }
-	    // saveAssignment(user, assignmentNumber);
-
-	    // This is the mongoose version of the operation
-	  
             Assignment.deleteMany({
                assignmentNumber: assignmentNumber,
                email: user.email
