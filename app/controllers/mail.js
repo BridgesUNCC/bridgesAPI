@@ -1,4 +1,3 @@
-//MONGOOSE7
 var nodemailer = require('nodemailer'),
     crypto = require('crypto');
 
