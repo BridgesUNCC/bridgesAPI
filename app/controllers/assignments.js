@@ -581,6 +581,7 @@ exports.testJSON = function (req, res, next) {
   };
 
 /* Update the node positions of the given assignment and its subassignments */
+//TODO: This seems to indicate we change the position for ALL subassignments. Is that really the semantic we want?
 exports.savePositions = function(req, res) {
     var subassigns = Object.keys(req.body);
 
@@ -623,7 +624,7 @@ exports.savePositions = function(req, res) {
                 }
                 // save the updated data
                 assign[i].markModified('data'); //http://mongoosejs.com/docs/faq.html
-                assign[i].save();
+                assign[i].save(); //TODO: All these saves are happening asynchronously without checking completion.
               }
             } catch (error) {
               console.log(error);
@@ -632,10 +633,12 @@ exports.savePositions = function(req, res) {
 	.catch(err => {
 	    return next(err);
 	});
-    return res.status(202).json({"message": "success"});
+    return res.status(202).json({"message": "success"}); //TODO: That seems bad, we send a "accepted" reponse before knowing anything
 };
 
 /* Save the zoom and translation for the given assignment */
+//TODO: Doesn't this change the zoom and pan for ALL subassignments at once? This can't be what we want!
+//TODO: This route is not reached by the webclient. Looking at the UI code, it seems to have been used at some point and was commented out.
 exports.updateTransforms = function(req, res) {
     Assignment
         .find({
@@ -663,7 +666,7 @@ exports.updateTransforms = function(req, res) {
 	.catch(err => {
 	    return next(err);
 	});
-    res.send("OK");
+    res.send("OK"); //TODO: returns OK regardless?
 };
 
 /* Delete the given assignment for the current user */
@@ -674,7 +677,9 @@ exports.deleteAssignment = function (req, res) {
           "email": req.user.email
         })
         .then(function(assign) { //TODO: shouldn't this be a delete many?
+	    console.log(assign);
             for (var i in assign) {
+		console.log(assign[i]);
                 assign[i].deleteOne();
             }
             console.log("Deleted assignment: " + req.params.assignmentNumber, "for user", req.user.email);
