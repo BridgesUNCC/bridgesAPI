@@ -59,6 +59,9 @@ exports.updateVisibility = function (req, res, next) {
 	});
 };
 
+//TODO: Is this used at all? The route that uses it seem to not be
+//called by the UI. Also the function does not seem to actually touch any of the data in the database
+//
 //API route to save the position of some (or all) node positions
 exports.saveSnapshot = function(req, res, next) {
     Assignment
