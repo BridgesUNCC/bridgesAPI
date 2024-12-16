@@ -44,7 +44,6 @@ exports.updateVisibility = function (req, res, next) {
         })
         .then(function (assignmentResult) {
             for(var i = 0; i < assignmentResult.length; i++) {
-              if (err) return next(err);
               if (!assignmentResult[i])
                   return next("could not find assignment");
               assignmentResult[i].shared=req.params.value;
@@ -695,7 +694,7 @@ exports.deleteAssignment = function (req, res) {
           "assignmentNumber": req.params.assignmentNumber,
           "email": req.user.email
         })
-        .then(function(err, assign) { //TODO: shouldn't this be a delete many?
+        .then(function(assign) { //TODO: shouldn't this be a delete many?
             for (var i in assign) {
                 assign[i].deleteOne();
             }
