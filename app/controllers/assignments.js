@@ -718,7 +718,7 @@ exports.deleteAssignmentByKey = function (req, res) {
         })
         .then(function(assign) { //TODO: shouldn't this be a deleteMany?
             for (var i in assign) {
-                assign[i].deleteOne();
+                assign[i].deleteOne().exec();
             }
             console.log("Deleted assignment: " + req.params.assignmentNumber, "for user", req.user.email);
         })
