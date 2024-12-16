@@ -266,7 +266,7 @@ exports.upload = function (req, res, next) {
 	    
 	    //If BSON is WAY too large, then the error is report
 	    //inside of mongoose rather than by the mongodb
-	    //server. In that case some funciont deep in mongoose
+	    //server. In that case some funcion deep in mongoose
 	    //raises a RangeError. So we trap that, even though
 	    //really mongoose should be trapping it and recasting it
 	    //in a more meaningful way. This could theoretically
