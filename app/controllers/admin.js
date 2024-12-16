@@ -1,4 +1,3 @@
-//MONGOOSE7
 var mongoose = require('mongoose'),
     User = mongoose.model('User'),
     Account = mongoose.model('Account'),
@@ -42,7 +41,7 @@ exports.allusers = function(req, res) {
     protectAdmin(req, res);
     
     User.find ({},{username:true})
-	.exec(function (err, users) {
+	.then(function (users) {
 	    var userlist = [];
 
 	    for (var idx in users) {
@@ -115,7 +114,7 @@ exports.nbassignmentsbydate = function(req, res) {
 			assignmentID:true,
 			dateCreated:true
 		    })
-	.exec(function (err, ass) {
+	.then(function (ass) {
 	    var nb = 0;
 	    
 	    for (var idx in ass) {
@@ -146,7 +145,7 @@ exports.assignmentsperuserbydate = function(req, res) {
 			assignmentID:true,
 			dateCreated:true
 		    })
-	.exec(function (err, ass) {
+	.then(function (ass) {
 	    var count={};
 	    
 	    for (var idx in ass) {
@@ -181,7 +180,7 @@ exports.nbuserbydate = function(req, res) {
 			assignmentID:true,
 			dateCreated:true
 		    })
-	.exec(function (err, ass) {
+	.then(function (ass) {
 	    var count={};
 	    
 	    var nb = 0;
