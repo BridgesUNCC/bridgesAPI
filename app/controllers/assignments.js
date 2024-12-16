@@ -42,9 +42,7 @@ exports.updateVisibility = function (req, res, next) {
             email:req.user.email,
             assignmentNumber: req.params.assignmentNumber
         })
-        .exec(function (err, assignmentResult) {
-            if(err) console.log(err);
-
+        .then(function (assignmentResult) {
             for(var i = 0; i < assignmentResult.length; i++) {
               if (err) return next(err);
               if (!assignmentResult[i])
@@ -55,7 +53,11 @@ exports.updateVisibility = function (req, res, next) {
             }
             res.send("OK");
 
-        });
+        })
+	.catch (err => {
+	    console.log(err);
+	    next(err);
+	});
 };
 
 //API route to save the position of some (or all) node positions
@@ -65,8 +67,7 @@ exports.saveSnapshot = function(req, res, next) {
             email:req.user.email,
             assignmentNumber: req.params.assignmentNumber
         })
-        .exec(function (err, assignmentResult) {
-            if (err) return next(err);
+        .then(function (assignmentResult) {
             if (!assignmentResult)
                 return next("could not find assignment");
 	    if (config.debuginfo)
@@ -74,7 +75,12 @@ exports.saveSnapshot = function(req, res, next) {
             //Save JSON with modified positions
             //assignmentResult.save()
             //res.send("OK")
-        });
+        })
+	.catch(err => {
+	    console.log(err);
+	    next (err);
+	});
+    
 };
 
 //API route for uploading assignment data. If the
