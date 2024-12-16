@@ -680,7 +680,7 @@ exports.deleteAssignment = function (req, res) {
 	    console.log(assign);
             for (var i in assign) {
 		console.log(assign[i]);
-                assign[i].deleteOne();
+                assign[i].deleteOne().exec();
             }
             console.log("Deleted assignment: " + req.params.assignmentNumber, "for user", req.user.email);
         })
