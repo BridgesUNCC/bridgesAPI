@@ -397,7 +397,7 @@ exports.get = function (req, res, next) {
 	});
 
     /*
-    function to construct the nessaccary information to render a bridges visualization
+    function to construct the necessary information to render a bridges visualization
     from the assignment information
     */
     function renderVis (res, assignment) {
