@@ -353,8 +353,8 @@
   };
 
   // event for pressing L on keyboard and toggling label
-  $("body").on("keydown", function(event) {
-	if ((event.key == "l") || (event.key = "L")){
+  $("body").on("keydown", function(evt) {
+	if ((evt.which == "76") || (evt.which == "114")) {
         BridgesVisualizer.link_labels_shown = !BridgesVisualizer.link_labels_shown;
         BridgesVisualizer.labels_shown = !BridgesVisualizer.labels_shown
         BridgesVisualizer.displayNodeLabels();
