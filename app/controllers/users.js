@@ -203,33 +203,27 @@ exports.deletePerson = function (req, res) {
     user = req.user;
     console.log("Deleting user: " + user.email);
 
-    //TODO: shouldn't this be a delete one?
+    //TODO: error handling is weak here. If assignment delete doesn't work then account doesn't get run
     User
-        .findOne({email: user.email})
-        .then(function (user) {
-            if (user) user.deleteOne().exec();
+        .deleteOne({email: user.email})
+        .then(function (resp) {
+	    console.log("removing user.");
         })
-	.catch(err => {return next(err);});
+	.catch(err => {
+	    return next(err); //TODO: there is no next function passed here
+	});
 
-    //TODO: shouldn't this be a delete many?
     Assignment
-        .find({email: user.email})
-        .then(function( assign) {
-            for (var i in assign) {
-                console.log("removing..", assign[i].assignmentID);
-                assign[i].deleteOne().exec();
-            }
+        .deleteMany({email: user.email})
+        .then(function( resp ) {
+            console.log("removing assignments.");
         })
 	.catch(err => {return next(err);});
 
-    //TODO: shouldn't this be a delete many?
     Account
-        .find({email: user.email})
-        .then(function( acct) {
-            for (var i in acct) {
-                console.log("removing..", acct[i].domain);
-                acct[i].deleteOne().exec();
-            }
+        .deleteMany({email: user.email})
+        .then(function( resp) {
+	    console.log("removing assignments.");
         })
 	.catch(err => {return next(err);});
 
