@@ -672,22 +672,17 @@ exports.updateTransforms = function(req, res) {
 /* Delete the given assignment for the current user */
 exports.deleteAssignment = function (req, res) {
     Assignment
-        .find({
+        .deleteMany({
           "assignmentNumber": req.params.assignmentNumber,
           "email": req.user.email
         })
-        .then(function(assign) { //TODO: shouldn't this be a delete many?
-	    console.log(assign);
-            for (var i in assign) {
-		console.log(assign[i]);
-                assign[i].deleteOne().exec();
-            }
+        .then(function(resp) {
             console.log("Deleted assignment: " + req.params.assignmentNumber, "for user", req.user.email);
+	    res.status(200).json({"message": "Deleted assignment " + req.params.assignmentNumber + " for user " + req.user.email});
         })
 	.catch(err => {
-	    return next(err);
+	    return res.status(500).json({"error": "Something went dead wrong"});
 	});
-    res.send("OK");
 };
 
 /* Delete the given assignment for the user with the given key */
@@ -712,20 +707,18 @@ exports.deleteAssignmentByKey = function (req, res) {
 
     // delete all subassignments with the major assignment number for this user
     Assignment
-        .find({
+        .deleteMany({
           "assignmentNumber": assignmentNumber,
           "email": req.user.email
         })
-        .then(function(assign) { //TODO: shouldn't this be a deleteMany?
-            for (var i in assign) {
-                assign[i].deleteOne().exec();
-            }
+        .then(function(resp) {
             console.log("Deleted assignment: " + req.params.assignmentNumber, "for user", req.user.email);
+	    res.status(200).json({"message": "Deleted assignment " + req.params.assignmentNumber + " for user " + req.user.email});
         })
 	.catch(err => {
-	    return next(err);
+	    return res.status(500).json({"error": "Something went dead wrong"});
 	});
-    res.status(200).json({"message": "Deleted assignment " + req.params.assignmentNumber + " for user " + req.user.email});
+
 };
 
 exports.assignmentByEmail = function (req, res) {
@@ -742,6 +735,6 @@ exports.assignmentByEmail = function (req, res) {
 
       })
 	.catch(err => {
-	    return next(err);
+	    return res.status(500).json({"error": "Something went dead wrong"});
 	});
 };
