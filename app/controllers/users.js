@@ -63,14 +63,14 @@ exports.forgot = function (req, res) {
   POST route to reset the password of the account with the given token
 */
 exports.resetPassword = function(req, res) {
-  var findthis = crypto.createHash('sha512').update(req.params.token).digest('hex');
+  var findthis = crypto.createHash('sha512').updateOne(req.params.token).digest('hex');
 
   // Find the user with the valid unique token
   User.findOne({'password_reset.reset_token': findthis,
                 'password_reset.reset_timeout': {$gte: new Date()}
-  }).exec(function (err, user) {
+  }).then(function (user) {
     // if the token is invalid or expired, alert the user
-    if(err || !user) {
+    if( !user) {
       res.render("users/noreset", {
         title: 'Cannot Reset'
       });
@@ -82,44 +82,52 @@ exports.resetPassword = function(req, res) {
       user.password_reset = undefined;
 
       // save the user model
-      user.save(function(err, user) {
-        if(err) {
-          console.log(err);
-          return res.render("users/noreset", {
-            title: 'Cannot Reset'
-          });
-        }
-
-        // finally, ask the user to login with their new password
-        res.send(200, {"redirect": '/login'});
-      });
+	user.save()
+	    .then(function(user) {
+                // finally, ask the user to login with their new password
+		res.send(200, {"redirect": '/login'});
+	    })
+	    .catch (err => {
+		console.log(err);
+		return res.render("users/noreset", {
+		    title: 'Cannot Reset'
+		});
+	    });
     }
-  });
+  })
+	.catch(err => {
+	    res.render("users/noreset", {
+		title: 'Cannot Reset'
+	    });
+	});
 };
 
 /*
   POST route to begin password reset process for the account with the given token
 */
 exports.getNewPassword = function(req, res) {
-  var findthis = crypto.createHash('sha512').update(req.params.token).digest('hex');
+  var findthis = crypto.createHash('sha512').updateOne(req.params.token).digest('hex');
 
   // Find the user with the valid unique token
   User.findOne({'password_reset.reset_token': findthis,
                 'password_reset.reset_timeout': {$gte: new Date()}
-  }).exec(function (err, user) {
-    // if the token is invalid or expired, alert the user
-    if(err || !user) {
-      res.render("users/noreset", {
-        title: 'Cannot Reset'
-      });
-    } else {
-      // otherwise, render the reset page
-      res.render("users/reset", {
-        title: 'Reset Password',
-        token: req.params.token
-      });
-    }
-  });
+	       })
+	.then(function (user) {
+	    // if the token is invalid or expired, alert the user
+	    if(!user) {
+	    } else {
+		// otherwise, render the reset page
+		res.render("users/reset", {
+		    title: 'Reset Password',
+		    token: req.params.token
+		});
+	    }
+	})
+	.catch(err => {
+	    res.render("users/noreset", {
+		title: 'Cannot Reset'
+	    });
+	});
 };
 
 /*
@@ -129,19 +137,18 @@ exports.sendResetEmail = function (req, res) {
   var email = req.body.email;
 
   // Find the user with the given email address
-  User.findOne({ 'email': email }).exec(function (err, user) {
-    if(err || user === null) {
-      res.status(400).json({"error": email + " is not associated with a Bridges account. Please try again:"});
+  User.findOne({ 'email': email }).then(function (user) {
+    if(user === null) {
     } else {
       // pass the email address to generate the email
-      mail.resetPass(email, function(err, email, token) {
+      mail.resetPass(email, function(err, email, token) { //MONGOOSE7 ????
         if(err) {
           console.log(err);
           return res.status(400).json({"error": "Email could not be sent at this time. Please try again:"});
         }
 
         // store the token (and expiry datetime) in user model
-        user.setToken(token, function(err) {
+        user.setToken(token, function(err) { //MONGOOSE7 ????
           if(err) {
             console.log(err);
             return res.status(400).json({"error": "Token could not be saved. Please contact a Bridges administrator."});
@@ -150,7 +157,10 @@ exports.sendResetEmail = function (req, res) {
         });
       });
     }
-  });
+  })
+	.catch(err => {
+	          res.status(400).json({"error": email + " is not associated with a Bridges account. Please try again:"});
+	});
 };
 
 exports.logout = function (req, res) {
@@ -174,15 +184,17 @@ exports.profile = function (req, res) {
     user = req.user;
     Account
       .findOne({ email : user.email })
-      .exec(function (err, accts) {
-          if (err) return next(err);
+      .then(function (accts) {
           if (!accts) accts = new Account();
           return res.render('users/profile', {
               title: user.username + "'s Dashboard - Bridges",
               user: user,
               acct: accts
           });
-      });
+      })
+	.catch(err => {
+	    return next(err);
+	});
 };
 
 /* Delete a user and all associated assignments and accounts */
@@ -191,32 +203,29 @@ exports.deletePerson = function (req, res) {
     user = req.user;
     console.log("Deleting user: " + user.email);
 
+    //TODO: error handling is weak here. If assignment delete doesn't work then account doesn't get run
     User
-        .findOne({email: user.email})
-        .exec(function (err, user) {
-            if (err) return next(err);
-            if (user) user.remove();
-        });
+        .deleteOne({email: user.email})
+        .then(function (resp) {
+	    console.log("removing user.");
+        })
+	.catch(err => {
+	    return next(err); //TODO: there is no next function passed here
+	});
 
     Assignment
-        .find({email: user.email})
-        .exec(function(err, assign) {
-            if (err) return next(err);
-            for (var i in assign) {
-                console.log("removing..", assign[i].assignmentID);
-                assign[i].remove();
-            }
-        });
+        .deleteMany({email: user.email})
+        .then(function( resp ) {
+            console.log("removing assignments.");
+        })
+	.catch(err => {return next(err);});
 
     Account
-        .find({email: user.email})
-        .exec(function(err, acct) {
-            if (err) return next(err);
-            for (var i in acct) {
-                console.log("removing..", acct[i].domain);
-                acct[i].remove();
-            }
-        });
+        .deleteMany({email: user.email})
+        .then(function( resp) {
+	    console.log("removing assignments.");
+        })
+	.catch(err => {return next(err);});
 
     return res.redirect("/login");
 };
@@ -244,15 +253,7 @@ exports.create = function (req, res) {
     var user = new User(req.body);
     user.provider = 'local';
     user.generateKey();
-    user.save(function (err) {
-        if (err) {
-          err = err.errors ? err.errors : err;
-          return res.render('users/signup', {
-            errors: (err),
-            user: user,
-            title: 'Sign up'
-          });
-        }
+    user.save().then(function (saveddoc) {
 
         console.log("Creating user: "+ req.body.email);
 
@@ -261,25 +262,39 @@ exports.create = function (req, res) {
           if (err) return next(err);
           return res.redirect('/username');
         });
-    });
+    })
+	.catch(err =>{
+	    err = err.errors ? err.errors : err;
+            return res.render('users/signup', {
+		errors: (err),
+		user: user,
+		title: 'Sign up'
+            });
+	});
 };
 
 /* Set the institution_name for the current user */
 exports.setInstitution = function (req, res) {
   // TODO: clean insitution_name
   req.user.institution_name = req.body.institution;
-  req.user.save(function(err, user) {
-    if(err) return res.send(501);
-    return res.send(200);
-  });
+    req.user.save()
+	.then(function(user) {
+            return res.send(200);
+	})
+	.catch(err => {
+	    return res.send(501);
+	});
 };
 
 /* Set the course_name for the current user */
 exports.setCourse = function (req, res) {
   // TODO: clean course_name
   req.user.course_name = req.body.course;
-  req.user.save(function(err, user) {
-    if(err) return res.send(501);
-    return res.send(200);
-  });
+    req.user.save()
+    .then(function(user) {
+        return res.send(200);
+    })
+	.catch(err =>{
+	    return res.send(501);
+	});
 };
