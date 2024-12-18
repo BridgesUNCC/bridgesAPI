@@ -484,7 +484,7 @@ d3.graph_canvas = function(canvas, W, H, data) {
 
     // Redraw graph if labels are toggled
     $("body").on("keydown", function(event) {
-      if((event.which == "76") || event.which == "114")){
+      if(event.which == "76"){
         ticked();
       }
     });
