@@ -1,7 +1,3 @@
-.navbar {
-    display: block;
-}
-
 .navbar-assignment {
   background-color: #f8f8f8;
   min-height:100%;
@@ -23,7 +19,7 @@
   max-width: 60px;
 }
 
-.navbar-assignment.collapsed .bi {
+.navbar-assignment.collapsed .glyphicon {
   font-size: 22px;
 }
 
@@ -97,10 +93,10 @@
   color: #666;
 }
 
-.navbar-assignment-menu li a .bi {
+.navbar-assignment-menu li a .glyphicon {
   margin-right: 20px;
 }
 
-.navbar-assignment-menu li a:hover .bi {
+.navbar-assignment-menu li a:hover .glyphicon {
   color: steelblue;
 }
