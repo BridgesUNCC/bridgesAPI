@@ -1,6 +1,6 @@
 .navbar.navbar-assignment
   a#collapse.btn-expand-collapse(href="#")
-    span.bi.bi-chevron-right
+    span.glyphicon.glyphicon-menu-right
   ul.navbar-assignment-menu
     li
       if (owner)
@@ -15,45 +15,45 @@
 
           if (navItems.save)
             a#save(href="#", title="Save Node Positions")
-              span.bi.bi-download
+              span.glyphicon.glyphicon-save
               span.nav-label  Save Node Positions
 
           if (navItems.socketConnect)
             a#socketConnect(href="#")
-              span.bi.bi-eye-fill
+              span.glyphicon.glyphicon-eye-open
               span.nav-label Connect to Game
 
       if (navItems.labels)
         a#nodelabels(href="#", title="Toggle Node Labels")
-          span.bi.bi-tag-fill
+          span.glyphicon.glyphicon-tag
           span.nav-label Node Labels
 
         a#linklabels(href="#", title="Toggle Link Labels")
-          span.bi.bi-tags-fill
+          span.glyphicon.glyphicon-tags
           span.nav-label Link Labels
 
       if (navItems.toggleDisplay)
         a#toggleDisplay(href="#", title="Toggle Display Mode")
-          span.bi.bi-justify
+          span.glyphicon.glyphicon-align-justify
           span.nav-label Toggle Display
 
       a#reset(href="#", title="Reset View")
-        span.bi.bi-arrows-angle-expand
+        span.glyphicon.glyphicon-resize-full
         span.nav-label Reset View
 
       if (assignment.vistype == "nodelink")
         a#hideNodes(href="#", title="Reset View")
-          span.bi.bi-eye-slash-fill
+          span.glyphicon.glyphicon-eye-close
           span.nav-label Hide Nodes
 
       if (assignment.vistype == "nodelink")
         a#hideLinks(href="#", title="Reset View")
-          span.bi.bi-eye-slash-fill
+          span.glyphicon.glyphicon-eye-close
           span.nav-label Hide Links
 
       if (owner)
         a#delete(href="#", title="Delete Assignment")
-          span.bi.bi-trash-fill
+          span.glyphicon.glyphicon-trash
           span.nav-label Delete Assignment
 
 script.
@@ -61,7 +61,7 @@ script.
 
   $('.btn-expand-collapse').click(function(e) {
       $('.navbar-assignment').toggleClass('collapsed');
-      $(this).children('span').toggleClass('bi-chevron-right').toggleClass('bi-chevron-left');
+      $(this).children('span').toggleClass('glyphicon-menu-right').toggleClass('glyphicon-menu-left');
       if(localStorage.currentNav){
         if(localStorage.currentNav == 0){
           localStorage.currentNav = 1;
@@ -74,10 +74,10 @@ script.
   if(localStorage.currentNav){
     if(localStorage.currentNav == 1){
       $('.navbar-assignment').addClass('collapsed');
-      $('#collapse').children('span').removeClass('bi-chevron-right').addClass('bi-chevron-left');
+      $('#collapse').children('span').removeClass('glyphicon-menu-right').addClass('glyphicon-menu-left');
     }else{
       $('.navbar-assignment').removeClass('collapsed');
-      $('#collapse').children('span').addClass('bi-chevron-right').removeClass('bi-chevron-left');
+      $('#collapse').children('span').addClass('glyphicon-menu-right').removeClass('glyphicon-menu-left');
     }
   }else{
     localStorage.currentNav = 0;
