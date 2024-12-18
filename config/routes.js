@@ -1,11 +1,14 @@
 var mongoose = require('mongoose'),
-    User = mongoose.model('User');
+    User = mongoose.model('User'),
+    config = require.main.require('./config/config');
 
 module.exports = function(app, passport) {
 
     //Allows users to by pass authentication to api requests
     //if they have a valid api key.
     var hasAccess = function(req, res, next) {
+	if (config.debuginfo)
+	    console.log("in hasAccess");
         //authenticated
         if (req.isAuthenticated()) {
             return next();
@@ -23,12 +26,13 @@ module.exports = function(app, passport) {
               "error": "Not logged in: you must provide a username as a query variable"
           });
         }
+
         User
           .findOne({
               apikey: apikey,
               username: username
           })
-          .exec(function(err, user) {
+	.then(function(user) {
               if (!user) {
                 return res.status(401).json({
                     "error": "your api key or username is invalid"
@@ -36,7 +40,12 @@ module.exports = function(app, passport) {
               }
               req.user = user;
               return next();
-          });
+        })
+	    .catch(err =>{
+		console.log("ignoring error really?");
+		//TODO: Nothing? really?
+	    });
+
     };
 
     //authentication
@@ -224,10 +233,12 @@ module.exports = function(app, passport) {
             var account = req.account;
             // Associate the Twitter account with the logged-in user.
             account.email = user.email;
-            account.save(function(err) {
-                if (err) return (err);
-                res.redirect('/home');
-
+            account.save()
+		.then(function(acc) {
+		    res.redirect('/home');
+		})
+		.catch(err => {
+                    return (err);
             });
         }
     );

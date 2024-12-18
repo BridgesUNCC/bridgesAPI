@@ -126,7 +126,6 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
           .attr("id","map_overlay"+id)
           .classed("map_overlay", true)
 
-
       var array = topojson.feature(us, us.objects.states).features
       var arraycopy = [...array];
 
@@ -246,7 +245,7 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
   /*
     Call the appropriate projection and overlay functions
   */
-
+ 
   switch(map.toLowerCase()) {
     case "equirectangular":
       svgWorldMap();

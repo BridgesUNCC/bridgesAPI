@@ -7,7 +7,7 @@ var mongoose = require('mongoose')
     }
 
 
-exports.getSource = function (req, res, next) {
+exports.getSource = function (req, res, next) { //TODO: is this even used?
   
     console.log(req.user.email)
 
@@ -62,8 +62,7 @@ exports.getSource = function (req, res, next) {
             email : req.user.email,
             domainProvider: req.params.domain 
         })
-        .exec(function (err, acct) {
-            if (err) return next(err)
+        .then(function (acct) {
             
             reqDomain = req.params.domain
     
@@ -75,5 +74,8 @@ exports.getSource = function (req, res, next) {
                 } else getFromCache(srcHandler, acct)
             })
         })
+	.catch(err => {
+	    return next(err)
+	});
 
 }
