@@ -64,7 +64,6 @@ var ele = document.getElementById("vis0"),
     height = ele.clientHeight,
     transform = assignment.transform;
 
-
 visualizeAssignment(assignment);
 
 function collapse(evt) {
@@ -162,34 +161,6 @@ function savePositions (evt) {
   });
 }
 
-//Asynchronously update the vis transform values
-//this method is just for testing, if approved, it still needs the ajax call and routing set up as well as the dabatase.
-//It also can be used with the tree visualization
-// function saveTransform(){
-//     var visTransforms = {};
-//     for (var key in data) {
-//         var my_transform = d3.transform(d3.select("#vis"+key).select("g").attr("transform"));
-//         visTransforms[key] = {
-//           "scale": parseFloat(my_transform.scale[0]),
-//           "translatex": parseFloat(my_transform.translate[0]),
-//           "translatey": parseFloat(my_transform.translate[1])
-//         };
-//     }
-//     // console.log(visTransforms);
-//     // send scale and translation data to the server to save
-//     $.ajax({
-//         url: "/assignments/updateTransforms/"+assignmentNumber,
-//         type: "post",
-//         data: visTransforms
-//     }).done(function(status) {
-//         if(status == 'OK'){
-//             alertMessage("Scale and translation saved!", "success");
-//         } else {
-//             alertMessage("Unsuccessful. Try logging in!", "danger");
-//         }
-//     });
-// }
-
 /*
  Create a tooltip from the given message and status
  status: success, danger, warning
@@ -203,32 +174,6 @@ function alertMessage(message, status) {
      $("#updateStatus").hide();
   },2500);
 }
-
-// Saved the translate and scale of every visualization in an assignemts
-// function saveVisStatesAsCookies(){
-//     // console.log(this);
-//     var exdays = 30;
-//     try{
-//       for (var key in data) {
-//           var cookieName = "vis"+key+"-"+location.pathname;
-//           var my_transform = d3.transform(d3.select("#vis"+key).select("g").attr("transform"));
-//
-//           var cookieValue = JSON.stringify({
-//             "scale": parseFloat(my_transform.scale[0]),
-//             "translatex": parseFloat(my_transform.translate[0]),
-//             "translatey": parseFloat(my_transform.translate[1])
-//           });
-//           var d = new Date();
-//           d.setTime(d.getTime() + (exdays*24*60*60*1000));
-//           var expires = "expires=" + d.toGMTString();
-//           document.cookie = cookieName+"="+cookieValue+"; "+expires;
-//       }
-//       var today = new Date().toLocaleTimeString()+" - "+new Date().toLocaleDateString();
-//       //  alertMessage("Scale and translation saved!", "success");
-//     } catch(err){
-//       console.log(err);
-//     }
-// }
 
 function isOnScreen(elem) {
 	// if the element doesn't exist, abort
@@ -510,6 +455,7 @@ function visualizeAssignment(assignment, index){
       BridgesVisualizer.visualizations.push(gamegrid);
   }
   else if (assignment.vistype == "nodelink" && d3.graph) {
+
       graph = d3.graph(vis, width, height, assignmentData);
       BridgesVisualizer.visualizations[assignment.subAssignment] = (graph);
   }
@@ -629,7 +575,7 @@ function addMapOverlay(assignmentData, vis) {
     switch(vis.node().tagName) {
       case 'svg':
       //we now pass the area to render from map as assignmentData.map: example-North Carolina
-      console.log(assignmentData.coord_system_type)
+	//console.log(assignmentData.coord_system_type)
         BridgesVisualizer.map(vis, assignmentData.coord_system_type, assignmentData.coord_system_type, assignmentData.map);
         break;
 

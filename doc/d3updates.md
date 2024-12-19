@@ -1,5 +1,7 @@
 # List of changes to update d3js from 4.1.2 to 7.9.0
 
+Fr reference, you can find previous documentations of d3 at https://devdocs.io/d3~6/ you can change the url for previous versions.
+
 1. Category color object -- only scheme10 supported. Was using scheme20
 (was being used in ??)
 
