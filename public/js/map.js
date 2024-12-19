@@ -133,7 +133,7 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
 		      return false
 		  })
 		  visData = visData.concat(countiesvisdata)
-		  console.log(visData)
+		  //console.log(visData)
 	      }
 	      
 	      states.selectAll("path")
@@ -209,10 +209,10 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
 	      
 	      vis.select("g").select("#map_overlay"+id).moveToBack();
 	  })
-	  .catch(error {
+	  .catch(error => {
 	      console.log(error);
 	  });
-  }
+  };
   /*
     Call the appropriate projection and overlay functions
   */

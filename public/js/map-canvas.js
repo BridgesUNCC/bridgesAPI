@@ -64,7 +64,7 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
     D3's equirectangular projection and overlay - whole world, with or without country borders
   */
   var equirectangular = function() {
-      d3.json("/geoJSON/world-50m.json").
+      d3.json("/geoJSON/world-50m.json")
 	  .then(world => {
 
 	      d3.select(assignmentContainer).selectAll(".map_overlay").remove();
