@@ -4,7 +4,7 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
   var id = +vis.attr("id").substr(3);
   if(!id || isNaN(id)) id = 0;
 
-  console.log(map)
+  //console.log(map)
   /*
     D3's albersUsa overlay and projection - USA with Alaska and Hawaii to the south west
   */
