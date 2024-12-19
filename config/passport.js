@@ -19,11 +19,15 @@ module.exports = function (passport, config) {
         done(null, user.id);
     });
 
-    passport.deserializeUser(function(id, done) {
-        User.findOne({ _id: id }, function (err, user) {
-            done(err, user);
-        });
+    passport.deserializeUser(async (id, done) => {
+        try {
+	    return done(null, await User.findOne({ _id: id }));
+	}
+	catch (err)	{
+	    return done(error);
+	}
     });
+
 
     //======================
     //passport login setup
@@ -37,7 +41,7 @@ module.exports = function (passport, config) {
            passReqToCallback: true
     },
 
-    function(req, email, password, done) {
+    function(req, email, password, done) {//MONGOOSE7
         User.findOne({ username: email }, function (err, user) {
             if (err) { return done(err); }
             if (!user)
@@ -61,7 +65,7 @@ module.exports = function (passport, config) {
         usernameField: 'email',
         passwordField: 'password'
     },
-    function (req, email, password, done) {
+    function (req, email, password, done) {//MONGOOSE7
         User.findOne({email: email}, function(err, user) {
             if (err) return done(err);
             if (!email)

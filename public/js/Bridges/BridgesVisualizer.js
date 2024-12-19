@@ -14,7 +14,7 @@
       });
   };
 
-  BridgesVisualizer.defaultColors = d3.scaleOrdinal(d3.schemeCategory20);
+  BridgesVisualizer.defaultColors = d3.scaleOrdinal(d3.schemeCategory10);
 
   BridgesVisualizer.strokeWidthRange = d3.scaleLinear().domain([0.0001,100]).range([0.0001,200]).clamp(true);
   //scale values between 1 and 100 to a reasonable range
@@ -248,8 +248,8 @@
           .style("display", "block")
           .style("opacity", 0.9);
       BridgesVisualizer.tooltip.html(addLineBreaks(label))
-          .style("left", (d3.event.pageX) + "px")
-          .style("top", (d3.event.pageY) + "px");
+          .style("left", (event.pageX) + "px")
+          .style("top", (event.pageY) + "px");
       };
 
   BridgesVisualizer.textMouseout = function(d) {
@@ -327,7 +327,6 @@
     }
 
     // BridgesVisualizer.labels_shown = true;
-    console.log(BridgesVisualizer.labels_shown)
     BridgesVisualizer.redraw();
   };
 
@@ -342,7 +341,6 @@
         d3.selectAll(".selfLinkLabel").style("display", "none");
         // BridgesVisualizer.showingLinkLabels = false;
     }
-    console.log("links")
     BridgesVisualizer.redraw();
   };
 
@@ -355,8 +353,8 @@
   };
 
   // event for pressing L on keyboard and toggling label
-  $("body").on("keydown", function(event) {
-      if(event.which == "76"){
+  $("body").on("keydown", function(evt) {
+	if ((evt.which == "76") || (evt.which == "114")) {
         BridgesVisualizer.link_labels_shown = !BridgesVisualizer.link_labels_shown;
         BridgesVisualizer.labels_shown = !BridgesVisualizer.labels_shown
         BridgesVisualizer.displayNodeLabels();

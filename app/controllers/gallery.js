@@ -14,11 +14,13 @@ exports.view = function(req, res) {
             .findOne({
                 "email": user
             })
-            .exec(function(err, user) {
-                if (err) return null;
+            .then(function(user) {
                 if (user) usernames.push(user.username);
                 getUsername(users, usernames, cb);
-            });
+            })
+	    .catch(err => {
+		 return null;
+	    });
     };
 
     var getAssignmentsEmailAndUsernameMap = function(users, usernamesmap, cb) {
@@ -28,14 +30,16 @@ exports.view = function(req, res) {
             .findOne({
                 "email": user
             })
-            .exec(function(err, user) {
-                if (err) return null;
+            .then()(function(user) {
                 if (user){
                   // usernames.push(user.username)
                   usernamesmap[user.email] = user.username;
                 }
                 getAssignmentsEmailAndUsernameMap(users, usernamesmap, cb);
-            });
+            })
+	    .catch(err => {
+		return null;
+	    });
     };
 
     if (!req.params.assignmentNumber) {
@@ -61,9 +65,8 @@ exports.view = function(req, res) {
               dateCreated: 1,
               _id: 0
           })
-          .exec(function(err, assignmentResult) {
-
-              if (err) return next(err);
+            .then()(function(assignmentResult) {
+              
               if (!assignmentResult) return next("could not find " +
                   "assignment " + req.params.assignmentNumber);
 
@@ -111,7 +114,10 @@ exports.view = function(req, res) {
                       "assignments":assignmentResult
                   });
               });
-          });
+          })
+	    .catch(err => {
+		return next(err);	
+	    });
         }
 };
 
@@ -146,13 +152,15 @@ exports.recentUploads = function(req, res) {
       .sort({"dateCreated": -1})
       .limit(num)
       .skip(skip)
-      .exec(function(err, recentAssigns) {
-          if (err) return next(err);
+      .then(function(recentAssigns) {
           if (!recentAssigns || recentAssigns.length === 0) {
             return res.status(204).send("error obtaining recent assignment data");
           }
           res.send(recentAssigns);
-      });
+      })
+	.catch(err => {
+	    return next(err);
+	});
 
 };
 
@@ -189,12 +197,14 @@ exports.pinnedUploads = function(req, res, next) {
       .limit(num)
       .skip(skip)
       .sort({"dateCreated": 1})
-      .exec(function(err, pinnedAssigns) {
-          if (err) return next(err);
+      .then(function(pinnedAssigns) {
           if (!pinnedAssigns || pinnedAssigns.length === 0) {
             return res.status(204).send("error obtaining pinned assignment data");
           }
           res.send(pinnedAssigns);
-      });
+      })
+	.catch(err => {
+	    return next(err);
+	});
 
 };

@@ -210,7 +210,6 @@ d3.sllist = function(d3, canvasID, w, h, data) {
                   else return 3;
                 })
                 .attr("y1", function(d,i){
-                  // console.log(  );
                   return d3.select(this.parentNode).select(".forward-link").attr("y1");
                 })
                 .attr("y2", function(d,i){

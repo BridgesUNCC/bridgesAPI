@@ -19,42 +19,48 @@ module.exports = function (grunt) {
            }
        }
     },
-         copy: {
-             main: {
-		 files: [
-		     {
-			 expand:true,
-			 cwd: './node_modules/d3/build/',
-			 src: '**',
-			 dest: 'public/components/d3/'
-		     },
-		     {
-			 expand:true,
-			 cwd: './node_modules/bootstrap/dist/',
-			 src: '**',
-			 dest: 'public/components/bootstrap/'
-		     },
-		     {
-			 expand:true,
-			 cwd: './node_modules/jquery/dist/',
-			 src: '**',
-			 dest: 'public/components/jquery/'
-		     },
-		     {
-			 expand:true,
-			 cwd: './node_modules/css-toggle-switch/dist/',
-			 src: '**',
-			 dest: 'public/components/css-toggle-switch/'
-		     },
-		     {
-			 expand:true,
-			 cwd: './node_modules/highcharts/',
-			 src: '**',
-			 dest: 'public/components/highcharts/'
-		     },
-		 ]
-            },
-        },
+	copy: {
+	    main: {
+	      files: [
+		    {
+		      expand:true,
+		      cwd: './node_modules/d3/dist/',
+		      src: '**',
+		      dest: 'public/components/d3/'
+		    },
+		    {
+		      expand:true,
+		      cwd: './node_modules/bootstrap/dist/',
+		      src: '**',
+		      dest: 'public/components/bootstrap/'
+		    },
+		    {
+		      expand:true,
+		      cwd: './node_modules/bootstrap-icons/font',
+		      src: '**',
+		      dest: 'public/components/bootstrap-icons/'
+		    },
+		    {
+		      expand:true,
+		      cwd: './node_modules/jquery/dist/',
+		      src: '**',
+		      dest: 'public/components/jquery/'
+		    },
+		    {
+		      expand:true,
+		      cwd: './node_modules/css-toggle-switch/dist/',
+		      src: '**',
+		      dest: 'public/components/css-toggle-switch/'
+		    },
+		    {
+		      expand:true,
+		      cwd: './node_modules/highcharts/',
+		      src: '**',
+		      dest: 'public/components/highcharts/'
+		    },
+	      ]
+	    },
+	},
     modernizr: {
       dist: {
         "dest" : "build/modernizr-custom.js",

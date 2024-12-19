@@ -1,0 +1,56 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+	<head> 
+		<meta charset="UTF-8" /> 
+		<meta
+			name="viewport"
+			path1tent="width=device-width, 
+					initial-scale=1.0"/> 
+		<title>D3.js mouse() Function</title> 
+	</head> 
+	<style> 
+		.div { 
+			width: 200px; 
+			height: 200px; 
+			background-color: green; 
+			overflow: hidden; 
+		} 
+		div { 
+			background-color: red; 
+			width: 10px; 
+			height: 10px; 
+		} 
+	</style> 
+	<body> 
+		<h2>click on the box</h2> 
+		<div class="div"></div> 
+		<script src= 
+"https://d3js.org/d3.v7.min.js"> 
+		</script> 
+		<script src= 
+"https://d3js.org/d3-selection.v7.min.js"> 
+		</script> 
+		<script> 
+			let btn = document.querySelector("div"); 
+			var div = d3.select("div"); 
+			div.on("click", createDot); 
+			function createDot(evt) { 
+				
+				// Using d3.mouse() function 
+console.log (evt);
+
+				let pos = [evt.screenY, evt.screenY];
+				console.log(pos); 
+				d3.select("div") 
+					.append("div") 
+					.style("background-color", "white") 
+					.style("position", "absolute") 
+					.style("margin-left", `${pos[0] - 10}px`) 
+					.style("margin-right", `${pos[0] - 10}px`) 
+					.style("margin-top", `${pos[1] - 10}px`) 
+					.style("margin-bottom", `${pos[1] - 10}px`); 
+			} 
+		</script> 
+	</body> 
+</html> 
+

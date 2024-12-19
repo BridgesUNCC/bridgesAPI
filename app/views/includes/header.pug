@@ -1,23 +1,24 @@
-.navbar.navbar-default
-    .container-fluid
-        .navbar-header
-            a(href="/").navbar-brand Bridges
-            a(href="http://bridgesuncc.github.io").navbar-brand Documentation
-            button.navbar-toggle.collapsed( type="button", data-toggle="collapse", data-target=".navbar-collapse", aria-expanded="false", aria-controls="navbar")
-                span.sr-only Toggle navigation
-                span.icon-bar
-                span.icon-bar
-                span.icon-bar
+.navbar.navbar-expand-lg.navbar-light.bg-light
+  .container-fluid
+    a(href="/").navbar-brand Bridges
+    a(href="http://bridgesuncc.github.io").navbar-brand Documentation
 
-        .navbar-collapse.collapse
-          ul.nav.navbar-nav.navbar-right
-            if (!user)
-              li
-                a(href="/login") Log In
-            if (user)
-              li
-                a(href="/username/"+user.username) My Projects
-              li
-                a(href="/profile") Profile
-              li
-                a#log(href="/logout") Log Out
+    button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav", aria-controls="navbarNav", aria-expanded="false", aria-label="Toggle navigation")
+      span.navbar-toggler-icon
+
+    // Collapsible navbar content
+    .collapse.navbar-collapse#navbarNav
+      ul.nav.navbar-nav.ms-auto
+        // Links for logged-out users
+        if (!user)
+          li.nav-item
+            a.nav-link(href="/login") Log In
+
+        // Links for logged-in users
+        if (user)
+          li.nav-item
+            a.nav-link(href="/username/" + user.username) My Projects
+          li.nav-item
+            a.nav-link(href="/profile") Profile
+          li.nav-item
+            a.nav-link#log(href="/logout") Log Out

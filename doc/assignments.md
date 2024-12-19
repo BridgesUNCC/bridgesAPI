@@ -1,4 +1,5 @@
-# How to add routes
+# the assignment route - from the DB query to creating and visualizing
+# the assignment
 
 ## the route itself
 
@@ -7,16 +8,22 @@ The routes themselves are configured in `config/routes.js`.
 They are typically taking a path and forwarding it to a particular
 javascript function, with a error handler.
 
-## function answering the path
+For the assignment route, you can post and get assignment. To get the assignmentit is (`config/routes.js`) it is
+
+app.get('/assignments/:assignmentNumber/:username', assignments.get, handleError);
+
+
+## function answering the assignment path
 
 The function that defines how to process a path are usually imported
-from a controller in `app/controlers`.
+from a controller in `app/controlers/assignments.js`.
 
 The controller file puts the function in `exports` and the
 `config/routes.js` uses it from there.
 
-The function that processes a route takes three parameters: usually `req`
-, `res` and `next`.
+The function that processes the assignment  route is 
+
+exports.get = function (req, res, next)
 
 `req` defines the input of the function such as the `req.query`
 parameters. It also contains the session variable such as `req.user`
@@ -25,6 +32,18 @@ parameters. It also contains the session variable such as `req.user`
 `res` is the response object that essentially is returned to the webclient.
 
 `next'  handles errors
+
+This function does a lot of checks - user name, api key, email, assignment
+number, number of sub assignments, etc (catches errors at every instance).
+Then it calls renderVis
+
+### renderVis(res, assignment)
+
+This function constructs gathers the needed information and resources 
+that will be used to compose the HTML page (meta data, scripts). It checks
+the type of visualization from the input JSON, sets visualization type  
+and display modes, gets the appropriate scripts (corresponding JS files, like
+`array2d.js`) and finally calls the `render()` function, passing a dictionary of all this information.
 
 ## outputting JSON
 

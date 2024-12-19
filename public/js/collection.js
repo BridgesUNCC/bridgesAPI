@@ -59,8 +59,15 @@ d3.collection = function(svg, W, H, data) {
 
 	// initialize zoom parameters, handler
 	var zoom = d3.zoom()
+			.extent([[0,0], [w, h]])
 			.scaleExtent([0.1,5])
 		.on("zoom", zoomHandler);
+
+	function zoomHandler(evt) {
+		if (svgGroup) {
+			svg.attr('transform', evt.transform);
+		}
+	}
 
 	// update the svg with some global attributes and zoom attribute
     vis = svg.attr("width", w)
@@ -75,13 +82,6 @@ d3.collection = function(svg, W, H, data) {
 	svgGroup = vis.append("g").attr('transform', T_Composite);
 
 	// zoom handler
-	function zoomHandler() {
-		if (svgGroup) {
-			var T = d3.event.transform;
-			svg.attr('transform', d3.event.transform);
-		}
-	}
-
 	// parse and set all symbols in the shape collection
     var symbolData = data.symbols,
         symbol = null,  // d3 symbol selection

@@ -21,6 +21,16 @@ d3.graph = function(svg, W, H, data) {
         .scaleExtent([0.1,10])
         .on("zoom", zoomed);
 
+	// zoom function
+	function zoomed(evt) {
+		if(svgGroup) {
+			//scales labels based on distance zoomed in
+			d3.selectAll(".nodeLabel").style("font-size", 
+								10/evt.transform.k)
+			svgGroup.attr("transform", evt.transform);
+		}
+  	}
+
     vis = svg.attr("width", w)
             .attr("height", h)
             .attr("preserveAspectRatio", "xMinYMin meet")
@@ -30,8 +40,7 @@ d3.graph = function(svg, W, H, data) {
             .call(zoom.transform, transform);
 
     graph.reset = function() {
-
-      if(!data.coord_system_type || data.coord_system_type == "cartesian") {
+      if (!data.coord_system_type || data.coord_system_type == "cartesian") {
         finalTranslate = BridgesVisualizer.defaultTransforms.graph.translate;
         finalScale = BridgesVisualizer.defaultTransforms.graph.scale;
         transform = d3.zoomIdentity.translate(finalTranslate[0], finalTranslate[1]).scale(finalScale);
@@ -42,16 +51,20 @@ d3.graph = function(svg, W, H, data) {
       }
       svg.call(zoom.transform, transform);
     };
+
+	// initialize the graph
     graph.reset();
-    // if we want to do a window -> viewport transformation, set up the scales
-    if(data.coord_system_type == "window") {
+
+    // if a window is specified, then do window -> viewport transformation
+    if (data.coord_system_type == "window") {
       var xExtent, yExtent, viewportX, viewportY;
 
       // use specified window or compute the window
-      if(data.window) {
+      if (data.window) {
           xExtent = [data.window[0], data.window[1]];
           yExtent = [data.window[2], data.window[3]];
-      } else {
+      } 
+	  else {
         xExtent = d3.extent(data.nodes.filter(function(d) { return d.location; }), function(d,i) { return d.location[0]; });
         yExtent = d3.extent(data.nodes.filter(function(d) { return d.location; }), function(d,i) { return d.location[1]; });
       }
@@ -64,38 +77,44 @@ d3.graph = function(svg, W, H, data) {
               .domain(yExtent)
               .range([h, 0]);
 
-      // take a point ([x,y]) in window coords and project it into viewport coords
+      // map to viewport coords
       windowProjection = function(p) {
         return [viewportX(p[0]), viewportY(p[1])];
       };
     }
 
-    svgGroup = vis.append("g").attr('transform', transform);
+    svgGroup = vis.append("g")
+					.attr('transform', transform);
 
     var nodes = data.nodes;
+
+	// d3 expects target and source to be integers if one is to refer to the 
+	// nodes by index. If target adn soure are strings, then they are refering to 
+	// IDs of the nodes and not index in the array
+
+	// convert node source and target to integers
+	for (var x in data.links) {
+		data.links[x].target = +data.links[x].target;
+		data.links[x].source = +data.links[x].source;
+	}
     var links = data.links.filter(function(d){
-      return d.target != d.source;
-    });
+		return d.target != d.source;
+    })
+
     var selflinks = data.links.filter(function(d){
       return d.target == d.source;
     });
 
     var simulation = d3.forceSimulation(nodes)
-      .force("link", d3.forceLink(links)
-                        .id(function(d) { return d.index; })
-                        .distance(function(d) {
-                          return 40 + links.length;
-                        }))
-      .force("charge", d3.forceManyBody()
-                        .strength(function(d) {
-                          return -30 - (d.size*5);
-                        }))
+      .force("charge", d3.forceManyBody())
+      .force("center", d3.forceCenter(BridgesVisualizer.visCenter()[0], 
+					BridgesVisualizer.visCenter()[1]))
+	  .force("link", d3.forceLink(links).id( (d) => d.index))
+      .on("tick", ticked)
       .force("collision", d3.forceCollide()
-                        .radius(function(d) {
-                          return d.size/3 || 10;
-                        }))
-      .force("center", d3.forceCenter(BridgesVisualizer.visCenter()[0], BridgesVisualizer.visCenter()[1]))
-      .on("tick", ticked);
+	  .radius(function(d) {
+            return d.size/3 || 10;
+      	}))
 
   // Add marker defs to the svg element
   BridgesVisualizer.addMarkerDefs(vis);
@@ -105,7 +124,7 @@ d3.graph = function(svg, W, H, data) {
       .data(selflinks.reverse())  // reverse to draw end markers over links
       .enter().append("svg:g");
       selfLinkG
-          .insert("svg:path")
+            .insert("svg:path")
             .attr("class", "selflink")
             .attr("id", function(d,i) { return "selflinkId_" + i; })
             .style("stroke-width", function (d) {
@@ -121,7 +140,7 @@ d3.graph = function(svg, W, H, data) {
                 return d.dasharray || "";
             })
             .style("fill", "none")
-            .on("mouseover", function(d) {
+            .on("mouseover", function(evt, d) {
               if(d.label) {
                 BridgesVisualizer.textMouseover(d.label);
               }
@@ -136,7 +155,7 @@ d3.graph = function(svg, W, H, data) {
           })
           .text(function(d,i) { return d.label || ""; });
 
-        d3.selectAll(".selfLinkLabel").each(BridgesVisualizer.insertLinkLinebreaks);
+       d3.selectAll(".selfLinkLabel").each(BridgesVisualizer.insertLinkLinebreaks);
   }
 
   var linkG = svgGroup.selectAll(".link")
@@ -181,7 +200,7 @@ d3.graph = function(svg, W, H, data) {
     var node = svgGroup.selectAll(".node")
         .data(nodes)
         .enter().append("g")
-        .on("mouseover", function(d) {BridgesVisualizer.textMouseover(d.name); } )
+        .on("mouseover", function(evt, d) {BridgesVisualizer.textMouseover(d.name); } )
         .on("mouseout", BridgesVisualizer.textMouseout)
         .on("dblclick", dblclick)
         .call(d3.drag()
@@ -190,12 +209,12 @@ d3.graph = function(svg, W, H, data) {
          .on("end", dragended))
         .style("stroke", "black")
         .style("stroke-width", "1")
-        .style("stroke-dasharray", function(d) {
+        .style("stroke-dasharray", function(evt, d) {
             return d.fixed ? BridgesVisualizer.treeDashArray : "0,0";
         });
 
   //inner nodes
-  node
+  	node
       .append('path')
       .attr("class", "node")
       .attr("d", d3.symbol()
@@ -208,7 +227,7 @@ d3.graph = function(svg, W, H, data) {
       .style("opacity", function(d) {
           return d.opacity || 1;
       })
-      .each(function(d, i) {
+      .each (function(d, i) {
         if(d.fx && d.fx === 0) {
           d.fx = null;
         }
@@ -216,21 +235,24 @@ d3.graph = function(svg, W, H, data) {
           d.fy = null;
         }
 
-        if(d.location) {
+        if (d.location) {
           var proj, point;
 
           if(data.coord_system_type == "equirectangular") {
             proj = d3.geoEquirectangular();
-          } else if(data.coord_system_type == "albersusa") {
+          } 
+		  else if(data.coord_system_type == "albersusa") {
             proj = d3.geoAlbersUsa()
           }
           else if(data.coord_system_type == "window") {
             proj = windowProjection;
-          } else if(data.coord_system_type == "cartesian"){
+          } 
+		  else if(data.coord_system_type == "cartesian"){
             d.fx = d.location[0];
             d.fy = -d.location[1];
             return;
-          } else {
+          } 
+		  else {
             d.fx = null;
             d.fy = null;
             return;
@@ -259,6 +281,7 @@ d3.graph = function(svg, W, H, data) {
       });
 
   d3.selectAll(".nodeLabel").each(BridgesVisualizer.insertLinebreaks);
+
   if(BridgesVisualizer.labels_shown === true){
     d3.selectAll(".nodeLabel").each(BridgesVisualizer.displayNodeLabels)
   }
@@ -344,18 +367,11 @@ d3.graph = function(svg, W, H, data) {
         });
   }
 
-  // zoom function
-  function zoomed() {
-    if(svgGroup) {
-      //scales labels based on distance zoomed in
-      d3.selectAll(".nodeLabel").style("font-size", 10/d3.event.transform.k)
-      svgGroup.attr("transform", d3.event.transform);
-    }
-  }
 
   // Handle doubleclick on node path (shape)
-  function dblclick(d) {
-      d3.event.stopImmediatePropagation();
+  function dblclick(evt, d) {
+console.log (d);
+      evt.stopImmediatePropagation();
       d.x = d.fx;
       d.y = d.fy;
       d.fy = null;
@@ -366,24 +382,24 @@ d3.graph = function(svg, W, H, data) {
   }
 
   // Handle dragstart on force.drag()
-  function dragstart(d) {
+  function dragstart(evt, d) {
       d3.select(this)
         .style("stroke-width", 1)
         .style("stroke", "black")
         .style("stroke-dasharray", BridgesVisualizer.treeDashArray);
 
-      if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+      if (!evt.active) simulation.alphaTarget(0.3).restart();
       d.fx = d.x;
       d.fy = d.y;
   }
 
-  function dragged(d) {
-      d.fx = d3.event.x;
-      d.fy = d3.event.y;
+  function dragged(evt, d) {
+      d.fx = evt.x;
+      d.fy = evt.y;
   }
 
-  function dragended(d) {
-      if (!d3.event.active) simulation.alphaTarget(0);
+  function dragended(evt, d) {
+      if (!evt.active) simulation.alphaTarget(0);
   }
 
 
