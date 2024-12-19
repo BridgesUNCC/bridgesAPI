@@ -64,6 +64,7 @@ var ele = document.getElementById("vis0"),
     height = ele.clientHeight,
     transform = assignment.transform;
 
+console.log('..here..');
 
 visualizeAssignment(assignment);
 
@@ -503,6 +504,7 @@ function visualizeAssignment(assignment, index){
         d3.grid(vis, width, height, assignmentData, d3.select("#vis"+index));
   }
   else if (assignment.vistype == "nodelink" && d3.graph) {
+
       graph = d3.graph(vis, width, height, assignmentData);
       BridgesVisualizer.visualizations[assignment.subAssignment] = (graph);
   }
