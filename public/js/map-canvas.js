@@ -183,9 +183,9 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
 		  .data(visData)
 		  .enter()
 		  .append("path")
-		  .attr("fill", function(d){return d.properties.fill_color})
+		  .attr("fill", function(d){return BridgesVisualizer.getColor(d.properties.fill_color)})
 		  .attr("d", path)
-		  .attr("stroke",function(d){return d.properties.stroke_color})
+		  .attr("stroke",function(d){return BridgesVisualizer.getColor(d.properties.stroke_color)})
 		  .attr("stroke-width", function(d){return d.properties.stroke_width})
 
 	      // var mySVG = document.getElementById("map_overlay_svg_" + id);
