@@ -158,7 +158,7 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
 	      vis.select("g").select("#map_overlay"+id).moveToBack();
 	  })
 	  .catch(error => {
-	      console.log(error);
+	      console.log("Counties Reading Error:" + error);
 	  });
   }
 
