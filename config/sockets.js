@@ -11,15 +11,20 @@ var valid = function(creds, cb) {
         apikey: creds.apikey,
         username: creds.user
     })
-    .exec(function(err, user) {
-        if (err || !user) {
-          console.log(err, user);
+    .then(function(user) {
+        if (!user) {
+          console.log(user);
             cb(false);
 	    return;
         }
         console.log('returning true');
         cb(true);
-    });
+    })
+	.catch(err => {
+	    console.log(err, user);
+            cb(false);
+	    return;
+	});
 };
 
 module.exports = function(server) {
