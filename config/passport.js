@@ -41,19 +41,22 @@ module.exports = function (passport, config) {
            passReqToCallback: true
     },
 
-    function(req, email, password, done) {//MONGOOSE7
-        User.findOne({ username: email }, function (err, user) {
-            if (err) { return done(err); }
+    function(req, email, password, done) {
+        User.findOne({ username: email })
+	.then( user => {
             if (!user)
                 return done(null, false,
-                        req.flash('loginMessage', 'No user was found'));
-
+                            req.flash('loginMessage', 'No user was found'));
+	    
             if (!user.authenticate(password))
                 return done(null, false,
                             req.flash('loginMessage', 'Invalid password'));
-
+	    
             return done(null, user);
-        });
+        })
+	    .catch (err => {
+		return done(err); 
+	    })
     }));
 
 
@@ -65,14 +68,18 @@ module.exports = function (passport, config) {
         usernameField: 'email',
         passwordField: 'password'
     },
-    function (req, email, password, done) {//MONGOOSE7
-        User.findOne({email: email}, function(err, user) {
-            if (err) return done(err);
+    function (req, email, password, done) {
+        User.findOne({email: email})
+	    .then(user => {
+            
             if (!email)
                 return done(null, false,
                         req.flash('signupMessage', 'User already associated to an email'));
 
-        });
+            })
+	    .catch(err => {
+		return done(err);
+	    });
     }));
 
 

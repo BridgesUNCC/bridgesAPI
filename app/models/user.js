@@ -220,7 +220,7 @@ UserSchema.methods = {
     if (!password) return '';
     var encrypred;
     try {
-      encrypred = crypto.createHmac('sha1', this.salt).updateOne(password).digest('hex');
+      encrypred = crypto.createHmac('sha1', this.salt).update(password).digest('hex');
       return encrypred;
     } catch (err) {
       return '';
@@ -235,7 +235,7 @@ UserSchema.methods = {
    */
    setToken: function(token, cb) {
      if(!token) return false;
-     this.password_reset.reset_token = crypto.createHash('sha512').updateOne(token).digest('hex');
+     this.password_reset.reset_token = crypto.createHash('sha512').update(token).digest('hex');
      this.password_reset.reset_timeout = new Date(Date.now() + (2*1000*60*60));
      this.save(function(err, usr) {
        if(err) cb(err);
