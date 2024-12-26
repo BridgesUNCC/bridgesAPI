@@ -119,14 +119,14 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
 		      for(let i = 0; i < state.length; i++){
 			  if(state[i]._view_counties == true){
 			      for(let j = 0; j < state[i]._counties.length; j++){
-				  	if ((d.id == state[i]._counties[j]._geoid)
-				     		&& (state[i]._counties[j]._hide !== true)){
-						d.properties.stroke_color = state[i]._counties[j]._stroke_color
-						d.properties.fill_color = state[i]._counties[j]._fill_color
-						d.properties.stroke_width = state[i]._counties[j]._stroke_width
-						return true
+				  if ((d.id == state[i]._counties[j]._geoid)
+				     && (state[i]._counties[j]._hide !== true)){
+				      d.properties.stroke_color = state[i]._counties[j]._stroke_color
+				      d.properties.fill_color = state[i]._counties[j]._fill_color
+				      d.properties.stroke_width = state[i]._counties[j]._stroke_width
+				      return true
 				  }
-			    }
+			      }
 			  }       
 		      }
 		      return false
