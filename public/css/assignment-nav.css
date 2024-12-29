@@ -32,8 +32,9 @@
 }
 
 .navbar-assignment.collapsed .nav-label {
-  max-width: 0px;
+  position: absolute;
   opacity: 0;
+  pointer-events: none;
 }
 
 .navbar-assignment.collapsed .switch-toggle {
