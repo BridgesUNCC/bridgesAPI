@@ -120,7 +120,7 @@ exports.upload = function (req, res, next) {
     // set correct vistype
     var assignmentType = rawBody.visual;
     var visualizationType = visTypes.getVisType(assignmentType);
-    if (assignmentType == "us_map") {
+    if (assignmentType == "us_map" || assignmentType == "world_map") {
 	rawBody.nodes = [];
 	rawBody.links = [];
     }
