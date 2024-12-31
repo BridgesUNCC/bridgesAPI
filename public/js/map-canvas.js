@@ -279,10 +279,12 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
     Call the appropriate projection and overlay functions
   */
   switch(map.toLowerCase()) {
-    case "world":
+  case "world":
+  case "equirectangular":
       svgWorldMap();
       break;
-    case "us":
+  case "us":
+  case "albersusa":
       svgMap();
       break;
     case "equirectangularOld":
