@@ -138,7 +138,8 @@ exports.sendResetEmail = function (req, res) {
 
   // Find the user with the given email address
   User.findOne({ 'email': email }).then(function (user) {
-    if(user === null) {
+      if(user === null) {
+	  res.status(400).json({"error": email + " is not associated with a Bridges account. Please try again:"});
     } else {
       // pass the email address to generate the email
       mail.resetPass(email, function(err, email, token) { //MONGOOSE7 ????
