@@ -237,10 +237,11 @@ UserSchema.methods = {
      if(!token) return false;
      this.password_reset.reset_token = crypto.createHash('sha512').update(token).digest('hex');
      this.password_reset.reset_timeout = new Date(Date.now() + (2*1000*60*60));
-     this.save(function(err, usr) {
-       if(err) cb(err);
-       cb(null);
-     });
+       this.save().then( usr => {
+	   cb(null);
+       }).catch(err => {
+	   cb(err);
+       });
    },
 
     hasAdminRights: function() {
