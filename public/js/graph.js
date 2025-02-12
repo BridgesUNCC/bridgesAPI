@@ -25,8 +25,7 @@ d3.graph = function(svg, W, H, data) {
 	function zoomed(evt) {
 		if(svgGroup) {
 			//scales labels based on distance zoomed in
-			d3.selectAll(".nodeLabel").style("font-size", 
-								10/evt.transform.k)
+			d3.selectAll(".nodeLabel")
 			svgGroup.attr("transform", evt.transform);
 		}
   	}
@@ -179,7 +178,7 @@ d3.graph = function(svg, W, H, data) {
             return d.dasharray || "";
         })
         .style("fill", "none")
-        .on("mouseover", function(d) {
+        .on("mouseover", function(evt, d) {
           if(d.label) {
             BridgesVisualizer.textMouseover(d.label);
           }
