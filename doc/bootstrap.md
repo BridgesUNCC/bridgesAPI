@@ -7,3 +7,4 @@ Bootstrap 5 no longer supports glyphicons. Below changes made to use the new ico
 3. Modified assignment-nav.pug file to use the new icons.
 4. Modified header.pug file to use Bootstrap 5 classes.
 5. Modified header.css and assignment-nav.css files to fix broken side menu UI.
+6. Modified gallery.css to fix grid view. Added compatible CSS class.
