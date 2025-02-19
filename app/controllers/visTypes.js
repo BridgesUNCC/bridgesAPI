@@ -1,5 +1,8 @@
-// This module accepts the named assignment type sent by the client
-//    and returns the appropriate vistype to display
+/**
+ * Determines and returns the appropriate visualization type based on the provided assignment type.
+ * @param {string} toCheck - The assignment type to check.
+ * @returns {string} The corresponding visualization type. Defaults to "nodelink" if no match is found.
+ */
 exports.getVisType = function(toCheck) {
   var validTypes = {
     "ALIST":           						"Alist",
@@ -50,6 +53,11 @@ exports.getVisType = function(toCheck) {
         return "nodelink";
 };
 
+/**
+ * Checks if the data has dimensions defined and returns the appropriate visualization type for arrays.
+ * @param {object} data - The data object containing dimension information.
+ * @returns {string} The corresponding visualization type for arrays ("Array2D", "Array3D", or "Alist").
+ */
 var checkIfHasDims = function (data){
     if(data.dims && Array.isArray(data.dims)){
         if(parseInt(data.dims[1]) > 1 && parseInt(data.dims[2]) == 1){
@@ -65,6 +73,12 @@ var checkIfHasDims = function (data){
 
 exports.checkIfHasDims = checkIfHasDims;
 
+/**
+ * Returns an object containing visualization information (vistype, script, and link)
+ * based on the provided data's vistype.
+ * @param {object} data - The data object containing the vistype.
+ * @returns {object} An object with vistype, script, and link properties.
+ */
 exports.getVisTypeObject = function(data) {
   var validTypes = {
       "nodelink": {

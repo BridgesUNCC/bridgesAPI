@@ -9,8 +9,12 @@ var mongoose = require('mongoose'),
 var  config = require.main.require('./config/config');
 
 
-//This function takes a properly formed Assignment Object and produce
-//the restriction Object in a SubmissionLog
+/**
+ * Creates a SubmissionLog object from an Assignment object.
+ * This function maps assignment details to the submission log format.
+ * @param {object} assignment - The assignment object to convert.
+ * @returns {object} - The constructed SubmissionLog object.
+ */
 //TODO: should this function go in the submissionlog model somehow?
 function makeLogFromAssignment(assignment) {
     
@@ -27,14 +31,22 @@ function makeLogFromAssignment(assignment) {
     return submissionlog;
 }
 
+/**
+ * Logs an assignment by creating and saving a submission log entry.
+ * @param {object} assignment - The assignment object to log.
+ */
 function logAssignment(assignment) {
     sl = makeLogFromAssignment (assignment);
     sl.save()
 	.catch((error)=>{}); //We can safely ignore the error since this is purely a logging feature
 }
 
-//API route to toggle the visibility of an assignment
-//between private and public.
+/**
+ * Toggles the visibility of an assignment between private and public.
+ * @param {object} req - The request object containing user and assignment info.
+ * @param {object} res - The response object used to send the status.
+ * @param {function} next - The next middleware function for error handling.
+ */
 exports.updateVisibility = function (req, res, next) {
 
     Assignment
@@ -59,6 +71,13 @@ exports.updateVisibility = function (req, res, next) {
 	});
 };
 
+/**
+ * Saves the position of nodes in an assignment.
+ * This function is currently non-functional as it does not modify the database.
+ * @param {object} req - The request object containing the snapshot data.
+ * @param {object} res - The response object used to confirm the snapshot.
+ * @param {function} next - The next middleware function for error handling.
+ */
 //TODO: Is this used at all? The route that uses it seem to not be
 //called by the UI. Also the function does not seem to actually touch any of the data in the database
 //
@@ -85,8 +104,14 @@ exports.saveSnapshot = function(req, res, next) {
     
 };
 
-//API route for uploading assignment data. If the
-//assignment already exists it will be replaced.
+/**
+ * Uploads assignment data. If an assignment already exists, it is replaced.
+ * Handles different data formats and validates required attributes.
+ * Requires an API key for authentication.
+ * @param {object} req - The request object containing assignment data.
+ * @param {object} res - The response object used to confirm upload status.
+ * @param {function} next - The next middleware function for error handling.
+ */
 exports.upload = function (req, res, next) {
     if (config.debuginfo)
 	console.log("assignment upload");
@@ -95,7 +120,7 @@ exports.upload = function (req, res, next) {
         try { rawBody = JSON.parse(req.body); } // try parsing to object
         catch (e) {
             if(typeof req.body != 'object') {
-		console.log("Invalid JSON: "+e);
+		        console.log("Invalid JSON: "+e);
                 return res.status(400).render("404", {"message": e + " Invalid JSON in request body."});
             } else {
                 rawBody = req.body;
@@ -161,7 +186,13 @@ exports.upload = function (req, res, next) {
 	    return next (err);
 	});
     
-    // if the assignment is new, remove old assignments with the same ID
+    /**
+     * Replaces an existing assignment with a new one for a given user.
+     * If the assignment is a new major assignment, all subassignments are deleted first.
+     * @param {object} res - The response object.
+     * @param {object} user - The user object associated with the assignment.
+     * @param {string} assignmentID - The ID of the assignment to replace.
+     */
     async function replaceAssignment (res, user, assignmentID) {
 	if (config.debuginfo)
 	    console.log( "starting replace assignment" );
@@ -186,7 +217,13 @@ exports.upload = function (req, res, next) {
         }
     }
 
-    // save the assignment to the DB
+    /**
+     * Saves a new assignment to the database.
+     * Validates and structures assignment data before saving.
+     * Handles large data payloads and logs errors accordingly.
+     * @param {object} user - The user object associated with the assignment.
+     * @param {string} assignmentNumber - The assignment number.
+     */
     function saveAssignment(user, assignmentNumber) {
 	if (config.debuginfo)
 	    console.log("starting to save assignment");
@@ -270,8 +307,12 @@ exports.upload = function (req, res, next) {
 
 exports.next = null;
 
-/*
- *  Get the raw JSON for an assignment
+/**
+ * Retrieves the raw JSON data for a specified assignment.
+ * Ensures the assignment is public or belongs to the requesting user.
+ * @param {object} req - The request object containing assignment details.
+ * @param {object} res - The response object used to return assignment data.
+ * @param {function} next - The next middleware function for error handling.
  */
 exports.getJSON = function (req, res, next) {
     this.next = next;
@@ -336,9 +377,13 @@ exports.getJSON = function (req, res, next) {
 	});
 };
 
-/*
- *  Get and render an assignment
- *    Assignments can be displayed in slide or stack mode
+/**
+ * Retrieves and renders an assignment for visualization.
+ * Assignments can be displayed in slide, stack, or other visual modes.
+ * Ensures visibility restrictions are respected.
+ * @param {object} req - The request object containing assignment details.
+ * @param {object} res - The response object used to render the assignment.
+ * @param {function} next - The next middleware function for error handling.
  */
 exports.get = function (req, res, next) {
     this.next = next;
@@ -556,7 +601,13 @@ exports.get = function (req, res, next) {
       }
   };
 
-/* Copy and paste JSON data to test assignment upload */
+/**
+ * Provides a test JSON response for assignment upload testing.
+ * Simulates assignment data and renders it using a visualization template.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object used to render test data.
+ * @param {function} next - The next middleware function.
+ */
 exports.testJSON = function (req, res, next) {
     console.log('test JSON data for assignment upload');
     // this.next = next;
@@ -580,7 +631,12 @@ exports.testJSON = function (req, res, next) {
 
   };
 
-/* Update the node positions of the given assignment and its subassignments */
+/**
+ * Updates the positions of nodes in an assignment and its subassignments.
+ * Applies fixed and unfixed node positions as specified in the request.
+ * @param {object} req - The request object containing node position data.
+ * @param {object} res - The response object used to confirm the update.
+ */
 //TODO: This seems to indicate we change the position for ALL subassignments. Is that really the semantic we want?
 exports.savePositions = function(req, res) {
     var subassigns = Object.keys(req.body);
@@ -636,7 +692,12 @@ exports.savePositions = function(req, res) {
     return res.status(202).json({"message": "success"}); //TODO: That seems bad, we send a "accepted" reponse before knowing anything
 };
 
-/* Save the zoom and translation for the given assignment */
+/**
+ * Saves the zoom and translation transformations for an assignment.
+ * Updates transformation settings for all subassignments.
+ * @param {object} req - The request object containing transformation data.
+ * @param {object} res - The response object used to confirm the update.
+ */
 //TODO: Doesn't this change the zoom and pan for ALL subassignments at once? This can't be what we want!
 //TODO: This route is not reached by the webclient. Looking at the UI code, it seems to have been used at some point and was commented out.
 exports.updateTransforms = function(req, res) {
@@ -669,7 +730,12 @@ exports.updateTransforms = function(req, res) {
     res.send("OK"); //TODO: returns OK regardless?
 };
 
-/* Delete the given assignment for the current user */
+/**
+ * Deletes a specified assignment for the requesting user.
+ * Removes all subassignments associated with the given assignment number.
+ * @param {object} req - The request object containing assignment details.
+ * @param {object} res - The response object used to confirm deletion.
+ */
 exports.deleteAssignment = function (req, res) {
     Assignment
         .deleteMany({
@@ -685,7 +751,12 @@ exports.deleteAssignment = function (req, res) {
 	});
 };
 
-/* Delete the given assignment for the user with the given key */
+/**
+ * Deletes an assignment using an API key for authentication.
+ * Ensures the requesting user's API key matches before proceeding.
+ * @param {object} req - The request object containing API key and assignment details.
+ * @param {object} res - The response object used to confirm deletion.
+ */
 exports.deleteAssignmentByKey = function (req, res) {
     var assignmentNumber;
 
@@ -721,6 +792,12 @@ exports.deleteAssignmentByKey = function (req, res) {
 
 };
 
+/**
+ * Redirects to an assignment based on the user's email and assignment ID.
+ * Finds a user by email and constructs the appropriate URL for the assignment.
+ * @param {object} req - The request object containing email and assignment details.
+ * @param {object} res - The response object used to redirect.
+ */
 exports.assignmentByEmail = function (req, res) {
   var email = req.params.email,
       assignment = req.params.assignmentID;

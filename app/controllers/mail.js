@@ -14,7 +14,13 @@ let transporter = nodemailer.createTransport({
     logger: true
 });
 
-// Send a password reset email to the given email address
+/**
+ * Sends a password reset email to the specified email address.
+ * Generates a unique token for password reset and includes it in the email link.
+ * The link expires after 2 hours.
+ * @param {string} email - The recipient's email address.
+ * @param {function} cb - Callback function to handle the email sending result.
+ */
 exports.resetPass = function(email, cb) {
   // generate random unique token
   var token = crypto.randomBytes(48).toString('hex');
