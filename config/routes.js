@@ -265,5 +265,8 @@ module.exports = function(app, passport) {
     /* return number of recent assignments */
     app.get('/admin/nbuserbydate', admin.nbuserbydate, handleError);
 
+    /* return number of recent assignments */
+    app.get('/admin/submissionsbydate', admin.submissionsbydate, handleError);
+
     
 };

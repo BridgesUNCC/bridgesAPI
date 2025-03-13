@@ -197,3 +197,20 @@ exports.nbuserbydate = function(req, res) {
 	    res.end(JSON.stringify({nb}));
     });
 }
+
+exports.submissionsbydate = function(req, res) {
+    protectAdmin(req, res);
+
+    const sincedate = constructSince(req);
+    const untildate = constructUntil(req);
+
+    
+    SubmissionLog.find({$and: [ { dateCreated: {$lt: untildate} }, //in the right time window
+			     { dateCreated: {$gt: sincedate} }
+			   ]})
+	.then(function (ass) {
+	    res.setHeader('Content-Type', 'application/json');
+	    res.end(JSON.stringify(ass));
+    });
+}
+
