@@ -220,13 +220,20 @@ exports.submissionsbydate = function(req, res) {
 		shasum.update(sub.username);
 		sub.username = shasum.digest('hex');
 
-		//var spl = sub.email.split('@');
+		//anonymoize email per component (to retain school)
+		var spl = sub.email.split('@');
 
-		//var pre = spl[0];
-		//shasum = crypto.createHash('sha256');
+		var pre = spl[0];
+		shasum = crypto.createHash('sha256');
+		shasum.update(pre);
+		pre = shasum.digest('hex');
 		
-		//var post = spl[1];
-		
+		var post = spl[1];
+		shasum = crypto.createHash('sha256');
+		shasum.update(post);
+		post = shasum.digest('hex');
+
+		sub.email=pre+"@"+post		
 	    }
 	    
 	    res.setHeader('Content-Type', 'application/json');
