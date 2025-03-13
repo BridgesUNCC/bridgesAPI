@@ -210,12 +210,23 @@ exports.submissionsbydate = function(req, res) {
 			     { dateCreated: {$gt: sincedate} }
 			   ]})
 	.then(function (submissions) {
-	    var shasum = crypto.createHash('sha256');
+
 
 	    for (var a in submissions) {
 		var sub = submissions[a];
+
+		//anonymize username
+		var shasum = crypto.createHash('sha256');
 		shasum.update(sub.username);
 		sub.username = shasum.digest('hex');
+
+		//var spl = sub.email.split('@');
+
+		//var pre = spl[0];
+		//shasum = crypto.createHash('sha256');
+		
+		//var post = spl[1];
+		
 	    }
 	    
 	    res.setHeader('Content-Type', 'application/json');
