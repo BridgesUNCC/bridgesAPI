@@ -2,6 +2,7 @@ var mongoose = require('mongoose'),
     User = mongoose.model('User'),
     Account = mongoose.model('Account'),
     Assignment = mongoose.model('Assignment'),
+    SubmissionLog = mongoose.model('SubmissionLog'),
     crypto = require('crypto'),
     mail = require('./mail');
 
