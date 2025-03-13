@@ -205,37 +205,38 @@ exports.submissionsbydate = function(req, res) {
     const sincedate = constructSince(req);
     const untildate = constructUntil(req);
 
+    const anonimize = true
     
     SubmissionLog.find({$and: [ { dateCreated: {$lt: untildate} }, //in the right time window
 			     { dateCreated: {$gt: sincedate} }
 			   ]})
 	.then(function (submissions) {
 
-
-	    for (var a in submissions) {
-		var sub = submissions[a];
-
-		//anonymize username
-		var shasum = crypto.createHash('sha256');
-		shasum.update(sub.username);
-		sub.username = shasum.digest('hex');
-
-		//anonymoize email per component (to retain school)
-		var spl = sub.email.split('@');
-
-		var pre = spl[0];
-		shasum = crypto.createHash('sha256');
-		shasum.update(pre);
-		pre = shasum.digest('hex');
-		
-		var post = spl[1];
-		shasum = crypto.createHash('sha256');
-		shasum.update(post);
-		post = shasum.digest('hex');
-
-		sub.email=pre+"@"+post		
-	    }
-	    
+	    if (anonimize) {
+		for (var a in submissions) {
+		    var sub = submissions[a];
+		    
+		    //anonymize username
+		    var shasum = crypto.createHash('sha256');
+		    shasum.update(sub.username);
+		    sub.username = shasum.digest('hex');
+		    
+		    //anonymoize email per component (to retain school)
+		    var spl = sub.email.split('@');
+		    
+		    var pre = spl[0];
+		    shasum = crypto.createHash('sha256');
+		    shasum.update(pre);
+		    pre = shasum.digest('hex');
+		    
+		    var post = spl[1];
+		    shasum = crypto.createHash('sha256');
+		    shasum.update(post);
+		    post = shasum.digest('hex');
+		    
+		    sub.email=pre+"@"+post		
+		}
+	    }	    
 	    res.setHeader('Content-Type', 'application/json');
 	    res.end(JSON.stringify(submissions));
     });
