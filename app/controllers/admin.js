@@ -212,7 +212,8 @@ exports.submissionsbydate = function(req, res) {
 	.then(function (submissions) {
 	    var shasum = crypto.createHash('sha256');
 
-	    for (var sub in submissions) {
+	    for (var a in submissions) {
+		var sub = submissions[a];
 		shasum.update(sub.username);
 		sub.username = shasum.digest('hex');
 	    }
