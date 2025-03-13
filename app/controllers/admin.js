@@ -209,9 +209,16 @@ exports.submissionsbydate = function(req, res) {
     SubmissionLog.find({$and: [ { dateCreated: {$lt: untildate} }, //in the right time window
 			     { dateCreated: {$gt: sincedate} }
 			   ]})
-	.then(function (ass) {
+	.then(function (submissions) {
+	    var shasum = crypto.createHash('sha256');
+
+	    for (var sub in submissions) {
+		shasum.update(sub.username);
+		sub.username = shasum.digest('hex');
+	    }
+	    
 	    res.setHeader('Content-Type', 'application/json');
-	    res.end(JSON.stringify(ass));
+	    res.end(JSON.stringify(submissions));
     });
 }
 
