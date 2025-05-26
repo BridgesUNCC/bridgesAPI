@@ -207,15 +207,24 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
 				let arraycopy = [...array];
 
 			// parsing the data
-			if (state.toLowerCase() == "all") { // entire world
-				var visData = arraycopy
-			}
-			else {  
+//			if (state.toLowerCase() == "all") { // entire world
+//				var visData = arraycopy
+//			}
+//			else {  
 				// filter the selected countries
 				var visData = arraycopy.filter(function(d) {
-					return d.properties.name.toLowerCase() == state.toLowerCase();
+					for (let k = 0; k < state.length; k++) {
+						if (d.properties.name.toLowerCase() == 
+								state[k]._country_name.toLowerCase()) {
+							d.properties.stroke_color = state[k]._stroke_color;
+//							d.properties.fill_color = state[k]._fill_color;
+							d.properties.fill_color = [255, 0, 0, 1];
+							d.properties.stroke_width = state[k]._stroke_width;
+							return true;
+						}
+					}
 				})
-			}
+//			}
 
 			states.selectAll("path")
 				.attr("class", "land")
@@ -223,10 +232,10 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
 				.data(visData)
 				.enter()
 				.append("path")
-				.attr("fill", 'rgba(0.0, 0.0, 0.0, 0.08)')
 				.attr("d", geo_generator)
-				.attr("stroke", "blue")
-				.attr("stroke-width", 0.5)
+				.attr("fill",(d)=>BridgesVisualizer.getColor(d.properties.fill_color))
+				.attr("stroke",(d)=>BridgesVisualizer.getColor(d.properties.stroke_color))
+				.attr("stroke-width", (d) => d.properties.stroke_width)
 
 			// create svg object and set parameters for document
 			let mySVG = document.getElementById('svg' + id);
