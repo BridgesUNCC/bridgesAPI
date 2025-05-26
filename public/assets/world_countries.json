@@ -24,7 +24,7 @@
 				],
 				"id": "834",
 				"properties": {
-					"name": "Tanzania"
+					"name": "Tanzania, United Republic of"
 				}
 			}, {
 				"type": "Polygon",
@@ -33,7 +33,7 @@
 				],
 				"id": "732",
 				"properties": {
-					"name": "W. Sahara"
+					"name": "Western Sahara"
 				}
 			}, {
 				"type": "MultiPolygon",
@@ -291,7 +291,7 @@
 				],
 				"id": "180",
 				"properties": {
-					"name": "Dem. Rep. Congo"
+					"name": "Democratic Republic of the Congo"
 				}
 			}, {
 				"type": "Polygon",
@@ -517,7 +517,7 @@
 				],
 				"id": "068",
 				"properties": {
-					"name": "Bolivia"
+					"name": "Bolivia (Plurinational State of)"
 				}
 			}, {
 				"type": "Polygon",
@@ -795,7 +795,7 @@
 				],
 				"id": "384",
 				"properties": {
-					"name": "Côte d'Ivoire"
+					"name": "Cote d'Ivoire"
 				}
 			}, {
 				"type": "Polygon",
@@ -849,7 +849,7 @@
 				],
 				"id": "140",
 				"properties": {
-					"name": "Central African Rep."
+					"name": "Central African Republic"
 				}
 			}, {
 				"type": "Polygon",
@@ -876,7 +876,7 @@
 				],
 				"id": "226",
 				"properties": {
-					"name": "Eq. Guinea"
+					"name": "Equatorial Guinea"
 				}
 			}, {
 				"type": "Polygon",
@@ -1974,7 +1974,7 @@
 				],
 				"id": "728",
 				"properties": {
-					"name": "S. Sudan"
+					"name": "South Sudan"
 				}
 			}]
 		},

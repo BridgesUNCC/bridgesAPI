@@ -1,6 +1,6 @@
 {
 	"data" : [
-		"AD": {
+		{
 			"alpha-2": "AD",
 			"alpha-3": "AND",
 			"numeric-3": 20,
@@ -15,7 +15,7 @@
 				"AD-06": "Sant Julia de Loria"
 			}
 		},
-		"AE": {
+		{
 			"alpha-2": "AE",
 			"alpha-3": "ARE",
 			"numeric-3": 784,
@@ -30,7 +30,7 @@
 				"AE-UQ": "Umm al Qaywayn"
 			}
 		},
-		"AF": {
+		{
 			"alpha-2": "AF",
 			"alpha-3": "AFG",
 			"numeric-3": 4,
@@ -65,7 +65,7 @@
 				"AF-URU": "Uruzgan"
 			}
 		},
-		"AG": {
+		{
 			"alpha-2": "AG",
 			"alpha-3": "ATG",
 			"numeric-3": 28,
@@ -80,7 +80,7 @@
 				"AG-08": "Saint Philip"
 			}
 		},
-		"AI": {
+		{
 			"alpha-2": "AI",
 			"alpha-3": "AIA",
 			"numeric-3": 660,
@@ -89,7 +89,7 @@
 				"-": "Anguilla"
 			}
 		},
-		"AL": {
+		{
 			"alpha-2": "AL",
 			"alpha-3": "ALB",
 			"numeric-3": 8,
@@ -109,7 +109,7 @@
 				"AL-12": "Vlore"
 			}
 		},
-		"AM": {
+		{
 			"alpha-2": "AM",
 			"alpha-3": "ARM",
 			"numeric-3": 51,
@@ -128,7 +128,7 @@
 				"AM-VD": "Vayoc Jor"
 			}
 		},
-		"AO": {
+		{
 			"alpha-2": "AO",
 			"alpha-3": "AGO",
 			"numeric-3": 24,
@@ -154,7 +154,7 @@
 				"AO-ZAI": "Zaire"
 			}
 		},
-		"AQ": {
+		{
 			"alpha-2": "AQ",
 			"alpha-3": "ATA",
 			"numeric-3": 10,
@@ -163,7 +163,7 @@
 				"-": "Antarctica"
 			}
 		},
-		"AR": {
+		{
 			"alpha-2": "AR",
 			"alpha-3": "ARG",
 			"numeric-3": 32,
@@ -195,7 +195,7 @@
 				"AR-T": "Tucuman"
 			}
 		},
-		"AS": {
+		{
 			"alpha-2": "AS",
 			"alpha-3": "ASM",
 			"numeric-3": 16,
@@ -204,7 +204,7 @@
 				"-": "Western District"
 			}
 		},
-		"AT": {
+		{
 			"alpha-2": "AT",
 			"alpha-3": "AUT",
 			"numeric-3": 40,
@@ -221,7 +221,7 @@
 				"AT-9": "Wien"
 			}
 		},
-		"AU": {
+		{
 			"alpha-2": "AU",
 			"alpha-3": "AUS",
 			"numeric-3": 36,
@@ -237,7 +237,7 @@
 				"AU-WA": "Western Australia"
 			}
 		},
-		"AW": {
+		{
 			"alpha-2": "AW",
 			"alpha-3": "ABW",
 			"numeric-3": 533,
@@ -246,7 +246,7 @@
 				"-": "Aruba"
 			}
 		},
-		"AX": {
+		{
 			"alpha-2": "AX",
 			"alpha-3": "ALA",
 			"numeric-3": 248,
@@ -255,7 +255,7 @@
 				"-": "Sund"
 			}
 		},
-		"AZ": {
+		{
 			"alpha-2": "AZ",
 			"alpha-3": "AZE",
 			"numeric-3": 31,
@@ -314,18 +314,7 @@
 				"AZ-ZAR": "Zardab"
 			}
 		},
-		"BA": {
-			"alpha-2": "BA",
-			"alpha-3": "BIH",
-			"numeric-3": 70,
-			"name": "Bosnia and Herzegovina",
-			"divisions": {
-				"BA-BRC": "Brcko distrikt",
-				"BA-BIH": "Federacija Bosne i Hercegovine",
-				"BA-SRP": "Republika Srpska"
-			}
-		},
-		"BB": {
+		{
 			"alpha-2": "BB",
 			"alpha-3": "BRB",
 			"numeric-3": 52,
@@ -343,7 +332,7 @@
 				"BB-11": "Saint Thomas"
 			}
 		},
-		"BD": {
+		{
 			"alpha-2": "BD",
 			"alpha-3": "BGD",
 			"numeric-3": 50,
@@ -358,7 +347,7 @@
 				"BD-G": "Sylhet"
 			}
 		},
-		"BE": {
+		{
 			"alpha-2": "BE",
 			"alpha-3": "BEL",
 			"numeric-3": 56,
@@ -377,7 +366,7 @@
 				"BE-VWV": "West-Vlaanderen"
 			}
 		},
-		"BF": {
+		{
 			"alpha-2": "BF",
 			"alpha-3": "BFA",
 			"numeric-3": 854,
@@ -423,7 +412,7 @@
 				"BF-ZOU": "Zoundweogo"
 			}
 		},
-		"BG": {
+		{
 			"alpha-2": "BG",
 			"alpha-3": "BGR",
 			"numeric-3": 100,
@@ -459,7 +448,7 @@
 				"BG-28": "Yambol"
 			}
 		},
-		"BH": {
+		{
 			"alpha-2": "BH",
 			"alpha-3": "BHR",
 			"numeric-3": 48,
@@ -471,7 +460,7 @@
 				"BH-17": "Ash Shamaliyah"
 			}
 		},
-		"BI": {
+		{
 			"alpha-2": "BI",
 			"alpha-3": "BDI",
 			"numeric-3": 108,
@@ -490,7 +479,7 @@
 				"BI-RY": "Ruyigi"
 			}
 		},
-		"BJ": {
+		{
 			"alpha-2": "BJ",
 			"alpha-3": "BEN",
 			"numeric-3": 204,
@@ -506,7 +495,7 @@
 				"BJ-ZO": "Zou"
 			}
 		},
-		"BL": {
+		{
 			"alpha-2": "BL",
 			"alpha-3": "BLM",
 			"numeric-3": 652,
@@ -515,7 +504,7 @@
 				"-": "Saint Barthelemy"
 			}
 		},
-		"BM": {
+		{
 			"alpha-2": "BM",
 			"alpha-3": "BMU",
 			"numeric-3": 60,
@@ -524,7 +513,7 @@
 				"-": "Saint George"
 			}
 		},
-		"BN": {
+		{
 			"alpha-2": "BN",
 			"alpha-3": "BRN",
 			"numeric-3": 96,
@@ -536,7 +525,7 @@
 				"BN-TU": "Tutong"
 			}
 		},
-		"BO": {
+		{
 			"alpha-2": "BO",
 			"alpha-3": "BOL",
 			"numeric-3": 68,
@@ -553,7 +542,7 @@
 				"BO-T": "Tarija"
 			}
 		},
-		"BQ": {
+		{
 			"alpha-2": "BQ",
 			"alpha-3": "BES",
 			"numeric-3": 535,
@@ -564,7 +553,7 @@
 				"BQ-SE": "Sint Eustatius"
 			}
 		},
-		"BR": {
+		{
 			"alpha-2": "BR",
 			"alpha-3": "BRA",
 			"numeric-3": 76,
@@ -599,7 +588,7 @@
 				"BR-TO": "Tocantins"
 			}
 		},
-		"BS": {
+		{
 			"alpha-2": "BS",
 			"alpha-3": "BHS",
 			"numeric-3": 44,
@@ -619,7 +608,7 @@
 				"BS-WG": "West Grand Bahama"
 			}
 		},
-		"BT": {
+		{
 			"alpha-2": "BT",
 			"alpha-3": "BTN",
 			"numeric-3": 64,
@@ -644,7 +633,7 @@
 				"BT-24": "Wangdue Phodrang"
 			}
 		},
-		"BV": {
+		{
 			"alpha-2": "BV",
 			"alpha-3": "BVT",
 			"numeric-3": 74,
@@ -653,7 +642,7 @@
 				"-": "Bouvet Island"
 			}
 		},
-		"BW": {
+		{
 			"alpha-2": "BW",
 			"alpha-3": "BWA",
 			"numeric-3": 72,
@@ -670,7 +659,7 @@
 				"BW-SO": "Southern"
 			}
 		},
-		"BY": {
+		{
 			"alpha-2": "BY",
 			"alpha-3": "BLR",
 			"numeric-3": 112,
@@ -685,7 +674,7 @@
 				"BY-VI": "Vitsyebskaya voblasts'"
 			}
 		},
-		"BZ": {
+		{
 			"alpha-2": "BZ",
 			"alpha-3": "BLZ",
 			"numeric-3": 84,
@@ -699,7 +688,7 @@
 				"BZ-TOL": "Toledo"
 			}
 		},
-		"CA": {
+		{
 			"alpha-2": "CA",
 			"alpha-3": "CAN",
 			"numeric-3": 124,
@@ -720,7 +709,7 @@
 				"CA-YT": "Yukon"
 			}
 		},
-		"CC": {
+		{
 			"alpha-2": "CC",
 			"alpha-3": "CCK",
 			"numeric-3": 166,
@@ -729,11 +718,11 @@
 				"-": "Cocos (Keeling) Islands"
 			}
 		},
-		"CD": {
+		{
 			"alpha-2": "CD",
 			"alpha-3": "COD",
 			"numeric-3": 180,
-			"name": "Congo (Democratic Republic of the)",
+			"name": "Democratic Republic of the Congo",
 			"divisions": {
 				"CD-EQ": "Equateur",
 				"CD-HK": "Haut-Katanga",
@@ -754,7 +743,7 @@
 				"CD-TO": "Tshopo"
 			}
 		},
-		"CF": {
+		{
 			"alpha-2": "CF",
 			"alpha-3": "CAF",
 			"numeric-3": 140,
@@ -770,7 +759,7 @@
 				"CF-OP": "Ouham-Pende"
 			}
 		},
-		"CG": {
+		{
 			"alpha-2": "CG",
 			"alpha-3": "COG",
 			"numeric-3": 178,
@@ -784,7 +773,7 @@
 				"CG-13": "Sangha"
 			}
 		},
-		"CH": {
+		{
 			"alpha-2": "CH",
 			"alpha-3": "CHE",
 			"numeric-3": 756,
@@ -818,7 +807,7 @@
 				"CH-ZH": "Zurich"
 			}
 		},
-		"CI": {
+		{
 			"alpha-2": "CI",
 			"alpha-3": "CIV",
 			"numeric-3": 384,
@@ -840,7 +829,7 @@
 				"CI-ZZ": "Zanzan"
 			}
 		},
-		"CK": {
+		{
 			"alpha-2": "CK",
 			"alpha-3": "COK",
 			"numeric-3": 184,
@@ -849,7 +838,7 @@
 				"-": "Cook Islands"
 			}
 		},
-		"CL": {
+		{
 			"alpha-2": "CL",
 			"alpha-3": "CHL",
 			"numeric-3": 152,
@@ -873,7 +862,7 @@
 				"CL-VS": "Valparaiso"
 			}
 		},
-		"CM": {
+		{
 			"alpha-2": "CM",
 			"alpha-3": "CMR",
 			"numeric-3": 120,
@@ -891,7 +880,7 @@
 				"CM-SW": "Sud-Ouest"
 			}
 		},
-		"CN": {
+		{
 			"alpha-2": "CN",
 			"alpha-3": "CHN",
 			"numeric-3": 156,
@@ -930,7 +919,7 @@
 				"CN-ZJ": "Zhejiang"
 			}
 		},
-		"CO": {
+		{
 			"alpha-2": "CO",
 			"alpha-3": "COL",
 			"numeric-3": 170,
@@ -970,7 +959,7 @@
 				"CO-VID": "Vichada"
 			}
 		},
-		"CR": {
+		{
 			"alpha-2": "CR",
 			"alpha-3": "CRI",
 			"numeric-3": 188,
@@ -985,7 +974,7 @@
 				"CR-SJ": "San Jose"
 			}
 		},
-		"CU": {
+		{
 			"alpha-2": "CU",
 			"alpha-3": "CUB",
 			"numeric-3": 192,
@@ -1008,7 +997,7 @@
 				"CU-05": "Villa Clara"
 			}
 		},
-		"CV": {
+		{
 			"alpha-2": "CV",
 			"alpha-3": "CPV",
 			"numeric-3": 132,
@@ -1028,7 +1017,7 @@
 				"CV-TS": "Tarrafal de Sao Nicolau"
 			}
 		},
-		"CW": {
+		{
 			"alpha-2": "CW",
 			"alpha-3": "CUW",
 			"numeric-3": 531,
@@ -1037,7 +1026,7 @@
 				"-": "Curacao"
 			}
 		},
-		"CX": {
+		{
 			"alpha-2": "CX",
 			"alpha-3": "CXR",
 			"numeric-3": 162,
@@ -1046,7 +1035,7 @@
 				"-": "Christmas Island"
 			}
 		},
-		"CY": {
+		{
 			"alpha-2": "CY",
 			"alpha-3": "CYP",
 			"numeric-3": 196,
@@ -1060,7 +1049,7 @@
 				"CY-05": "Pafos"
 			}
 		},
-		"CZ": {
+		{
 			"alpha-2": "CZ",
 			"alpha-3": "CZE",
 			"numeric-3": 203,
@@ -1082,7 +1071,7 @@
 				"CZ-72": "Zlinsky kraj"
 			}
 		},
-		"DE": {
+		{
 			"alpha-2": "DE",
 			"alpha-3": "DEU",
 			"numeric-3": 276,
@@ -1106,7 +1095,7 @@
 				"DE-TH": "Thuringen"
 			}
 		},
-		"DJ": {
+		{
 			"alpha-2": "DJ",
 			"alpha-3": "DJI",
 			"numeric-3": 262,
@@ -1117,7 +1106,7 @@
 				"DJ-DJ": "Djibouti"
 			}
 		},
-		"DK": {
+		{
 			"alpha-2": "DK",
 			"alpha-3": "DNK",
 			"numeric-3": 208,
@@ -1130,7 +1119,7 @@
 				"DK-83": "Syddanmark"
 			}
 		},
-		"DM": {
+		{
 			"alpha-2": "DM",
 			"alpha-3": "DMA",
 			"numeric-3": 212,
@@ -1144,7 +1133,7 @@
 				"DM-10": "Saint Paul"
 			}
 		},
-		"DO": {
+		{
 			"alpha-2": "DO",
 			"alpha-3": "DOM",
 			"numeric-3": 214,
@@ -1183,7 +1172,7 @@
 				"DO-27": "Valverde"
 			}
 		},
-		"DZ": {
+		{
 			"alpha-2": "DZ",
 			"alpha-3": "DZA",
 			"numeric-3": 12,
@@ -1239,7 +1228,7 @@
 				"DZ-13": "Tlemcen"
 			}
 		},
-		"EC": {
+		{
 			"alpha-2": "EC",
 			"alpha-3": "ECU",
 			"numeric-3": 218,
@@ -1271,7 +1260,7 @@
 				"EC-Z": "Zamora Chinchipe"
 			}
 		},
-		"EE": {
+		{
 			"alpha-2": "EE",
 			"alpha-3": "EST",
 			"numeric-3": 233,
@@ -1294,7 +1283,7 @@
 				"EE-87": "Vorumaa"
 			}
 		},
-		"EG": {
+		{
 			"alpha-2": "EG",
 			"alpha-3": "EGY",
 			"numeric-3": 818,
@@ -1329,7 +1318,7 @@
 				"EG-SHG": "Suhaj"
 			}
 		},
-		"EH": {
+		{
 			"alpha-2": "EH",
 			"alpha-3": "ESH",
 			"numeric-3": 732,
@@ -1338,7 +1327,7 @@
 				"-": "Western Sahara"
 			}
 		},
-		"ER": {
+		{
 			"alpha-2": "ER",
 			"alpha-3": "ERI",
 			"numeric-3": 232,
@@ -1347,7 +1336,7 @@
 				"ER-MA": "Al Awsat"
 			}
 		},
-		"ES": {
+		{
 			"alpha-2": "ES",
 			"alpha-3": "ESP",
 			"numeric-3": 724,
@@ -1374,7 +1363,7 @@
 				"ES-VC": "Valenciana, Comunidad"
 			}
 		},
-		"ET": {
+		{
 			"alpha-2": "ET",
 			"alpha-3": "ETH",
 			"numeric-3": 231,
@@ -1393,7 +1382,7 @@
 				"ET-SN": "YeDebub Biheroch Bihereseboch na Hizboch"
 			}
 		},
-		"FI": {
+		{
 			"alpha-2": "FI",
 			"alpha-3": "FIN",
 			"numeric-3": 246,
@@ -1419,7 +1408,7 @@
 				"FI-19": "Varsinais-Suomi"
 			}
 		},
-		"FJ": {
+		{
 			"alpha-2": "FJ",
 			"alpha-3": "FJI",
 			"numeric-3": 242,
@@ -1432,7 +1421,7 @@
 				"FJ-W": "Western"
 			}
 		},
-		"FK": {
+		{
 			"alpha-2": "FK",
 			"alpha-3": "FLK",
 			"numeric-3": 238,
@@ -1441,7 +1430,7 @@
 				"-": "Falkland Islands (Malvinas)"
 			}
 		},
-		"FM": {
+		{
 			"alpha-2": "FM",
 			"alpha-3": "FSM",
 			"numeric-3": 583,
@@ -1453,7 +1442,7 @@
 				"FM-YAP": "Yap"
 			}
 		},
-		"FO": {
+		{
 			"alpha-2": "FO",
 			"alpha-3": "FRO",
 			"numeric-3": 234,
@@ -1462,7 +1451,7 @@
 				"-": "Vagar"
 			}
 		},
-		"FR": {
+		{
 			"alpha-2": "FR",
 			"alpha-3": "FRA",
 			"numeric-3": 250,
@@ -1483,7 +1472,7 @@
 				"FR-PAC": "Provence-Alpes-Cote-d'Azur"
 			}
 		},
-		"GA": {
+		{
 			"alpha-2": "GA",
 			"alpha-3": "GAB",
 			"numeric-3": 266,
@@ -1497,7 +1486,7 @@
 				"GA-9": "Woleu-Ntem"
 			}
 		},
-		"GB": {
+		{
 			"alpha-2": "GB",
 			"alpha-3": "GBR",
 			"numeric-3": 826,
@@ -1509,7 +1498,7 @@
 				"GB-WLS": "Wales"
 			}
 		},
-		"GD": {
+		{
 			"alpha-2": "GD",
 			"alpha-3": "GRD",
 			"numeric-3": 308,
@@ -1524,7 +1513,7 @@
 				"GD-10": "Southern Grenadine Islands"
 			}
 		},
-		"GE": {
+		{
 			"alpha-2": "GE",
 			"alpha-3": "GEO",
 			"numeric-3": 268,
@@ -1544,7 +1533,7 @@
 				"GE-TB": "Tbilisi"
 			}
 		},
-		"GF": {
+		{
 			"alpha-2": "GF",
 			"alpha-3": "GUF",
 			"numeric-3": 254,
@@ -1553,7 +1542,7 @@
 				"-": "Guyane"
 			}
 		},
-		"GG": {
+		{
 			"alpha-2": "GG",
 			"alpha-3": "GGY",
 			"numeric-3": 831,
@@ -1562,7 +1551,7 @@
 				"-": "Guernsey"
 			}
 		},
-		"GH": {
+		{
 			"alpha-2": "GH",
 			"alpha-3": "GHA",
 			"numeric-3": 288,
@@ -1582,7 +1571,7 @@
 				"GH-WP": "Western"
 			}
 		},
-		"GI": {
+		{
 			"alpha-2": "GI",
 			"alpha-3": "GIB",
 			"numeric-3": 292,
@@ -1591,7 +1580,7 @@
 				"-": "Gibraltar"
 			}
 		},
-		"GL": {
+		{
 			"alpha-2": "GL",
 			"alpha-3": "GRL",
 			"numeric-3": 304,
@@ -1604,7 +1593,7 @@
 				"GL-QE": "Qeqqata Kommunia"
 			}
 		},
-		"GM": {
+		{
 			"alpha-2": "GM",
 			"alpha-3": "GMB",
 			"numeric-3": 270,
@@ -1618,7 +1607,7 @@
 				"GM-W": "Western"
 			}
 		},
-		"GN": {
+		{
 			"alpha-2": "GN",
 			"alpha-3": "GIN",
 			"numeric-3": 324,
@@ -1640,7 +1629,7 @@
 				"GN-SI": "Siguiri"
 			}
 		},
-		"GP": {
+		{
 			"alpha-2": "GP",
 			"alpha-3": "GLP",
 			"numeric-3": 312,
@@ -1649,7 +1638,7 @@
 				"-": "Guadeloupe"
 			}
 		},
-		"GQ": {
+		{
 			"alpha-2": "GQ",
 			"alpha-3": "GNQ",
 			"numeric-3": 226,
@@ -1661,7 +1650,7 @@
 				"GQ-WN": "Wele-Nzas"
 			}
 		},
-		"GR": {
+		{
 			"alpha-2": "GR",
 			"alpha-3": "GRC",
 			"numeric-3": 300,
@@ -1683,7 +1672,7 @@
 				"GR-K": "Voreio Aigaio"
 			}
 		},
-		"GS": {
+		{
 			"alpha-2": "GS",
 			"alpha-3": "SGS",
 			"numeric-3": 239,
@@ -1692,7 +1681,7 @@
 				"-": "South Georgia and the South Sandwich Islands"
 			}
 		},
-		"GT": {
+		{
 			"alpha-2": "GT",
 			"alpha-3": "GTM",
 			"numeric-3": 320,
@@ -1722,7 +1711,7 @@
 				"GT-19": "Zacapa"
 			}
 		},
-		"GU": {
+		{
 			"alpha-2": "GU",
 			"alpha-3": "GUM",
 			"numeric-3": 316,
@@ -1731,7 +1720,7 @@
 				"-": "Yona"
 			}
 		},
-		"GW": {
+		{
 			"alpha-2": "GW",
 			"alpha-3": "GNB",
 			"numeric-3": 624,
@@ -1741,7 +1730,7 @@
 				"GW-GA": "Gabu"
 			}
 		},
-		"GY": {
+		{
 			"alpha-2": "GY",
 			"alpha-3": "GUY",
 			"numeric-3": 328,
@@ -1757,7 +1746,7 @@
 				"GY-UD": "Upper Demerara-Berbice"
 			}
 		},
-		"HK": {
+		{
 			"alpha-2": "HK",
 			"alpha-3": "HKG",
 			"numeric-3": 344,
@@ -1766,7 +1755,7 @@
 				"-": "Hong Kong"
 			}
 		},
-		"HM": {
+		{
 			"alpha-2": "HM",
 			"alpha-3": "HMD",
 			"numeric-3": 334,
@@ -1775,7 +1764,7 @@
 				"-": "Heard Island and McDonald Islands"
 			}
 		},
-		"HN": {
+		{
 			"alpha-2": "HN",
 			"alpha-3": "HND",
 			"numeric-3": 340,
@@ -1801,7 +1790,7 @@
 				"HN-YO": "Yoro"
 			}
 		},
-		"HR": {
+		{
 			"alpha-2": "HR",
 			"alpha-3": "HRV",
 			"numeric-3": 191,
@@ -1830,7 +1819,7 @@
 				"HR-01": "Zagrebacka zupanija"
 			}
 		},
-		"HT": {
+		{
 			"alpha-2": "HT",
 			"alpha-3": "HTI",
 			"numeric-3": 332,
@@ -1846,7 +1835,7 @@
 				"HT-SE": "Sud-Est"
 			}
 		},
-		"HU": {
+		{
 			"alpha-2": "HU",
 			"alpha-3": "HUN",
 			"numeric-3": 348,
@@ -1874,7 +1863,7 @@
 				"HU-ZA": "Zala"
 			}
 		},
-		"ID": {
+		{
 			"alpha-2": "ID",
 			"alpha-3": "IDN",
 			"numeric-3": 360,
@@ -1916,7 +1905,7 @@
 				"ID-YO": "Yogyakarta"
 			}
 		},
-		"IE": {
+		{
 			"alpha-2": "IE",
 			"alpha-3": "IRL",
 			"numeric-3": 372,
@@ -1950,7 +1939,7 @@
 				"IE-WW": "Wicklow"
 			}
 		},
-		"IL": {
+		{
 			"alpha-2": "IL",
 			"alpha-3": "ISR",
 			"numeric-3": 376,
@@ -1964,7 +1953,7 @@
 				"IL-JM": "Yerushalayim"
 			}
 		},
-		"IM": {
+		{
 			"alpha-2": "IM",
 			"alpha-3": "IMN",
 			"numeric-3": 833,
@@ -1973,7 +1962,7 @@
 				"-": "Isle of Man"
 			}
 		},
-		"IN": {
+		{
 			"alpha-2": "IN",
 			"alpha-3": "IND",
 			"numeric-3": 356,
@@ -2017,7 +2006,7 @@
 				"IN-WB": "West Bengal"
 			}
 		},
-		"IO": {
+		{
 			"alpha-2": "IO",
 			"alpha-3": "IOT",
 			"numeric-3": 86,
@@ -2026,7 +2015,7 @@
 				"-": "British Indian Ocean Territory"
 			}
 		},
-		"IQ": {
+		{
 			"alpha-2": "IQ",
 			"alpha-3": "IRQ",
 			"numeric-3": 368,
@@ -2052,7 +2041,7 @@
 				"IQ-WA": "Wasit"
 			}
 		},
-		"IR": {
+		{
 			"alpha-2": "IR",
 			"alpha-3": "IRN",
 			"numeric-3": 364,
@@ -2091,7 +2080,7 @@
 				"IR-19": "Zanjan"
 			}
 		},
-		"IS": {
+		{
 			"alpha-2": "IS",
 			"alpha-3": "ISL",
 			"numeric-3": 352,
@@ -2107,7 +2096,7 @@
 				"IS-3": "Vesturland"
 			}
 		},
-		"IT": {
+		{
 			"alpha-2": "IT",
 			"alpha-3": "ITA",
 			"numeric-3": 380,
@@ -2135,7 +2124,7 @@
 				"IT-34": "Veneto"
 			}
 		},
-		"JE": {
+		{
 			"alpha-2": "JE",
 			"alpha-3": "JEY",
 			"numeric-3": 832,
@@ -2144,7 +2133,7 @@
 				"-": "Jersey"
 			}
 		},
-		"JM": {
+		{
 			"alpha-2": "JM",
 			"alpha-3": "JAM",
 			"numeric-3": 388,
@@ -2166,7 +2155,7 @@
 				"JM-10": "Westmoreland"
 			}
 		},
-		"JO": {
+		{
 			"alpha-2": "JO",
 			"alpha-3": "JOR",
 			"numeric-3": 400,
@@ -2186,7 +2175,7 @@
 				"JO-MD": "Madaba"
 			}
 		},
-		"JP": {
+		{
 			"alpha-2": "JP",
 			"alpha-3": "JPN",
 			"numeric-3": 392,
@@ -2241,7 +2230,7 @@
 				"JP-19": "Yamanashi"
 			}
 		},
-		"KE": {
+		{
 			"alpha-2": "KE",
 			"alpha-3": "KEN",
 			"numeric-3": 404,
@@ -2296,7 +2285,7 @@
 				"KE-47": "West Pokot"
 			}
 		},
-		"KG": {
+		{
 			"alpha-2": "KG",
 			"alpha-3": "KGZ",
 			"numeric-3": 417,
@@ -2312,7 +2301,7 @@
 				"KG-Y": "Ysyk-Kol"
 			}
 		},
-		"KH": {
+		{
 			"alpha-2": "KH",
 			"alpha-3": "KHM",
 			"numeric-3": 116,
@@ -2341,7 +2330,7 @@
 				"KH-21": "Taakaev"
 			}
 		},
-		"KI": {
+		{
 			"alpha-2": "KI",
 			"alpha-3": "KIR",
 			"numeric-3": 296,
@@ -2350,7 +2339,7 @@
 				"KI-G": "Gilbert Islands"
 			}
 		},
-		"KM": {
+		{
 			"alpha-2": "KM",
 			"alpha-3": "COM",
 			"numeric-3": 174,
@@ -2360,7 +2349,7 @@
 				"KM-M": "Moheli"
 			}
 		},
-		"KN": {
+		{
 			"alpha-2": "KN",
 			"alpha-3": "KNA",
 			"numeric-3": 659,
@@ -2381,7 +2370,7 @@
 				"KN-15": "Trinity Palmetto Point"
 			}
 		},
-		"KP": {
+		{
 			"alpha-2": "KP",
 			"alpha-3": "PRK",
 			"numeric-3": 408,
@@ -2390,7 +2379,7 @@
 				"KP-01": "P'yongyang"
 			}
 		},
-		"KR": {
+		{
 			"alpha-2": "KR",
 			"alpha-3": "KOR",
 			"numeric-3": 410,
@@ -2414,7 +2403,7 @@
 				"KR-31": "Ulsan-gwangyeoksi"
 			}
 		},
-		"KW": {
+		{
 			"alpha-2": "KW",
 			"alpha-3": "KWT",
 			"numeric-3": 414,
@@ -2428,7 +2417,7 @@
 				"KW-MU": "Mubarak al Kabir"
 			}
 		},
-		"KY": {
+		{
 			"alpha-2": "KY",
 			"alpha-3": "CYM",
 			"numeric-3": 136,
@@ -2437,7 +2426,7 @@
 				"-": "Cayman Islands"
 			}
 		},
-		"KZ": {
+		{
 			"alpha-2": "KZ",
 			"alpha-3": "KAZ",
 			"numeric-3": 398,
@@ -2462,7 +2451,7 @@
 				"KZ-ZHA": "Zhambyl oblysy"
 			}
 		},
-		"LA": {
+		{
 			"alpha-2": "LA",
 			"alpha-3": "LAO",
 			"numeric-3": 418,
@@ -2484,7 +2473,7 @@
 				"LA-XI": "Xiangkhouang"
 			}
 		},
-		"LB": {
+		{
 			"alpha-2": "LB",
 			"alpha-3": "LBN",
 			"numeric-3": 422,
@@ -2500,7 +2489,7 @@
 				"LB-NA": "Nabatiye"
 			}
 		},
-		"LC": {
+		{
 			"alpha-2": "LC",
 			"alpha-3": "LCA",
 			"numeric-3": 662,
@@ -2517,7 +2506,7 @@
 				"LC-11": "Vieux Fort"
 			}
 		},
-		"LI": {
+		{
 			"alpha-2": "LI",
 			"alpha-3": "LIE",
 			"numeric-3": 438,
@@ -2535,7 +2524,7 @@
 				"LI-11": "Vaduz"
 			}
 		},
-		"LK": {
+		{
 			"alpha-2": "LK",
 			"alpha-3": "LKA",
 			"numeric-3": 144,
@@ -2552,7 +2541,7 @@
 				"LK-1": "Western Province"
 			}
 		},
-		"LR": {
+		{
 			"alpha-2": "LR",
 			"alpha-3": "LBR",
 			"numeric-3": 430,
@@ -2566,7 +2555,7 @@
 				"LR-SI": "Sinoe"
 			}
 		},
-		"LS": {
+		{
 			"alpha-2": "LS",
 			"alpha-3": "LSO",
 			"numeric-3": 426,
@@ -2584,7 +2573,7 @@
 				"LS-K": "Thaba-Tseka"
 			}
 		},
-		"LT": {
+		{
 			"alpha-2": "LT",
 			"alpha-3": "LTU",
 			"numeric-3": 440,
@@ -2602,7 +2591,7 @@
 				"LT-VL": "Vilniaus apskritis"
 			}
 		},
-		"LU": {
+		{
 			"alpha-2": "LU",
 			"alpha-3": "LUX",
 			"numeric-3": 442,
@@ -2622,7 +2611,7 @@
 				"LU-WI": "Wiltz"
 			}
 		},
-		"LV": {
+		{
 			"alpha-2": "LV",
 			"alpha-3": "LVA",
 			"numeric-3": 428,
@@ -2671,7 +2660,7 @@
 				"LV-106": "Ventspils novads"
 			}
 		},
-		"LY": {
+		{
 			"alpha-2": "LY",
 			"alpha-3": "LBY",
 			"numeric-3": 434,
@@ -2699,7 +2688,7 @@
 				"LY-WS": "Wadi ash Shati'"
 			}
 		},
-		"MA": {
+		{
 			"alpha-2": "MA",
 			"alpha-3": "MAR",
 			"numeric-3": 504,
@@ -2718,7 +2707,7 @@
 				"MA-01": "Tanger-Tetouan-Al Hoceima"
 			}
 		},
-		"MC": {
+		{
 			"alpha-2": "MC",
 			"alpha-3": "MCO",
 			"numeric-3": 492,
@@ -2732,7 +2721,7 @@
 				"MC-SR": "Saint-Roman"
 			}
 		},
-		"MD": {
+		{
 			"alpha-2": "MD",
 			"alpha-3": "MDA",
 			"numeric-3": 498,
@@ -2777,7 +2766,7 @@
 				"MD-UN": "Ungheni"
 			}
 		},
-		"ME": {
+		{
 			"alpha-2": "ME",
 			"alpha-3": "MNE",
 			"numeric-3": 499,
@@ -2804,7 +2793,7 @@
 				"ME-21": "Zabljak"
 			}
 		},
-		"MF": {
+		{
 			"alpha-2": "MF",
 			"alpha-3": "MAF",
 			"numeric-3": 663,
@@ -2813,7 +2802,7 @@
 				"-": "Saint Martin (French Part)"
 			}
 		},
-		"MG": {
+		{
 			"alpha-2": "MG",
 			"alpha-3": "MDG",
 			"numeric-3": 450,
@@ -2827,7 +2816,7 @@
 				"MG-U": "Toliara"
 			}
 		},
-		"MH": {
+		{
 			"alpha-2": "MH",
 			"alpha-3": "MHL",
 			"numeric-3": 584,
@@ -2837,7 +2826,7 @@
 				"MH-MAJ": "Majuro"
 			}
 		},
-		"MK": {
+		{
 			"alpha-2": "MK",
 			"alpha-3": "MKD",
 			"numeric-3": 807,
@@ -2913,7 +2902,7 @@
 				"MK-605": "Zelino"
 			}
 		},
-		"ML": {
+		{
 			"alpha-2": "ML",
 			"alpha-3": "MLI",
 			"numeric-3": 466,
@@ -2930,7 +2919,7 @@
 				"ML-6": "Tombouctou"
 			}
 		},
-		"MM": {
+		{
 			"alpha-2": "MM",
 			"alpha-3": "MMR",
 			"numeric-3": 104,
@@ -2953,7 +2942,7 @@
 				"MM-06": "Yangon"
 			}
 		},
-		"MN": {
+		{
 			"alpha-2": "MN",
 			"alpha-3": "MNG",
 			"numeric-3": 496,
@@ -2974,7 +2963,7 @@
 				"MN-1": "Ulaanbaatar"
 			}
 		},
-		"MO": {
+		{
 			"alpha-2": "MO",
 			"alpha-3": "MAC",
 			"numeric-3": 446,
@@ -2983,7 +2972,7 @@
 				"-": "Macao"
 			}
 		},
-		"MP": {
+		{
 			"alpha-2": "MP",
 			"alpha-3": "MNP",
 			"numeric-3": 580,
@@ -2992,7 +2981,7 @@
 				"-": "Northern Mariana Islands"
 			}
 		},
-		"MQ": {
+		{
 			"alpha-2": "MQ",
 			"alpha-3": "MTQ",
 			"numeric-3": 474,
@@ -3001,7 +2990,7 @@
 				"-": "Martinique"
 			}
 		},
-		"MR": {
+		{
 			"alpha-2": "MR",
 			"alpha-3": "MRT",
 			"numeric-3": 478,
@@ -3021,7 +3010,7 @@
 				"MR-06": "Trarza"
 			}
 		},
-		"MS": {
+		{
 			"alpha-2": "MS",
 			"alpha-3": "MSR",
 			"numeric-3": 500,
@@ -3030,7 +3019,7 @@
 				"-": "Saint Peter"
 			}
 		},
-		"MT": {
+		{
 			"alpha-2": "MT",
 			"alpha-3": "MLT",
 			"numeric-3": 470,
@@ -3101,7 +3090,7 @@
 				"MT-68": "Zurrieq"
 			}
 		},
-		"MU": {
+		{
 			"alpha-2": "MU",
 			"alpha-3": "MUS",
 			"numeric-3": 480,
@@ -3119,7 +3108,7 @@
 				"MU-SA": "Savanne"
 			}
 		},
-		"MV": {
+		{
 			"alpha-2": "MV",
 			"alpha-3": "MDV",
 			"numeric-3": 462,
@@ -3139,7 +3128,7 @@
 				"MV-17": "South Nilandhe Atoll"
 			}
 		},
-		"MW": {
+		{
 			"alpha-2": "MW",
 			"alpha-3": "MWI",
 			"numeric-3": 454,
@@ -3164,7 +3153,7 @@
 				"MW-ZO": "Zomba"
 			}
 		},
-		"MX": {
+		{
 			"alpha-2": "MX",
 			"alpha-3": "MEX",
 			"numeric-3": 484,
@@ -3204,7 +3193,7 @@
 				"MX-ZAC": "Zacatecas"
 			}
 		},
-		"MY": {
+		{
 			"alpha-2": "MY",
 			"alpha-3": "MYS",
 			"numeric-3": 458,
@@ -3228,7 +3217,7 @@
 				"MY-16": "Wilayah Persekutuan Putrajaya"
 			}
 		},
-		"MZ": {
+		{
 			"alpha-2": "MZ",
 			"alpha-3": "MOZ",
 			"numeric-3": 508,
@@ -3246,7 +3235,7 @@
 				"MZ-Q": "Zambezia"
 			}
 		},
-		"NA": {
+		{
 			"alpha-2": "NA",
 			"alpha-3": "NAM",
 			"numeric-3": 516,
@@ -3268,7 +3257,7 @@
 				"NA-CA": "Zambezi"
 			}
 		},
-		"NC": {
+		{
 			"alpha-2": "NC",
 			"alpha-3": "NCL",
 			"numeric-3": 540,
@@ -3277,7 +3266,7 @@
 				"-": "Province Sud"
 			}
 		},
-		"NE": {
+		{
 			"alpha-2": "NE",
 			"alpha-3": "NER",
 			"numeric-3": 562,
@@ -3293,7 +3282,7 @@
 				"NE-7": "Zinder"
 			}
 		},
-		"NF": {
+		{
 			"alpha-2": "NF",
 			"alpha-3": "NFK",
 			"numeric-3": 574,
@@ -3302,7 +3291,7 @@
 				"-": "Norfolk Island"
 			}
 		},
-		"NG": {
+		{
 			"alpha-2": "NG",
 			"alpha-3": "NGA",
 			"numeric-3": 566,
@@ -3347,7 +3336,7 @@
 				"NG-ZA": "Zamfara"
 			}
 		},
-		"NI": {
+		{
 			"alpha-2": "NI",
 			"alpha-3": "NIC",
 			"numeric-3": 558,
@@ -3372,7 +3361,7 @@
 				"NI-RI": "Rivas"
 			}
 		},
-		"NL": {
+		{
 			"alpha-2": "NL",
 			"alpha-3": "NLD",
 			"numeric-3": 528,
@@ -3392,7 +3381,7 @@
 				"NL-ZH": "Zuid-Holland"
 			}
 		},
-		"NO": {
+		{
 			"alpha-2": "NO",
 			"alpha-3": "NOR",
 			"numeric-3": 578,
@@ -3411,7 +3400,7 @@
 				"NO-30": "Viken"
 			}
 		},
-		"NP": {
+		{
 			"alpha-2": "NP",
 			"alpha-3": "NPL",
 			"numeric-3": 524,
@@ -3433,7 +3422,7 @@
 				"NP-SE": "Seti"
 			}
 		},
-		"NR": {
+		{
 			"alpha-2": "NR",
 			"alpha-3": "NRU",
 			"numeric-3": 520,
@@ -3444,7 +3433,7 @@
 				"NR-14": "Yaren"
 			}
 		},
-		"NU": {
+		{
 			"alpha-2": "NU",
 			"alpha-3": "NIU",
 			"numeric-3": 570,
@@ -3453,7 +3442,7 @@
 				"-": "Niue"
 			}
 		},
-		"NZ": {
+		{
 			"alpha-2": "NZ",
 			"alpha-3": "NZL",
 			"numeric-3": 554,
@@ -3478,7 +3467,7 @@
 				"NZ-WTC": "West Coast"
 			}
 		},
-		"OM": {
+		{
 			"alpha-2": "OM",
 			"alpha-3": "OMN",
 			"numeric-3": 512,
@@ -3497,7 +3486,7 @@
 				"OM-ZU": "Zufar"
 			}
 		},
-		"PA": {
+		{
 			"alpha-2": "PA",
 			"alpha-3": "PAN",
 			"numeric-3": 591,
@@ -3516,7 +3505,7 @@
 				"PA-9": "Veraguas"
 			}
 		},
-		"PE": {
+		{
 			"alpha-2": "PE",
 			"alpha-3": "PER",
 			"numeric-3": 604,
@@ -3549,7 +3538,7 @@
 				"PE-UCA": "Ucayali"
 			}
 		},
-		"PF": {
+		{
 			"alpha-2": "PF",
 			"alpha-3": "PYF",
 			"numeric-3": 258,
@@ -3558,7 +3547,7 @@
 				"-": "Iles du Vent"
 			}
 		},
-		"PG": {
+		{
 			"alpha-2": "PG",
 			"alpha-3": "PNG",
 			"numeric-3": 598,
@@ -3582,7 +3571,7 @@
 				"PG-WHM": "Western Highlands"
 			}
 		},
-		"PH": {
+		{
 			"alpha-2": "PH",
 			"alpha-3": "PHL",
 			"numeric-3": 608,
@@ -3671,7 +3660,7 @@
 				"PH-ZAS": "Zamboanga del Sur"
 			}
 		},
-		"PK": {
+		{
 			"alpha-2": "PK",
 			"alpha-3": "PAK",
 			"numeric-3": 586,
@@ -3686,7 +3675,7 @@
 				"PK-SD": "Sindh"
 			}
 		},
-		"PL": {
+		{
 			"alpha-2": "PL",
 			"alpha-3": "POL",
 			"numeric-3": 616,
@@ -3710,7 +3699,7 @@
 				"PL-32": "Zachodniopomorskie"
 			}
 		},
-		"PM": {
+		{
 			"alpha-2": "PM",
 			"alpha-3": "SPM",
 			"numeric-3": 666,
@@ -3719,7 +3708,7 @@
 				"-": "Saint Pierre and Miquelon"
 			}
 		},
-		"PN": {
+		{
 			"alpha-2": "PN",
 			"alpha-3": "PCN",
 			"numeric-3": 612,
@@ -3728,7 +3717,7 @@
 				"-": "Pitcairn"
 			}
 		},
-		"PR": {
+		{
 			"alpha-2": "PR",
 			"alpha-3": "PRI",
 			"numeric-3": 630,
@@ -3737,7 +3726,7 @@
 				"-": "Yauco"
 			}
 		},
-		"PS": {
+		{
 			"alpha-2": "PS",
 			"alpha-3": "PSE",
 			"numeric-3": 275,
@@ -3760,7 +3749,7 @@
 				"PS-TKM": "Tulkarm"
 			}
 		},
-		"PT": {
+		{
 			"alpha-2": "PT",
 			"alpha-3": "PRT",
 			"numeric-3": 620,
@@ -3788,7 +3777,7 @@
 				"PT-18": "Viseu"
 			}
 		},
-		"PW": {
+		{
 			"alpha-2": "PW",
 			"alpha-3": "PLW",
 			"numeric-3": 585,
@@ -3802,7 +3791,7 @@
 				"PW-222": "Ngardmau"
 			}
 		},
-		"PY": {
+		{
 			"alpha-2": "PY",
 			"alpha-3": "PRY",
 			"numeric-3": 600,
@@ -3827,7 +3816,7 @@
 				"PY-2": "San Pedro"
 			}
 		},
-		"QA": {
+		{
 			"alpha-2": "QA",
 			"alpha-3": "QAT",
 			"numeric-3": 634,
@@ -3842,7 +3831,7 @@
 				"QA-US": "Umm Salal"
 			}
 		},
-		"RE": {
+		{
 			"alpha-2": "RE",
 			"alpha-3": "REU",
 			"numeric-3": 638,
@@ -3851,7 +3840,7 @@
 				"-": "Reunion"
 			}
 		},
-		"RO": {
+		{
 			"alpha-2": "RO",
 			"alpha-3": "ROU",
 			"numeric-3": 642,
@@ -3901,7 +3890,7 @@
 				"RO-VN": "Vrancea"
 			}
 		},
-		"RS": {
+		{
 			"alpha-2": "RS",
 			"alpha-3": "SRB",
 			"numeric-3": 688,
@@ -3937,7 +3926,7 @@
 				"RS-16": "Zlatiborski okrug"
 			}
 		},
-		"RU": {
+		{
 			"alpha-2": "RU",
 			"alpha-3": "RUS",
 			"numeric-3": 643,
@@ -4028,7 +4017,7 @@
 				"RU-ZAB": "Zabaykal'skiy kray"
 			}
 		},
-		"RW": {
+		{
 			"alpha-2": "RW",
 			"alpha-3": "RWA",
 			"numeric-3": 646,
@@ -4041,7 +4030,7 @@
 				"RW-01": "Ville de Kigali"
 			}
 		},
-		"SA": {
+		{
 			"alpha-2": "SA",
 			"alpha-3": "SAU",
 			"numeric-3": 682,
@@ -4062,7 +4051,7 @@
 				"SA-07": "Tabuk"
 			}
 		},
-		"SB": {
+		{
 			"alpha-2": "SB",
 			"alpha-3": "SLB",
 			"numeric-3": 90,
@@ -4074,7 +4063,7 @@
 				"SB-WE": "Western"
 			}
 		},
-		"SC": {
+		{
 			"alpha-2": "SC",
 			"alpha-3": "SYC",
 			"numeric-3": 690,
@@ -4096,7 +4085,7 @@
 				"SC-23": "Takamaka"
 			}
 		},
-		"SD": {
+		{
 			"alpha-2": "SD",
 			"alpha-3": "SDN",
 			"numeric-3": 729,
@@ -4121,7 +4110,7 @@
 				"SD-NW": "White Nile"
 			}
 		},
-		"SE": {
+		{
 			"alpha-2": "SE",
 			"alpha-3": "SWE",
 			"numeric-3": 752,
@@ -4150,7 +4139,7 @@
 				"SE-O": "Vastra Gotalands lan"
 			}
 		},
-		"SG": {
+		{
 			"alpha-2": "SG",
 			"alpha-3": "SGP",
 			"numeric-3": 702,
@@ -4159,7 +4148,7 @@
 				"-": "Singapore"
 			}
 		},
-		"SH": {
+		{
 			"alpha-2": "SH",
 			"alpha-3": "SHN",
 			"numeric-3": 654,
@@ -4168,7 +4157,7 @@
 				"SH-HL": "Saint Helena"
 			}
 		},
-		"SI": {
+		{
 			"alpha-2": "SI",
 			"alpha-3": "SVN",
 			"numeric-3": 705,
@@ -4368,7 +4357,7 @@
 				"SI-193": "Zuzemberk"
 			}
 		},
-		"SJ": {
+		{
 			"alpha-2": "SJ",
 			"alpha-3": "SJM",
 			"numeric-3": 744,
@@ -4377,7 +4366,7 @@
 				"-": "Svalbard and Jan Mayen"
 			}
 		},
-		"SK": {
+		{
 			"alpha-2": "SK",
 			"alpha-3": "SVK",
 			"numeric-3": 703,
@@ -4393,7 +4382,7 @@
 				"SK-ZI": "Zilinsky kraj"
 			}
 		},
-		"SL": {
+		{
 			"alpha-2": "SL",
 			"alpha-3": "SLE",
 			"numeric-3": 694,
@@ -4405,7 +4394,7 @@
 				"SL-W": "Western Area"
 			}
 		},
-		"SM": {
+		{
 			"alpha-2": "SM",
 			"alpha-3": "SMR",
 			"numeric-3": 674,
@@ -4416,7 +4405,7 @@
 				"SM-09": "Serravalle"
 			}
 		},
-		"SN": {
+		{
 			"alpha-2": "SN",
 			"alpha-3": "SEN",
 			"numeric-3": 686,
@@ -4437,7 +4426,7 @@
 				"SN-ZG": "Ziguinchor"
 			}
 		},
-		"SO": {
+		{
 			"alpha-2": "SO",
 			"alpha-3": "SOM",
 			"numeric-3": 706,
@@ -4455,7 +4444,7 @@
 				"SO-WO": "Woqooyi Galbeed"
 			}
 		},
-		"SR": {
+		{
 			"alpha-2": "SR",
 			"alpha-3": "SUR",
 			"numeric-3": 740,
@@ -4469,7 +4458,7 @@
 				"SR-WA": "Wanica"
 			}
 		},
-		"SS": {
+		{
 			"alpha-2": "SS",
 			"alpha-3": "SSD",
 			"numeric-3": 728,
@@ -4483,7 +4472,7 @@
 				"SS-EW": "Western Equatoria"
 			}
 		},
-		"ST": {
+		{
 			"alpha-2": "ST",
 			"alpha-3": "STP",
 			"numeric-3": 678,
@@ -4492,7 +4481,7 @@
 				"ST-01": "Agua Grande"
 			}
 		},
-		"SV": {
+		{
 			"alpha-2": "SV",
 			"alpha-3": "SLV",
 			"numeric-3": 222,
@@ -4514,7 +4503,7 @@
 				"SV-US": "Usulutan"
 			}
 		},
-		"SX": {
+		{
 			"alpha-2": "SX",
 			"alpha-3": "SXM",
 			"numeric-3": 534,
@@ -4523,7 +4512,7 @@
 				"-": "Sint Maarten (Dutch Part)"
 			}
 		},
-		"SY": {
+		{
 			"alpha-2": "SY",
 			"alpha-3": "SYR",
 			"numeric-3": 760,
@@ -4545,7 +4534,7 @@
 				"SY-TA": "Tartus"
 			}
 		},
-		"SZ": {
+		{
 			"alpha-2": "SZ",
 			"alpha-3": "SWZ",
 			"numeric-3": 748,
@@ -4557,7 +4546,7 @@
 				"SZ-SH": "Shiselweni"
 			}
 		},
-		"TC": {
+		{
 			"alpha-2": "TC",
 			"alpha-3": "TCA",
 			"numeric-3": 796,
@@ -4566,7 +4555,7 @@
 				"-": "Turks and Caicos Islands"
 			}
 		},
-		"TD": {
+		{
 			"alpha-2": "TD",
 			"alpha-3": "TCD",
 			"numeric-3": 148,
@@ -4583,7 +4572,7 @@
 				"TD-ND": "Ville de Ndjamena"
 			}
 		},
-		"TF": {
+		{
 			"alpha-2": "TF",
 			"alpha-3": "ATF",
 			"numeric-3": 260,
@@ -4592,7 +4581,7 @@
 				"-": "French Southern Territories"
 			}
 		},
-		"TG": {
+		{
 			"alpha-2": "TG",
 			"alpha-3": "TGO",
 			"numeric-3": 768,
@@ -4605,7 +4594,7 @@
 				"TG-S": "Savanes"
 			}
 		},
-		"TH": {
+		{
 			"alpha-2": "TH",
 			"alpha-3": "THA",
 			"numeric-3": 764,
@@ -4690,7 +4679,7 @@
 				"TH-35": "Yasothon"
 			}
 		},
-		"TJ": {
+		{
 			"alpha-2": "TJ",
 			"alpha-3": "TJK",
 			"numeric-3": 762,
@@ -4702,7 +4691,7 @@
 				"TJ-SU": "Sughd"
 			}
 		},
-		"TK": {
+		{
 			"alpha-2": "TK",
 			"alpha-3": "TKL",
 			"numeric-3": 772,
@@ -4711,7 +4700,7 @@
 				"-": "Tokelau"
 			}
 		},
-		"TL": {
+		{
 			"alpha-2": "TL",
 			"alpha-3": "TLS",
 			"numeric-3": 626,
@@ -4724,7 +4713,7 @@
 				"TL-LI": "Liquica"
 			}
 		},
-		"TM": {
+		{
 			"alpha-2": "TM",
 			"alpha-3": "TKM",
 			"numeric-3": 795,
@@ -4737,7 +4726,7 @@
 				"TM-M": "Mary"
 			}
 		},
-		"TN": {
+		{
 			"alpha-2": "TN",
 			"alpha-3": "TUN",
 			"numeric-3": 788,
@@ -4769,7 +4758,7 @@
 				"TN-22": "Zaghouan"
 			}
 		},
-		"TO": {
+		{
 			"alpha-2": "TO",
 			"alpha-3": "TON",
 			"numeric-3": 776,
@@ -4780,7 +4769,7 @@
 				"TO-04": "Tongatapu"
 			}
 		},
-		"TR": {
+		{
 			"alpha-2": "TR",
 			"alpha-3": "TUR",
 			"numeric-3": 792,
@@ -4869,7 +4858,7 @@
 				"TR-67": "Zonguldak"
 			}
 		},
-		"TT": {
+		{
 			"alpha-2": "TT",
 			"alpha-3": "TTO",
 			"numeric-3": 780,
@@ -4892,7 +4881,7 @@
 				"TT-TUP": "Tunapuna-Piarco"
 			}
 		},
-		"TV": {
+		{
 			"alpha-2": "TV",
 			"alpha-3": "TUV",
 			"numeric-3": 798,
@@ -4901,7 +4890,7 @@
 				"TV-FUN": "Funafuti"
 			}
 		},
-		"TW": {
+		{
 			"alpha-2": "TW",
 			"alpha-3": "TWN",
 			"numeric-3": 158,
@@ -4929,7 +4918,7 @@
 				"TW-YUN": "Yunlin"
 			}
 		},
-		"TZ": {
+		{
 			"alpha-2": "TZ",
 			"alpha-3": "TZA",
 			"numeric-3": 834,
@@ -4967,7 +4956,7 @@
 				"TZ-25": "Tanga"
 			}
 		},
-		"UA": {
+		{
 			"alpha-2": "UA",
 			"alpha-3": "UKR",
 			"numeric-3": 804,
@@ -5002,7 +4991,7 @@
 				"UA-18": "Zhytomyrska oblast"
 			}
 		},
-		"UG": {
+		{
 			"alpha-2": "UG",
 			"alpha-3": "UGA",
 			"numeric-3": 800,
@@ -5114,7 +5103,7 @@
 				"UG-330": "Zombo"
 			}
 		},
-		"UM": {
+		{
 			"alpha-2": "UM",
 			"alpha-3": "UMI",
 			"numeric-3": 581,
@@ -5123,7 +5112,7 @@
 				"UM-95": "Palmyra Atoll"
 			}
 		},
-		"US": {
+		{
 			"alpha-2": "US",
 			"alpha-3": "USA",
 			"numeric-3": 840,
@@ -5182,7 +5171,7 @@
 				"US-WY": "Wyoming"
 			}
 		},
-		"UY": {
+		{
 			"alpha-2": "UY",
 			"alpha-3": "URY",
 			"numeric-3": 858,
@@ -5209,7 +5198,7 @@
 				"UY-TT": "Treinta y Tres"
 			}
 		},
-		"UZ": {
+		{
 			"alpha-2": "UZ",
 			"alpha-3": "UZB",
 			"numeric-3": 860,
@@ -5230,7 +5219,7 @@
 				"UZ-XO": "Xorazm"
 			}
 		},
-		"VA": {
+		{
 			"alpha-2": "VA",
 			"alpha-3": "VAT",
 			"numeric-3": 336,
@@ -5239,7 +5228,7 @@
 				"-": "Vatican City"
 			}
 		},
-		"VC": {
+		{
 			"alpha-2": "VC",
 			"alpha-3": "VCT",
 			"numeric-3": 670,
@@ -5251,7 +5240,7 @@
 				"VC-05": "Saint Patrick"
 			}
 		},
-		"VE": {
+		{
 			"alpha-2": "VE",
 			"alpha-3": "VEN",
 			"numeric-3": 862,
@@ -5283,7 +5272,7 @@
 				"VE-V": "Zulia"
 			}
 		},
-		"VG": {
+		{
 			"alpha-2": "VG",
 			"alpha-3": "VGB",
 			"numeric-3": 92,
@@ -5292,7 +5281,7 @@
 				"-": "Virgin Islands, British"
 			}
 		},
-		"VI": {
+		{
 			"alpha-2": "VI",
 			"alpha-3": "VIR",
 			"numeric-3": 850,
@@ -5301,7 +5290,7 @@
 				"-": "Virgin Islands, U.S."
 			}
 		},
-		"VN": {
+		{
 			"alpha-2": "VN",
 			"alpha-3": "VNM",
 			"numeric-3": 704,
@@ -5372,7 +5361,7 @@
 				"VN-06": "Yen Bai"
 			}
 		},
-		"VU": {
+		{
 			"alpha-2": "VU",
 			"alpha-3": "VUT",
 			"numeric-3": 548,
@@ -5383,7 +5372,7 @@
 				"VU-TOB": "Torba"
 			}
 		},
-		"WF": {
+		{
 			"alpha-2": "WF",
 			"alpha-3": "WLF",
 			"numeric-3": 876,
@@ -5393,7 +5382,7 @@
 				"WF-UV": "Uvea"
 			}
 		},
-		"WS": {
+		{
 			"alpha-2": "WS",
 			"alpha-3": "WSM",
 			"numeric-3": 882,
@@ -5404,7 +5393,7 @@
 				"WS-TU": "Tuamasaga"
 			}
 		},
-		"YE": {
+		{
 			"alpha-2": "YE",
 			"alpha-3": "YEM",
 			"numeric-3": 887,
@@ -5431,7 +5420,7 @@
 				"YE-TA": "Ta'izz"
 			}
 		},
-		"YT": {
+		{
 			"alpha-2": "YT",
 			"alpha-3": "MYT",
 			"numeric-3": 175,
@@ -5440,7 +5429,7 @@
 				"-": "Sada"
 			}
 		},
-		"ZA": {
+		{
 			"alpha-2": "ZA",
 			"alpha-3": "ZAF",
 			"numeric-3": 710,
@@ -5457,7 +5446,7 @@
 				"ZA-WC": "Western Cape"
 			}
 		},
-		"ZM": {
+		{
 			"alpha-2": "ZM",
 			"alpha-3": "ZMB",
 			"numeric-3": 894,
@@ -5475,7 +5464,7 @@
 				"ZM-01": "Western"
 			}
 		},
-		"ZW": {
+		{
 			"alpha-2": "ZW",
 			"alpha-3": "ZWE",
 			"numeric-3": 716,
