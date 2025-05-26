@@ -228,7 +228,7 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
 				.attr("stroke", "blue")
 				.attr("stroke-width", 0.5)
 
-			// crate svg object and set parameters for document
+			// create svg object and set parameters for document
 			let mySVG = document.getElementById('svg' + id);
 			let bbox = document.getElementById("map_overlay" + id).getBBox();
 			mySVG.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + 
