@@ -1,11 +1,11 @@
-BridgesVisualizer.map = function(vis, overlay, map, state) {
+BridgesVisualizer.map = function(vis, overlay, map_projection, state) {
 
 	// Input Params:
 	// 		vis - root node at which the map document is created
 	//		overlay - is this being used?
-	//		map - is this being used?
+	//		map_projection - projection parameter for the map
 	// 		state - array of US states or Country names. if state =="all", 
-	// 			it refers to all states or entire world
+	// 			it refers to all states or all countries 
 
 	// get id of svg -- to identify sub assignments
 	var id = +vis.attr("id").substr(3);
@@ -211,8 +211,6 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
 				var visData = arraycopy
 			}
 			else {  
-				console.log("num countries:" + state.length);
-				console.log (map);
 				// filter the selected countries
 				var visData = arraycopy.filter(function(d) {
 					for (let k = 0; k < state.length; k++) {
@@ -255,7 +253,7 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
 	};
 
 	//  Call the appropriate projection and overlay functions
-	switch (map.toLowerCase()) {
+	switch (map_projection.toLowerCase()) {
 		case "equirectangular":
 			svgWorldMap();
 			break;
