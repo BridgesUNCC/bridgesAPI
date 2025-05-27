@@ -188,9 +188,9 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
 	}
 
 	var svgWorldMap = function() {
-		console.log("in svgWorldMap fn..");
 
 		// reading world country data
+		// this file contains the boundary geometry of all countries
 		d3.json("/assets/world_countries.json").then( us => {
 
 			// remove any earlier stored maps
@@ -207,10 +207,10 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
 				let arraycopy = [...array];
 
 			// parsing the data
-//			if (state.toLowerCase() == "all") { // entire world
-//				var visData = arraycopy
-//			}
-//			else {  
+			if (state[0]._country_name.toLowerCase() == "all") { // entire world
+				var visData = arraycopy
+			}
+			else {  
 				console.log("num countries:" + state.length);
 				console.log (map);
 				// filter the selected countries
@@ -225,7 +225,7 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
 						}
 					}
 				})
-//			}
+			}
 
 			states.selectAll("path")
 				.attr("class", "land")
