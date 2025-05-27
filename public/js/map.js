@@ -211,14 +211,15 @@ BridgesVisualizer.map = function(vis, overlay, map, state) {
 //				var visData = arraycopy
 //			}
 //			else {  
+				console.log("num countries:" + state.length);
+				console.log (map);
 				// filter the selected countries
 				var visData = arraycopy.filter(function(d) {
 					for (let k = 0; k < state.length; k++) {
 						if (d.properties.name.toLowerCase() == 
 								state[k]._country_name.toLowerCase()) {
 							d.properties.stroke_color = state[k]._stroke_color;
-//							d.properties.fill_color = state[k]._fill_color;
-							d.properties.fill_color = [255, 0, 0, 1];
+							d.properties.fill_color = state[k]._fill_color;
 							d.properties.stroke_width = state[k]._stroke_width;
 							return true;
 						}
