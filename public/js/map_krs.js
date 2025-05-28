@@ -5,44 +5,45 @@
 // This function is used retrieve US Map state and county data
 function getUSMapData (infile, selected_states) {
 	// input file containing the US map geometries for all states
+console.log("states:" + selected_states);
 	d3.json("/assets/counties-10m.json").then(map_json => {
 		console.log("in getUSMapData()..");
 
-		let state_data = topojson.feature(map_json, map_json.objects.states).features
+		let state_data = topojson.feature(map_json, map_json.objects.states).features;
 		let state_copy = [...state_data];
 
-		let county_data = topojson.feature(map_json, map_json.objects.counties).features
+		let county_data = topojson.feature(map_json, map_json.objects.counties).features;
 		let county_copy = [...county_data];
 
-		let visData, county_visData;
+		var visData, county_visData;
 
 		if (selected_states[0]._state_name.toLowerCase() == "all") {  // all states
-			visData = state_copy
+			visData = state_copy;
 		}
 		else {  // the set of states specified in the input param
 			// filtering the attributes of the chosen states
 			visData = state_copy.filter(function(d) {
 				for (let i = 0; i < selected_states.length; i++) {
 					if (d.properties.name.toLowerCase() == 
-							state[i]._state_name.toLowerCase()) {
+							selected_states[i]._state_name.toLowerCase()) {
 							d.properties.stroke_color = selected_states[i]._stroke_color;
 							d.properties.fill_color = selected_states[i]._fill_color;
 							d.properties.stroke_width = selected_states[i]._stroke_width;
-							return true
+							return true;
 						}
 					}
 					return false;
 				})
 			// now get the county attributes for the chosen states
 			county_visData = county_copy.filter(function(d) {
-				for (let i = 0; i < state.length; i++) {
-					if (state[i]._view_counties == true) {
-						for (let j = 0; j < state[i]._counties.length; j++){
-							if (d.id == state[i]._counties[j]._geoid;
-								&& state[i]._counties[j]._hide !== true) {
-								d.properties.stroke_color = state[i]._counties[j]._stroke_color;
-								d.properties.fill_color = state[i]._counties[j]._fill_color;
-								d.properties.stroke_width = state[i]._counties[j]._stroke_width;
+				for (let i = 0; i < selected_states.length; i++) {
+					if (selected_states[i]._view_counties == true) {
+						for (let j = 0; j < selected_states[i]._counties.length; j++){
+							if (d.id == selected_states[i]._counties[j]._geoid
+								&& selected_states[i]._counties[j]._hide !== true) {
+								d.properties.stroke_color = selected_states[i]._counties[j]._stroke_color;
+								d.properties.fill_color = selected_states[i]._counties[j]._fill_color;
+								d.properties.stroke_width = selected_states[i]._counties[j]._stroke_width;
 								return true;
 							}
 						}
@@ -53,6 +54,7 @@ function getUSMapData (infile, selected_states) {
 			// add the county data to the state data
 			visData = visData.concat(county_visData);
 		}
+		console.log("vis data:" + visData);
 		return visData;
 	})
 	.catch(error => {
@@ -80,7 +82,7 @@ function getWorldMapData (infile, selected_countries) {
 
 		// parsing the data
 		if (selected_states[0]._country_name.toLowerCase() == "all") { // entire world
-			var visData = arraycopy
+			var visData = arraycopy;
 		}
 		else {  
 			// filter the selected countries
@@ -88,9 +90,9 @@ function getWorldMapData (infile, selected_countries) {
 				for (let k = 0; k < selected_states.length; k++) {
 					if (d.properties.name.toLowerCase() == 
 							selected_states[k]._country_name.toLowerCase()) {
-						d.properties.stroke_color = state[k]._stroke_color;
-						d.properties.fill_color = state[k]._fill_color;
-						d.properties.stroke_width = state[k]._stroke_width;
+						d.properties.stroke_color = selected_states[k]._stroke_color;
+						d.properties.fill_color = selected_states[k]._fill_color;
+						d.properties.stroke_width = selected_states[k]._stroke_width;
 						return true;
 					}
 				}
@@ -104,7 +106,7 @@ function getWorldMapData (infile, selected_countries) {
 }
 		
 // This function is used render the US Map state and county data using d3js
-function renderUSMapSVG (visData) {
+function renderUSMapSVG (visData, id, vis) {
 	// create the map generator with the right AlbersUSA projection
 	let geo_generator = d3.geoPath().projection(d3.geoAlbersUsa());
 
@@ -146,7 +148,7 @@ function renderUSMapSVG (visData) {
 	vis.select("g").select("#map_overlay" + id).moveToBack();
 }
 
-function renderWorldMapSVG (visData) {
+function renderWorldMapSVG (visData, id) {
 	// remove any earlier stored maps
 	d3.select(vis.node().parentNode).selectAll(".map_overlay").remove();
 
@@ -189,21 +191,23 @@ BridgesVisualizer.map = function(vis, overlay, map_projection, selected_states) 
 //		If selected_states == ["all"] it refers to all states or all countries 
 
 	// get id of svg -- to identify sub assignments
+	console.log ("in my map code..");
+	console.log ("states in map_krs:" + selected_states.length);
 	let id = +vis.attr("id").substr(3);
 	if (!id || isNaN(id))
 		id = 0;
 
 	// get the US map data 
+	var visData;
 	switch (map_projection.toLowerCase()) {
 		case "equirectangular":
 			// note: actually passing selected countries for world
 			visData = getWorldMapData("/assets/world_countries.json", selected_states);
-			renderWorldMapSVG (visData);
+			renderWorldMapSVG (visData, id);
 			break;
 		case "albersusa":
 			visData = getUSMapData ("/assets/counties-10m.json", selected_states)
-			renderUSMapSVG(visData);
+			renderUSMapSVG(visData, id, vis);
 			break;
 	}
-
 }

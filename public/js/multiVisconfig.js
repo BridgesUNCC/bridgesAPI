@@ -540,7 +540,8 @@ function importMapResources() {
     $('head').append('<link rel="stylesheet" type="text/css" href="/css/map.css">');
 
     addScript({
-        src: "/js/map.js",
+		src: "/js/map.js",
+//		src: "/js/map_krs.js",
         type: 'text/javascript',
         async: null
     }).then(function() {
@@ -568,13 +569,15 @@ function addMapOverlay(assignmentData, vis) {
     // call the correct map overlay (svg, CANVAS)
     switch(vis.node().tagName) {
       case 'svg':
+console.log("... in multivis.." + vis.node().tagName);
+console.log("... in multivis..states.." + assignmentData.map);
       //we now pass the area to render from map as assignmentData.map: example-North Carolina
-	//console.log(assignmentData.coord_system_type)
         BridgesVisualizer.map(vis, assignmentData.coord_system_type, assignmentData.coord_system_type, assignmentData.map);
         break;
 
       case 'CANVAS':
         BridgesVisualizer.map_canvas(vis, assignmentData.coord_system_type, assignmentData.coord_system_type, assignmentData.map);
+console.log("... in multivis.." + assignmentData.map);
         break;
     }
   });

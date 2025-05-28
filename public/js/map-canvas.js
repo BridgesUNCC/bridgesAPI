@@ -1,5 +1,6 @@
 BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
 
+
   var assignmentContainer = canvas.node().parentNode;
 
   // get width and height of vis

@@ -8,6 +8,8 @@ BridgesVisualizer.map = function(vis, overlay, map_projection, state) {
 	// 			it refers to all states or all countries 
 
 	// get id of svg -- to identify sub assignments
+
+
 	var id = +vis.attr("id").substr(3);
 	if (!id || isNaN(id))
 		id = 0;
