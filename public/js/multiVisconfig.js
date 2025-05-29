@@ -545,12 +545,12 @@ function importMapResources() {
         type: 'text/javascript',
         async: null
     }).then(function() {
-      return addScript({
-          src: "/js/map-canvas.js",
-          type: 'text/javascript',
-          async: null
-        });
-    }).then(function() {
+//      return addScript({
+//          src: "/js/map-canvas.js",
+//          type: 'text/javascript',
+//          async: null
+//        });
+//   }).then(function() {
       return addScript({
           src: "/js/lib/topojson.v1.min.js",
           type: 'text/javascript',
@@ -577,7 +577,6 @@ console.log("... in multivis..states.." + assignmentData.map);
 
       case 'CANVAS':
         BridgesVisualizer.map_canvas(vis, assignmentData.coord_system_type, assignmentData.coord_system_type, assignmentData.map);
-console.log("... in multivis.." + assignmentData.map);
         break;
     }
   });

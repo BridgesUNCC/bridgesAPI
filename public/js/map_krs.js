@@ -29,7 +29,7 @@ function getUSStateData (map_json, selected_states) {
 	}
 	return stateData;
 }
-
+//-------------------------------------------------
 function getUSCountyData (map_json, selected_states) {
 	let county_data = topojson.feature(map_json, map_json.objects.counties).features;
 	let county_copy = [...county_data];
@@ -54,19 +54,17 @@ function getUSCountyData (map_json, selected_states) {
 	})
 	return countyData;
 }
-
-
+//-------------------------------------------------
 function getCountryData(map_json, selected_countries) {
 
 	// reading world country data
-	d3.select(vis.node().parentNode).selectAll(".map_overlay").remove();
+	// d3.select(vis.node().parentNode).selectAll(".map_overlay").remove();
 
 	// map generator
-	let geo_generator = d3.geoPath().projection(d3.geoEquirectangular());
+	// let geo_generator = d3.geoPath().projection(d3.geoEquirectangular());
 
 	let country_data = topojson.feature(map_json, map_json.objects.countries).features;
 	let country_copy = [...country_data];
-
 
 	// parse the data
 	let countryData = {};
@@ -90,10 +88,10 @@ function getCountryData(map_json, selected_countries) {
 
 	return countryData;
 }
-		
-// This function is used render the US and World Maps using d3js
+//-------------------------------------------------
+// This function is used SVG rendered US and World Maps using d3js
 function renderSVG_Map (visData, id, vis, proj) {
-	// create the map generator with the right AlbersUSA projection
+	// create the map generator with the right provided projection
 	let geo_generator = d3.geoPath().projection(proj);
 
 	// remove any previous maps
@@ -127,18 +125,59 @@ function renderSVG_Map (visData, id, vis, proj) {
 	// Send the overlay to the back to catch mouse events
 	vis.select("g").select("#map_overlay" + id).moveToBack();
 }
+//-------------------------------------------------
+// This function is used Canvas rendered US and World Maps using d3js
+function renderCanvas_Map (visData, id, canvas, proj) {
+	// create the map generator with the provided projection
+	let geo_generator = d3.geoPath().projection(proj);
 
+console.log("here..");
+	// remove any previous maps
+console.log("Canvas obj:" + JSON.stringify(canvas));
+	let container = canvas.node().parentNode();
+	d3.select(container.selectAll(".map_overlay").remove());
+
+	let vis = d3.select(container)
+			.append("canvas")
+			.attr("width", width)
+			.attr("height", height)
+			.attr("id", "map_overlay_canvas_" + id)
+			.attr("class", "map_overlay_canvas");
+
+	// create the path - geometry and attributes
+	states = vis.append("g")
+			.attr("id","map_overlay"+id)
+			.classed("map_overlay", true)
+
+	states.selectAll("path")
+		.attr("class", "land")
+		.attr("id", "state_fips")
+		.data(visData)
+		.enter()
+		.append("path")
+		.attr("d", geo_generator)
+		.attr("fill", (d) => BridgesVisualizer.getColor(d.properties.fill_color))
+		.attr("stroke", (d) => BridgesVisualizer.getColor(d.properties.stroke_color))
+		.attr("stroke-width", (d) => d.properties.stroke_width)
+
+	// update the transformation based on the sibling transform
+	vis.zoom = function(d) {
+		d3.select("#map_overlay"+id)
+			.attr("transform", d3.zoomTransform(canvas.node()));
+	};
+
+	vis.select("g").select("#map_overlay"+id).moveToBack();
+	canvas.registerMapOverlay(vis);
+}
+//-------------------------------------------------
 function generateSVG_USMap(infile, selected_states, id, vis) {
 	// input file containing the US map geometries for all states
 	d3.json("/assets/counties-10m.json").then(map_json => {
 		let visData = getUSStateData(map_json, selected_states);
-		console.log("vis data inside: " + JSON.stringify(visData));
 		let county_visData = getUSCountyData(map_json, selected_states);
 
 		// add the county data to the state data
 		visData = visData.concat(county_visData);
-
-		console.log("vis data-at json read:" + JSON.stringify(visData));
 
 		renderSVG_Map(visData, id, vis, d3.geoAlbersUsa());
 	})
@@ -146,47 +185,95 @@ function generateSVG_USMap(infile, selected_states, id, vis) {
 		console.log("Map reading error:" + error);
 	});
 }
-
+//-------------------------------------------------
 function generateSVG_WorldMap(infile, selected_countries, id, vis) {
 	// input file containing the US map geometries for all states
 	d3.json(infile).then(map_json => {
 
 		let visData = getCountryData(map_json, selected_countries);
-		console.log("vis data inside: " + JSON.stringify(visData));
-
-		console.log("vis data-at json read:" + JSON.stringify(visData));
-
 		renderSVG_Map(visData, id, vis, d3.geoEquirectangular());
 	})
 	.catch(error => {
 		console.log("Map reading error:" + error);
 	});
 }
+//-------------------------------------------------
+function generateCanvas_USMap(infile, selected_states, id, vis) {
+	// input file containing the US map geometries for all states
+	d3.json("/assets/counties-10m.json").then(map_json => {
+		let visData = getUSStateData(map_json, selected_states);
+		let county_visData = getUSCountyData(map_json, selected_states);
+
+		// add the county data to the state data
+		visData = visData.concat(county_visData);
+
+		renderCanvas_Map(visData, id, vis, d3.geoAlbersUsa());
+	})
+	.catch(error => {
+		console.log("Map reading error:" + error);
+	});
+}
+
+//-------------------------------------------------
+function generateCanvas_WorldMap(infile, selected_countries, id, vis) {
+	// input file containing the US map geometries for all states
+	d3.json(infile).then(map_json => {
+
+		let visData = getCountryData(map_json, selected_countries);
+		renderCanvas_Map(visData, id, vis, d3.geoEquirectangular());
+	})
+	.catch(error => {
+		console.log("Map reading error:" + error);
+	});
+}
+
+//-------------------------------------------------
+// the following function generates SVG maps of US  and World countries
 BridgesVisualizer.map = function(vis, overlay, map_projection, selected_states) {
 
-	/** 
-	 * vis - root node at which the map document is created
-	 * overlay - is this being used?
-	 * map_projection - projection parameter for the map
-	 * selected_states - array of US states or Country names. 
-	 * If selected_states == ["all"] it refers to all states or all countries 
-	 */
+/** 
+ * vis - root node at which the map document is created
+ * overlay - is this being used?
+ * map_projection - projection parameter for the map
+ * selected_states - array of US states or Country names. 
+ * If selected_states == ["all"] it refers to all states or all countries 
+ */
 
 	// get id of svg -- to identify sub assignments
-	console.log ("in my map code..");
-	console.log ("states in map_krs:" + selected_states.length);
 	let id = +vis.attr("id").substr(3);
 	if (!id || isNaN(id))
 		id = 0;
 
-	// get the US map data 
-	let visData = {};
+	// generate the map
 	switch (map_projection.toLowerCase()) {
 		case "equirectangular":
-			generateSVG_WorldMap("/assets/world_countries.json", selected_states, id, vis);
-			break;
-		case "albersusa":
-			generateSVG_USMap("/assets/counties-10m.json", selected_states, id, vis);
-			break;
+		generateSVG_WorldMap("/assets/world_countries.json", selected_states, id, vis);
+		break;
+	case "albersusa":
+		generateSVG_USMap("/assets/counties-10m.json", selected_states, id, vis);
+		break;
 	}
 }
+//-------------------------------------------------
+
+// the following function generates Canvas maps of US  and World countries 
+BridgesVisualizer.map_canvas = function(vis, overlay, map_projection, selected_states) {
+	// get width and height of vis
+	width = vis.attr("width");
+	height = vis.attr("height");
+
+	// get id of canvas
+	var id = +vis.attr("id").substr(6);
+	if(!id || isNaN(id)) id = 0;
+
+	switch (map_projection.toLowerCase()) {
+		case "equirectangular":
+			generateCanvas_WorldMap("/assets/world_countries.json", selected_states, id, vis);
+			break;
+		case "albersusa":
+			generateCanvas_USMap("/assets/counties-10m.json", selected_states, id, vis);
+			break;
+		break;
+	}
+}
+//-------------------------------------------------
