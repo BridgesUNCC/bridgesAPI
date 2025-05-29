@@ -540,8 +540,8 @@ function importMapResources() {
     $('head').append('<link rel="stylesheet" type="text/css" href="/css/map.css">');
 
     addScript({
-		src: "/js/map.js",
-//		src: "/js/map_krs.js",
+//	src: "/js/map.js",
+	src: "/js/map_krs.js",
         type: 'text/javascript',
         async: null
     }).then(function() {

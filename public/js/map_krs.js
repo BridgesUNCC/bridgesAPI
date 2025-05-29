@@ -3,9 +3,10 @@
 // Handles both SVG and Canvas rendering
 
 // This function is used retrieve US Map state and county data
-function getUSMapData (infile, selected_states) {
+function getUSMapData (infile, selected_states, visData) {
 	// input file containing the US map geometries for all states
-console.log("states:" + selected_states);
+console.log("visData:" + JSON.stringify(visData));
+	let county_visData;
 	d3.json("/assets/counties-10m.json").then(map_json => {
 		console.log("in getUSMapData()..");
 
@@ -15,7 +16,6 @@ console.log("states:" + selected_states);
 		let county_data = topojson.feature(map_json, map_json.objects.counties).features;
 		let county_copy = [...county_data];
 
-		var visData, county_visData;
 
 		if (selected_states[0]._state_name.toLowerCase() == "all") {  // all states
 			visData = state_copy;
@@ -34,32 +34,32 @@ console.log("states:" + selected_states);
 					}
 					return false;
 				})
-			// now get the county attributes for the chosen states
-			county_visData = county_copy.filter(function(d) {
-				for (let i = 0; i < selected_states.length; i++) {
-					if (selected_states[i]._view_counties == true) {
-						for (let j = 0; j < selected_states[i]._counties.length; j++){
-							if (d.id == selected_states[i]._counties[j]._geoid
+		}
+		// now get the county attributes for the chosen states
+		county_visData = county_copy.filter(function(d) {
+			for (let i = 0; i < selected_states.length; i++) {
+			if (selected_states[i]._view_counties == true) {
+				for (let j = 0; j < selected_states[i]._counties.length; j++){
+					if (d.id == selected_states[i]._counties[j]._geoid
 								&& selected_states[i]._counties[j]._hide !== true) {
-								d.properties.stroke_color = selected_states[i]._counties[j]._stroke_color;
-								d.properties.fill_color = selected_states[i]._counties[j]._fill_color;
-								d.properties.stroke_width = selected_states[i]._counties[j]._stroke_width;
-								return true;
-							}
-						}
+						d.properties.stroke_color = selected_states[i]._counties[j]._stroke_color;
+						d.properties.fill_color = selected_states[i]._counties[j]._fill_color;
+						d.properties.stroke_width = selected_states[i]._counties[j]._stroke_width;
+						return true;
 					}
+				}
+			}
 				}
 				return false
 			})
 			// add the county data to the state data
 			visData = visData.concat(county_visData);
 		}
-		console.log("vis data:" + visData);
-		return visData;
 	})
 	.catch(error => {
 		console.log("Map reading error:" + error);
 	});
+	console.log("vis data-at end:" + JSON.stringify(visData));
 }
 
 function getWorldMapData (infile, selected_countries) {
@@ -198,15 +198,16 @@ BridgesVisualizer.map = function(vis, overlay, map_projection, selected_states) 
 		id = 0;
 
 	// get the US map data 
-	var visData;
+	let visData = {};
 	switch (map_projection.toLowerCase()) {
 		case "equirectangular":
 			// note: actually passing selected countries for world
-			visData = getWorldMapData("/assets/world_countries.json", selected_states);
+			getWorldMapData("/assets/world_countries.json", selected_states, visData);
 			renderWorldMapSVG (visData, id);
 			break;
 		case "albersusa":
-			visData = getUSMapData ("/assets/counties-10m.json", selected_states)
+			getUSMapData ("/assets/counties-10m.json", selected_states, visData)
+console.log("state data:" + JSON.stringify(visData));
 			renderUSMapSVG(visData, id, vis);
 			break;
 	}
