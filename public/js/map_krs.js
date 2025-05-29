@@ -94,6 +94,7 @@ function renderSVG_Map (visData, id, vis, proj) {
 	// create the map generator with the right provided projection
 	let geo_generator = d3.geoPath().projection(proj);
 
+
 	// remove any previous maps
 	d3.select(vis.node().parentNode).selectAll(".map_overlay").remove();
 
@@ -131,14 +132,16 @@ function renderCanvas_Map (visData, id, canvas, proj) {
 	// create the map generator with the provided projection
 	let geo_generator = d3.geoPath().projection(proj);
 
-console.log("here..");
 	// remove any previous maps
-console.log("Canvas obj:" + JSON.stringify(canvas));
-	let container = canvas.node().parentNode();
-	d3.select(container.selectAll(".map_overlay").remove());
+	let container = canvas.node().parentNode;
+	d3.select(container).selectAll(".map_overlay").remove();
+
+	// get width and height of vis
+	let width = canvas.attr("width");
+	let height = canvas.attr("height");
 
 	let vis = d3.select(container)
-			.append("canvas")
+			.append("svg")
 			.attr("width", width)
 			.attr("height", height)
 			.attr("id", "map_overlay_canvas_" + id)
@@ -163,7 +166,7 @@ console.log("Canvas obj:" + JSON.stringify(canvas));
 	// update the transformation based on the sibling transform
 	vis.zoom = function(d) {
 		d3.select("#map_overlay"+id)
-			.attr("transform", d3.zoomTransform(canvas.node()));
+	 		.attr("transform", d3.zoomTransform(canvas.node()));
 	};
 
 	vis.select("g").select("#map_overlay"+id).moveToBack();
@@ -198,7 +201,7 @@ function generateSVG_WorldMap(infile, selected_countries, id, vis) {
 	});
 }
 //-------------------------------------------------
-function generateCanvas_USMap(infile, selected_states, id, vis) {
+function generateCanvas_USMap(infile, selected_states, id, canvas) {
 	// input file containing the US map geometries for all states
 	d3.json("/assets/counties-10m.json").then(map_json => {
 		let visData = getUSStateData(map_json, selected_states);
@@ -207,7 +210,7 @@ function generateCanvas_USMap(infile, selected_states, id, vis) {
 		// add the county data to the state data
 		visData = visData.concat(county_visData);
 
-		renderCanvas_Map(visData, id, vis, d3.geoAlbersUsa());
+		renderCanvas_Map(visData, id, canvas, d3.geoAlbersUsa());
 	})
 	.catch(error => {
 		console.log("Map reading error:" + error);
@@ -215,12 +218,12 @@ function generateCanvas_USMap(infile, selected_states, id, vis) {
 }
 
 //-------------------------------------------------
-function generateCanvas_WorldMap(infile, selected_countries, id, vis) {
+function generateCanvas_WorldMap(infile, selected_countries, id, canvas) {
 	// input file containing the US map geometries for all states
 	d3.json(infile).then(map_json => {
 
 		let visData = getCountryData(map_json, selected_countries);
-		renderCanvas_Map(visData, id, vis, d3.geoEquirectangular());
+		renderCanvas_Map(visData, id, canvas, d3.geoEquirectangular());
 	})
 	.catch(error => {
 		console.log("Map reading error:" + error);
@@ -257,10 +260,8 @@ BridgesVisualizer.map = function(vis, overlay, map_projection, selected_states) 
 //-------------------------------------------------
 
 // the following function generates Canvas maps of US  and World countries 
-BridgesVisualizer.map_canvas = function(vis, overlay, map_projection, selected_states) {
-	// get width and height of vis
-	width = vis.attr("width");
-	height = vis.attr("height");
+BridgesVisualizer.map_canvas = function(canvas, overlay, map_projection, selected_states) {
+
 
 	// get id of canvas
 	var id = +vis.attr("id").substr(6);
@@ -268,10 +269,10 @@ BridgesVisualizer.map_canvas = function(vis, overlay, map_projection, selected_s
 
 	switch (map_projection.toLowerCase()) {
 		case "equirectangular":
-			generateCanvas_WorldMap("/assets/world_countries.json", selected_states, id, vis);
+			generateCanvas_WorldMap("/assets/world_countries.json", selected_states, id, canvas);
 			break;
 		case "albersusa":
-			generateCanvas_USMap("/assets/counties-10m.json", selected_states, id, vis);
+			generateCanvas_USMap("/assets/counties-10m.json", selected_states, id, canvas);
 			break;
 		break;
 	}

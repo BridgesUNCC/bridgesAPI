@@ -3,6 +3,8 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
 
   var assignmentContainer = canvas.node().parentNode;
 
+console.log("container:" + JSON.stringify(canvas.node().parentNode));
+
   // get width and height of vis
   width = canvas.attr("width");
   height = canvas.attr("height");
@@ -236,9 +238,10 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map, state) {
 	      
 	      var array = topojson.feature(us, us.objects.countries).features
 	      var arraycopy = [...array];
-	      if(state.toLowerCase() == "all"){
-		  var visData = arraycopy
-	      }else{
+//	      if(state.toLowerCase() == "all"){
+//		  var visData = arraycopy
+//	      }else
+			{
 		  var visData = arraycopy.filter(function(d) { return d.properties.name.toLowerCase() == state.toLowerCase(); })
 	      }
 	      

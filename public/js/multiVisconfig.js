@@ -544,13 +544,15 @@ function importMapResources() {
 	src: "/js/map_krs.js",
         type: 'text/javascript',
         async: null
+/*
     }).then(function() {
-//      return addScript({
-//          src: "/js/map-canvas.js",
-//          type: 'text/javascript',
-//          async: null
-//        });
-//   }).then(function() {
+      return addScript({
+          src: "/js/map-canvas.js",
+          type: 'text/javascript',
+          async: null
+        });
+*/
+   }).then(function() {
       return addScript({
           src: "/js/lib/topojson.v1.min.js",
           type: 'text/javascript',

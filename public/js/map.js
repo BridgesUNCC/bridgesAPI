@@ -10,6 +10,7 @@ BridgesVisualizer.map = function(vis, overlay, map_projection, state) {
 	// get id of svg -- to identify sub assignments
 
 
+
 	var id = +vis.attr("id").substr(3);
 	if (!id || isNaN(id))
 		id = 0;
