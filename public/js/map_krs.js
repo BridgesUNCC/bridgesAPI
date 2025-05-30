@@ -141,18 +141,18 @@ function renderCanvas_Map (visData, id, canvas, proj) {
 	let height = canvas.attr("height");
 
 	let vis = d3.select(container)
-			.append("svg")
-			.attr("width", width)
-			.attr("height", height)
-			.attr("id", "map_overlay_canvas_" + id)
-			.attr("class", "map_overlay_canvas");
+		.append("g")
+		.attr("width", width)
+		.attr("height", height)
+		.attr("id", "map_overlay_canvas_" + id)
+		.attr("class", "map_overlay_canvas");
 
 	// create the path - geometry and attributes
 	states = vis.append("g")
-			.attr("id","map_overlay"+id)
-			.classed("map_overlay", true)
+		.attr("id","map_overlay"+id)
+		.classed("map_overlay", true)
 
-	states.selectAll("path")
+	vis.selectAll("path")
 		.attr("class", "land")
 		.attr("id", "state_fips")
 		.data(visData)
@@ -171,6 +171,8 @@ function renderCanvas_Map (visData, id, canvas, proj) {
 
 	vis.select("g").select("#map_overlay"+id).moveToBack();
 	canvas.registerMapOverlay(vis);
+	// console.log("states(canvas_geom):" + JSON.stringify(states.selectAll("path").attr("d")));
+	console.log("vis data:" + JSON.stringify (visData));
 }
 //-------------------------------------------------
 function generateSVG_USMap(infile, selected_states, id, vis) {
@@ -254,6 +256,7 @@ BridgesVisualizer.map = function(vis, overlay, map_projection, selected_states) 
 		break;
 	case "albersusa":
 		generateSVG_USMap("/assets/counties-10m.json", selected_states, id, vis);
+		console.log("svg map data:" + JSON.stringify(vis));
 		break;
 	}
 }
