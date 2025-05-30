@@ -132,6 +132,7 @@ function renderCanvas_Map (visData, id, canvas, proj) {
 	// create the map generator with the provided projection
 	let geo_generator = d3.geoPath().projection(proj);
 
+
 	// remove any previous maps
 	let container = canvas.node().parentNode;
 	d3.select(container).selectAll(".map_overlay").remove();
@@ -158,7 +159,11 @@ function renderCanvas_Map (visData, id, canvas, proj) {
 		.data(visData)
 		.enter()
 		.append("path")
-		.attr("d", geo_generator)
+//		.attr("d", geo_generator)
+		.attr("d", function (d) {
+				console.log("coords:" + JSON.stringify(d.geometry.type));
+				return geo_generator;
+			})
 		.attr("fill", (d) => BridgesVisualizer.getColor(d.properties.fill_color))
 		.attr("stroke", (d) => BridgesVisualizer.getColor(d.properties.stroke_color))
 		.attr("stroke-width", (d) => d.properties.stroke_width)
@@ -173,6 +178,9 @@ function renderCanvas_Map (visData, id, canvas, proj) {
 	canvas.registerMapOverlay(vis);
 	// console.log("states(canvas_geom):" + JSON.stringify(states.selectAll("path").attr("d")));
 	console.log("vis data:" + JSON.stringify (visData));
+
+	console.log("canvas:" + document.getElementById("canvas0").getContext("2d"));
+	
 }
 //-------------------------------------------------
 function generateSVG_USMap(infile, selected_states, id, vis) {
@@ -264,7 +272,6 @@ BridgesVisualizer.map = function(vis, overlay, map_projection, selected_states) 
 
 // the following function generates Canvas maps of US  and World countries 
 BridgesVisualizer.map_canvas = function(canvas, overlay, map_projection, selected_states) {
-
 
 	// get id of canvas
 	var id = +vis.attr("id").substr(6);
