@@ -125,22 +125,34 @@ function renderSVG_Map (visData, id, vis, proj) {
 
 	// Send the overlay to the back to catch mouse events
 	vis.select("g").select("#map_overlay" + id).moveToBack();
-	console.log("vis data: "+ JSON.stringify(visData)); 
+//	console.log("vis data: "+ JSON.stringify(visData)); 
 }
 //-------------------------------------------------
 // This function is used Canvas rendered US and World Maps using d3js
 function renderCanvas_Map (visData, id, canvas, proj) {
+
+	// get the canvas's 2d context
+	let canvas_node = document.getElementById("canvas0");
+	let ctx = canvas_node.getContext("2d");
+
 	// create the map generator with the provided projection
-	let geo_generator = d3.geoPath().projection(proj);
+	let geo_generator = d3.geoPath().projection(proj).context(ctx);
+
+	// path initialization
+	ctx.beginPath();
 
 
 	// remove any previous maps
 	let container = canvas.node().parentNode;
 	d3.select(container).selectAll(".map_overlay").remove();
 
+	console.log("canvas:" + document.getElementById("canvas0").getContext("2d"));
+
 	// get width and height of vis
-	let width = canvas.attr("width");
-	let height = canvas.attr("height");
+	let width = canvas_node.width;
+	let height = canvas_node.height;
+
+	console.log("dims:" + width + "," + height);
 
 	let vis = d3.select(container)
 		.append("g")
@@ -160,11 +172,7 @@ function renderCanvas_Map (visData, id, canvas, proj) {
 		.data(visData)
 		.enter()
 		.append("path")
-//		.attr("d", geo_generator)
-		.attr("d", function (d) {
-				console.log("coords:" + JSON.stringify(d.geometry.type));
-				return geo_generator;
-			})
+		.attr("d", geo_generator)
 		.attr("fill", (d) => BridgesVisualizer.getColor(d.properties.fill_color))
 		.attr("stroke", (d) => BridgesVisualizer.getColor(d.properties.stroke_color))
 		.attr("stroke-width", (d) => d.properties.stroke_width)

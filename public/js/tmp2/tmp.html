@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type = "text/javascript" src = "https://d3js.org/d3.v7.min.js"></script>
+<script type = "text/javascript" src = "https://d3js.org/topojson.v3.min.js"></script>
+</head>
+
+<body>
+<div id="content">
+    <canvas id = "canv_id" width="800" height="400"></canvas>
+</div>
+
+<script>
+// Demonstrates the d3 map infrastructure for plotting maps given in 
+// GeoJSON format
+
+let geojson = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Africa"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-6, 36], [33, 30], [43, 11], [51, 12], [29, -33], [18, -35], [7, 5], [-17, 14], [-6, 36]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Australia"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[143, -11], [153, -28], [144, -38], [131, -31], [116, -35], [114, -22], [136, -12], [140, -17], [143, -11]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Timbuktu"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-3.0026, 16.7666]
+      }
+    }
+  ]
+};
+
+let context = document.getElementById("canv_id").getContext("2d")
+
+let projection = d3.geoEquirectangular()
+  .scale(200)
+  .translate([200, 150]);
+
+let geoGenerator = d3.geoPath()
+  .projection(projection)
+  .context(context);
+
+function update(geojson) {
+  context.lineWidth = 3.5;
+  context.strokeStyle = '#aaa';
+
+  context.beginPath();
+  geoGenerator({type: 'FeatureCollection', features: geojson.features})
+  context.stroke();
+}
+
+update(geojson);
+</script>
+</body>
+document.getElementById("canvas0").getContext("2d")</html>
