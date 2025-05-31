@@ -125,6 +125,7 @@ function renderSVG_Map (visData, id, vis, proj) {
 
 	// Send the overlay to the back to catch mouse events
 	vis.select("g").select("#map_overlay" + id).moveToBack();
+	console.log("vis data: "+ JSON.stringify(visData)); 
 }
 //-------------------------------------------------
 // This function is used Canvas rendered US and World Maps using d3js
