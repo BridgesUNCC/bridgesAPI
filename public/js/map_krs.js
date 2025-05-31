@@ -6,6 +6,7 @@
 function getUSStateData (map_json, selected_states) {
 	let state_data = topojson.feature(map_json, map_json.objects.states).features;
 	let state_copy = [...state_data];
+console.log("in getUSData.." + JSON.stringify(state_data));
 
 	let stateData = {};
 
@@ -56,12 +57,6 @@ function getUSCountyData (map_json, selected_states) {
 }
 //-------------------------------------------------
 function getCountryData(map_json, selected_countries) {
-
-	// reading world country data
-	// d3.select(vis.node().parentNode).selectAll(".map_overlay").remove();
-
-	// map generator
-	// let geo_generator = d3.geoPath().projection(d3.geoEquirectangular());
 
 	let country_data = topojson.feature(map_json, map_json.objects.countries).features;
 	let country_copy = [...country_data];
