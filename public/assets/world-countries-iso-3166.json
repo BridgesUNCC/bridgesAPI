@@ -529,7 +529,7 @@
 			"alpha-2": "BO",
 			"alpha-3": "BOL",
 			"numeric-3": 68,
-			"name": "Bolivia (Plurinational State of)",
+			"name": "Bolivia",
 			"divisions": {
 				"BO-H": "Chuquisaca",
 				"BO-C": "Cochabamba",
@@ -1425,7 +1425,7 @@
 			"alpha-2": "FK",
 			"alpha-3": "FLK",
 			"numeric-3": 238,
-			"name": "Falkland Islands (Malvinas)",
+			"name": "Falkland Islands",
 			"divisions": {
 				"-": "Falkland Islands (Malvinas)"
 			}
@@ -2045,7 +2045,7 @@
 			"alpha-2": "IR",
 			"alpha-3": "IRN",
 			"numeric-3": 364,
-			"name": "Iran (Islamic Republic of)",
+			"name": "Iran",
 			"divisions": {
 				"IR-30": "Alborz",
 				"IR-24": "Ardabil",
@@ -2374,7 +2374,7 @@
 			"alpha-2": "KP",
 			"alpha-3": "PRK",
 			"numeric-3": 408,
-			"name": "Korea (Democratic People's Republic of)",
+			"name": "North Korea",
 			"divisions": {
 				"KP-01": "P'yongyang"
 			}
@@ -2383,7 +2383,7 @@
 			"alpha-2": "KR",
 			"alpha-3": "KOR",
 			"numeric-3": 410,
-			"name": "Korea (Republic of)",
+			"name": "Korea",
 			"divisions": {
 				"KR-26": "Busan-gwangyeoksi",
 				"KR-43": "Chungcheongbuk-do",
@@ -2725,7 +2725,7 @@
 			"alpha-2": "MD",
 			"alpha-3": "MDA",
 			"numeric-3": 498,
-			"name": "Moldova (Republic of)",
+			"name": "Moldova",
 			"divisions": {
 				"MD-AN": "Anenii Noi",
 				"MD-BA": "Balti",
@@ -4894,7 +4894,7 @@
 			"alpha-2": "TW",
 			"alpha-3": "TWN",
 			"numeric-3": 158,
-			"name": "Taiwan (Province of China)",
+			"name": "Taiwan",
 			"divisions": {
 				"TW-CHA": "Changhua",
 				"TW-CYQ": "Chiayi",
@@ -5244,7 +5244,7 @@
 			"alpha-2": "VE",
 			"alpha-3": "VEN",
 			"numeric-3": 862,
-			"name": "Venezuela (Bolivarian Republic of)",
+			"name": "Venezuela",
 			"divisions": {
 				"VE-Z": "Amazonas",
 				"VE-B": "Anzoategui",
