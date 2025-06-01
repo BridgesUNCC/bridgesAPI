@@ -6,7 +6,7 @@
 function getUSStateData (map_json, selected_states) {
 	let state_data = topojson.feature(map_json, map_json.objects.states).features;
 	let state_copy = [...state_data];
-console.log("in getUSData.." + JSON.stringify(state_data));
+//console.log("in getUSData..infile statedata" + JSON.stringify(state_data) + "\n\n\n\n");
 
 	let stateData = {};
 
@@ -28,6 +28,7 @@ console.log("in getUSData.." + JSON.stringify(state_data));
 				return false;
 		})
 	}
+// console.log("in getUSData..my statedata" + JSON.stringify(stateData));
 	return stateData;
 }
 //-------------------------------------------------
@@ -58,7 +59,11 @@ function getUSCountyData (map_json, selected_states) {
 //-------------------------------------------------
 function getCountryData(map_json, selected_countries) {
 
-	let country_data = topojson.feature(map_json, map_json.objects.countries).features;
+//	let country_data = topojson.feature(map_json, map_json.objects.countries).features;
+//	let country_copy = [...country_data];
+
+	country_data =  map_json.features;
+console.log ("Country Data (original):" + JSON.stringify(country_data));
 	let country_copy = [...country_data];
 
 	// parse the data
@@ -69,8 +74,11 @@ function getCountryData(map_json, selected_countries) {
 	else {  // filter the selected countries
 		countryData = country_copy.filter(function(d) {
 			for (let k = 0; k < selected_countries.length; k++) {
-				if (d.properties.name.toLowerCase() == 
-						selected_countries[k]._country_name.toLowerCase()) {
+console.log(d.id);
+//				if (d.properties.name.toLowerCase() == 
+//						selected_countries[k]._country_name.toLowerCase()) {
+				if (d.id.toLowerCase() == 
+						selected_countries[k]._alpha3.toLowerCase()) {
 					d.properties.stroke_color = selected_countries[k]._stroke_color;
 					d.properties.fill_color = selected_countries[k]._fill_color;
 					d.properties.stroke_width = selected_countries[k]._stroke_width;
@@ -81,6 +89,7 @@ function getCountryData(map_json, selected_countries) {
 		})
 	}
 
+console.log ("Country Data (modified):" + JSON.stringify(countryData));
 	return countryData;
 }
 //-------------------------------------------------
@@ -181,15 +190,15 @@ function renderCanvas_Map (visData, id, canvas, proj) {
 	vis.select("g").select("#map_overlay"+id).moveToBack();
 	canvas.registerMapOverlay(vis);
 	// console.log("states(canvas_geom):" + JSON.stringify(states.selectAll("path").attr("d")));
-	console.log("vis data:" + JSON.stringify (visData));
+	// console.log("vis data:" + JSON.stringify (visData));
 
-	console.log("canvas:" + document.getElementById("canvas0").getContext("2d"));
+	// console.log("canvas:" + document.getElementById("canvas0").getContext("2d"));
 	
 }
 //-------------------------------------------------
 function generateSVG_USMap(infile, selected_states, id, vis) {
 	// input file containing the US map geometries for all states
-	d3.json("/assets/counties-10m.json").then(map_json => {
+	d3.json(infile).then(map_json => {
 		let visData = getUSStateData(map_json, selected_states);
 		let county_visData = getUSCountyData(map_json, selected_states);
 
@@ -264,11 +273,12 @@ BridgesVisualizer.map = function(vis, overlay, map_projection, selected_states) 
 	// generate the map
 	switch (map_projection.toLowerCase()) {
 		case "equirectangular":
-		generateSVG_WorldMap("/assets/world_countries.json", selected_states, id, vis);
+//		generateSVG_WorldMap("/assets/world_countries.json", selected_states, id, vis);
+		generateSVG_WorldMap("/assets/world2.json", selected_states, id, vis);
 		break;
 	case "albersusa":
 		generateSVG_USMap("/assets/counties-10m.json", selected_states, id, vis);
-		console.log("svg map data:" + JSON.stringify(vis));
+		// console.log("svg map data:" + JSON.stringify(vis));
 		break;
 	}
 }
