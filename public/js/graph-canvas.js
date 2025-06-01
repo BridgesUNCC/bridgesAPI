@@ -1,4 +1,5 @@
 d3.graph_canvas = function(canvas, W, H, data) {
+console.log("...in graph-canvas..");
     var context = canvas.node().getContext("2d");
 
     //defaults

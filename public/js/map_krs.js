@@ -1,12 +1,21 @@
 
+/**
+ *  SVG and Canvas Map Drawing API 
+ *  Author: Kalpathi Subramanian
+ *
+ *  Last Updates: May 26-June 1, 2025
+ *
+ *  This version refactored from map.js and map_canvas.js - better structured and documented
+ */
+
 // This file contains the functions to retrieve map data and render it using d3js
 // Handles both SVG and Canvas rendering
+// Note: Canvas map API is not working yet
 
 // This function is used retrieve US Map state and county data
 function getUSStateData (map_json, selected_states) {
 	let state_data = topojson.feature(map_json, map_json.objects.states).features;
 	let state_copy = [...state_data];
-//console.log("in getUSData..infile statedata" + JSON.stringify(state_data) + "\n\n\n\n");
 
 	let stateData = {};
 
@@ -28,7 +37,6 @@ function getUSStateData (map_json, selected_states) {
 				return false;
 		})
 	}
-// console.log("in getUSData..my statedata" + JSON.stringify(stateData));
 	return stateData;
 }
 //-------------------------------------------------
@@ -63,7 +71,6 @@ function getCountryData(map_json, selected_countries) {
 //	let country_copy = [...country_data];
 
 	country_data =  map_json.features;
-console.log ("Country Data (original):" + JSON.stringify(country_data));
 	let country_copy = [...country_data];
 
 	// parse the data
@@ -74,9 +81,7 @@ console.log ("Country Data (original):" + JSON.stringify(country_data));
 	else {  // filter the selected countries
 		countryData = country_copy.filter(function(d) {
 			for (let k = 0; k < selected_countries.length; k++) {
-console.log(d.id);
-//				if (d.properties.name.toLowerCase() == 
-//						selected_countries[k]._country_name.toLowerCase()) {
+				// compare 3 character alpha ids, this is more reliable
 				if (d.id.toLowerCase() == 
 						selected_countries[k]._alpha3.toLowerCase()) {
 					d.properties.stroke_color = selected_countries[k]._stroke_color;
@@ -89,7 +94,6 @@ console.log(d.id);
 		})
 	}
 
-console.log ("Country Data (modified):" + JSON.stringify(countryData));
 	return countryData;
 }
 //-------------------------------------------------
@@ -129,10 +133,10 @@ function renderSVG_Map (visData, id, vis, proj) {
 
 	// Send the overlay to the back to catch mouse events
 	vis.select("g").select("#map_overlay" + id).moveToBack();
-//	console.log("vis data: "+ JSON.stringify(visData)); 
 }
 //-------------------------------------------------
 // This function is used Canvas rendered US and World Maps using d3js
+// NOT WORKING! Needs more work to figure out how to get this into the DOM hierarchy
 function renderCanvas_Map (visData, id, canvas, proj) {
 
 	// get the canvas's 2d context
@@ -140,24 +144,24 @@ function renderCanvas_Map (visData, id, canvas, proj) {
 	let ctx = canvas_node.getContext("2d");
 
 	// create the map generator with the provided projection
-	let geo_generator = d3.geoPath().projection(proj).context(ctx);
+	let geo_generator = d3.geoPath()
+						.projection(proj)
+						.context(ctx);
 
-	// path initialization
-	ctx.beginPath();
-
+//						.scale(150)
+ // 						.translate([600, 250])
 
 	// remove any previous maps
 	let container = canvas.node().parentNode;
 	d3.select(container).selectAll(".map_overlay").remove();
 
-	console.log("canvas:" + document.getElementById("canvas0").getContext("2d"));
 
 	// get width and height of vis
 	let width = canvas_node.width;
 	let height = canvas_node.height;
 
-	console.log("dims:" + width + "," + height);
 
+/*
 	let vis = d3.select(container)
 		.append("g")
 		.attr("width", width)
@@ -169,7 +173,9 @@ function renderCanvas_Map (visData, id, canvas, proj) {
 	states = vis.append("g")
 		.attr("id","map_overlay"+id)
 		.classed("map_overlay", true)
+*/
 
+/*
 	vis.selectAll("path")
 		.attr("class", "land")
 		.attr("id", "state_fips")
@@ -180,8 +186,18 @@ function renderCanvas_Map (visData, id, canvas, proj) {
 		.attr("fill", (d) => BridgesVisualizer.getColor(d.properties.fill_color))
 		.attr("stroke", (d) => BridgesVisualizer.getColor(d.properties.stroke_color))
 		.attr("stroke-width", (d) => d.properties.stroke_width)
+*/
+	// generate the paths
+	ctx.beginPath();
+	geo_generator({type:'FeatureCollection', features: visData.features});
+	ctx.lineWidth = 3.5;
+	ctx.strokeStyle = '#aaa';
+	ctx.stroke();
+	ctx.fill();
+
 
 	// update the transformation based on the sibling transform
+/*
 	vis.zoom = function(d) {
 		d3.select("#map_overlay"+id)
 	 		.attr("transform", d3.zoomTransform(canvas.node()));
@@ -189,10 +205,10 @@ function renderCanvas_Map (visData, id, canvas, proj) {
 
 	vis.select("g").select("#map_overlay"+id).moveToBack();
 	canvas.registerMapOverlay(vis);
+*/
 	// console.log("states(canvas_geom):" + JSON.stringify(states.selectAll("path").attr("d")));
 	// console.log("vis data:" + JSON.stringify (visData));
 
-	// console.log("canvas:" + document.getElementById("canvas0").getContext("2d"));
 	
 }
 //-------------------------------------------------
@@ -246,7 +262,7 @@ function generateCanvas_WorldMap(infile, selected_countries, id, canvas) {
 	d3.json(infile).then(map_json => {
 
 		let visData = getCountryData(map_json, selected_countries);
-		renderCanvas_Map(visData, id, canvas, d3.geoEquirectangular());
+		renderCanvas_Map(map_json, id, canvas, d3.geoEquirectangular())
 	})
 	.catch(error => {
 		console.log("Map reading error:" + error);
@@ -274,11 +290,10 @@ BridgesVisualizer.map = function(vis, overlay, map_projection, selected_states) 
 	switch (map_projection.toLowerCase()) {
 		case "equirectangular":
 //		generateSVG_WorldMap("/assets/world_countries.json", selected_states, id, vis);
-		generateSVG_WorldMap("/assets/world2.json", selected_states, id, vis);
+		generateSVG_WorldMap("/assets/world.json", selected_states, id, vis);
 		break;
 	case "albersusa":
 		generateSVG_USMap("/assets/counties-10m.json", selected_states, id, vis);
-		// console.log("svg map data:" + JSON.stringify(vis));
 		break;
 	}
 }
@@ -293,7 +308,8 @@ BridgesVisualizer.map_canvas = function(canvas, overlay, map_projection, selecte
 
 	switch (map_projection.toLowerCase()) {
 		case "equirectangular":
-			generateCanvas_WorldMap("/assets/world_countries.json", selected_states, id, canvas);
+			// generateCanvas_WorldMap("/assets/world_countries.json", selected_states, id, canvas);
+			generateCanvas_WorldMap("/assets/world.json", selected_states, id, canvas);
 			break;
 		case "albersusa":
 			generateCanvas_USMap("/assets/counties-10m.json", selected_states, id, canvas);

@@ -7,7 +7,7 @@
 
 <body>
 <div id="content">
-    <canvas id = "canv_id" width="800" height="400"></canvas>
+    <canvas id = "canv_id" width="1500" height="800"></canvas>
 </div>
 
 <script>
@@ -55,8 +55,8 @@ let geojson = {
 let context = document.getElementById("canv_id").getContext("2d")
 
 let projection = d3.geoEquirectangular()
-  .scale(200)
-  .translate([200, 150]);
+  .scale(150)
+  .translate([600, 250]);
 
 let geoGenerator = d3.geoPath()
   .projection(projection)
@@ -64,14 +64,18 @@ let geoGenerator = d3.geoPath()
 
 function update(geojson) {
   context.lineWidth = 3.5;
+  context.fillStyle = "red";
   context.strokeStyle = '#aaa';
 
   context.beginPath();
   geoGenerator({type: 'FeatureCollection', features: geojson.features})
   context.stroke();
+  context.fill();
 }
 
-update(geojson);
+d3.json("../../assets/world.json").then(map_json  => {
+update(map_json);
+})
 </script>
 </body>
-document.getElementById("canvas0").getContext("2d")</html>
+</html>

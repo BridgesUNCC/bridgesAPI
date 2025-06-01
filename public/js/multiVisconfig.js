@@ -571,8 +571,6 @@ function addMapOverlay(assignmentData, vis) {
     // call the correct map overlay (svg, CANVAS)
     switch(vis.node().tagName) {
       case 'svg':
-console.log("... in multivis.." + vis.node().tagName);
-console.log("... in multivis..states.." + assignmentData.map);
       //we now pass the area to render from map as assignmentData.map: example-North Carolina
         BridgesVisualizer.map(vis, assignmentData.coord_system_type, assignmentData.coord_system_type, assignmentData.map);
         break;
