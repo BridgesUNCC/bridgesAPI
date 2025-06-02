@@ -541,7 +541,7 @@ function importMapResources() {
 
     addScript({
 //	src: "/js/map.js",
-	src: "/js/map_krs.js",
+	src: "/js/map_gen.js",
         type: 'text/javascript',
         async: null
 /*

@@ -10,7 +10,8 @@
 
 // This file contains the functions to retrieve map data and render it using d3js
 // Handles both SVG and Canvas rendering
-// Note: Canvas map API is not working yet
+// NOTE: Canvas map API is not working yet, specificall the renderCanvas_Map() function needs
+// to be updated - integration with the DOM hierarchy
 
 // This function is used retrieve US Map state and county data
 function getUSStateData (map_json, selected_states) {

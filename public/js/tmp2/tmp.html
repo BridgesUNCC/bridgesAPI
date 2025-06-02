@@ -22,11 +22,13 @@ let geojson = {
     {
       "type": "Feature",
       "properties": {
-        "name": "Africa"
+        "name": "Africa",
+		"fill": "red"
       },
       "geometry": {
         "type": "Polygon",
-        "coordinates": [[[-6, 36], [33, 30], [43, 11], [51, 12], [29, -33], [18, -35], [7, 5], [-17, 14], [-6, 36]]]
+        "coordinates": [[[-6, 36], [33, 30], [43, 11], [51, 12], [29, -33], [18, -35], [7, 5], [-17, 14], [-6, 36]]],
+		"fillColor": [255,0,0]
       }
     },
     {
@@ -62,9 +64,9 @@ let geoGenerator = d3.geoPath()
   .projection(projection)
   .context(context);
 
-function update(geojson) {
+function update(geojson, c) {
   context.lineWidth = 3.5;
-  context.fillStyle = "red";
+//context.fillStyle = "red";
   context.strokeStyle = '#aaa';
 
   context.beginPath();
@@ -73,9 +75,9 @@ function update(geojson) {
   context.fill();
 }
 
-d3.json("../../assets/world.json").then(map_json  => {
-update(map_json);
-})
+update(geojson);
+//update(geojson);
+//d3.json("./tmp2.json").then(geojson  => {
 </script>
 </body>
 </html>
