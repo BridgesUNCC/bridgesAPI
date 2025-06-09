@@ -1,3 +1,10 @@
+.gallery_container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  padding: 20px;
+}
+
 #gallery_fixed_tooltip {
   margin-left: 15px;
   padding: 10px;
@@ -66,7 +73,7 @@ div.title {
 }
 
 .gallery_link_title {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
 }
 
 .gallery_link_small {
