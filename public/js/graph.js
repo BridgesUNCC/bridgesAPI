@@ -15,6 +15,8 @@ d3.graph = function(svg, W, H, data) {
         finalScale,
         transform;
 
+console.log ("dims(in graph.js:"  + w + "," + h);
+
     var labels_shown = false;
 
     var zoom = d3.zoom()
