@@ -15,8 +15,6 @@ d3.graph = function(svg, W, H, data) {
         finalScale,
         transform;
 
-console.log ("dims(in graph.js:"  + w + "," + h);
-
     var labels_shown = false;
 
     var zoom = d3.zoom()
@@ -372,7 +370,6 @@ console.log ("dims(in graph.js:"  + w + "," + h);
 
   // Handle doubleclick on node path (shape)
   function dblclick(evt, d) {
-console.log (d);
       evt.stopImmediatePropagation();
       d.x = d.fx;
       d.y = d.fy;
