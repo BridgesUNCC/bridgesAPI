@@ -42,7 +42,12 @@ function getUSStateData (map_json, selected_states) {
 }
 //-------------------------------------------------
 function getUSCountyData (map_json, selected_states) {
+
+	// the following function call converts the topojson into a geojson object 
+	// to extract the  features from the topojson file, i.e. properties 
 	let county_data = topojson.feature(map_json, map_json.objects.counties).features;
+
+	// copy into a temp object
 	let county_copy = [...county_data];
 
 	let countyData = {};
