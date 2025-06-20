@@ -370,7 +370,6 @@ d3.graph = function(svg, W, H, data) {
 
   // Handle doubleclick on node path (shape)
   function dblclick(evt, d) {
-console.log (d);
       evt.stopImmediatePropagation();
       d.x = d.fx;
       d.y = d.fy;

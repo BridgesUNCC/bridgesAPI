@@ -225,6 +225,7 @@ $(window).resize(function() {
           .style("width", ele.clientWidth)
           .style("height", ele.clientHeight);
 
+console.log("vis0 dims(resize fn):" + ele.clientWidth + "," + ele.clientHeight);
         // resize canavs-based assignments or assignments with specific resize methods
         for(var subassign in BridgesVisualizer.visualizations) {
           if(BridgesVisualizer.visualizations[subassign].resize)
@@ -345,7 +346,6 @@ function updateVis(currentNum, index){
       if(assignment.data && assignment.data[0] && assignment.data[0].map_overlay) {
         importMapResources();
       }
-
       // if necessary, import the relevant scripts
       if(assignment.resources && assignment.resources.script) {
         for(var s in assignment.resources.script) {
@@ -389,6 +389,7 @@ function isLoaded(script) {
 
 function visualizeAssignment(assignment, index){
 
+console.log ('calling visualizeAssignment..');
   // if no index provided, assume assignmentSlide view
   if(!index) {
     index = 0;
@@ -423,6 +424,7 @@ function visualizeAssignment(assignment, index){
   // get the data for the current assignment
   var assignmentData = assignment.data[0];
 
+   console.log("dims (before vis):" + width + "," + height);
   // render the appropriate visualization
   if (assignment.vistype == "tree" && d3.bst) {
       bst = d3.bst(vis, width, height);
@@ -449,6 +451,7 @@ function visualizeAssignment(assignment, index){
   }
   else if (assignment.vistype == "nodelink" && d3.graph) {
 
+console.log("..in multivisconfig..dims: " + width + "," + height);
       graph = d3.graph(vis, width, height, assignmentData);
       BridgesVisualizer.visualizations[assignment.subAssignment] = (graph);
   }
