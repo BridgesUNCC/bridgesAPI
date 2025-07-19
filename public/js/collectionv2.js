@@ -202,27 +202,58 @@ d3.collectionv2 = function(svg, W, H, data) {
 			var symb = symbolDict[id];
 			var symbSVG = null;
 
-			var transformString = ""; 	//some off the trans may come from different places
+			var transformString = ""; //some off the trans may come from different places
 			var proj, point;
 
 			if (symb["type"] === "rect" ) {
 				if (data.coord_system_type != "window" && 
 							data.coord_system_type != "cartesian") {
-					symb["lowerleftcorner"] = projShape(
-							symb["lowerleftcorner"][0], symb["lowerleftcorner"][1]
-						);
+					// we will draw the rectangle as a polygon since its no longer
+					// axis aligned in map coordinates
+
+					// get the rect params into variables
+					let ll = [symb["lowerleftcorner"][0],symb["lowerleftcorner"][1]],
+							w = symb["width"], h = symb["height"];
+
+					// for the points of the rect as a polygon
+					let pts_arr = [	ll[0], ll[1], 
+									ll[0] + w, ll[1], 
+									ll[0] + w, ll[1] + h,
+									ll[0], ll[1] + h,
+									ll[0], ll[1] ];
+
+					// project the points
+					tmp_arr = [];
+					for (let i = 0; i < pts_arr.length; i += 2) 
+						tmp_arr.push(projShape(pts_arr[i], pts_arr[i+1]));
+
+					// add to svg shape
+					symb['points'] = tmp_arr;
+					symbSVG = svgElement.append('svg:polyline')
+							.attr("points", symb["points"])
+							.attr("fill", 'none');
+					
 				}
-				//console.log("rect is "+JSON.stringify(symb));
-				symbSVG = svgElement.append('rect')
-					.attr('x', symb["lowerleftcorner"][0])
-					.attr('y', symb["lowerleftcorner"][1])
-					.attr('width', symb["width"])
-					.attr('height', symb["height"]);
+				else {   // this is the symbol in cartesian coords, can remain as rect
+					symbSVG = svgElement.append('rect')
+						.attr('x', symb["lowerleftcorner"][0])
+						.attr('y', symb["lowerleftcorner"][1])
+						.attr('width', symb["width"])
+						.attr('height', symb["height"]);
+				}
 			}
 			else if (symb["type"] === "circle" ) {
 				if (data.coord_system_type != "window" && 
 						data.coord_system_type != "cartesian") {
-					symb["center"] = projShape(symb["center"][0], symb["center"][1]);
+					let c  = [symb["center"][0], symb["center"][1]], r = symb["r"];
+					symb["center"] = projShape(c[0], c[1]);
+
+					// must calculate the radius in map coords by projecting a boundary
+					// point on the circle, then calculate the radius
+					let bndry_pt = projShape(c[0]+r, c[1]);
+					c  = [symb["center"][0], symb["center"][1]], r = symb["r"];
+					symb["r"] = Math.sqrt((bndry_pt[0]-c[0])*(bndry_pt[0]-c[0]) + 
+									(bndry_pt[1]-c[1])*(bndry_pt[1]-c[1]));
 				}
 
 				symbSVG =
