@@ -132,8 +132,8 @@ exports.upload = function (req, res, next) {
       var display_mode = "audio";
     }
     
-    // Use SVG for < 100 nodes, Canvas for > 100
-    if(visualizationType == "nodelink" && rawBody.nodes && rawBody.nodes.length > 100) {
+    // Use SVG for small graphs, Canvas for large graphs
+    if(visualizationType == "nodelink" && rawBody.nodes && rawBody.nodes.length > 300) {
       visualizationType = "nodelink-canvas";
     }
 
