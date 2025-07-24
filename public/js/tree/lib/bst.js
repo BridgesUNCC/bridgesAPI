@@ -265,7 +265,7 @@ d3.bst = function (vis, W, H) {
           })
           .text( function( d ) {
            if( (d.data && d.data.linkProperties) ) {
-             return d.data.linkProperties.thickness; // change to link label!
+             return d.data.linkProperties.label; 
            } else return "";
           });
 
