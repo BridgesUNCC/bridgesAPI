@@ -81,8 +81,13 @@ function getCountryData(map_json, selected_countries) {
 
 	// parse the data
 	let countryData = {};
-	if (selected_countries[0]._country_name.toLowerCase() == "all") { // entire world
-		var visData = country_copy;
+	if (selected_countries.toString().toLowerCase() == "all") { // entire world
+		countryData = country_copy.filter(function(d) {
+			d.properties.stroke_color = "green";
+			d.properties.fill_color = "lightskyblue";
+			d.properties.stroke_width = 1.;
+			return true;
+		})
 	}
 	else {  // filter the selected countries
 		countryData = country_copy.filter(function(d) {
