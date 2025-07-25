@@ -41,8 +41,6 @@
 
   // Keep track of the center of the default vis window
   BridgesVisualizer.visCenter = function() {
-console.log("dims (bridges visualizer):" + document.getElementById("vis0").clientWidth + ","
-				+ document.getElementById("vis0").clientHeight);
     return [document.getElementById("vis0").clientWidth/3 || 0,
             document.getElementById("vis0").clientHeight/2 || 0];
   };
