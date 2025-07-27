@@ -21,7 +21,7 @@ var valid = function(creds, cb) {
         cb(true);
     })
 	.catch(err => {
-	    console.log(err, user);
+	    console.log(err);
             cb(false);
 	    return;
 	});
