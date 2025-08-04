@@ -72,7 +72,7 @@ d3.collectionv2 = function(svg, W, H, data) {
 	// 	Transformation involves translating the center of the shape to
 	// 	the origin,  (Transl_Origin), then scale to the size of the bounding
 	//	box of the symbols(ScaleFactor) and translating to the viewport,
-	//	(T_VP), while // maintaining the aspect ratio
+	//	(T_VP), while  maintaining the aspect ratio
 
 	var sourceSymbols = data["symbols"]
 
@@ -86,7 +86,7 @@ d3.collectionv2 = function(svg, W, H, data) {
 	var symbolRoot = []
 
 	//recreate hierarchy
-	for (var id in symbolDict) {
+	for (let id in symbolDict) {
 		if ("parentID" in symbolDict[id]) {
 			parentID = symbolDict[id]["parentID"];
 			symbolDict[ parentID ]["children"].push(id);
@@ -102,8 +102,8 @@ d3.collectionv2 = function(svg, W, H, data) {
 	//TODO: sort children list and root by layer.
 	var sortlayers = function(arr) {
 		arr.sort(function(a, b) {
-			var alayer = 0;
-			var blayer = 0;
+			let alayer = 0;
+			let blayer = 0;
 
 			if ('layer' in symbolDict[a])
 				alayer = symbolDict[a]['layer'];
@@ -121,10 +121,11 @@ d3.collectionv2 = function(svg, W, H, data) {
 	}
 
 	// translation to origin
-	Transl_Origin = [-(data.domainX[0] + data.domainX[1])/2, -(data.domainY[0] + data.domainY[1])/2];
+	Transl_Origin = [-(data.domainX[0] + data.domainX[1])/2, 
+					-(data.domainY[0] + data.domainY[1])/2];
 
 	// scale to the width, height of the domain
-	Scale = [w / (data.domainX[1] - data.domainX[0]), h/(data.domainY[1] - data.domainY[0])];
+	Scale = [w/(data.domainX[1] - data.domainX[0]), h/(data.domainY[1] - data.domainY[0])];
 
 	// choose the smaller of the two scale factors to maintain aspect ratio
 	ScaleFactor = Math.min(Scale[0], Scale[1]);
