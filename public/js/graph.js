@@ -26,7 +26,9 @@ d3.graph = function(svg, W, H, data) {
 		if(svgGroup) {
 			//scales labels based on distance zoomed in
 			d3.selectAll(".nodeLabel").style("font-size", 
-								10/evt.transform.k)
+								10./evt.transform.k)
+			d3.selectAll(".linkLabel").style("font-size", 
+								10./evt.transform.k)
 			svgGroup.attr("transform", evt.transform);
 		}
   	}
