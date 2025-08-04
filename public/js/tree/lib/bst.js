@@ -82,6 +82,7 @@ d3.bst = function (vis, W, H) {
     function draw(source) {
         var duration = 600;
 
+
         // Compute the new tree layout.
         var treeData = tree(root);
 
