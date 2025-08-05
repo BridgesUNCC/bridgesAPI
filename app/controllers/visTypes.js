@@ -13,34 +13,34 @@ exports.getVisType = function(toCheck) {
     "llist":           						"nodelink",//"llist",
     "DoublyLinkedList":						"nodelink",//"dllist",
     "dllist":          						"nodelink",//"dllist",
-    "CircularSinglyLinkedList": 	"nodelink",//"cllist",
-    "CircularDoublyLinkedList": 	"nodelink",//"cdllist",
+    "CircularSinglyLinkedList": 			"nodelink",//"cllist",
+    "CircularDoublyLinkedList": 			"nodelink",//"cdllist",
 
-    "tree":                       "tree",
-    "Tree":                       "tree",
-    "BinaryTree":                 "tree",
-    "BinarySearchTree":           "tree",
-    "AVLTree":                    "tree",
-    "KdTree":                     "tree",
-    "QuadTree":                   "tree",
-    "BTree":                      "tree",
-    "B+Tree":                     "tree",
+    "tree":                       			"tree",
+    "Tree":                       			"tree",
+    "BinaryTree":                 			"tree",
+    "BinarySearchTree":           			"tree",
+    "AVLTree":                    			"tree",
+    "KdTree":                     			"tree",
+    "QuadTree":                   			"tree",
+    "BTree":                      			"tree",
+    "B+Tree":                     			"tree",
 
-    "GraphAdjacencyList":  				"nodelink",
-    "GraphAdjacencyMatrix":				"nodelink",
-    "largegraph":                 "graph-webgl",
+    "GraphAdjacencyList":  					"nodelink",
+    "GraphAdjacencyMatrix":					"nodelink",
+    "largegraph":                 			"graph-webgl",
 
-    "ColorGrid":                  "grid",
+    "ColorGrid":                  			"grid",
 
-   "SymbolCollection":           "collection",
-   "SymbolCollectionV2":           "collectionv2",
+   "SymbolCollection":           			"collection",
+   "SymbolCollectionV2":           			"collectionv2",
 
-    "LineChart":                       "LineChart",
-    "BarChart":                   "BarChart",
+    "LineChart":                       		"LineChart",
+    "BarChart":                   			"BarChart",
 
-    "Audio":         				"Audio",
-    "Scene":                "scene",
-    "Map":  "Map"
+    "Audio":         						"Audio",
+    "Scene":                				"scene",
+    "Map":  								"Map"
   };
     if( toCheck && validTypes[toCheck] )
       return validTypes[toCheck];
@@ -99,7 +99,7 @@ exports.getVisTypeObject = function(data) {
       },
       "tree": {
         "vistype":"tree",
-        "script":"/js/tree/lib/bst.js",
+        "script":"/js/tree.js",
         "link":"/css/vis/tree.css"
       },
       "queue": {
