@@ -225,7 +225,7 @@ $(window).resize(function() {
           .style("width", ele.clientWidth)
           .style("height", ele.clientHeight);
 
-        // resize canavs-based assignments or assignments with specific resize methods
+        // resize canvas-based assignments or assignments with specific resize methods
         for(var subassign in BridgesVisualizer.visualizations) {
           if(BridgesVisualizer.visualizations[subassign].resize)
             BridgesVisualizer.visualizations[subassign].resize();
