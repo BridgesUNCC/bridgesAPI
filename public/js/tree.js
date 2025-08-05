@@ -1,3 +1,9 @@
+//
+// This function serves to render tree structures: generalized tree, binary tree, 
+// binary search tree, AVL, K-d tree
+//
+// Last modified : Aug. 5, 2025 (KRS)
+//
 d3.bst = function (vis, W, H) {
 
     //defaults
