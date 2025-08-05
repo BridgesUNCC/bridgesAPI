@@ -122,26 +122,6 @@ exports.getVisTypeObject = function(data) {
         "script":"/js/array/array3d.js",
         "link":""
       },
-      // "llist": {
-      //   "vistype":"llist",
-      //   "script":"/js/list/llist.js",
-      //   "link":""
-      // },
-      // "dllist": {
-      //   "vistype":"dllist",
-      //   "script":"/js/list/dllist.js",
-      //   "link":""
-      // },
-      // "cllist": {
-      //   "vistype":"cllist",
-      //   "script":"/js/list/cllist.js",
-      //   "link":""
-      // },
-      // "cdllist": {
-      //   "vistype":"cdllist",
-      //   "script":"/js/list/cdllist.js",
-      //   "link":""
-      // },
       "llist": {
         "vistype":"nodelink",
         "script":"/js/graph.js",
