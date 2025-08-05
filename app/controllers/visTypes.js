@@ -164,17 +164,17 @@ exports.getVisTypeObject = function(data) {
       },
       "LineChart": {
         "vistype": "LineChart",
-        "script":"/js/plot/plot.js",
+        "script":"/js/linechart.js",
         "link":""
       },
       "BarChart":{
         "vistype": "BarChart",
-        "script": "/js/plot/barchart.js",
+        "script": "/js/barchart.js",
         "link": ""
       },
       "Audio": {
       	"vistype": "Audio",
-      	"script": "/js/audio/audio.js",
+      	"script": "/js/audio.js",
       	"link": ""
       },
       "scene":{
