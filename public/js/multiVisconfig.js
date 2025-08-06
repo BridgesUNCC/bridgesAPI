@@ -1,57 +1,53 @@
 
 //
-// This file contains the code that is used for node-link structures such
+// This file contains the code that is used for drawing node-link structures such as
 // lists, graphs. 
 // 
 // Last modified 08/06/25 (KRS)
 //
 (function() {
 
-	// bind event handlers for ui
+	// set up event handlers for UI
 	d3.selectAll("#collapse").on("click", collapse);
 	d3.select("#reset").on("click", reset);
 	d3.select("#hideNodes").on("click", function() {
-		if (BridgesVisualizer.nodes_shown === false) {
+		if (BridgesVisualizer.nodes_shown === false) 
 			BridgesVisualizer.nodes_shown = true;
-		}
-		else {
+		else
 			BridgesVisualizer.nodes_shown = false;
-		}
+
 		BridgesVisualizer.displayNodes();
 	});
 
 	d3.select("#hideLinks").on("click", function() {
-		if (BridgesVisualizer.links_shown === false) {
+		if (BridgesVisualizer.links_shown === false) 
 			BridgesVisualizer.links_shown = true;
-		}
-		else {
+		else
 			BridgesVisualizer.links_shown = false;
-		}
+
 		BridgesVisualizer.displayLinks();
 	});
 
 	d3.select("#save").on("click", savePositions);
 	d3.select("#delete").on("click", deleteAssignment);
 	d3.select("#nodelabels").on("click", function() {
-		if (BridgesVisualizer.labels_shown === false) {
+		if (BridgesVisualizer.labels_shown === false) 
 			BridgesVisualizer.labels_shown = true;
-		}
-		else {
+		else
 			BridgesVisualizer.labels_shown = false;
-		}
+
 		BridgesVisualizer.displayNodeLabels();
 	});
 
 	d3.select("#linklabels").on("click", function() {
-		if (BridgesVisualizer.link_labels_shown === false) {
+		if (BridgesVisualizer.link_labels_shown === false) 
 			BridgesVisualizer.link_labels_shown = true;
-		}
-		else {
+		else
 			BridgesVisualizer.link_labels_shown = false;
-		}
-		BridgesVisualizer.displayLinkLabels()
 
+		BridgesVisualizer.displayLinkLabels()
 	});
+
 	d3.select("#toggleDisplay").on("click", toggleDisplay);
 	d3.select("#resetit").on("click", nextVis);
 	d3.select("#play").on("click", playVis);
@@ -84,9 +80,8 @@
 	// Reset positions and scales for all visualization divs
 	function reset(evt) {
 		evt.preventDefault();
-		for (var subassign in BridgesVisualizer.visualizations) {
+		for (var subassign in BridgesVisualizer.visualizations) 
 			BridgesVisualizer.visualizations[subassign].reset();
-		}
 	}
 
 	function deleteAssignment(evt) {
@@ -95,9 +90,9 @@
 		if (r === true) {
 			// send delete request
 			$.ajax({
-url: "/assignments/" + assignmentNumber,
-type: "DELETE",
-success: function(status) {
+				url: "/assignments/" + assignmentNumber,
+				type: "DELETE",
+				success: function(status) {
 					window.location = '../../username';
 				}
 			});
@@ -107,10 +102,9 @@ success: function(status) {
 	function toggleDisplay(evt) {
 		evt.preventDefault();
 		newMode = (displayMode == "slide") ? "stack" : "slide";
-		window.location = "/assignments/" + assignment.assignmentNumber + "/" + assignment.username + "?displayMode=" + newMode;
-
+		window.location = "/assignments/" + assignment.assignmentNumber + "/" + 
+					assignment.username + "?displayMode=" + newMode;
 	}
-
 
 	// Asynchronously update all node positions
 	function savePositions (evt) {
@@ -120,7 +114,6 @@ success: function(status) {
 		var updateTheseNodes = {};
 
 		for (var index in BridgesVisualizer.visualizations) {
-
 			// get appropriate assignment container based on subassignment and display mode
 			if (displayMode == "slide") {
 				if (index != subAssignmentNumber)
@@ -128,24 +121,21 @@ success: function(status) {
 				thisVis = 0;
 			}
 			else if (displayMode == "stack") {
-				if (index.substr(0, 1) == "0") {
+				if (index.substr(0, 1) == "0") 
 					thisVis = +index.substr(1);
-				}
-				else {
+				else
 					thisVis = +index;
-				}
 			}
 
 			// store indices for all fixed nodes
 			updateTheseNodes[index] = {
-'fixedNodes':
-				{},
-'unfixedNodes':
-				{}
+					'fixedNodes': {},
+					'unfixedNodes': {}
 			};
 
 			// svg case
-			if (d3.select("#vis" + thisVis).select("#canvas" + thisVis).empty() && !d3.select("#vis" + thisVis).select("#svg" + thisVis).empty()) {
+			if (d3.select("#vis" + thisVis).select("#canvas" + thisVis).empty() && 
+					!d3.select("#vis" + thisVis).select("#svg" + thisVis).empty()) {
 				d3.select("#svg" + thisVis).selectAll(".node").each(function(d, i) {
 					if (d.fx && d.fy) {
 						updateTheseNodes[index].fixedNodes["n" + i] = {"x": d.fx, "y": d.fy};
@@ -168,9 +158,9 @@ success: function(status) {
 
 		// send fixed node indices to the server to save
 		$.ajax({
-url: "/assignments/updatePositions/" + assignmentNumber,
-type: "post",
-data: updateTheseNodes
+				url: "/assignments/updatePositions/" + assignmentNumber,
+				type: "post",
+				data: updateTheseNodes
 		}).done(function(data, textStatus, xhr) {
 			if (xhr.status == '202') {
 				alertMessage("Node positions saved!", "success");
@@ -181,10 +171,8 @@ data: updateTheseNodes
 		});
 	}
 
-	/*
-	 Create a tooltip from the given message and status
-	 status: success, danger, warning
-	*/
+	// Create a tooltip from the given message and status
+	// status: success, danger, warning
 	function alertMessage(message, status) {
 		var today = new Date().toLocaleTimeString() + " - " + new Date().toLocaleDateString();
 		$("#updateStatus").html(message + "<br>" + today);
@@ -228,9 +216,10 @@ data: updateTheseNodes
 	// return true if the (i)th assignment is not loaded yet
 	function unloaded(i) {
 		// console.log(i, d3.select("#svg"+i).node());
-		return (d3.select("#svg" + i).node() == null)
-			&& (d3.select("#canvas" + i).node() === null && d3.select("#vis" + i).select(".highcharts-container").empty())
-			&& (d3.select("#canvas_webgl" + i).node() == null);
+		return (d3.select("#svg" + i).node() == null) && 
+			(d3.select("#canvas" + i).node() === null && 
+			d3.select("#vis" + i).select(".highcharts-container").empty()) && 
+			(d3.select("#canvas_webgl" + i).node() == null);
 	}
 
 	// Update default transforms that rely on window sizes
@@ -239,7 +228,6 @@ data: updateTheseNodes
 		window.resizedFinished = setTimeout(function() {
 			BridgesVisualizer.defaultTransforms.graph.translate = BridgesVisualizer.visCenter();
 			BridgesVisualizer.defaultTransforms.nodelink.translate = BridgesVisualizer.visCenter();
-
 			// resize svg-based assignments
 			d3.selectAll("svg")
 			.style("width", ele.clientWidth)
@@ -252,7 +240,6 @@ data: updateTheseNodes
 			}
 		}, 250);
 	});
-
 
 	window.onkeydown = function(e) {
 		e = e || window.event;
@@ -315,19 +302,21 @@ data: updateTheseNodes
 		positionSlideLabel(0);
 	})();
 
-
 	function slideButtonClick(evt) {
 		//this uses .target and not .currentTarget because this functoin is not called in the event handler but in a timeout function which undefined currentTarget. Javascript, am I right?
 		var i = evt.target.id.substring("slideButton".length); //we need i to be the index of the button which we can derie from how its HTML id got set
 		updateVis(i);
 	}
+
 	function slideButtonHover(evt) {
 		var i = evt.currentTarget.id.substring("slideButton".length); //we need i to be the index of the button which we can derie from how its HTML id got set
 		positionSlideLabel(i);
 	}
+
 	function slideButtonOut(evt, datum) {
 		positionSlideLabel(subAssignmentNumber);
 	}
+
 	function positionSlideLabel(i) {
 		i = +i;
 		d3.select("#currentSubassignment")
@@ -353,8 +342,8 @@ data: updateTheseNodes
 		subAssignmentNumber = currentNum;
 
 		$.ajax({
-url: "/assignmentjson/" + number + "/" + username,
-type: "get"
+			url: "/assignmentjson/" + number + "/" + username,
+			type: "get"
 		}).fail(function(err) {
 			assignNum = currentNum - 1;
 			currentVisNum -= 1;
@@ -374,11 +363,11 @@ type: "get"
 							wait = true;
 						}
 						addScript({
-src: script,
-type: 'text/javascript',
-async: null
+							src: script,
+							type: 'text/javascript',
+							async: null
 						}).then(function(data) {
-						});
+							});
 					}
 				}
 			}
@@ -423,13 +412,13 @@ async: null
 
 		// modify vis dimensions
 		d3.select("#vis" + index)
-		.style("width", width + 'px')
-		.style("margin-left", "15px");
+			.style("width", width + 'px')
+			.style("margin-left", "15px");
 
 		// modify assignmentSlide nav menu
 		d3.select("#assignmentSlide")
-		.style("width", width + 'px')
-		.style("margin-left", "15px");
+			.style("width", width + 'px')
+			.style("margin-left", "15px");
 
 		// update the title and description
 		d3.select("#title" + index).text(function() {
@@ -563,9 +552,9 @@ async: null
 
 			addScript({
 				//	src: "/js/map.js",
-src: "/js/map_gen.js",
-type: 'text/javascript',
-async: null
+				src: "/js/map_gen.js",
+				type: 'text/javascript',
+				async: null
 				/*
 				    }).then(function() {
 				      return addScript({
@@ -576,9 +565,9 @@ async: null
 				*/
 			}).then(function() {
 				return addScript({
-src: "/js/lib/topojson.v1.min.js",
-type: 'text/javascript',
-async: null
+					src: "/js/lib/topojson.v1.min.js",
+					type: 'text/javascript',
+					async: null
 				});
 			}).then(function() {
 				resolve();
