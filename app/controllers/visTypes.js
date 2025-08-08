@@ -89,12 +89,12 @@ exports.getVisTypeObject = function(data) {
       },
       "collection": {
         "vistype":"collection",
-        "script":"/js/collection.js",
+        "script":"/js/symbol_collection.js",
         "link":""
       },
       "collectionv2": {
         "vistype":"collectionv2",
-        "script":"/js/collectionv2.js",
+        "script":"/js/symbol_collectionv2.js",
         "link":""
       },
       "tree": {
