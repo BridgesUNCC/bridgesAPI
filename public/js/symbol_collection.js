@@ -247,10 +247,10 @@ d3.collection = function(svg, W, H, data) {
 		if (d.fill === undefined) return "none";
 			return BridgesVisualizer.getColor(d.fill);
 		})
-		.on("mouseover", function(d) {
+	.on("mouseover", function(evt, d) {
 			BridgesVisualizer.textMouseover(d.name);
 		})
-		.on("mouseout", BridgesVisualizer.textMouseout);
+	.on("mouseout", function(evt, d) { BridgesVisualizer.textMouseout(d);});
 
 	// shape node names
 	shapes
@@ -340,16 +340,16 @@ d3.collection = function(svg, W, H, data) {
 
 
 		// Handle doubleclick on node path (shape)
-		function dblclick(d) {
+    function dblclick(evt, d) {
 		}
 
 		// Handle dragstart on force.drag()
-		function dragstart(d) {
+		function dragstart(evt, d) {
 		}
 
-		function dragged(d) {
+		function dragged(evt, d) {
 		}
 
-		function dragended(d) {
+		function dragended(evt, d) {
 		}
 };

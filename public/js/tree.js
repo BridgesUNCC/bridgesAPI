@@ -117,8 +117,8 @@ d3.bst = function (vis, W, H) {
                 return "translate(" + source.x0 + "," + source.y0 + ")";
             })
             .on("click", toggle)
-            .on("mouseover", function(d) {BridgesVisualizer.textMouseover(d.data.name); } )
-            .on("mouseout", BridgesVisualizer.textMouseout);
+            .on("mouseover", function(evt, d) {BridgesVisualizer.textMouseover(d.data.name); } )
+            .on("mouseout", function(evt, d) {BridgesVisualizer.textMouseout(d)});
 
         // add and style symbol for node
         nodeEnter.append('path')
@@ -229,12 +229,12 @@ d3.bst = function (vis, W, H) {
             })
             .attr('marker-start', function(d,i){ return 'url(#marker_circle)'; })
             .attr('marker-end', function(d,i){ return 'url(#marker_arrow)'; })
-            .on("mouseover", function(d) {
+            .on("mouseover", function(evt, d) {
               if(d.data && d.data.linkProperties) {
                BridgesVisualizer.textMouseover("weight: " + d.data.linkProperties.thickness);
               }
              })
-            .on("mouseout", BridgesVisualizer.textMouseout);
+            .on("mouseout", function(evt, d) {BridgesVisualizer.textMouseout(d);});
 
         // Draw links
         var linkUpdate = linkEnter.merge(link)

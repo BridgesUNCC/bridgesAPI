@@ -25,10 +25,10 @@
 			})
 			.append("div")
 			.classed("assignment-preview", true)
-			.on('mouseover', function(d, i) {
+			.on('mouseover', function(evt, d) {
 				d3.select(this).classed("hover", true);
 			})
-			.on('mouseout', function(d, i) {
+			.on('mouseout', function(evt, d) {
 				d3.select(this).classed("hover", false);
 			});
 
@@ -74,10 +74,10 @@ console.log("vis type:" + d.vistype);
         .attr("href", function(d) {return "/assignmentByEmail/"+ d.assignmentID + "/" + d.email; })
         .append("div")
           .classed("assignment-preview", true)
-          .on('mouseover', function(d, i) {
+          .on('mouseover', function(evt, d) {
             d3.select(this).classed("hover", true);
           })
-          .on('mouseout', function(d, i) {
+          .on('mouseout', function(evt, d) {
             d3.select(this).classed("hover", false);
           });
 

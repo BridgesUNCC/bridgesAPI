@@ -302,13 +302,13 @@
 		positionSlideLabel(0);
 	})();
 
-	function slideButtonClick(evt) {
+    function slideButtonClick(evt, datum) {
 		//this uses .target and not .currentTarget because this functoin is not called in the event handler but in a timeout function which undefined currentTarget. Javascript, am I right?
 		var i = evt.target.id.substring("slideButton".length); //we need i to be the index of the button which we can derie from how its HTML id got set
 		updateVis(i);
 	}
 
-	function slideButtonHover(evt) {
+    function slideButtonHover(evt, datum) {
 		var i = evt.currentTarget.id.substring("slideButton".length); //we need i to be the index of the button which we can derie from how its HTML id got set
 		positionSlideLabel(i);
 	}
