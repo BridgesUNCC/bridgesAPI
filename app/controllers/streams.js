@@ -6,12 +6,22 @@ var mongoose = require('mongoose')
             'actors':'actors.js'
     }
 
-
+/**
+ * Retrieves data from a specified source for a given user.
+ * Checks for cached data first. If no cache exists or is invalid, initializes the data retrieval process.
+ * @param {object} req - The request object containing user information and source domain.
+ * @param {object} res - The response object used to send the retrieved data.
+ * @param {function} next - The next middleware function for error handling.
+ */
 exports.getSource = function (req, res, next) { //TODO: is this even used?
   
     console.log(req.user.email)
 
-    //gets previous data from the cache if it exists
+    /**
+     * Retrieves data from the cache if it exists and is valid.
+     * @param {object} srcHandler - The source handler object.
+     * @param {object} acct - The account object containing relevant information.
+     */
     var getFromCache = function (srcHandler, acct) {
        
         try { rout = req.params[0].split('/') }
@@ -27,7 +37,11 @@ exports.getSource = function (req, res, next) { //TODO: is this even used?
             return res.json(JSON.parse(cachedStream.content))
         }
     }
-    //gets the appropriate source handler based upon the request 
+    /**
+     * Retrieves the appropriate source handler based upon the request. 
+     * @param {string} domain - The domain of the data source.
+     * @param {function} cb - Callback function to handle the retrieved source handler.
+     */
     var getSourceHandler = function (domain, cb) {
         domain = domain.toLowerCase();
         console.log(domain)

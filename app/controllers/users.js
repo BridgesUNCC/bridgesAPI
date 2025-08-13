@@ -18,10 +18,12 @@ var login = function (req, res) {
 exports.authCallback = login;
 exports.session = login;
 
-/*
-  GET
-    Render the BRIDGES homepage
-*/
+/**
+ * GET
+ * Renders the BRIDGES homepage.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.index = function (req, res) {
   var user = req.user || "";
 
@@ -32,10 +34,12 @@ exports.index = function (req, res) {
   });
 };
 
-/*
-  GET
-    Render the login page
-*/
+/**
+ * GET
+ * Renders the login page.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.login = function (req, res) {
   var user = req.user || "";
 
@@ -46,10 +50,12 @@ exports.login = function (req, res) {
  });
 };
 
-/*
-  GET
-    Render forgot password form page
-*/
+/**
+ * GET
+ * Renders the forgot password form page.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.forgot = function (req, res) {
   var user = req.user || "";
 
@@ -59,9 +65,13 @@ exports.forgot = function (req, res) {
   });
 };
 
-/*
-  POST route to reset the password of the account with the given token
-*/
+/**
+ * POST
+ * Handles the password reset process after the user submits the new password.
+ * Finds the user by token and updates the password if the token is valid and not expired.
+ * @param {object} req - The request object containing the token and new password.
+ * @param {object} res - The response object.
+ */
 exports.resetPassword = function(req, res) {
   var findthis = crypto.createHash('sha512').update(req.params.token).digest('hex');
 
@@ -102,9 +112,12 @@ exports.resetPassword = function(req, res) {
 	});
 };
 
-/*
-  POST route to begin password reset process for the account with the given token
-*/
+/**
+ * POST
+ * Renders the password reset form if the token is valid and not expired.
+ * @param {object} req - The request object containing the token.
+ * @param {object} res - The response object.
+ */
 exports.getNewPassword = function(req, res) {
   var findthis = crypto.createHash('sha512').update(req.params.token).digest('hex');
 
@@ -130,9 +143,12 @@ exports.getNewPassword = function(req, res) {
 	});
 };
 
-/*
-  POST route to send a password reset email and token
-*/
+/**
+ * POST
+ * Sends a password reset email containing a token to the user.
+ * @param {object} req - The request object containing the user's email.
+ * @param {object} res - The response object.
+ */
 exports.sendResetEmail = function (req, res) {
   var email = req.body.email;
 
@@ -164,6 +180,12 @@ exports.sendResetEmail = function (req, res) {
 	});
 };
 
+/**
+ * Logs out the current user and destroys the session.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @param {function} next - The next middleware function.
+ */
 exports.logout = function (req, res) {
     user="";
 
@@ -178,7 +200,11 @@ exports.logout = function (req, res) {
     res.redirect("/");
 };
 
-/* Load profile view for a User */
+/**
+ * Loads and renders the user's profile page.
+ * @param {object} req - The request object containing user information.
+ * @param {object} res - The response object.
+ */
 exports.profile = function (req, res) {
     if (!req.user) return res.redirect("login");
 
@@ -198,7 +224,12 @@ exports.profile = function (req, res) {
 	});
 };
 
-/* Delete a user and all associated assignments and accounts */
+/**
+ * Deletes a user and all associated assignments and accounts.
+ * @param {object} req - The request object containing user information.
+ * @param {object} res - The response object.
+ * @param {function} next - The next middleware function.
+ */
 exports.deletePerson = function (req, res) {
 
     user = req.user;
@@ -231,7 +262,11 @@ exports.deletePerson = function (req, res) {
     return res.redirect("/login");
 };
 
-/* Generate a new API key for a user */
+/**
+ * Generates and saves a new API key for the current user.
+ * @param {object} req - The request object containing user information.
+ * @param {object} res - The response object used to send the API key.
+ */
 exports.getkey = function (req, res) {
     console.log("User: "+req.user.username +"("+req.user.email+")"+
         " requsted a new apikey");
@@ -241,7 +276,11 @@ exports.getkey = function (req, res) {
     res.send(user.apikey);
 };
 
-//set up the signup
+/**
+ * Renders the signup form page.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ */
 exports.signup = function (req, res) {
     res.render('users/signup', {
         title: 'Sign up',
@@ -249,7 +288,13 @@ exports.signup = function (req, res) {
     });
 };
 
-/* Create a new user account from the signup form page */
+/**
+ * Creates a new user account from the signup form data.
+ * Generates an API key for the new user and logs them in automatically.
+ * @param {object} req - The request object containing signup form data.
+ * @param {object} res - The response object used for redirection or error handling.
+ * @param {function} next - The next middleware function for error handling.
+ */
 exports.create = function (req, res) {
     var user = new User(req.body);
     user.provider = 'local';
@@ -274,7 +319,11 @@ exports.create = function (req, res) {
 	});
 };
 
-/* Set the institution_name for the current user */
+/**
+ * Sets the institution name for the current user.
+ * @param {object} req - The request object containing the institution name.
+ * @param {object} res - The response object.
+ */
 exports.setInstitution = function (req, res) {
   // TODO: clean insitution_name
   req.user.institution_name = req.body.institution;
@@ -287,7 +336,11 @@ exports.setInstitution = function (req, res) {
 	});
 };
 
-/* Set the course_name for the current user */
+/**
+ * Sets the course name for the current user.
+ * @param {object} req - The request object containing the course name.
+ * @param {object} res - The response object.
+ */
 exports.setCourse = function (req, res) {
   // TODO: clean course_name
   req.user.course_name = req.body.course;

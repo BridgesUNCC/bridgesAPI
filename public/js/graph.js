@@ -205,7 +205,7 @@ d3.graph = function(svg, W, H, data) {
 			return d.dasharray || "";
 		})
 		.style("fill", "none")
-		.on("mouseover", function(d) {
+	.on("mouseover", function(evt, d) {
 			if (d.label) {
 				BridgesVisualizer.textMouseover(d.label);
 			}

@@ -18,6 +18,10 @@ rect.bgRect {
     font-size: 12px;
 }
 
+.linkLabel {
+    font-size: 12px;
+}
+
 path.link {
     fill: none;
     stroke: #ccc;

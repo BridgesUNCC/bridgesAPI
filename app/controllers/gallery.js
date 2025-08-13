@@ -4,9 +4,23 @@ var mongoose = require('mongoose'),
     Assignment = mongoose.model('Assignment'),
     visTypes = require('./visTypes.js');
 
+/**
+ * Renders a gallery view of all public assignments with a given assignment number.
+ * Retrieves assignments that are marked as shared and fetches corresponding usernames.
+ * If no assignments are found, redirects the user or renders an empty gallery page.
+ * @param {object} req - The request object containing assignment number.
+ * @param {object} res - The response object used to render the gallery.
+ */
 exports.view = function(req, res) {
     var assignmentNumber;
 
+    /**
+     * Recursively retrieves usernames from a list of user emails.
+     * Calls the provided callback function once all usernames are collected.
+     * @param {array} users - List of user emails.
+     * @param {array} usernames - Accumulator array for collected usernames.
+     * @param {function} cb - Callback function to return the usernames.
+     */
     var getUsername = function(users, usernames, cb) {
         if (users.length === 0) return cb(usernames);
         var user = users.pop();
@@ -22,7 +36,13 @@ exports.view = function(req, res) {
 		 return null;
 	    });
     };
-
+    /**
+     * Recursively builds a mapping of emails to usernames.
+     * Calls the provided callback function once all mappings are collected.
+     * @param {array} users - List of user emails.
+     * @param {object} usernamesmap - Object mapping emails to usernames.
+     * @param {function} cb - Callback function to return the mappings.
+     */
     var getAssignmentsEmailAndUsernameMap = function(users, usernamesmap, cb) {
         if (users.length === 0) return cb(usernamesmap);
         var user = users.pop();
@@ -121,6 +141,13 @@ exports.view = function(req, res) {
         }
 };
 
+/**
+ * Retrieves a list of recent public assignment uploads.
+ * Allows query parameters to specify the number of results and pagination offset.
+ * Returns the most recently created assignments.
+ * @param {object} req - The request object containing optional query parameters (num, skip).
+ * @param {object} res - The response object used to send recent assignments.
+ */
 exports.recentUploads = function(req, res) {
 
   var num = 5,
@@ -164,6 +191,14 @@ exports.recentUploads = function(req, res) {
 
 };
 
+/**
+ * Retrieves a list of pinned public assignments.
+ * Allows query parameters to specify the number of results and pagination offset.
+ * Returns assignments uploaded by the "bridges_public" user.
+ * @param {object} req - The request object containing optional query parameters (num, skip).
+ * @param {object} res - The response object used to send pinned assignments.
+ * @param {function} next - The next middleware function for error handling.
+ */
 exports.pinnedUploads = function(req, res, next) {
 
   var num = 5,
