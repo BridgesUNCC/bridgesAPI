@@ -54,7 +54,7 @@ var UserSchema = new Schema({
     institution_name: {type: String, default: '',
 		       validate: {
 			   validator: async function(value){
-			       if ('_id' in this) //disabling the check if the record is already int he database
+			       if ('_id' in this) //disabling the check if the record is already in the database
 				   return true;
 			       return value.length;
 			   },
