@@ -170,7 +170,7 @@ UserSchema.path('hashed_password').validate(function (hashed_password) {
 UserSchema.pre('save', function(next) {
     if (!this.isNew) return next();
     if ((!validatePresenceOf(this.password) || !validatePasswordLength(this.password)) && authTypes.indexOf(this.provider) === -1)
-        next(new Error('Invalid password (must be at least 5 characters)'));
+        next(new Error('Invalid password (must be at least 6 characters)'));
     else
         next();
 });
