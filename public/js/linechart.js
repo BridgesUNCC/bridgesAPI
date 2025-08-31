@@ -28,8 +28,14 @@ d3.lineChart = function(vis, id, data){
 		for (let j = 0; j < yAxisData[i].yaxis_data.length; j++) {
 			a_plot.push([ xAxisData[i].xaxis_data[j], yAxisData[i].yaxis_data[j] ]);
 		}
+	    let plot_series_object = 	    {name: yAxisData[i].Plot_Name, data: a_plot};
+	    if (data.linewidth) {
+		if (data.linewidth[yAxisData[i].Plot_Name]) {
+		    plot_series_object["lineWidth"] = data.linewidth[yAxisData[i].Plot_Name];
+		}
+	    }
 		// add to the plot series
-		plot_data.push({name: yAxisData[i].Plot_Name, data: a_plot});
+		plot_data.push(plot_series_object);
 	}
 
     
