@@ -30,7 +30,7 @@ d3.lineChart = function(vis, id, data){
 		}
 	    let plot_series_object = 	    {name: yAxisData[i].Plot_Name, data: a_plot};
 	    if (data.linewidth) {
-		if (data.linewidth[yAxisData[i].Plot_Name]) {
+		if (yAxisData[i].Plot_Name in data.linewidth) {
 		    plot_series_object["lineWidth"] = data.linewidth[yAxisData[i].Plot_Name];
 		}
 	    }
