@@ -53,6 +53,8 @@
 	d3.select("#play").on("click", playVis);
 	d3.select("#stop").on("click", stopVis);
 
+
+    
 	var key = 0;
 	var subAssignmentNumber = 0; // subassignment number
 	var intervalId;
@@ -71,6 +73,12 @@
 		height = ele.clientHeight,
 		transform = assignment.transform;
 
+    var resizeObserver = new ResizeObserver(() => {
+	update_size_visualizations();
+    });
+    resizeObserver.observe ( ele );
+    
+    
 	visualizeAssignment(assignment);
 
 	function collapse(evt) {
@@ -222,6 +230,15 @@
 			(d3.select("#canvas_webgl" + i).node() == null);
 	}
 
+    function update_size_visualizations() {
+	// resize canvas-based assignments or assignments with specific resize methods
+	for (var subassign in BridgesVisualizer.visualizations) {
+	    if (BridgesVisualizer.visualizations[subassign].resize)
+		BridgesVisualizer.visualizations[subassign].resize();
+	}
+
+    }
+    
 	// Update default transforms that rely on window sizes
 	$(window).resize(function() {
 		clearTimeout(window.resizedFinished);
@@ -233,11 +250,7 @@
 			.style("width", ele.clientWidth)
 			.style("height", ele.clientHeight);
 
-			// resize canvas-based assignments or assignments with specific resize methods
-			for (var subassign in BridgesVisualizer.visualizations) {
-				if (BridgesVisualizer.visualizations[subassign].resize)
-					BridgesVisualizer.visualizations[subassign].resize();
-			}
+		    update_size_visualizations();
 		}, 250);
 	});
 
