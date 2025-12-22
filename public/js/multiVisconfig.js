@@ -470,7 +470,8 @@
 			d3.select("#vis" + index).select("#svg" + index).remove("*");
 			vis = d3.select("#vis" + index).append("canvas")
 				.attr("id", "canvas" + index);
-			d3.grid(vis, width, height, assignmentData, d3.select("#vis" + index));
+		    const g = d3.grid(vis, width, height, assignmentData, d3.select("#vis" + index));
+		    BridgesVisualizer.visualizations[assignment.subAssignment] =  g;		    
 		}
 		else if (assignment.vistype == "nodelink" && d3.graph) {
 			graph = d3.graph(vis, width, height, assignmentData);

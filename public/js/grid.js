@@ -6,6 +6,9 @@
 d3.grid = function(canvas, W, H, data, parent) {
 	var context = canvas.node().getContext("2d");
 
+    var return_me = {};
+
+        
 	//defaults
 	var grid = [],
 		w = W || 1280,
@@ -15,30 +18,39 @@ d3.grid = function(canvas, W, H, data, parent) {
 	// set up data dimensions
 	var dims = data.dimensions;
 
+    function setDimensions() {
 	// if more rows than cols
 	if (dims[0] > dims[1]) {
-		nodeSize = parseInt((h) / dims[0]);
+	    nodeSize = parseInt((h) / dims[0]);
 	}
 	else {
-		nodeSize = Math.min(parseInt((w)/dims[1]), parseInt((h)/dims[1]));
+	    nodeSize = Math.min(parseInt((w)/dims[1]), parseInt((h)/dims[0]));
 	}
 	nodeSize = Math.max(nodeSize, 1);
-
+	
 	w = dims[1] * nodeSize;
 	h = dims[0] * nodeSize;
 
+	// set canvas attrs
+	canvas.attr("width", w + 'px').attr("height", h + 'px');
+    }
+    
+    setDimensions();
+    
+	parent.style("width", w + 'px')
+		.style("height", h + 'px')
+	.style("margin", "auto");
+    
 	// if necessary, modify assignmentSlide nav menu
 	d3.select("#assignmentSlide")
 		.style("width", w + 'px')
 		.style("padding-bottom", '15px')
 		.style("margin", "auto");
 
-	// set canvas attrs
-	canvas.attr("width", w + 'px').attr("height", h + 'px');
-	parent.style("width", w + 'px')
-		.style("height", h + 'px')
-		.style("margin", "auto");
 
+
+
+    
 	// set up nodes
 	if (!data.encoding || data.encoding == "RAW") {
 		rgbaArray = Uint8Array.from(atob(data.nodes), function(c) {
@@ -61,6 +73,22 @@ d3.grid = function(canvas, W, H, data, parent) {
 	}
 
 
+    return_me.resize = function() {
+	var width = d3.select(".assignmentContainer").style("width"),
+	    height = d3.select(".assignmentContainer").style("height");
+	width = width.substr(0, width.indexOf("px"));
+	height = height.substr(0, height.indexOf("px"));
+	
+	canvas.attr("width", width).attr("height", height);
+
+	h=height;
+	w=width;
+
+	setDimensions();
+	
+	draw();
+    }
+    
 	// set up draw method from requestAnimationFrame
 	function draw() {
 		nodes.forEach(drawNode);
@@ -82,5 +110,7 @@ d3.grid = function(canvas, W, H, data, parent) {
 		return bytes.buffer;
 	}
 
-	draw();
+    draw();
+
+    return return_me;
 };
