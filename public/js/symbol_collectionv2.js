@@ -96,8 +96,6 @@ d3.collectionv2 = function(svg, W, H, data) {
 		}
 	}
 
-	//  console.log("symbolDict "+ JSON.stringify(symbolDict));
-	//   console.log("root: "+ JSON.stringify(symbolRoot));
 
 	//TODO: sort children list and root by layer.
 	var sortlayers = function(arr) {
@@ -165,6 +163,7 @@ d3.collectionv2 = function(svg, W, H, data) {
 		}
 	}
 
+    
 	// update the svg with some global attributes and zoom attribute
 	vis = svg.attr("width", w)
 		.attr("height", h)
@@ -184,6 +183,20 @@ d3.collectionv2 = function(svg, W, H, data) {
 	}
 	// svgGroup = svgZoomGroup.append("g").attr('transform', T_Composite)
 
+    graph.resize = function() {
+	//This is kinda nasty. We take the size of the container by parsing the width and height of teh container in and assuming it is in pixel
+	var width = d3.select(".assignmentContainer").style("width"),
+	    height = d3.select(".assignmentContainer").style("height");
+
+	width = width.substr(0, width.indexOf("px"));
+	height = height.substr(0, height.indexOf("px"));
+
+	vis.attr("viewBox", "0 0 " + width + " " + height)
+	    .attr("width", width)
+	    .attr("height", height);
+    }
+    
+    
 	// projection function for an input position if we are using maps
 	function projShape(posx, posy) {
 		let projection, pos;
@@ -384,5 +397,6 @@ d3.collectionv2 = function(svg, W, H, data) {
 			}
 		}
 	};
-	helper(svgGroup, symbolRoot);
+    helper(svgGroup, symbolRoot);
+    return graph;
 };
