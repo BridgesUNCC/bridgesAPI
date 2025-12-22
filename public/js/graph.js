@@ -63,6 +63,19 @@ d3.graph = function(svg, W, H, data) {
 		svg.call(zoom.transform, transform);
 	};
 
+    graph.resize = function() {
+	//This is kinda nasty. We take the size of the container by parsing the width and height of teh container in and assuming it is in pixel
+	var width = d3.select(".assignmentContainer").style("width"),
+	    height = d3.select(".assignmentContainer").style("height");
+	
+	width = width.substr(0, width.indexOf("px"));
+	height = height.substr(0, height.indexOf("px"));
+	
+	vis.attr("width", width)
+	    .attr("height", height);
+    }
+
+    
 	// initialize the graph
 	graph.reset();
 
