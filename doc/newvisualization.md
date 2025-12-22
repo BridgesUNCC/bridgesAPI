@@ -82,7 +82,7 @@ make the rendering centered.
 
 Most of the interactive components are defined in `multiVisconfig.js`.
 
-Eventually the rendering of the assignment itsefl is done by the
+Eventually the rendering of the assignment itself is done by the
 `visualizeAssignment()` function. which will call the appropriate
 visualization function based on the assignment vistype. Note that the
 visualization function defined by bridges are added to the `d3`
@@ -104,3 +104,11 @@ object they render in. They take the DOM object they are supposed to
 render in (often an SVG, but where appropriate a canvas). And the data
 (or pieces of it) that was specified by the BRIDGES client when the
 submission was originally made.
+
+The visualization specific functions are both setting up the DOM for
+the rendering and setup event listeniner, for instance for pan and
+zoom. This should also return an object that is used to provide
+feature to the outseide. At this point is seems to mostly be useful
+for the resize function which is called when the div that contains the
+visualization is resized. And that function will need to update the
+inner element so that they render correctly.
