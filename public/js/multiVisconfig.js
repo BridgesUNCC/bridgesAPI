@@ -233,8 +233,9 @@
     function update_size_visualizations() {
 	// resize canvas-based assignments or assignments with specific resize methods
 	for (var subassign in BridgesVisualizer.visualizations) {
-	    if (BridgesVisualizer.visualizations[subassign].resize)
-		BridgesVisualizer.visualizations[subassign].resize();
+	    if (BridgesVisualizer.visualizations[subassign]) // Some older visualization are not polite and return no object so we need to check to avoid and exception
+		if (BridgesVisualizer.visualizations[subassign].resize) //not all visualization need a particular handlign of resize
+		    BridgesVisualizer.visualizations[subassign].resize();
 	}
 
     }
