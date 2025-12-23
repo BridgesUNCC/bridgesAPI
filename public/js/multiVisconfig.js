@@ -248,8 +248,8 @@
 			BridgesVisualizer.defaultTransforms.nodelink.translate = BridgesVisualizer.visCenter();
 			// resize svg-based assignments
 			d3.selectAll("svg")
-			.style("width", ele.clientWidth)
-			.style("height", ele.clientHeight);
+			.attr("width", ele.clientWidth)
+			.attr("height", ele.clientHeight);
 
 		    update_size_visualizations();
 		}, 250);
