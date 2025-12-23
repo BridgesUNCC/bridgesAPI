@@ -47,6 +47,16 @@ d3.bst = function (vis, W, H) {
         vis.call(zoom.transform, transform);
     };
 
+    bst.resize = function() {
+	var width = d3.select(".assignmentContainer").style("width"),
+	    height = d3.select(".assignmentContainer").style("height");
+	w = width.substr(0, width.indexOf("px"));
+	h = height.substr(0, height.indexOf("px"));
+	
+	vis.attr("width", w).attr("height", h)
+            .attr("viewBox", "0 0 " + w + " " + h);
+    }
+
     //boilerplate stuff
     bst.make = function (data) {
         tree = d3.tree()
