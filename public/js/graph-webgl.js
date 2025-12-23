@@ -93,11 +93,26 @@ d3.graph_webgl = function(canvas, W, H, data) {
     gl.canvas.height = h;
 
     //
-  	//  Configure WebGL
-  	//
-  	gl.viewport( 0, 0, gl.canvas.width, gl.canvas.height );
-  	gl.clearColor( 1.0, 1.0, 1.0, 1.0 );
+    //  Configure WebGL
+    //
+    gl.viewport( 0, 0, gl.canvas.width, gl.canvas.height );
+    gl.clearColor( 1.0, 1.0, 1.0, 1.0 );
 
+    graph.resize = function() {
+	var width = d3.select(".assignmentContainer").style("width"),
+	    height = d3.select(".assignmentContainer").style("height");
+	w = width.substr(0, width.indexOf("px"));
+	h = height.substr(0, height.indexOf("px"));
+
+	canvas.attr("width", w)
+	    .attr("height", h);
+
+	gl.canvas.width = w;
+	gl.canvas.height = h;
+	gl.viewport( 0, 0, gl.canvas.width, gl.canvas.height );
+	render();
+    }
+    
     //  Load shaders and initialize attribute buffers
     var program = initShaderProgram(gl, vsSource, fsSource);
   	gl.useProgram( program );
