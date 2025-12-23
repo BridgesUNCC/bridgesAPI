@@ -98,6 +98,9 @@ passed as a resource to load when teh PUG file was created out of the
 `script` field returned by the `getVisTypeObject()` function in the
 `app/controllers/visTypes.js` file.
 
+
+### the specific assignment visualization code
+
 The different functions for the different vistypes run somewhat
 differently. But typically they take the width and height of the
 object they render in. They take the DOM object they are supposed to
@@ -112,3 +115,8 @@ feature to the outseide. At this point is seems to mostly be useful
 for the resize function which is called when the div that contains the
 visualization is resized. And that function will need to update the
 inner element so that they render correctly.
+
+The function itself that gets called is passed a DOM element that it
+will work in and it is passed size W and H and a piece of data to
+render. That code is self contained and resposible to handle
+everything.
