@@ -252,7 +252,7 @@
           .style("top", (event.pageY) + "px");
       };
 
-  BridgesVisualizer.textMouseout = function(d) {
+    BridgesVisualizer.textMouseout = function(evt, datum) {
       BridgesVisualizer.tooltip.transition()
           .duration(500)
           .style("opacity", 0);

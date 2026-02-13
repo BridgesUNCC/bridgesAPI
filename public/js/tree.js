@@ -1,3 +1,9 @@
+//
+// This function serves to render tree structures: generalized tree, binary tree, 
+// binary search tree, AVL, K-d tree
+//
+// Last modified : Aug. 5, 2025 (KRS)
+//
 d3.bst = function (vis, W, H) {
 
     //defaults
@@ -41,6 +47,16 @@ d3.bst = function (vis, W, H) {
         vis.call(zoom.transform, transform);
     };
 
+    bst.resize = function() {
+	var width = d3.select(".assignmentContainer").style("width"),
+	    height = d3.select(".assignmentContainer").style("height");
+	w = width.substr(0, width.indexOf("px"));
+	h = height.substr(0, height.indexOf("px"));
+	
+	vis.attr("width", w).attr("height", h)
+            .attr("viewBox", "0 0 " + w + " " + h);
+    }
+
     //boilerplate stuff
     bst.make = function (data) {
         tree = d3.tree()
@@ -82,6 +98,7 @@ d3.bst = function (vis, W, H) {
     function draw(source) {
         var duration = 600;
 
+
         // Compute the new tree layout.
         var treeData = tree(root);
 
@@ -110,8 +127,8 @@ d3.bst = function (vis, W, H) {
                 return "translate(" + source.x0 + "," + source.y0 + ")";
             })
             .on("click", toggle)
-            .on("mouseover", function(d) {BridgesVisualizer.textMouseover(d.data.name); } )
-            .on("mouseout", BridgesVisualizer.textMouseout);
+            .on("mouseover", function(evt, d) {BridgesVisualizer.textMouseover(d.data.name); } )
+            .on("mouseout", function(evt, d) {BridgesVisualizer.textMouseout(d)});
 
         // add and style symbol for node
         nodeEnter.append('path')
@@ -222,12 +239,13 @@ d3.bst = function (vis, W, H) {
             })
             .attr('marker-start', function(d,i){ return 'url(#marker_circle)'; })
             .attr('marker-end', function(d,i){ return 'url(#marker_arrow)'; })
-            .on("mouseover", function(d) {
+            .on("mouseover", function(evt, d) {
               if(d.data && d.data.linkProperties) {
-               BridgesVisualizer.textMouseover("weight: " + d.data.linkProperties.thickness);
+				if (d.data.linkProperties.label != "")
+               		BridgesVisualizer.textMouseover("weight: " + d.data.linkProperties.label);
               }
              })
-            .on("mouseout", BridgesVisualizer.textMouseout);
+            .on("mouseout", function(evt, d) {BridgesVisualizer.textMouseout(d);});
 
         // Draw links
         var linkUpdate = linkEnter.merge(link)
@@ -265,7 +283,7 @@ d3.bst = function (vis, W, H) {
           })
           .text( function( d ) {
            if( (d.data && d.data.linkProperties) ) {
-             return d.data.linkProperties.thickness; // change to link label!
+             return d.data.linkProperties.label; 
            } else return "";
           });
 

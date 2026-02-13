@@ -1,0 +1,52 @@
+# Project Dependencies and Descriptions
+
+## Dependencies
+
+1. **body-parser**: Middleware to parse incoming request bodies in a middleware before your handlers, available under the `req.body` property.
+2. **bootstrap**: The most popular front-end framework for developing responsive, mobile-first projects on the web.
+3. **bootstrap-icons**: Official open source SVG icon library for Bootstrap with over 1,500 icons.
+4. **bower**: A package manager for the web, deprecated in favor of Yarn and Webpack.
+5. **compression**: Node.js compression middleware that supports `deflate` and `gzip` encodings.
+6. **connect-flash**: Flash message middleware for Connect and Express applications.
+7. **connect-mongo**: MongoDB session store for Connect and Express.
+8. **constantinople**: Converts JavaScript expressions into constant values.
+9. **cookie-parser**: Parse `Cookie` header and populate `req.cookies` with an object keyed by cookie names.
+10. **css-toggle-switch**: A pure CSS library to create iOS-style toggle switches.
+11. **d3**: A JavaScript library for producing dynamic, interactive data visualizations in web browsers.
+12. **deep-extend**: Recursive object extending utility.
+13. **express**: Fast, unopinionated, minimalist web framework for Node.js.
+14. **express-session**: Simple session middleware for Express.
+15. **grunt**: JavaScript task runner to automate tasks like minification, compilation, unit testing, and linting.
+16. **grunt-contrib-copy**: Copy files and directories as part of your Grunt workflow.
+17. **highcharts**: JavaScript charting library for creating interactive charts on web pages.
+18. **jquery**: Fast, small, and feature-rich JavaScript library.
+19. **method-override**: Lets you use HTTP verbs such as PUT or DELETE in places where the client doesn't support it.
+20. **mongoose**: Elegant MongoDB object modeling for Node.js.
+21. **morgan**: HTTP request logger middleware for Node.js.
+22. **nodemailer**: Easy as cake e-mail sending from your Node.js applications.
+23. **npm**: Package manager for JavaScript, included with Node.js.
+24. **passport**: Simple, unobtrusive authentication for Node.js.
+25. **passport-local**: Local username and password authentication strategy for Passport.
+26. **pug**: Robust, elegant, feature-rich template engine for Node.js.
+27. **request**: Simplified HTTP client for Node.js, now deprecated.
+28. **serve-favicon**: Node.js middleware for serving a favicon.
+29. **serve-static**: Serve static files with Express.
+30. **socket.io**: Enables real-time, bidirectional, and event-based communication.
+31. **streamable**: A simple streaming interface for Node.js.
+32. **treemill**: A utility for working with hierarchical data structures.
+
+## DevDependencies
+
+1. **async**: Utility module which provides straight-forward, powerful functions for working with asynchronous JavaScript.
+2. **copy-webpack-plugin**: Copies individual files or entire directories to the build directory.
+3. **grunt-bower-task**: Grunt plugin to automate Bower commands.
+4. **grunt-contrib-compass**: Compile Compass/Sass to CSS.
+5. **grunt-contrib-watch**: Run tasks whenever watched files change.
+6. **grunt-develop**: Monitor your app for changes and automatically restart the server.
+7. **grunt-modernizr**: Grunt plugin to automate Modernizr builds.
+8. **grunt-update-submodules**: Grunt task to update git submodules.
+9. **mocha**: Simple, flexible, fun JavaScript test framework for Node.js and the browser.
+10. **should**: BDD style assertions for Node.js.
+11. **superagent**: Small progressive HTTP request library.
+12. **supertest**: Super-agent driven library for testing HTTP servers.
+

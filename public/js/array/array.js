@@ -55,6 +55,21 @@ d3.array = function(svg, W, H, data) {
     svgGroup = vis.append("g")
 		.attr('transform', transform);
 
+    array.resize = function() {
+	var width = d3.select(".assignmentContainer").style("width"),
+	    height = d3.select(".assignmentContainer").style("height");
+	
+	width = width.substr(0, width.indexOf("px"));
+	height = height.substr(0, height.indexOf("px"));
+	
+	w = width;
+	h = height;
+
+	vis.attr("width", w)
+            .attr("height", h)
+            .attr("viewBox", "0 0 " + w + " " + h);
+    }
+    
     // Bind nodes to array elements
     var nodes = svgGroup.selectAll("nodes")
         .data(data)

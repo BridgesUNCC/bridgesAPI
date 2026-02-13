@@ -58,8 +58,8 @@ d3.dllist = function(d3, canvasID, w, h, data) {
             //return "translate(" + (marginLeft + i * (spacing + size)) + ")";
             return "translate(" + (marginLeft + ((i % elementsPerRow) * (spacing + size)))+ "," + ((h/4) + ((Math.floor(i / elementsPerRow)) * (spacing+size))) + ")";
         })
-        .on("mouseover", BridgesVisualizer.textMouseover)
-        .on("mouseout", BridgesVisualizer.textMouseout);
+        .on("mouseover", function(evt, d) {BridgesVisualizer.textMouseover(d.name);})
+        .on("mouseout", function(evt, d) {BridgesVisualizer.textMouseout(d);});
 
     // Create squares for each array element
     nodes

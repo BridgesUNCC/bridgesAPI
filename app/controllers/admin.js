@@ -6,6 +6,12 @@ var mongoose = require('mongoose'),
     crypto = require('crypto'),
     mail = require('./mail');
 
+/**
+ * Ensures that the requesting user has admin rights.
+ * Throws an error if the user is not authenticated or lacks admin privileges.
+ * @param {object} req - The request object containing user information.
+ * @param {object} res - The response object.
+ */
 function protectAdmin(req, res) {
     var user = req.user || false;
 
@@ -20,6 +26,12 @@ function protectAdmin(req, res) {
 	handleerror();    
 }
 
+/**
+ * A demo endpoint that returns a simple JSON response.
+ * Requires admin privileges.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object used to send JSON response.
+ */
 exports.demo = function(req, res) {
 
     protectAdmin(req, res);
@@ -29,15 +41,24 @@ exports.demo = function(req, res) {
 
 }
 
-//returns a simple document that show case the different admin features
+/**
+ * Renders the admin help page. Returns a simple document that show case the different admin features.
+ * Requires admin privileges.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object used to render the help page.
+ */
 exports.help = function(req, res) {
     protectAdmin(req, res);
     
     return res.render('admin/help');
 }
 
-// return a JSON array of all usernames
-// requires an admin account
+/**
+ * Returns a JSON array of all usernames in the system.
+ * Requires admin account.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object used to send the list of usernames.
+ */
 exports.allusers = function(req, res) {
     protectAdmin(req, res);
     
@@ -55,10 +76,12 @@ exports.allusers = function(req, res) {
     });
 }
 
-// use since GET parameter to construct a time date.
-// If no such parameter is in the query, use the beginning of current month.
-// invalid dates are ignored
-// returns Date
+/**
+ * Constructs a date object based on the 'since' query parameter.
+ * Defaults to the beginning of the current month if not provided or invalid.
+ * @param {object} req - The request object containing the query parameters.
+ * @returns {Date} - The constructed date.
+ */
 function constructSince(req) {
     var sinceTime = undefined;
     
@@ -78,10 +101,12 @@ function constructSince(req) {
     return sinceTime;
 }
 
-// use until GET parameter to construct a time date.
-// If no such parameter is in the query, use now
-// invalid dates are ignored
-// returns Date
+/**
+ * Constructs a date object based on the 'until' query parameter.
+ * Defaults to the current time if not provided or invalid.
+ * @param {object} req - The request object containing the query parameters.
+ * @returns {Date} - The constructed date.
+ */
 function constructUntil(req) {
     var untilTime = undefined;
     
@@ -96,9 +121,13 @@ function constructUntil(req) {
     return untilTime;
 }
 
-
-//return a JSON object specifying the number of assignments in a time window.
-//uses since and until GET parameters (which default to beginning of the month and now)
+/**
+ * Returns the number of assignments created within a specified time window.
+ * Uses 'since' and 'until' query parameters to define the time range.
+ * Requires admin privileges.
+ * @param {object} req - The request object containing query parameters.
+ * @param {object} res - The response object used to send the assignment count.
+ */
 exports.nbassignmentsbydate = function(req, res) {
     protectAdmin(req, res);
 
@@ -127,9 +156,14 @@ exports.nbassignmentsbydate = function(req, res) {
     });
 }
 
-//return a JSON object specifying the number of recent assignment per user.
-//users that have no assignment in the time window are not included
-//uses since and until GET parameters (which default to beginning of the month and now)
+/**
+ * Returns a JSON object with the number of assignments per user in a specified time window.
+ * Users with no assignments in the period are excluded.
+ * Uses 'since' and 'until' query parameters to define the time range.
+ * Requires admin privileges.
+ * @param {object} req - The request object containing query parameters.
+ * @param {object} res - The response object used to send the user assignment count.
+ */
 exports.assignmentsperuserbydate = function(req, res) {
     protectAdmin(req, res);
 
@@ -161,9 +195,14 @@ exports.assignmentsperuserbydate = function(req, res) {
     });
 }
 
-//return a JSON object specifying the number of assignment per user in a time window.
-//users that have no assignment in the time window are not included.
-//uses since and until GET parameters (which default to beginning of the month and now)
+/**
+ * Returns the number of unique users who have created assignments within a specified time window.
+ * Users with no assignments in the period are excluded.
+ * Uses 'since' and 'until' query parameters to define the time range.
+ * Requires admin privileges.
+ * @param {object} req - The request object containing query parameters.
+ * @param {object} res - The response object used to send the user count.
+ */
 exports.nbuserbydate = function(req, res) {
     protectAdmin(req, res);
 

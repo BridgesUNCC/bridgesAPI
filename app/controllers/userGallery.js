@@ -3,7 +3,15 @@ var mongoose = require('mongoose'),
     User = mongoose.model('User'),
     visTypes = require('./visTypes.js');
 
-/* View a user's assignment gallery */
+/**
+ * Displays a user's assignment gallery.
+ * Retrieves assignments based on the provided username, filtering by shared status if necessary.
+ * Sorts assignments by assignmentID.
+ * Renders the 'assignments/userGallery' template with the retrieved assignments and user information.
+ * @param {object} req - The request object containing user information and username parameter.
+ * @param {object} res - The response object used to render the gallery view.
+ * @param {function} next - The next middleware function for error handling.
+ */
 exports.view = function(req, res, next) {
     
     User.findOne({

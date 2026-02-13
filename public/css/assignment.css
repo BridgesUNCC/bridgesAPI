@@ -17,7 +17,7 @@ html, body {
 
 .nodeLabel {
   color: black;
-  font-size: 12px;
+  font-size: 4px;
   stroke-width: 0px;
   stroke-dasharray: 0,0;
   opacity: 0.0;
@@ -26,7 +26,7 @@ html, body {
 
 .linkLabel {
   color: black;
-  font-size: 10px;
+  font-size: 4px;
   stroke-width: 0px;
   stroke-dasharray: 0,0;
   pointer-events: none;

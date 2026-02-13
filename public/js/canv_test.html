@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html>
+<body>
+<h1>HTML5 Canvas - Draw a Line</h1>
+
+<canvas id="myCanvas" width="600" height="600" style="border:1px solid #ff0000;">
+<script type = "text/javascript" src = "https://d3js.org/d3.v7.min.js"></script>
+<script type = "text/javascript" src = "https://d3js.org/topojson.v3.min.js"></script>
+
+<script>
+
+function draw() {
+	canvas = document.getElementById("myCanvas");
+	if (canvas.getContext) 
+		ctx = canvas.getContext("2d");
+
+	d3.json("test.json").then(
+		function (geo_json) {
+			let us_data = geo_json.vis_data;
+			ctx.beginPath();
+
+			// we will use traditional way to get the data
+			let states = us_data;
+			for (let i = 0; i < states.length; i++) { // number of states or countries
+				console.log("num states:" + states.length);
+				console.log("processing.." + us_data[i].properties.name);
+				// process each state's path, which can have multiple polygons
+				let primitive = states[i].geometry;
+				let coords = primitive.coordinates
+				console.log("Type: " + primitive.type);
+				for (let j = 0; j < state_coords.length; j++) { // for each primitive
+					let num_prims = state_coords[i][j];
+					console.log("num_prims.." + num_prims.length);
+					// only deal with Multipolygons now
+//					console.log("moveto:" + coords[0][0] + "," +  coords[0][1]);
+//					ctx.moveTo (coords[0][0], coords[0][1]);
+//					for (let k = 1; k < coords.length; k++) {
+//						console.log("lineto:" + coords[k][0] + "," +  coords[k][1]);
+//						ctx.lineTo (coords[k][0], coords[k][1]);
+//					}
+				}
+			}
+			ctx.closePath();
+		})	
+/*
+	coords =  [ [[0., 0.], [10., 0.], [10.0, 10.0], [0.0, 10.0], [0., 0.]],
+				[[20., 0.], [30., 0.], [30.0, 10.0], [20.0, 10.0], [20., 0.]] ];
+	ctx.beginPath()	
+
+	ctx.fillStyle = "orange";
+	console.log(coords[0]);
+	p = coords[0];
+	
+	for (let i = 0; i < 2; i++) {
+		let p = coords[i];
+		for (k = 0; k < 5; k++) 
+			if (k == 0)
+				ctx.moveTo(p[k][0], p[k][1]);
+			else ctx.lineTo(p[k][0], p[k][1]);
+
+			ctx.fill();
+	}
+
+	ctx.closePath();
+*/
+}
+
+draw();
+</script>
+
+
+</canvas>
+
+</body>
+</html>

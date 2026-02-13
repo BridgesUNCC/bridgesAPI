@@ -14,7 +14,13 @@ let transporter = nodemailer.createTransport({
     logger: true
 });
 
-// Send a password reset email to the given email address
+/**
+ * Sends a password reset email to the specified email address.
+ * Generates a unique token for password reset and includes it in the email link.
+ * The link expires after 2 hours.
+ * @param {string} email - The recipient's email address.
+ * @param {function} cb - Callback function to handle the email sending result.
+ */
 exports.resetPass = function(email, cb) {
   // generate random unique token
   var token = crypto.randomBytes(48).toString('hex');
@@ -27,7 +33,7 @@ exports.resetPass = function(email, cb) {
     html: '<b>Forgot your password?</b>' + // html body
           '<p>We received a request to reset the password for the account associated with this email address.</p>' +
           '<p>To reset and change your password, click on this link or cut and paste it into your browser. <b>This link will expire in 2 hours.</b><br />' +
-          '<br /><a href="https://bridges-clone.herokuapp.com/reset/' + token + '">https://bridges-clone.herokuapp.com/reset/'+ token + '</a></p>' +
+          '<br /><a href="https://assignments.bridgesuncc.org/reset/' + token + '">https://assignments.bridgesuncc.org/reset/'+ token + '</a></p>' +
           '<br /><p>If you did not request this email or you do not want to change your password, please ignore this message.</p>'
   };
 
