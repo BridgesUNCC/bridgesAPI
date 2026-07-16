@@ -1,5 +1,4 @@
-bridgesAPI
-==========
+# bridgesAPI
 
 Assignment visualization and data delivery API
 
@@ -60,7 +59,7 @@ in your application:
     ```bash
     sudo apt-get install git-all
     ```
-2. Install [**MongoDB 5.0**](https://www.mongodb.com/docs/v5.0/tutorial/install-mongodb-on-ubuntu/) 
+2. Install [**MongoDB 5.0**](https://www.mongodb.com/docs/v5.0/tutorial/install-mongodb-on-ubuntu/) #note that these instructions are outdated. Using MongoDB 8 now.
     ```bash
     sudo apt-get install gnupg curl
     ```
@@ -89,7 +88,21 @@ in your application:
     sudo apt install gcc
     ```
 
-4. Install NodeJS **Version 16** and npm
+4. Install NodeJS **Version 16** and npm. Actually you problably need version 22)
+  a. Via nvm (Prefered)
+    NVM is a module like pacakgage manager to switch node version easily. If you have never installed it you install it with.
+    ```bash 
+	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+	```
+	That previous line installed the package manager, you might need to reload your enviroment variabel to be set correctly. You will need version 22 of node which you can do with:
+	```bash
+	nvm install 22
+	```
+	NVM does not load a node vesion automatically, you need to load it in your enviroment before doingthe thigns you need to do. You do that with:
+	```bash
+	nvm use 22
+	```
+  b. Manually
     ```bash
     sudo apt update
     ```
